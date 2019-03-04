@@ -5,7 +5,7 @@ class Login extends CI_Controller{
          parent :: __construct();
      }
 	public function index(){
-		echo "sd";
+		echo "ali";
 	}
 
 }
