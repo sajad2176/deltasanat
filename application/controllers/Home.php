@@ -7,6 +7,7 @@ class Home extends CI_Controller{
         $header['title'] = 'داشبورد';
         $header['active'] = 'dashbord';
         $this->load->view('header' , $header);
+        $this->load->view('home/home');
         $this->load->view('footer');
     }
 }
