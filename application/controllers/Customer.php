@@ -38,7 +38,7 @@ class Customer extends CI_Controller{
                     "number_acount"=>$_POST['number_acount'][$j],
                     "number_card"=>$_POST['number_card'][$j],
                     "number_shaba"=>$_POST['number_shaba'][$j]
-                )
+                );
             }
             $res_tel = $this->base_model->insert_batch('customer_tel' , $tel);
             $res_info = $this->base_model->insert_batch('customer_info' , $customer_info);
