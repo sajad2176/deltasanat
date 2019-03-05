@@ -308,12 +308,12 @@
 
 								<!-- Main -->
 								<li class="navigation-header"><span>Main</span> <i class="icon-menu" title="Main pages"></i></li>
-								<li class="active"><a href="index.html"><i class="icon-home4"></i> <span>داشبورد</span></a></li>
+								<li class="<?php if($active == 'dashbord'){echo 'active';}?>"><a href="<?php echo base_url('home'); ?>"><i class="icon-home4"></i> <span>داشبورد</span></a></li>
 								<li>
-									<a href="#"><i class="icon-stack2"></i> <span>Page layouts</span></a>
-									<ul>
-										<li><a href="layout_navbar_fixed.html">Fixed navbar</a></li>
-										<li><a href="layout_navbar_sidebar_fixed.html">Fixed navbar &amp; sidebar</a></li>
+									<a href=""><i class="icon-stack2"></i> <span>مشتریان</span></a>
+									<ul class = "<?php if($active == 'customer'){echo 'active';} ?>">
+										<li class = "<?php if($active_sub == 'customer_archive'){echo 'active';} ?>"><a href="<?php echo base_url('customer/archive/')?>">آرشیو مشتریان</a></li>
+										<li class = "<?php if($active_sub == 'customer_add'){echo 'active';} ?>"><a href="<?php echo base_url('customer/add') ?>">افزودن مشتری جدید</a></li>
 										<li><a href="layout_sidebar_fixed_native.html">Fixed sidebar native scroll</a></li>
 										<li><a href="layout_navbar_hideable.html">Hideable navbar</a></li>
 										<li><a href="layout_navbar_hideable_sidebar.html">Hideable &amp; fixed sidebar</a></li>
