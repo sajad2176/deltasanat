@@ -3,22 +3,21 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>login</title>
-  
-  
-  
-    <link rel="stylesheet" href="assets/css/login.css">
+  <title>ورود به حساب کاربری</title>
+    <link rel="stylesheet" href="<?php echo base_url('files/');?>assets/css/login.css">
 <!--	<link href="assets/css/bootstrap.css" rel="stylesheet" type="text/css">-->
 <!--	<link href="assets/css/rtl.css" rel="stylesheet" type="text/css">-->
   
 </head>
 
 <body>
-<div class="alert">
+<?php if($this->session->has_userdata('msg')){ $msg = $this->session->userdata('msg');?>
+    <div class="alert">
   <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-  <strong>خطر!</strong> نام کاربری یا رمز عبور شما اشتباه است
+  <?php echo $msg[0]; ?>
 </div>
-  <form>
+<?php }?>
+  <form action = "<?php echo base_url('login/signin')?>" method = "post" >
 	<div class="svgContainer">
 		<div>
 			<svg class="mySVG" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 200">
@@ -127,19 +126,18 @@
 	
 	<div class="inputGroup inputGroup1">
 		<label for="loginEmail" id="loginEmailLabel">نام کاربری</label>
-		<input required title="لطفا نام کاربری خود را وارد کنید" placeholder="Username" type="text" id="loginEmail" maxlength="254" />
-<!--		<p class="helper helper1">email@domain.com</p>-->
+		<input name="username" title="لطفا نام کاربری خود را وارد کنید" placeholder="Username" type="text" id="loginEmail" maxlength="254" required  />
 	</div>
 	<div class="inputGroup inputGroup2">
 		<label for="loginPassword" id="loginPasswordLabel">کلمه عبور</label>
-		<input required title="لطفا رمز عبور خود را وارد کنید" placeholder="Password" type="password" id="loginPassword" />
+		<input name="password" title="لطفا رمز عبور خود را وارد کنید" placeholder="Password" type="password" id="loginPassword" required />
 		<label id="showPasswordToggle" for="showPasswordCheck">نمایش
 			<input id="showPasswordCheck" type="checkbox"/>
 			<div class="indicator"></div>
 		</label>
 	</div>
 	<div class="inputGroup inputGroup3">
-		<button id="login">ورود به پورتال</button>
+		<button type = "submit" name="sub" id="login">ورود به پورتال</button>
 	</div>	
 </form>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
@@ -147,7 +145,7 @@
 
   
 
-    <script  src="assets/js/login/index.js"></script>
+    <script  src="<?php echo base_url('files/');?>assets/js/login/index.js"></script>
 
 
 
