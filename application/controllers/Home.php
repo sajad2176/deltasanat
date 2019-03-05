@@ -11,5 +11,14 @@ class Home extends CI_Controller{
         $this->load->view('home/home');
         $this->load->view('footer');
     }
+    public function logout(){
+        
+        $this->session->unset_userdata('login');
+        $this->session->unset_userdata('username');
+        
+        redirect('login');
+        
+        
+    }
 }
 ?>

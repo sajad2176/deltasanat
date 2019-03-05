@@ -270,7 +270,7 @@
 						<li><a href="#"><span class="badge bg-teal-400 pull-right">58</span> <i class="icon-comment-discussion"></i> Messages</a></li>
 						<li class="divider"></li>
 						<li><a href="#"><i class="icon-cog5"></i> Account settings</a></li>
-						<li><a id="sweet_warning" href="#"><i class="icon-switch2"></i> خروج از حساب کاربری </a></li>
+						<li><a onclick="document.getElementById('modal_logout').style.display='block'" style="width:auto;"><i class="icon-switch2"></i> خروج از حساب کاربری </a></li>
 					</ul>
 				</li>
 			</ul>
