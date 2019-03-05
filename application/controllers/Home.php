@@ -4,7 +4,10 @@ class Home extends CI_Controller{
         parent::__construct();
     }
     public function index(){
-        echo "hi";
+        $header['title'] = 'داشبورد';
+        $header['active'] = 'dashbord';
+        $this->load->view('header' , $title);
+        $this->load->view('footer');
     }
 }
 ?>
