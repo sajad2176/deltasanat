@@ -8,141 +8,96 @@
 
 											<div class="form-group">
 												<label>نام و نام خانوادگی: </label>
-												<input type="text" class="form-control" placeholder="Eugene Kopyov">
+												<input type="text" class="form-control" placeholder="علی شیرازی">
 											</div>
 
 											<div class="form-group">
-												<label>Enter your password:</label>
-												<input type="text" class="form-control" placeholder="Your strong password">
+												<label>آدرس:</label>
+												<input type="text" class="form-control" placeholder="شیراز،خیابان ایمان شمالی،ساختمان...">
 											</div>
-
 											<div class="form-group">
-												<label>Select your state:</label>
-												<select data-placeholder="Select your state" class="select">
-													<option></option>
-													<optgroup label="Alaskan/Hawaiian Time Zone">
-														<option value="AK">Alaska</option>
-														<option value="HI">Hawaii</option>
-													</optgroup>
-													<optgroup label="Pacific Time Zone">
-														<option value="CA">California</option>
-														<option value="NV">Nevada</option>
-														<option value="WA">Washington</option>
-													</optgroup>
-													<optgroup label="Mountain Time Zone">
-														<option value="AZ">Arizona</option>
-														<option value="CO">Colorado</option>
-														<option value="WY">Wyoming</option>
-													</optgroup>
-													<optgroup label="Central Time Zone">
-														<option value="AL">Alabama</option>
-														<option value="AR">Arkansas</option>
-														<option value="KY">Kentucky</option>
-													</optgroup>
-													<optgroup label="Eastern Time Zone">
-														<option value="CT">Connecticut</option>
-														<option value="DE">Delaware</option>
-														<option value="WV">West Virginia</option>
-													</optgroup>
-												</select>
+												<label>ایمیل: </label>
+												<input type="email" class="form-control" placeholder="info@gmail.com">
 											</div>
+											<div class="row field_wrapper">
+												<div>
+												<div class="col-md-4">
+													<div class="form-group">
+														<label>اطلاعات تماس:</label>
+														<input type="text" placeholder="عنوان" class="form-control">
+													</div>
+												</div>
 
-											<div class="form-group">
-												<label>Attach screenshot:</label>
-												<input type="file" class="file-styled">
+												<div class="col-md-8">
+													<div class="form-group mt-25 input-group">
+													
+														<input type="text" placeholder="شماره تماس" class="form-control">
+														<span class="input-group-btn">
+															<button type="button" class="btn btn-success add_button">
+																<span class="icon-plus3"></span>
+															</button>
+														</span>
+													</div>
+												</div>
+												</div>
 											</div>
+											
+												
 
-											<div class="form-group">
-												<label>Your message:</label>
-												<textarea rows="5" cols="5" class="form-control" placeholder="Enter your message here"></textarea>
-											</div>
 										</fieldset>
 									</div>
+								
 
 									<div class="col-md-6">
 										<fieldset>
-						                	<legend class="text-semibold"><i class="icon-truck position-left"></i> Shipping details</legend>
-
+						                	<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانکی</legend>
+										<div class="field_wrapper2">
+											<div>
 											<div class="row">
-												<div class="col-md-6">
+												<div class="col-md-4">
 													<div class="form-group">
-														<label>First name:</label>
-														<input type="text" placeholder="Eugene" class="form-control">
+														<label>نام صاحب حساب: </label>
+														<input type="text" placeholder="نام ونام خانوادگی" class="form-control">
+													</div>
+												</div>
+											
+
+											
+												<div class="col-md-2">
+													<div class="form-group">
+														<label>بانک:</label>
+														<input type="text" placeholder="ملت،ملی،.." class="form-control">
 													</div>
 												</div>
 
 												<div class="col-md-6">
 													<div class="form-group">
-														<label>Last name:</label>
-														<input type="text" placeholder="Kopyov" class="form-control">
+														<label>شماره حساب:</label>
+														<input type="text" placeholder="549659642" class="form-control">
+													</div>
+												</div>
+											
+											</div>
+											<div class="row">
+												<div class="col-md-6">
+													<div class="form-group">
+														<label>شماره کارت: </label>
+														<input maxlength="16" type="text" name="format-credit-card" placeholder="----/----/----/----" class="form-control">
+													</div>
+												</div>
+
+												<div class="col-md-6">
+													<div class="form-group input-group">
+														<label>شماره شبا:</label>
+														<input type="text" placeholder="IR21" class="form-control">
+														<span class="input-group-btn "><button type="button" style="top: 13px;" class="btn btn btn-success icon-plus3 add_button2"></button></span>
 													</div>
 												</div>
 											</div>
 
-											<div class="row">
-												<div class="col-md-6">
-													<div class="form-group">
-														<label>Email:</label>
-														<input type="text" placeholder="eugene@kopyov.com" class="form-control">
-													</div>
-												</div>
-
-												<div class="col-md-6">
-													<div class="form-group">
-														<label>Phone #:</label>
-														<input type="text" placeholder="+99-99-9999-9999" class="form-control">
-													</div>
-												</div>
-											</div>
-
-											<div class="row">
-												<div class="col-md-6">
-													<div class="form-group">
-							                            <label>Country:</label>
-							                            <select data-placeholder="Select your country" class="select">
-							                            	<option></option>
-							                                <option value="Cambodia">Cambodia</option> 
-							                                <option value="Cameroon">Cameroon</option> 
-							                                <option value="Canada">Canada</option> 
-							                                <option value="Cape Verde">Cape Verde</option> 
-							                            </select>
-						                            </div>
-												</div>
-
-												<div class="col-md-6">
-													<div class="form-group">
-														<label>State/Province:</label>
-														<input type="text" placeholder="Bayern" class="form-control">
-													</div>
-												</div>
-											</div>
-
-											<div class="row">
-												<div class="col-md-3">
-													<div class="form-group">
-														<label>ZIP code:</label>
-														<input type="text" placeholder="1031" class="form-control">
-													</div>
-												</div>
-
-												<div class="col-md-3">
-													<div class="form-group">
-														<label>City:</label>
-														<input type="text" placeholder="Munich" class="form-control">
-													</div>
-												</div>
-
-												<div class="col-md-6">
-													<div class="form-group">
-														<label>Address line:</label>
-														<input type="text" placeholder="Ring street 12" class="form-control">
-													</div>
-												</div>
-											</div>
-
-											<div class="form-group">
-												<label>Additional message:</label>
-												<textarea rows="5" cols="5" class="form-control" placeholder="Enter your message here"></textarea>
+									
+										</div>
+												
 											</div>
 										</fieldset>
 									</div>
@@ -154,3 +109,12 @@
 							</div>
 						</div>
 					</form>
+
+
+
+
+
+
+
+
+	

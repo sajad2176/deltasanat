@@ -6627,3 +6627,8 @@ h6.panel-title,
   }
 }
 /* logout style */
+/* custom style */
+.custom-form-tell{
+	line-height: 2;
+}
+/* /custom style */
