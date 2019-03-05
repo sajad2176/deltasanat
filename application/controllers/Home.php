@@ -6,7 +6,7 @@ class Home extends CI_Controller{
     public function index(){
         $header['title'] = 'داشبورد';
         $header['active'] = 'dashbord';
-        $this->load->view('header' , $title);
+        $this->load->view('header' , $header);
         $this->load->view('footer');
     }
 }
