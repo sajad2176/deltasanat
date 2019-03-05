@@ -25,20 +25,28 @@
 	<!-- /core JS files -->
 
 	<!-- Theme JS files -->
+
+	
+	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/notifications/bootbox.min.js"></script>
+    <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/notifications/sweet_alert.min.js"></script>
+	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/forms/selects/select2.min.js"></script>
+
+	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/core/app.js"></script>
+    <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/pages/components_modals.js"></script>
+
 	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/visualization/d3/d3.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/visualization/d3/d3_tooltip.js"></script>
 	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/forms/styling/switchery.min.js"></script>
     <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/forms/styling/uniform.min.js"></script>
-    <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/notifications/bootbox.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/notifications/sweet_alert.min.js"></script>
+    
+	
 	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/forms/selects/bootstrap_multiselect.js"></script>
 	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/ui/moment/moment.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/pickers/daterangepicker.js"></script>
-    <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/forms/selects/select2.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/core/app.js"></script>
+    
+	
 	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/pages/dashboard.js"></script>
     <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/pages/form_layouts.js"></script>
-    <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/pages/components_modals.js"></script>
 	<!-- /theme JS files -->
 
 </head>
@@ -252,7 +260,7 @@
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">
 						<img src="<?php echo base_url('files/');?>assets/images/placeholder.jpg" alt="">
-						<span>Victoria</span>
+						<span><?php echo $this->session->userdata('username');?></span>
 						<i class="caret"></i>
 					</a>
 
@@ -262,7 +270,7 @@
 						<li><a href="#"><span class="badge bg-teal-400 pull-right">58</span> <i class="icon-comment-discussion"></i> Messages</a></li>
 						<li class="divider"></li>
 						<li><a href="#"><i class="icon-cog5"></i> Account settings</a></li>
-						<li><a id="sweet_warning" href="#"><i class="icon-switch2"></i> Logout</a></li>
+						<li><a id="sweet_warning" href="#"><i class="icon-switch2"></i> خروج از حساب کاربری </a></li>
 					</ul>
 				</li>
 			</ul>
@@ -286,7 +294,7 @@
 							<div class="media">
 								<a href="#" class="media-left"><img src="assets/images/placeholder.jpg" class="img-circle img-sm" alt=""></a>
 								<div class="media-body">
-									<span class="media-heading text-semibold">Victoria Baker</span>
+									<span class="media-heading text-semibold"><?php echo $this->session->userdata('username');?></span>
 									<div class="text-size-mini text-muted">
 										<i class="icon-pin text-size-small"></i> &nbsp;Santa Ana, CA
 									</div>
