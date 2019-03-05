@@ -10,8 +10,8 @@
       <h5>خروج</h5>
       <h6>آیا مایل به خروج از پورتال می باشید؟</h6>
     </div>
-    <a onclick="document.getElementById('modal_logout').style.display = 'none'">انصراف</a>
-    <a href="<?php echo base_url('home/logout');?>">بله ، مطعنم</a>
+    <a class="btn btn-outline-primery"  onclick="document.getElementById('modal_logout').style.display = 'none'">انصراف</a>
+    <a  class="btn btn-danger"href="<?php echo base_url('home/logout');?>">بله ، مطعنم</a>
   </div>
 
 
