@@ -10,8 +10,8 @@
       <h5>خروج</h5>
       <h6>آیا مایل به خروج از پورتال می باشید؟</h6>
     </div>
-    <a class="btn btn-outline-primery"  onclick="document.getElementById('modal_logout').style.display = 'none'">انصراف</a>
-    <a  class="btn btn-danger"href="<?php echo base_url('home/logout');?>">بله ، مطعنم</a>
+    <a class="btn btn-secendery"  onclick="document.getElementById('modal_logout').style.display = 'none'">انصراف</a>
+    <a  class="btn btn-danger"href="<?php echo base_url('home/logout');?>">بله مطمئنم</a>
   </div>
 
 
@@ -63,7 +63,7 @@ window.onclick = function(event) {
     var maxField = 3;
     var addButton = $('.add_button2');
     var wrapper = $('.field_wrapper2');
-    var fieldHTML = '<div><div class="row"><div class="col-md-4"><div class="form-group"><label>نام صاحب حساب: </label><input type="text" placeholder="نام ونام خانوادگی" class="form-control"></div></div><div class="col-md-2"><div class="form-group"><label>بانک:</label><input type="text" placeholder="ملت،ملی،.." class="form-control"></div></div><div class="col-md-6"><div class="form-group"><label>شماره حساب:</label><input type="text" placeholder="549659642" class="form-control"></div></div></div><div class="row"><div class="col-md-6"><div class="form-group"><label>شماره کارت: </label><input maxlength="16" type="text" name="format-credit-card" placeholder="----/----/----/----" class="form-control"></div></div><div class="col-md-6"><div class="form-group input-group"><label>شماره شبا:</label><input type="text" placeholder="IR21" class="form-control"><span class="input-group-btn remove_button2 "><button type="button" style="top: 13px;" class="btn btn btn-danger icon-minus2"></button></span></div></div></div></div>';
+    var fieldHTML = '<div><div class="row"><div class="col-md-4"><div class="form-group"><label>نام صاحب حساب: </label><input type="text" placeholder="نام ونام خانوادگی" class="form-control"></div></div><div class="col-md-2"><div class="form-group"><label>بانک:</label><input type="text" placeholder="ملت،ملی،.." class="form-control"></div></div><div class="col-md-6"><div class="form-group"><label>شماره حساب:</label><input type="text" placeholder="549659642" class="form-control"></div></div></div><div class="row"><div class="col-md-6"><div class="form-group"><label>شماره کارت: </label><input maxlength="16" type="text" name="format-credit-card" placeholder="----/----/----/----" class="form-control"></div></div><div class="col-md-6"><div class="form-group input-group"><label>شماره شبا:</label><input type="text" placeholder="IR21" class="form-control"><span class="input-group-btn remove_button2 "><button type="button" style="top: 14px;" class="btn btn btn-danger icon-minus2"></button></span></div></div></div></div>';
 		
     var x = 1;
     
