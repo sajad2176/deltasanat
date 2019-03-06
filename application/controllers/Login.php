@@ -44,7 +44,8 @@ class Login extends CI_Controller{
 					redirect('login');
                 }
             $date = $this->convertdate->convert(time());    
-			$data['date_login'] = $date['year']. "-".$date['month_num']."-".$date['day'];
+			$data['date_login'] = $date['year']. "-" .$date['month_num']."-".$date['day'];
+			$data['time_login'] = $date['hour']. ":".$date['minute']. ":" .$date['second'];
 			$this->base_model->update_data('member' , $data , array('id'=> $res->id));
 				
              $ses = array(
