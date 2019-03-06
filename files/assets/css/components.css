@@ -16922,7 +16922,7 @@ thead .htCollapseButton:after {
 }
 .datatable-header,
 .datatable-footer {
-  padding: 20px 20px 0 20px;
+  padding: 23px 30px 0 40px;
 }
 .datatable-header:after,
 .datatable-footer:after {
@@ -20556,6 +20556,7 @@ label.display-block {
     padding-bottom: 10px;
   }
 }
+/* custom style */
 .btn-secendery {
   color: #fff;
   background-color: #959595;
@@ -20579,7 +20580,7 @@ label.display-block {
 }
 
 .btn-secendery:not(:disabled):not(.disabled):active, .btn-secendery:not(:disabled):not(.disabled).active,
-.show > .primeryr.dropdown-toggle {
+.show > .secendery.dropdown-toggle {
   color: #fff;
   background-color: #7f7f7f;
   border-color: #7f7f7f;

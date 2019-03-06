@@ -6122,8 +6122,8 @@ a.list-group-item-danger:focus {
   margin: 0;
 }
 .panel-flat > .panel-heading {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: 25px;
+  padding-bottom: 17px;
   background-color: #fff;
 }
 .panel-flat > .panel-heading > .panel-title {
@@ -6551,7 +6551,7 @@ h6.panel-title,
   background-color: #fefefe;
   margin: 5% auto 15% auto;
   border: 1px solid #888;
-  width: 35%;
+  width: 28%;
   text-align: center;
 }
 .animate_logout {

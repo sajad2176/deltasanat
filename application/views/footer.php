@@ -7,7 +7,7 @@
       <span class="dang_dot"></span>
     </div>
     <div class="container_logout">
-      <h5>خروج</h5>
+      <h1>خروج</h1>
       <h6>آیا مایل به خروج از پورتال می باشید؟</h6>
     </div>
     <a class="btn btn-secendery"  onclick="document.getElementById('modal_logout').style.display = 'none'">انصراف</a>
