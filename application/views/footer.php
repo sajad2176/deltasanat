@@ -113,7 +113,13 @@ window.onclick = function(event) {
   <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/pages/form_layouts.js"></script>
   <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/core/app.js"></script>
   <script type="text/javascript" src="<?php echo base_url('files/'); ?>assets/js/pages/form_controls_extended.js"></script>
-  <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/pages/dashboard.js"></script>
-	<!-- /theme JS files -->          
+  <!-- <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/pages/dashboard.js"></script> -->
+  <!-- /theme JS files --> 
+  <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        })
+    
+    </script>         
 </body>
 </html>

@@ -5,24 +5,6 @@
 							<li class="active">آرشیو مشتریان</li>
 						</ul>
 
-						<ul class="breadcrumb-elements">
-							<li><a href="#"><i class="icon-comment-discussion position-left"></i> Support</a></li>
-							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-									<i class="icon-gear position-left"></i>
-									Settings
-									<span class="caret"></span>
-								</a>
-
-								<ul class="dropdown-menu dropdown-menu-right">
-									<li><a href="#"><i class="icon-user-lock"></i> Account security</a></li>
-									<li><a href="#"><i class="icon-statistics"></i> Analytics</a></li>
-									<li><a href="#"><i class="icon-accessibility"></i> Accessibility</a></li>
-									<li class="divider"></li>
-									<li><a href="#"><i class="icon-gear"></i> All settings</a></li>
-								</ul>
-							</li>
-						</ul>
                     </div>
                     
                     <div class="panel panel-flat">
@@ -53,14 +35,14 @@
 										<ul class="icons-list">
 											<li class="dropdown">
 												<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-													<i class="icon-menu9"></i>
+													<i class=""></i>
 												</a>
 
-												<ul class="dropdown-menu dropdown-menu-right">
-													<li><a href="#"><i class="icon-file-pdf"></i> Export to .pdf</a></li>
-													<li><a href="#"><i class="icon-file-excel"></i> Export to .csv</a></li>
-													<li><a href="#"><i class="icon-file-word"></i> Export to .doc</a></li>
-												</ul>
+                                                <ul class="icons-list">
+												<li class="text-primary-600"><a href="#"><i class="icon-pencil7"></i></a></li>
+                                                <li class="text-teal-600"><a href="#"><i class="icon-cog7"></i></a></li>
+                                                <li class="text-danger-600"><a href="#"><i class="icon-trash"></i></a></li>
+											</ul>
 											</li>
 										</ul>
 									</td>
@@ -382,4 +364,3 @@
 
 
                     
-                    <script type="text/javascript" src="assets/js/plugins/tables/datatables/datatables.min.js"></script>
