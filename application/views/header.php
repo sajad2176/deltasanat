@@ -226,7 +226,7 @@
 
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">
-						<img src="<?php echo base_url('files/');?>assets/images/placeholder.jpg" alt="">
+						<img src="<?php echo base_url('files/')."assets/img/avatar/".$this->session->userdata('pic_name');?>" alt="">
 						<span><?php echo $this->session->userdata('username');?></span>
 						<i class="caret"></i>
 					</a>
@@ -259,7 +259,7 @@
 					<div class="sidebar-user">
 						<div class="category-content">
 							<div class="media">
-								<a href="#" class="media-left"><img src="<?php echo base_url('files/');?>assets/images/placeholder.jpg" class="img-circle img-sm" alt=""></a>
+								<a href="#" class="media-left"><img src="<?php echo base_url('files/')."assets/img/avatar/".$this->session->userdata('pic_name');?>" class="img-circle img-sm" alt=""></a>
 								<div class="media-body">
 									<span class="media-heading text-semibold"><?php echo $this->session->userdata('username');?></span>
 									<div class="text-size-mini text-muted">
@@ -304,10 +304,10 @@
 									</ul>
 								</li>
 								<li>
-									<a href="#"><i class="icon-copy"></i> <span>Layouts</span></a>
+									<a href=""><i class="icon-copy <?php if($active == 'deal'){echo 'active';} ?>"></i> <span>معاملات</span></a>
 									<ul>
-										<li><a href="../../../layout_1/LTR/default/index.html" id="layout1">Layout 1</a></li>
-										<li><a href="index.html" id="layout2">Layout 2 <span class="label bg-warning-400">Current</span></a></li>
+										<li class="<?php if($active_sub == 'deal_archive'){echo 'active';} ?>"><a href="<?php echo base_url('deal/archive/')?>" id="layout1">آرشیو معاملات</a></li>
+										<li class="<?php if($active_sub == 'deal_add'){echo 'active';} ?>"><a href="<?php echo base_url('deal/add/')?>" id="layout2">افزودن معامله<span class="label bg-warning-400">Current</span></a></li>
 										<li><a href="../../../layout_3/LTR/default/index.html" id="layout3">Layout 3</a></li>
 										<li><a href="../../../layout_4/LTR/default/index.html" id="layout4">Layout 4</a></li>
 										<li><a href="../../../layout_5/LTR/default/index.html" id="layout5">Layout 5</a></li>
