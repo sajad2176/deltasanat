@@ -13,7 +13,7 @@
 
                         </div>
                         <div class="datatable-header"><div id="DataTables_Table_3_filter" class="dataTables_filter"><label><span>جستجو:</span> <input type="search" class="" placeholder="جستجو کنید ..." aria-controls="DataTables_Table_3"></label></div><div class="dataTables_length" id="DataTables_Table_3_length"><label><span>نمایش:</span> <select name="DataTables_Table_3_length" aria-controls="DataTables_Table_3" class="select2-hidden-accessible" tabindex="-1" aria-hidden="true"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select><span class="select2 select2-container select2-container--default" dir="rtl" style="width: auto;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-DataTables_Table_3_length-21-container"><span class="select2-selection__rendered" id="select2-DataTables_Table_3_length-21-container" title="10">10</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span></label></div></div>
-				    	<table class="table datatable-selection-single">
+				    	<table class="table datatable-selection-single table-striped">
 							<thead>
 								<tr>
                                     <th>ردیف</th>
