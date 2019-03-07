@@ -2,14 +2,42 @@
 class Customer extends CI_Controller{
     function __construct(){
         parent::__construct();
+        $this->load->library('pagination');
     }
     public function archive(){
-
+        $config['base_url'] = base_url("customer/archive/");
+        $config['total_rows'] = $this->base_model->get_count("customer" , 'ALL');
+        $config['per_page'] = '10';
+        $config["uri_segment"] = '3';
+        $config['num_links'] = '5';
+        $config['next_link'] = '<i class="icon-arrow-left5"></i>';
+        $config['last_link'] = '<i class="icon-backward2"></i>';
+        $config['prev_link'] = '<i class="icon-arrow-right5"></i>';
+        $config['first_link'] = '<i class="icon-forward3"></i>';
+        $config['full_tag_open'] = '<nav><ul class="pagination pagination-sm">';
+        $config['full_tag_close'] = '</ul></nav>';
+        $config['cur_tag_open'] = '<li class="active"><a href="javascript:void(0)">';
+        $config['cur_tag_close'] = '</a></li>';
+        $config['num_tag_open'] = '<li>';
+        $config['num_tag_close'] = '</li>';
+        $config['next_tag_open'] = '<li>';
+        $config['next_tag_close'] = '</li>';
+        $config['last_tag_open'] = '<li>';
+        $config['last_tag_close'] = '</li>';
+        $config['first_tag_open'] = '<li>';
+        $config['first_tag_close'] = '</li>';
+        $config['prev_tag_open'] = '<li>';
+        $config['prev_tag_close'] = '</li>';
+        $config['suffix'] = "";
+ $this->pagination->initialize($config);
+ $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;      
+ $data['customer'] = $this->base_model->get_data('customer' , 'id , fullname' , 'result' , NULL, $config['per_page'] , $page , array('id' , 'DESC'));
+        $data['page'] = $this->pagination->create_links();
         $header['title'] = 'آرشیو مشتریان';
         $header['active'] = 'customer';
         $header['active_sub'] = 'customer_archive';
         $this->load->view('header' , $header);
-        $this->load->view('customer/archive');
+        $this->load->view('customer/archive' , $data);
         $this->load->view('footer');
     }
     public function add(){
