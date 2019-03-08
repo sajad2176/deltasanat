@@ -5,10 +5,24 @@ class Customer extends CI_Controller{
         $this->load->library('pagination');
     }
     public function archive(){
-        $config['base_url'] = base_url("customer/archive/");
-        $config['total_rows'] = $this->base_model->get_count("customer" , 'ALL');
-        $config['per_page'] = '10';
-        $config["uri_segment"] = '3';
+        $total_rows = $this->base_model->get_count("customer" , 'ALL');
+        if($this->uri->segment(3) == 'show'){
+            $base_url = "customer/archive/show/".$this->uri->segment(4);
+            $uri_segment = 5;
+            if($this->uri->segment(4) == 'all'){
+                $per_page = $total_rows;
+            }else{
+                $per_page = $this->uri->segment(4);
+            }
+        }else{
+            $uri_segment = 3;
+            $base_url = "customer/archive/";
+            $per_page = 10;
+        }
+        $config['base_url'] = base_url($base_url);
+        $config['total_rows'] = $total_rows;
+        $config['per_page'] = $per_page;
+        $config["uri_segment"] = $uri_segment;
         $config['num_links'] = '5';
         $config['next_link'] = '<i class="icon-arrow-left5"></i>';
         $config['last_link'] = '<i class="icon-backward2"></i>';
@@ -30,9 +44,10 @@ class Customer extends CI_Controller{
         $config['prev_tag_close'] = '</li>';
         $config['suffix'] = "";
  $this->pagination->initialize($config);
- $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;      
- $data['customer'] = $this->base_model->get_data('customer' , 'id , fullname' , 'result' , NULL, $config['per_page'] , $page , array('id' , 'DESC'));
-        $data['page'] = $this->pagination->create_links();
+$page = ($this->uri->segment($uri_segment)) ? $this->uri->segment($uri_segment) : 0;      
+$data['customer'] = $this->base_model->get_data('customer' , 'id , fullname' , 'result' , NULL, $config['per_page'] , $page , array('id' , 'DESC'));
+$data['page'] = $this->pagination->create_links();
+$data['count'] = $config['total_rows'];
         $header['title'] = 'آرشیو مشتریان';
         $header['active'] = 'customer';
         $header['active_sub'] = 'customer_archive';
@@ -46,42 +61,20 @@ class Customer extends CI_Controller{
             $customer['address'] = $this->input->post('address');
             $customer['email'] = $this->input->post('email');
             $customer['pub'] = 1;
-            $id = $this->base_model->insert_data('customer' , $customer);
-            if($id == FALSE){
+            $tel[0] = $this->input->post('tel_title');
+            $tel[1] = $this->input->post('tel');
+            $customer['customer_tel'] = json_encode($tel);
+            $res = $this->base_model->insert_data('customer' , $customer);
+            if($res == FALSE){
                 $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید';
                 $message['msg'][1] = 'danger';
                 $this->session->set_flashdata($message);
                 redirect('customer/add');
-            }
-            for($i = 0 ; $i < sizeof($_POST['tel_title']) ; $i++){
-                $tel[] = array(
-                    'customer_id' => $id,
-                    'tel_title'=> $_POST['tel_title'][$i],
-                    'tel'=> $_POST['tel'][$i]
-                  );
-            }
-            for($j = 0 ; $j < sizeof($_POST['name_acount']) ; $j++){
-                $customer_info[] = array(
-                    "customer_id"=> $id,
-                    "name_acount"=> $_POST['name_acount'][$j],
-                    "name_bank"=>$_POST['name_bank'][$j],
-                    "number_acount"=>$_POST['number_acount'][$j],
-                    "number_card"=>$_POST['number_card'][$j],
-                    "number_shaba"=>$_POST['number_shaba'][$j]
-                );
-            }
-            $res_tel = $this->base_model->insert_batch('customer_tel' , $tel);
-            $res_info = $this->base_model->insert_batch('customer_info' , $customer_info);
-            if($res_tel == TRUE and $res_info == TRUE){
-                $message['msg'][0] = 'اطلاعات مشتری ' . $customer['fullname'] . ' با موفقیت ثبت شد ';
+            }else{
+                $message['msg'][0] = ' اطلاعات مشتری  '. $customer['fullname'] . ' با موفقیت ثبت شد ';
                 $message['msg'][1] = 'success';
                 $this->session->set_flashdata($message);
-                redirect('customer/add/');
-            }else{
-             $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید';
-             $message['msg'][1] = 'danger';
-             $this->session->set_flashdata($message);
-             redirect('customer/add/');     
+                redirect('customer/add');
             }
         }else{
             $header['title'] = 'افزودن مشتری جدید';
@@ -97,29 +90,23 @@ class Customer extends CI_Controller{
         $customer['fullname'] = $this->input->post('fullname');
         $customer['address'] = $this->input->post('address');
         $customer['email'] = $this->input->post('email');
-        for($i = 0 ; $i < sizeof($_POST['tel_title']) ; $i++){
-            $tel[] = array(
-             'customer'=> $id,
-             'tel_title'=> htmlspecialchars($_POST['tel_title'][$i]),
-             'tel' => htmlspecialchars($_POST['tel'][$i])
-            );
+        $tel[0] = $this->input->post('tel_title');
+        $tel[1] = $this->input->post('tel');
+        $customer['customer_tel'] = json_encode($tel);
+        $res = $this->base_model->update_data('customer' , $customer , array('id'=>$id));
+        if($res == TRUE){
+           $message['msg'][0] = 'ویرایش مشتری '. $customer['fullname'] . " با موفقیت انجام شد ";
+           $message['msg'][1] = 'success';
+           $this->session->set_flashdata($message);
+           redirect("customer/edit/$id");
+         }else{
+             $message['msg'][0] = 'متاسفانه مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید';
+             $message['msg'][1] = 'danger';
+             $this->session->set_flashdata($message);
+             redirect("customer/edit/$id");
         }
-        for($j = 0 ; $j < sizeof($_POST['name_acount']) ; $j++){
-            $info[] = array(
-                'custtomer_id'=>$id,
-                'name_acount'=>htmlspecialchars($_POST['name_acount'][$j]),
-                'name_bank'=>htmlspecialchars($_POST['name_bank'][$j]),
-                'number_acount'=>htmlspecialchars($_POST['number_acount'][$j]),
-                'number_card'=>htmlspecialchars($_POST['number_card'][$j]),
-                'number_shaba'=>htmlspecialchars($_POST['number_shaba'][$j])
-            ); 
-        }
-        
-        
         }else{
             $data['customer'] = $this->base_model->get_data('customer' , '*' , 'row' , array('id' => $id , 'pub'=> '1'));
-            $data['tel'] = $this->base_model->get_data('customer_tel' , 'tel_title , tel' , 'result' , array('customer_id' => $id));
-            $data['info'] = $this->base_model->get_data('customer_info' , '*' , 'result' ,array('customer_id' => $id));
             if(sizeof($data['customer']) == 0){
                 show_404();
             }else{
@@ -132,5 +119,14 @@ class Customer extends CI_Controller{
             }
         }
     }
+    public function search(){
+		  if(isset($_POST['text_search'])){
+			$title = $this->db->escape_str($this->input->post('text_search'));
+			$result = $this->base_model->search_data('customer' , 'id , fullname' , array('fullname' => $title));
+			echo json_encode($result);
+		}else{
+			show_404();
+		}	
+	}
 }
 ?>

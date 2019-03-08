@@ -55,6 +55,7 @@ $msg = $this->session->userdata('msg');?>
 														</span>
 													</div>
 												</div>
+												
 												</div>
 											</div>
 											
@@ -63,6 +64,7 @@ $msg = $this->session->userdata('msg');?>
 										</fieldset>
 									</div>
 									</div>
+<!--
 								<div class="row">
 									<div class="col-md-6">
 										<fieldset>
@@ -118,6 +120,7 @@ $msg = $this->session->userdata('msg');?>
 										</fieldset>
 									</div>
 								</div>
+-->
 
 								<div class="text-right">
 									<button type="submit" name="sub" class="btn btn-success">ثبت مشتری <i class="icon-arrow-left13 position-right"></i></button>

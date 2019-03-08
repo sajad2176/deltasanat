@@ -32,6 +32,7 @@ function get_data($table,$select, $ret = 'result', $where=NULL,$limit=NULL , $of
      return $query->result();
     }
 }
+
 function get_data_join($from , $join , $select ,$join_where ,$ret = 'result' , $where = NULL, $limit = NULL , $offset = NULL , $order_by = NULL , $join2 = NULL , $join3 = NULL){
     $this->db->select($select);
     $this->db->from($from);
@@ -58,6 +59,7 @@ function get_data_join($from , $join , $select ,$join_where ,$ret = 'result' , $
         return $query->result();
     }
 }
+
 function insert_data($table , $data){
     if($this->db->insert($table , $data)){
         return $this->db->insert_id();
@@ -65,6 +67,7 @@ function insert_data($table , $data){
         return FALSE;
     }
 }
+
 function update_data($table , $data , $where){
     $this->db->where($where);
     if($this->db->update($table , $data)){
@@ -73,6 +76,7 @@ function update_data($table , $data , $where){
         return FALSE;
     }
 }
+
 function get_count($table , $where){
 			if($where == 'ALL'){
 				return $this->db->count_all($table);
@@ -83,7 +87,8 @@ function get_count($table , $where){
 			$this->db->from($table);
 			return $this->db->count_all_results();	
 			}
-	}
+}
+
 function search_data($table , $select , $like , $where = NULL , $order_by = NULL){
 	$this->db->select($select);
 	if($where != NULL){
@@ -95,7 +100,8 @@ function search_data($table , $select , $like , $where = NULL , $order_by = NULL
 	$this->db->like($like);
 	$query = $this->db->get($table);
 	return $query->result();
-	}
+}
+
 function insert_batch($table , $data){
 	if($this->db->insert_batch($table , $data)){
 		return TRUE;
@@ -103,6 +109,22 @@ function insert_batch($table , $data){
 		return FALSE;
 	}
 	
+}
+
+function update_batch($table , $data , $key){
+    if($this->db->update_batch($table , $data , $key)){
+        return TRUE;
+    }else{
+        return FALSE;
+    }
+}
+
+function delete_data($table , $where){
+    if($this->db->delete($table, $where)){
+        return TRUE;
+    }else{
+        return FALSE;
+    }
 }
 // --select--update--insert--delete--  //
 

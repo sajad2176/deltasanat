@@ -6627,6 +6627,20 @@ h6.panel-title,
   }
 }
 /* logout style */
+/*search */
+#search_cust tbody{
+	border-top: 2px solid #ddd;
+}
+#search_cust tr:nth-of-type(2n+1) {
+    background-color: #fcfcfc;
+}
+#search_cust tr td{
+vertical-align: middle;
+padding: 12px 20px;
+line-height: 1.5384616;
+border-top: 1px solid #ddd;
+}
+/*search */
 /* custom style */
 .custom-form-tell{
 	line-height: 2;
