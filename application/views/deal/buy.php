@@ -115,8 +115,12 @@
 									</div>
 								</div>
 								</div>
+							<div class="form-group">
+								<label>عکس را قرار دهید </label>
+								<input type="file" class="file-styled" multiple="multiple" >
+							</div>
 								<div class="form-group">
-									<label>توضیحات معامله:</label>
+									<label>توضیحات خرید:</label>
 									<textarea rows="5" cols="5" class="form-control" placeholder="توصیحات خود را وارد کنید"></textarea>
 								</div>
 

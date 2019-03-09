@@ -1,0 +1,234 @@
+<div class="breadcrumb-line breadcrumb-line-component mb-20">
+	<ul class="breadcrumb">
+		<li><a href="index.html"><i class="icon-home2 position-left"></i> داشبورد</a>
+		</li>
+		<li><a href="datatable_api.html">معاملات</a>
+		</li>
+		<li class="active">آرشیو معاملات</li>
+	</ul>
+
+</div>
+<!-- Vertical form options -->
+<!-- 2 columns form -->
+<div class="">
+	<form action="#">
+		<div class="panel panel-flat">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-6">
+						<fieldset>
+							<legend class="text-semibold"><i class="icon-coins position-left"></i> اطلاعات فروش</legend>
+
+							<div class="form-group">
+								<label>نام فروشنده: </label>
+								<input class="form-control" onFocus="search_customer(this)" name="customer[]" type="text" placeholder="نام فروشنده خود را وارد کنید" autocomplete="off">
+							</div>
+
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label>نام ارز: </label>
+										<select class="form-control">
+											<option>دلار</option>
+											<option>یوان</option>
+											<option>پوند</option>
+											<option>یورو</option>
+										</select>
+									</div>
+								</div>
+
+
+
+								<div class="col-md-6">
+									<div class="form-group">
+										<label>تعداد ارز:</label>
+										<input type="text" placeholder="999999" class="form-control">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label>کامزد:</label>
+										<input type="text" placeholder="999999" class="form-control">
+									</div>
+								</div>
+
+								<div class="col-md-6">
+									<div class="form-group">
+										<label>نرخ تبدیل:</label>
+										<input type="text" placeholder="549659642" class="form-control">
+									</div>
+								</div>
+							</div>
+							<div class="">
+								<div class="form-group">
+									<label>مبلغ ریالی:</label>
+									<p class="form-control"></p>
+								</div>
+							</div>
+
+					</div>
+					</fieldset>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<fieldset>
+							<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانکی</legend>
+							<div class="field_wrapper2">
+								<div>
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>شماره شبا: </label>
+												<input data-mask="aa-99-999-9999999999999999999" type="text" placeholder="IR-06-017-0000000123014682799" class="form-control">
+											</div>
+										</div>
+
+
+
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>بانک:</label>
+												<input type="text" placeholder="ملت،ملی،.." class="form-control" readonly>
+											</div>
+										</div>
+									</div>
+
+
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>مبلغ معامله: </label>
+											<input maxlength="16" type="text" name="format-credit-card" placeholder="9999999999" class="form-control">
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div class="form-group input-group">
+											<label>توضیحات حساب:</label>
+											<input type="text" placeholder="توضیحات خود را وارد کنید" class="form-control">
+											<span class="input-group-btn "><button type="button" style="top: 13px;" class="btn btn btn-success icon-plus3 add_button2"></button></span>
+										</div>
+									</div>
+								</div>
+								</div>
+							<div class="form-group">
+								<label>عکس را قرار دهید </label>
+								<input type="file" class="file-styled" multiple="multiple" >
+							</div>
+								<div class="form-group">
+									<label>توضیحات فروش:</label>
+									<textarea rows="5" cols="5" class="form-control" placeholder="توصیحات خود را وارد کنید"></textarea>
+								</div>
+
+							
+						</fieldset>
+
+						<div class="text-right">
+							<button type="submit" class="btn btn-primary">ثبت فروش <i class="icon-arrow-left13 position-right"></i></button>
+						</div>
+					</div>
+
+
+
+				</div>
+			</div>
+		</div>
+</div>
+</form>
+
+<!-- /2 columns form -->
+</div>
+
+<script>
+	function autocomplete( inp, arr ) {
+		var currentFocus;
+		inp.addEventListener( "input", function ( e ) {
+			var a, b, i, val = this.value;
+			closeAllLists();
+			if ( !val ) {
+				return false;
+			}
+			currentFocus = -1;
+			a = document.createElement( "DIV" );
+			a.setAttribute( "id", this.id + "autocomplete-list" );
+			a.setAttribute( "class", "autocomplete-items" );
+			this.parentNode.appendChild( a );
+			for ( i = 0; i < arr.length; i++ ) {
+				let match;
+				let search = val;
+				let lastIndx = ( arr[ i ].length - 1 ) - arr[ i ].indexOf( search ) - ( search.length - 1 );
+				if ( lastIndx == 0 ) {
+					match = arr[ i ].slice( arr[ i ].indexOf( search ), arr[ i ].length );
+				} else {
+					match = arr[ i ].slice( arr[ i ].indexOf( search ), -lastIndx );
+				}
+				if ( match.length == search.length ) {
+					let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length );
+
+					b = document.createElement( "DIV" );
+					b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";
+					b.addEventListener( "click", function ( e ) {
+						inp.value = this.getElementsByTagName( "input" )[ 0 ].value;
+						closeAllLists();
+					} );
+					a.appendChild( b );
+				}
+			}
+		} );
+		/*execute a function presses a key on the keyboard:*/
+		inp.addEventListener( "keydown", function ( e ) {
+			var x = document.getElementById( this.id + "autocomplete-list" );
+			if ( x ) x = x.getElementsByTagName( "div" );
+			if ( e.keyCode == 40 ) {
+				currentFocus++;
+				addActive( x );
+			} else if ( e.keyCode == 38 ) {
+				currentFocus--;
+				addActive( x );
+			} else if ( e.keyCode == 13 ) {
+				e.preventDefault();
+				if ( currentFocus > -1 ) {
+					if ( x ) x[ currentFocus ].click();
+				}
+			}
+		} );
+
+		function addActive( x ) {
+			if ( !x ) return false;
+			removeActive( x );
+			if ( currentFocus >= x.length ) currentFocus = 0;
+			if ( currentFocus < 0 ) currentFocus = ( x.length - 1 );
+			x[ currentFocus ].classList.add( "autocomplete-active" );
+
+		}
+
+		function removeActive( x ) {
+			for ( var i = 0; i < x.length; i++ ) {
+				x[ i ].classList.remove( "autocomplete-active" );
+			}
+		}
+
+		function closeAllLists( elmnt ) {
+			var x = document.getElementsByClassName( "autocomplete-items" );
+			for ( var i = 0; i < x.length; i++ ) {
+				if ( elmnt != x[ i ] && elmnt != inp ) {
+					x[ i ].parentNode.removeChild( x[ i ] );
+				}
+			}
+		}
+		document.addEventListener( "click", function ( e ) {
+			closeAllLists( e.target );
+		} );
+	}
+
+	/*An array containing all the country names in the world:*/
+	var customer = [ "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua & Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bosnia & Herzegovina", "Botswana", "Brazil", "British Virgin Islands", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Central Arfrican Republic", "Chad", "Chile", "China", "Colombia", "Congo", "Cook Islands", "Costa Rica", "Cote D Ivoire", "Croatia", "Cuba", "Curacao", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Falkland Islands", "Faroe Islands", "Fiji", "Finland", "France", "French Polynesia", "French West Indies", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan", "Jersey", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macau", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauro", "Nepal", "Netherlands", "Netherlands Antilles", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Reunion", "Romania", "Russia", "Rwanda", "Saint Pierre & Miquelon", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "St Kitts & Nevis", "St Lucia", "St Vincent", "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor L'Este", "Togo", "Tonga", "Trinidad & Tobago", "Tunisia", "Turkey", "Turkmenistan", "Turks & Caicos", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Virgin Islands (US)", "Yemen", "Zambia", "Zimbabwe" ];
+
+	function search_customer( input ) {
+		autocomplete( input, customer );
+	}
+</script>
