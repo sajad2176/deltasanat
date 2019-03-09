@@ -16,15 +16,29 @@ class Deal extends CI_Controller {
         $this->load->view('footer');
         
     } 
-    public function add(){
+    public function buy(){
         if(isset($_POST['sub'])){
 
         }else{
             $header['title'] = 'افزودن معامله';
             $header['active'] = 'deal';
-            $header['active_sub'] = 'deal_add';
+            $header['active_sub'] = 'deal_buy';
             $this->load->view('header' , $header);
-            $this->load->view('deal/add');
+            $this->load->view('deal/buy');
+            $this->load->view('footer');
+        }
+
+        
+    }
+    public function sell(){
+        if(isset($_POST['sub'])){
+
+        }else{
+            $header['title'] = 'افزودن معامله';
+            $header['active'] = 'deal';
+            $header['active_sub'] = 'deal_sell';
+            $this->load->view('header' , $header);
+            $this->load->view('deal/sell');
             $this->load->view('footer');
         }
 

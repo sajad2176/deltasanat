@@ -15,62 +15,20 @@
 						<div class="panel panel-flat">
 							<div class="panel-body">
 								<div class="row">
-									<div class="col-md-6">
+									<div class="">
 										<fieldset>
-											<legend class="text-semibold"><i class="icon-reading position-left"></i> اطلاعات فردی</legend>
+											<legend class="text-semibold"><i class="icon-cart5 position-left"></i> اطلاعات خرید</legend>
 
 											<div class="form-group">
-												<label>نام و نام خانوادگی: </label>
-												<input onFocus="search_customer(this)" name="customer[]" type="text" placeholder="نام مشتری خود را وارد کنید" autocomplete="off">
+												<label>نام فروشنده: </label>
+												<input class="form-control" onFocus="search_customer(this)" name="customer[]" type="text" placeholder="نام فروشنده خود را وارد کنید" autocomplete="off">
 											</div>
 
-											<div class="form-group">
-												<label>آدرس:</label>
-												<input type="text" class="form-control" placeholder="شیراز،خیابان ایمان شمالی،ساختمان...">
-											</div>
-											<div class="form-group">
-												<label>ایمیل: </label>
-												<input type="email" class="form-control" placeholder="info@gmail.com">
-											</div>
-											<div class="row field_wrapper">
-												<div>
-												<div class="col-md-4">
+												<div class="row">
+												<div class="col-md-2">
 													<div class="form-group">
-														<label>اطلاعات تماس:</label>
-														<input type="text" placeholder="عنوان" class="form-control">
-													</div>
-												</div>
-
-												<div class="col-md-8">
-													<div class="form-group mt-25 input-group">
-													
-														<input type="text" placeholder="شماره تماس" class="form-control">
-														<span class="input-group-btn">
-															<button type="button" class="btn btn-success add_button">
-																<span class="icon-plus3"></span>
-															</button>
-														</span>
-													</div>
-												</div>
-												</div>
-											</div>
-											
-												
-
-										</fieldset>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-6">
-										<fieldset>
-						                	<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانکی</legend>
-										<div class="field_wrapper2">
-											<div>
-											<div class="row">
-												<div class="col-md-4">
-													<div class="form-group">
-														<label>نام صاحب حساب: </label>
-														<input type="text" placeholder="نام ونام خانوادگی" class="form-control">
+														<label>نام ارز: </label>
+														<select class="form-control"><option>دلار</option><option>یوان</option><option >پوند</option><option >یورو</option></select>
 													</div>
 												</div>
 											
@@ -78,15 +36,68 @@
 											
 												<div class="col-md-2">
 													<div class="form-group">
-														<label>بانک:</label>
-														<input type="text" placeholder="ملت،ملی،.." class="form-control">
+														<label>تعداد ارز:</label>
+														<input type="text" placeholder="999999" class="form-control">
+													</div>
+												</div>
+												<div class="col-md-2">
+													<div class="form-group">
+														<label>کامزد:</label>
+														<input type="text" placeholder="999999" class="form-control">
 													</div>
 												</div>
 
-												<div class="col-md-6">
+												<div class="col-md-2">
+													<div class="form-group">
+														<label>نرخ تبدیل:</label>
+														<input type="text" placeholder="549659642" class="form-control">
+													</div>
+												</div>
+												<div class="col-md-4">
+													<div class="form-group">
+														<label>مبلغ ریالی:</label>
+														<p  class="form-control"></p>
+													</div>
+												</div>
+											
+											</div>
+										</fieldset>
+									</div>
+								</div>
+								<div class="row">
+									<div class="">
+										<fieldset>
+						                	<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانکی</legend>
+										<div class="field_wrapper2">
+											<div>
+											<div class="row">
+												<div class="col-md-4">
+													<div class="form-group">
+														<label>توضیحات حساب: </label>
+														<input type="text" placeholder="توضیحات خود را وارد کنید" class="form-control">
+													</div>
+												</div>
+											
+
+											
+												<div class="col-md-2">
+													<div class="form-group">
+														<label>شماره شبا:</label>
+														<input type="text" placeholder="ملت،ملی،.." class="form-control">
+													</div>
+												</div>
+													<div class="col-md-1">
+													<div class="form-group">
+														<label>بانک:</label>
+														<input readonly type="text" placeholder="ملت،ملی،.." class="form-control">
+													</div>
+												</div>
+
+												<div class="col-md-5">
 													<div class="form-group">
 														<label>شماره حساب:</label>
 														<input type="text" placeholder="549659642" class="form-control">
+														<p class="text-danger">مقدار معامله بیشتر است</p>
 													</div>
 												</div>
 											
@@ -150,7 +161,7 @@
                      match = arr[i].slice(arr[i].indexOf(search), -lastIndx);
                 }
 		  if(match.length == search.length){
-		let str = arr[i].slice(0, arr[i].indexOf(search) ) + '<strong style="color:darkgreen;">' + match + '</strong>'+ arr[i].slice(arr[i].length-lastIndx, arr[i].length);
+		let str = arr[i].slice(0, arr[i].indexOf(search) ) + '<strong style="color:#46a64c;">' + match + '</strong>'+ arr[i].slice(arr[i].length-lastIndx, arr[i].length);
 		  
 		  b = document.createElement("DIV");
 		  b.innerHTML = str + "<input type='hidden' value='" + arr[i] + "'>";

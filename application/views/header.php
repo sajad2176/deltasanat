@@ -307,7 +307,8 @@
 									<a href=""><i class="icon-copy <?php if($active == 'deal'){echo 'active';} ?>"></i> <span>معاملات</span></a>
 									<ul>
 										<li class="<?php if($active_sub == 'deal_archive'){echo 'active';} ?>"><a href="<?php echo base_url('deal/archive/')?>" id="layout1">آرشیو معاملات</a></li>
-										<li class="<?php if($active_sub == 'deal_add'){echo 'active';} ?>"><a href="<?php echo base_url('deal/add/')?>" id="layout2">افزودن معامله<span class="label bg-warning-400">Current</span></a></li>
+										<li class="<?php if($active_sub == 'deal_buy'){echo 'active';} ?>"><a href="<?php echo base_url('deal/buy/')?>" id="layout2">خرید</a></li>
+										<li class="<?php if($active_sub == 'deal_sell'){echo 'active';} ?>"><a href="<?php echo base_url('deal/sell/')?>" id="layout2">فروش</a></li>
 										<li><a href="../../../layout_3/LTR/default/index.html" id="layout3">Layout 3</a></li>
 										<li><a href="../../../layout_4/LTR/default/index.html" id="layout4">Layout 4</a></li>
 										<li><a href="../../../layout_5/LTR/default/index.html" id="layout5">Layout 5</a></li>
