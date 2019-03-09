@@ -21,16 +21,13 @@
 				</div>
 			</div>
 
-			<div class=" col-md-5 mt-10  text-left">
+			<div class=" col-md-5  mb-10  text-left">
 				<label><span>نمایش:</span></label>
 				<ul class="icons-list display-inline-block">
 					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<li class="border ptb-5 prl-10 text-black">10</i>
+						<a href="#" class="dropdown-toggle border p-10 text-black " data-toggle="dropdown">
+							<span class=" icon-arrow-down5">10</span>
 						</a>
-					
-
-
 						<ul class="dropdown-menu dorpdown-custom dropdown-menu-right">
 							<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/10')?>">10</a>
 							</li>
