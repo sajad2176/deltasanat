@@ -6717,3 +6717,35 @@ border-top: 1px solid #ddd;
   padding-left: 20px!important;
 }
 /* /custom style */
+/* search_customer */
+.autocomplete {
+  position: relative;
+  display: inline-block;
+}
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #f5f5f5;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+.autocomplete-items div {
+  padding: 15px;
+  cursor: pointer;
+  background-color: #fff; 
+  border-bottom: 1px solid #f5f5f5; 
+}
+
+/*when hovering an item:*/
+.autocomplete-items div:hover {
+  background-color: #f5f5f5; 
+}
+
+/*when navigating through the items using the arrow keys:*/
+.autocomplete-active {
+  background-color: #f5f5f5 !important; 
+}
+/* search_customer */
