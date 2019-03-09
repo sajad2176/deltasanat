@@ -6749,3 +6749,49 @@ border-top: 1px solid #ddd;
   background-color: #f5f5f5 !important; 
 }
 /* search_customer */
+.image-selecto input{
+    margin:0;padding:0;
+    -webkit-appearance:none;
+       -moz-appearance:none;
+            appearance:none;
+}
+
+
+
+.one{background-image:url("../img/checkbox/money.png");}
+.two{background-image:url(https://placeimg.com/200/100/people);}
+.three{background-image:url(https://placeimg.com/200/100/tech);}
+.four{background-image:url(https://placeimg.com/200/100/nature);}
+
+.image-selecto-2 input:active +.selec, .image-selecto input:active +.selec{opacity: .9;}
+.image-selecto-2 input:checked +.selec, .image-selecto input:checked +.selec{
+    -webkit-filter: none;
+       -moz-filter: none;
+            filter: none;
+}
+.image-selecto {
+    position:relative;
+    min-height:50px !important;
+}
+.selec{
+    cursor:pointer;
+    background-size:contain;
+    background-repeat:no-repeat;
+    display:block;
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    -webkit-transition: all 100ms ease-in;
+       -moz-transition: all 100ms ease-in;
+            transition: all 100ms ease-in;
+    -webkit-filter: brightness(1.8) grayscale(1) opacity(.7);
+       -moz-filter: brightness(1.8) grayscale(1) opacity(.7);
+            filter: brightness(1.8) grayscale(1) opacity(.7);
+}
+.selec:hover{
+    -webkit-filter: brightness(1.2) grayscale(.5) opacity(.9);
+       -moz-filter: brightness(1.2) grayscale(.5) opacity(.9);
+            filter: brightness(1.2) grayscale(.5) opacity(.9);
+}

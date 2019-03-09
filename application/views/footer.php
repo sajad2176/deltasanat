@@ -63,7 +63,7 @@ window.onclick = function(event) {
     var maxField = 3;
     var addButton = $('.add_button2');
     var wrapper = $('.field_wrapper2');
-    var fieldHTML = '<div><div class="row"><div class="col-md-4"><div class="form-group"><label>نام صاحب حساب: </label><input type="text" name="name_acount[]" placeholder="نام ونام خانوادگی" class="form-control" required></div></div><div class="col-md-2"><div class="form-group"><label>بانک:</label><input type="text" name="name_bank[]" placeholder="ملت،ملی،.." class="form-control"></div></div><div class="col-md-6"><div class="form-group"><label>شماره حساب:</label><input type="text" name="number_acount[]" placeholder=" 0000000123014682799" class="form-control"></div></div></div><div class="row"><div class="col-md-6"><div class="form-group"><label>شماره کارت: </label><input maxlength="16" name="number_card[]" type="text" data-mask="9999-9999-9999-9999" placeholder="____-____-____-____" class="form-control"></div></div><div class="col-md-6"><div class="form-group input-group"><label>شماره شبا:</label><input type="text" name="number_shaba[]" data-mask="aa-99-999-9999999999999999999" placeholder="IR-06-017-0000000123014682799" class="form-control"><span class="input-group-btn remove_button2 "><button type="button" style="top: 14px;" class="btn btn btn-danger icon-minus2"></button></span></div></div></div></div>';
+    var fieldHTML = '<div><div class="row"><div class="col-md-6"><div class="form-group"><label>شماره شبا: </label><input type="text" name="name_acount[]" placeholder="نام ونام خانوادگی" class="form-control" required></div></div><div class="col-md-6"><div class="form-group"><label>بانک:</label><input type="text" name="number_acount[]" placeholder=" 0000000123014682799" class="form-control"></div></div></div><div class="row"><div class="col-md-6"><div class="form-group"><label>مبلغ معامله: </label><input maxlength="16" name="number_card[]" type="text" data-mask="9999-9999-9999-9999" placeholder="____-____-____-____" class="form-control"></div></div><div class="col-md-6"><div class="form-group input-group"><label>توضیحات حساب:</label><input type="text" name="number_shaba[]" data-mask="aa-99-999-9999999999999999999" placeholder="IR-06-017-0000000123014682799" class="form-control"><span class="input-group-btn remove_button2 "><button type="button" style="top: 14px;" class="btn btn btn-danger icon-minus2"></button></span></div></div></div></div>';
 		
     var x = 1;
     
@@ -116,10 +116,8 @@ window.onclick = function(event) {
   <!-- <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/pages/dashboard.js"></script> -->
   <!-- /theme JS files --> 
   <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip();
-        })
-    
+
+
     </script>         
 </body>
 </html>
