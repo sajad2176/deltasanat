@@ -113,13 +113,12 @@
 									<i class=""></i>
 								</a>
 								
+
 									<ul class="icons-list">
-										<li class="text-success"><a data-toggle="modal" href="#"><i class="icon-checkmark4"></i></a>
-										</li>
-										<li class="text-primary"><a data-toggle="modal" href="#edit_bank_modal"><i class="icon-stack-empty"></i></>
-									</li>
-									<li class="text-danger"><a data-toggle="modal" href="#"><i class="icon-cross2"></i></a>
-										</li>
+
+										<li title="ویرایش بانک" class="text-primary"><a data-toggle="modal" href="#edit_bank_modal"><i class="icon-credit-card"></i></li>
+									
+									
 									</ul>
 								</li>
 							</ul>
@@ -216,14 +215,6 @@
 							<span class="input-group-btn">
 							<button type="button" class="btn btn-success add_button3 mt-25">
 								<span class="icon-plus3"></span>
-						
-
-
-
-
-
-
-
 							</button>
 							</span>
 						</div>
@@ -266,7 +257,6 @@
 									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 									<i class=""></i>
 								</a>
-								
 
 
 
@@ -274,16 +264,17 @@
 
 
 
-									<ul class="icons-list">
-										<li class="text-success"><a data-toggle="modal" href="#modal_theme_success"><i class="icon-checkmark4"></i></a>
-										</li>
-										<li class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i class="icon-stack-empty"></i></>
-									</li>
-									<li class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i class="icon-cross2"></i></a>
+
+											<ul class="icons-list">
+												<li title="پرداخت کامل" class="text-success"><a data-toggle="modal" href="#modal_theme_success"><i class="icon-checkmark4"></i></a>
+												</li>
+												<li title="پرداخت جزئی" class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i class="icon-stack-empty"></i></li>
+									
+									<li title="حذف هماهنگی" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i class="icon-cross2"></i></a>
+												</li>
+											</ul>
 										</li>
 									</ul>
-								</li>
-							</ul>
 						</td>
 					</tr>
 					<tr>
@@ -307,6 +298,7 @@
 							<button type="submit" class="btn btn-success mt-25">ذخیره</button>
 											</span>
 								
+
 
 
 
@@ -368,61 +360,61 @@
 			</div>
 		</div>
 		<!-- /success modal -->
-		</div>
-			<!-- edit bank modal -->
-			<div id="edit_bank_modal" class="modal fade">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h5 class="modal-title text-center">ویرایش بانک</h5>
+	</div>
+	<!-- edit bank modal -->
+	<div id="edit_bank_modal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h5 class="modal-title text-center">ویرایش بانک</h5>
 
-						</div>
-						<hr>
-						<form action="#">
-							<div class="modal-body">
-								<div class="field_wrapper2">
-									<div>
-										<div class="row">
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>شماره شبا: </label>
-													<input onkeyup="show_bank(this)" data-mask="aa-99-999-9999999999999999999" type="text" placeholder="IR-06-017-0000000123014682799" name="number_shaba[]" class="form-control">
-												</div>
-											</div>
-
-
-
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>بانک:</label>
-													<input type="text" name="name_bank[]" placeholder="ملت،ملی،.." class="form-control" readonly>
-												</div>
-											</div>
+				</div>
+				<hr>
+				<form action="#">
+					<div class="modal-body">
+						<div class="field_wrapper2">
+							<div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>شماره شبا: </label>
+											<input onkeyup="show_bank(this)" data-mask="aa-99-999-9999999999999999999" type="text" placeholder="IR-06-017-0000000123014682799" name="number_shaba[]" class="form-control">
 										</div>
-
-
 									</div>
-									<div class="row">
-										<div class="col-md-6">
-											<div class="form-group">
-												<label>مبلغ معامله: </label>
-												<input type="text" onKeyUp="amount_bank(this)" placeholder="100000" class="form-control">
-												<input type="hidden" name="amount_bank[]">
-											</div>
-										</div>
 
-										<div class="col-md-6">
-											<div class="form-group input-group">
-												<label>توضیحات حساب:</label>
-												<input type="text" name="bank_explain[]" placeholder="توضیحات خود را وارد کنید" class="form-control">
-												<span class="input-group-btn "><button type="submit" style="top: 13px;" class="btn btn btn-success">ذخیره</button></span>
-											</div>
+
+
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>بانک:</label>
+											<input type="text" name="name_bank[]" placeholder="ملت،ملی،.." class="form-control" readonly>
 										</div>
 									</div>
 								</div>
-						</form>
+
+
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label>مبلغ معامله: </label>
+										<input type="text" onKeyUp="amount_bank(this)" placeholder="100000" class="form-control">
+										<input type="hidden" name="amount_bank[]">
+									</div>
+								</div>
+
+								<div class="col-md-6">
+									<div class="form-group input-group">
+										<label>توضیحات حساب:</label>
+										<input type="text" name="bank_explain[]" placeholder="توضیحات خود را وارد کنید" class="form-control">
+										<span class="input-group-btn "><button type="submit" style="top: 13px;" class="btn btn btn-success">ذخیره</button></span>
+									</div>
+								</div>
+							</div>
 						</div>
-					</div>
+				</form>
 				</div>
-				<!-- /edit bank modal -->
+			</div>
+		</div>
+		<!-- /edit bank modal -->
