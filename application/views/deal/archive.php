@@ -28,7 +28,11 @@
 								<tr>
 									<td>Marth</td>
 									<td><a href="#">Enright</a></td>
-									<td>Traffic Court Referee</td>
+									<td><div class="progress">
+												<div class="progress-bar progress-bar-info" style="width: 60%;">
+													60%
+												</div>
+											</div></td>
 									<td>22 Jun 1972</td>
 									<td><span class="label label-success">Active</span></td>
 									<td class="text-center">
