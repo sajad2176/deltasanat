@@ -8,8 +8,8 @@ $msg = $this->session->userdata('msg');?>
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 						<ul class="breadcrumb">
 							<li><a href="<?php echo base_url('home');?>"><i class="icon-home2 position-left"></i>داشبورد</a></li>
-							<li><a href=""> مشتریان</a></li>
-							<li class="active"><a href="<?php echo base_url('customer/add/')?>">افزودن مشتری جدید</a></li>
+							<li><a href="<?php echo base_url('customer/add/')?>"> مشتریان</a></li>
+							<li class="active">افزودن مشتری جدید</li>
 						</ul>
 					</div>
 

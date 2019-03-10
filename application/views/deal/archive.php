@@ -65,6 +65,7 @@
 			<tr></tr>
 		</tbody>
 		<tbody>
+		
 			<?php 
 							if($this->uri->segment(3) == 'show'){
 								$show = $this->uri->segment(5);
@@ -73,6 +74,7 @@
 								$show = $this->uri->segment(3);
 								$num = $this->uri->segment(3) + 1;
 							}
+							if(sizeof($deal) == 0){ echo "<tr><td colspan = '11' class='text-center p-20'>موردی یافت نشد</td></tr>"; }else{
 							foreach($deal as $rows){ ?>
 			<tr class="base_cust">
 				<td>
@@ -102,19 +104,21 @@
 			</tr>
 			<?php
 			$num++;
-			}
+			} }
 			?>
+			<?php if(sizeof($deal) != 0){ ?>
 			<tr>
-				<td colspan="3" class="pt-20 pb-20">
+				<td colspan="6" class="pt-20 pb-20">
 					نمایش
 					<?php echo  $show + 1;?> تا
 					<?php echo $num - 1; ?> از
 					<?php echo $count;?>
 				</td>
-				<td colspan="2" class="text-left pt-20 pb-20">
+				<td colspan="5" class="text-left pt-20 pb-20">
 					<?php echo $page; ?>
 				</td>
 			</tr>
+			<?php }?>
 		</tbody>
 
 	</table>
@@ -150,7 +154,7 @@
 		tbody.style.display = 'contents';
 		tbody.nextElementSibling.style.display = 'none';
 		if ( result.length == 0 ) {
-			tbody.innerHTML = '<tr><td colspan="5" style="padding: 25px;background-color:#fae0e0;text-align: center;">موردی یافت نشد</td></tr> ';
+			tbody.innerHTML = "<tr><td colspan = '11' class='text-center p-20'>موردی یافت نشد</td></tr>";
 		} else {
 			var div = document.createElement( 'tbody' );
 			for ( var i = 0; i < result.length; i++ ) {

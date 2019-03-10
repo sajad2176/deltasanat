@@ -294,14 +294,6 @@
 									<ul class = "<?php if($active == 'customer'){echo 'active';} ?>">
 										<li class = "<?php if($active_sub == 'customer_archive'){echo 'active';} ?>"><a href="<?php echo base_url('customer/archive/')?>">آرشیو مشتریان</a></li>
 										<li class = "<?php if($active_sub == 'customer_add'){echo 'active';} ?>"><a href="<?php echo base_url('customer/add') ?>">افزودن مشتری جدید</a></li>
-										<li><a href="layout_sidebar_fixed_native.html">Fixed sidebar native scroll</a></li>
-										<li><a href="layout_navbar_hideable.html">Hideable navbar</a></li>
-										<li><a href="layout_navbar_hideable_sidebar.html">Hideable &amp; fixed sidebar</a></li>
-										<li><a href="layout_footer_fixed.html">Fixed footer</a></li>
-										<li class="navigation-divider"></li>
-										<li><a href="boxed_default.html">Boxed with default sidebar</a></li>
-										<li><a href="boxed_mini.html">Boxed with mini sidebar</a></li>
-										<li><a href="boxed_full.html">Boxed full width</a></li>
 									</ul>
 								</li>
 								<li>
@@ -310,10 +302,6 @@
 										<li class="<?php if($active_sub == 'deal_archive'){echo 'active';} ?>"><a href="<?php echo base_url('deal/archive/')?>" id="layout1">آرشیو معاملات</a></li>
 										<li class="<?php if($active_sub == 'deal_buy'){echo 'active';} ?>"><a href="<?php echo base_url('deal/buy/')?>" id="layout2">خرید</a></li>
 										<li class="<?php if($active_sub == 'deal_sell'){echo 'active';} ?>"><a href="<?php echo base_url('deal/sell/')?>" id="layout2">فروش</a></li>
-										<li><a href="../../../layout_3/LTR/default/index.html" id="layout3">Layout 3</a></li>
-										<li><a href="../../../layout_4/LTR/default/index.html" id="layout4">Layout 4</a></li>
-										<li><a href="../../../layout_5/LTR/default/index.html" id="layout5">Layout 5</a></li>
-										<li class="disabled"><a href="../../../layout_6/LTR/default/index.html" id="layout6">Layout 6 <span class="label label-transparent">Coming soon</span></a></li>
 									</ul>
 								</li>
 								<li>

@@ -1,8 +1,8 @@
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 	<ul class="breadcrumb">
-		<li><a href="index.html"><i class="icon-home2 position-left"></i> داشبورد</a>
+		<li><a href="<?php echo base_url('home');?>"><i class="icon-home2 position-left"></i> داشبورد</a>
 		</li>
-		<li><a href="datatable_api.html">مشتریان</a>
+		<li><a href="<?php echo base_url('customer/archive')?>">مشتریان</a>
 		</li>
 		<li class="active">آرشیو مشتریان</li>
 	</ul>
@@ -67,6 +67,8 @@
 								$show = $this->uri->segment(3);
 								$num = $this->uri->segment(3) + 1;
 							}
+							if(sizeof($customer) == 0){echo '<tr><td colspan="5" class="text-center p-20">موردی یافت نشد</td></tr>';}
+							else{
 							foreach($customer as $rows){ ?>
 			<tr class="base_cust">
 				<td>
@@ -90,8 +92,9 @@
 			</tr>
 			<?php
 			$num++;
-			}
+			} }
 			?>
+			<?php if(sizeof($customer) != 0){ ?> 
 			<tr>
 				<td colspan="3" class="pt-20 pb-20">
 					نمایش
@@ -103,6 +106,7 @@
 					<?php echo $page; ?>
 				</td>
 			</tr>
+			<?php } ?>
 		</tbody>
 
 	</table>
@@ -138,7 +142,7 @@
 		tbody.style.display = 'contents';
 		tbody.nextElementSibling.style.display = 'none';
 		if ( result.length == 0 ) {
-			tbody.innerHTML = '<tr><td colspan="5" style="padding: 25px;background-color:#fae0e0;text-align: center;">موردی یافت نشد</td></tr> ';
+			tbody.innerHTML = '<tr><td colspan="5" class="text-center p-20">موردی یافت نشد</td></tr>';
 		} else {
 			var div = document.createElement( 'tbody' );
 			for ( var i = 0; i < result.length; i++ ) {

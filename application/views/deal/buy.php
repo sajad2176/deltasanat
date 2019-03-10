@@ -115,6 +115,7 @@ $msg = $this->session->userdata('msg');?>
 												<label>مبلغ معامله: </label>
 												<input type="text" onKeyUp="amount_bank(this)" placeholder="100000" class="form-control">
 												<input type="hidden" name="amount_bank[]">
+												<p class="text-danger" style ="display: none;">مبلغ وارد شده بیشتر از حجم معامله است</p>
 											</div>
 										</div>
 
@@ -334,7 +335,7 @@ $msg = $this->session->userdata('msg');?>
 	var count = document.getElementById( 'count' );
 	var wage = document.getElementById( 'wage' );
 	var convert = document.getElementById( 'convert' );
-	var volume = document.getElementById( 'volume_deal' )
+	var volume = document.getElementById( 'volume_deal' );
 	count.onkeyup = function () {
 		count.value = numeral( count.value ).format( '0,0' );
 		var x = numeral( count.value ).value();
@@ -361,7 +362,13 @@ $msg = $this->session->userdata('msg');?>
 	}
 
 	function amount_bank( input ) {
+		var volume = document.getElementById( 'volume_deal');
 		input.value = numeral( input.value ).format( '0,0' );
 		input.nextElementSibling.value = numeral( input.value ).value();
+		if(numeral(volume.innerHTML).value() < numeral(input.value).value()){
+         input.nextElementSibling.nextElementSibling.style.display = 'block';
+		}else{
+			input.nextElementSibling.nextElementSibling.style.display = 'none';
+		}
 	}
 </script>

@@ -146,6 +146,7 @@ $data['count'] = $config['total_rows'];
                 'name_bank'=> htmlspecialchars($_POST['name_bank'][$i]),
                 'amount'=> htmlspecialchars($_POST['amount_bank'][$i]),
                 'pay'=>0,
+                'active'=> 1,
                 'deal_id'=> $deal_id
             );
         }
@@ -190,6 +191,9 @@ $data['count'] = $config['total_rows'];
             $header['active'] = 'deal';
             $header['active_sub'] = 'deal_archive';
             $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , currency_unit.name' , 'deal.customer_id = customer.id' ,'row'  , array('deal.pub'=> 1 , 'deal.id'=>$id) , NULL , NULL , NULL , array('currency_unit','deal.money_id = currency_unit.id'));
+            $data['bank'] = $this->base_model->get_data('deal_bank' , '*' , 'result' , array('deal_id' => $id));
+            $data['select'] = $this->base_model->get_data('deal_bank' , '*' , 'result' , array('deal_id' => $id , 'active' => 1));
+            $data['handle'] = $this->base_model->get_data('deal_handle' , '*' , 'result' , array('deal_id' => $id));
             $this->load->view('header' , $header);
             $this->load->view('deal/handle' , $data);
             $this->load->view('footer');
