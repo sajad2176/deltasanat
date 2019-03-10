@@ -15,7 +15,7 @@
 			<div class="row">
 				<div class="">
 					<fieldset>
-						<legend class="text-semibold"><i class="icon-law position-left"></i> اطلاعات معامله</legend>
+						<legend class="text-semibold"><i class="icon-share4 position-left"></i> اطلاعات معامله</legend>
 						<div class="row">
 							<div class="col-sm-3">
 								<div class="form-group">
@@ -83,7 +83,7 @@
 	<div class="panel-body">
 		<div class="row field_wrapper">
 			<div>
-				<legend class="text-semibold"><i class="icon-address-book3 position-left"></i> افزودن هماهنگی</legend>
+				<legend class="text-semibold"><i class="icon-address-book position-left"></i> افزودن هماهنگی</legend>
 				<div class="col-md-4">
 					<div class="form-group">
 						<label>نام مشتری:</label>
@@ -103,42 +103,41 @@
 						<span class="input-group-btn">
 							<button type="button" class="btn btn-success add_button3 mt-25">
 								<span class="icon-plus3"></span>
-							</button>
+					
+
+
+						</button>
 						</span>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="text-right">
-				<button type="submit" class="btn btn-primary">ثبت هماهنگی <i class="icon-arrow-left13 position-right"></i></button>
-			</div>
+			<button type="submit" class="btn btn-primary">ثبت هماهنگی <i class="icon-arrow-left13 position-right"></i></button>
+		</div>
 	</div>
 </div>
 <div class="panel panel-flat">
 	<div class="panel-body">
-		<legend class="text-semibold"><i class="icon-law position-left"></i> اطلاعات هماهنگی</legend>
+		<legend class="text-semibold"><i class="icon-notebook position-left"></i> اطلاعات هماهنگی</legend>
 		<table class="table datatable-basic">
 			<thead>
 				<tr>
-					<th>ردیف</th>
-					<th>Last Name</th>
-					<th>Job Title</th>
-					<th>DOB</th>
-					<th>Status</th>
-					<th class="text-center">Actions</th>
+					<th width="10%">ردیف</th>
+					<th width="20%">Last Name</th>
+					<th width="20%">Job Title</th>
+					<th width="20%">DOB</th>
+					<th width="20%">Status</th>
+					<th width="10%" class="text-center">Actions</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td>Marth</td>
-					<td><a href="#">Enright</a>
+					<td>asdasdas
 					</td>
 					<td>
-						<div class="progress">
-							<div class="progress-bar progress-bar-info" style="width: 60%;">
-								60%
-							</div>
-						</div>
+						asdasdasd
 					</td>
 					<td>22 Jun 1972</td>
 					<td><span class="label label-success">Active</span>
@@ -149,12 +148,15 @@
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 									<i class=""></i>
 								</a>
+							
+
+
 								<ul class="icons-list">
-									<li class="text-primary-600"><a href="#"><i class="icon-pencil7"></i></a>
+									<li class="text-success"><a data-toggle="modal" href="#modal_theme_success"><i class="icon-checkmark4"></i></a>
 									</li>
-									<li title="هماهنگی ها" class="text-teal-600"><a href="#"><i class="icon-cog7"></i></a>
+									<li class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i class="icon-stack-empty"></i></>
 									</li>
-									<li class="text-danger-600"><a href="#"><i class="icon-trash"></i></a>
+									<li class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i class="icon-cross2"></i></a>
 									</li>
 								</ul>
 							</li>
@@ -162,5 +164,78 @@
 					</td>
 				</tr>
 				<tr>
+					<!-- minor form modal -->
+					<div id="modal_form_minor" class="modal fade">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h5 class="modal-title text-center">بخشی از مطلب هماهنگ شده را به صورت جزئی پرداخت کنید</h5>
+
+								</div>
+								<hr>
+								<form action="#">
+									<div class="modal-body">
+										<div class="form-group input-group">
+											<label>مبلغ هماهنگی:</label>
+											<input type="text" placeholder="111,000,000" class="form-control">
+											<span class="input-group-btn">
+							<button type="submit" class="btn btn-success mt-25">ذخیره</button>
+											</span>
+										</div>
+								</form>
+								</div>
+							</div>
+						</div>
+						<!-- /minor form modal -->
+		
+					</div>
+					 <!-- Success modal -->
+					<div id="modal_theme_success" class="modal fade">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header bg-success">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title">پرداخت کامل</h4>
+								</div>
+
+								<div class="modal-body">
+									
+									<h5 class="text-center">آیا میخواهید تمام مبلغ هماهنگی پرداخت شود ؟</h5>
+
+									
+								</div>
+
+								<div class="modal-footer text-center">
+									<button type="button" class="btn btn-danger" data-dismiss="modal">خیر</button>
+									<button type="button" class="btn btn-success">بله </button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- /success modal -->
 	</div>
-</div>			
+			 <!-- Success modal -->
+					<div id="modal_theme_danger" class="modal fade">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header bg-danger">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title">حذف هماهنگی</h4>
+								</div>
+
+								<div class="modal-body">
+									
+									<h5 class="text-center">آیا میخواهید هماهنگی حذف شود ؟</h5>
+
+									
+								</div>
+
+								<div class="modal-footer text-center">
+									<button type="button" class="btn btn-danger" data-dismiss="modal">خیر</button>
+									<button type="button" class="btn btn-success">بله </button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- /success modal -->

@@ -1,7 +1,7 @@
 </div>
 </div>
 <div id="modal_logout" class="modal_logout">
-  <div class="modal-content animate_logout">
+  <div class="modal_content animate_logout">
     <div class="dang_modal">
       <span class="dang_body"></span>
       <span class="dang_dot"></span>
