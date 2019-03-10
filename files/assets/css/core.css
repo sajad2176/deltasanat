@@ -6733,6 +6733,15 @@ border-top: 1px solid #ddd;
   padding-right: 20px!important;
   padding-left: 20px!important;
 }
+.float-btn-left{
+  float: left;
+}
+.panel-body-custom{
+  position: relative;
+  padding-bottom:20px;
+  padding-left: 20px;
+  padding-right: 20px; 
+}
 /* /custom style */
 /* search_customer */
 .autocomplete {
