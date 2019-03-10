@@ -26,7 +26,7 @@
 				<ul class="icons-list display-inline-block">
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle border p-10 text-black " data-toggle="dropdown">
-							<span class=" icon-arrow-down5">10</span>
+							<span class=" icon-arrow-down5"><?php if($this->uri->segment(3) == 'show'){echo $this->uri->segment(4);}else{echo '10';} ?></span>
 						</a>
 						<ul class="dropdown-menu dorpdown-custom dropdown-menu-right">
 							<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/10')?>">10</a>

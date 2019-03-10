@@ -64,63 +64,7 @@ $msg = $this->session->userdata('msg');?>
 										</fieldset>
 									</div>
 									</div>
-<!--
-								<div class="row">
-									<div class="col-md-6">
-										<fieldset>
-						                	<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانکی</legend>
-										<div class="field_wrapper2">
-											<div>
-											<div class="row">
-												<div class="col-md-4">
-													<div class="form-group">
-														<label>نام صاحب حساب: </label>
-														<input type="text" name="name_acount[]" placeholder="نام ونام خانوادگی" class="form-control">
-													</div>
-												</div>
-											
 
-											
-												<div class="col-md-2">
-													<div class="form-group">
-														<label>بانک:</label>
-														<input type="text" name="name_bank[]" placeholder="ملت،ملی،.." class="form-control">
-													</div>
-												</div>
-
-												<div class="col-md-6">
-													<div class="form-group">
-														<label>شماره حساب:</label>
-														<input type="text" name="number_acount[]" placeholder=" 0000000123014682799" class="form-control">
-													</div>
-												</div>
-											
-											</div>
-											<div class="row">
-												<div class="col-md-6">
-													<div class="form-group">
-														<label>شماره کارت: </label>
-														<input maxlength="16" name='number_card[]' type="text" data-mask="9999-9999-9999-9999" placeholder="____-____-____-____" class="form-control">
-													</div>
-												</div>
-
-												<div class="col-md-6">
-													<div class="form-group input-group">
-														<label>شماره شبا:</label>
-														<input type="text" name = 'number_shaba[]' data-mask="aa-99-999-9999999999999999999" placeholder="IR-06-017-0000000123014682799" class="form-control">
-														<span class="input-group-btn "><button type="button" style="top: 14px;" class="btn btn btn-success icon-plus3 add_button2"></button></span>
-													</div>
-												</div>
-											</div>
-
-									
-										</div>
-												
-											</div>
-										</fieldset>
-									</div>
-								</div>
--->
 
 								<div class="text-right">
 									<button type="submit" name="sub" class="btn btn-success">ثبت مشتری <i class="icon-arrow-left13 position-right"></i></button>
