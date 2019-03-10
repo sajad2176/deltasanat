@@ -189,7 +189,7 @@ $data['count'] = $config['total_rows'];
             $header['title'] = 'هماهنگی ها';
             $header['active'] = 'deal';
             $header['active_sub'] = 'deal_archive';
-            $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , currency_unit.name' , 'deal.customer_id = customer.id' ,'row'  , array('deal.pub'=> 1 , 'deal.id'=>$id), $config['per_page'] , $page ,NULL, array('currency_unit','deal.money_id = currency_unit.id'));
+            $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , currency_unit.name' , 'deal.customer_id = customer.id' ,'row'  , array('deal.pub'=> 1 , 'deal.id'=>$id) , NULL , NULL , NULL , array('currency_unit','deal.money_id = currency_unit.id'));
             $this->load->view('header' , $header);
             $this->load->view('deal/handle' , $data);
             $this->load->view('footer');
