@@ -118,6 +118,7 @@
 									</div>
 								</div>
 								</div>
+							<input type="hidden" name="deal_type" value="1">
 							<div class="form-group">
 								<label>عکس را قرار دهید </label>
 								<input type="file" name="deal_pic[]" class="file-styled" multiple="multiple" >
