@@ -1,3 +1,10 @@
+<?php if($this->session->has_userdata('msg')){
+$msg = $this->session->userdata('msg');?>
+<div class="alert bg-<?php echo $msg[1];?> alert-styled-left">
+										<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
+										<?php echo $msg[0];?>
+								    </div>
+<?php }?>
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 	<ul class="breadcrumb">
 		<li><a href="<?php echo base_url('home');?>"><i class="icon-home2 position-left"></i> داشبورد</a>
@@ -43,7 +50,7 @@
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>تعداد ارز:</label>
-											<input type="text" id="count" placeholder="999999" class="form-control" required>
+											<input type="text" id="count" placeholder="999999" class="form-control" autocomplete="off" required>
 											<input type="hidden" name="count_money">
 										</div>
 									</div>
@@ -52,7 +59,7 @@
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>کامزد:</label>
-											<input type="text" onkeyup="wage_money()" id="wage" placeholder="999999" class="form-control" required>
+											<input type="text" onkeyup="wage_money()" id="wage" placeholder="999999" autocomplete="off" class="form-control" required>
 											<input type="hidden" name="wage">
 										</div>
 									</div>
@@ -60,7 +67,7 @@
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>نرخ تبدیل:</label>
-											<input type="text" onkeyup="convert_money()" id="convert" placeholder="100000" class="form-control" required>
+											<input type="text" onkeyup="convert_money()" id="convert" placeholder="100000" autocomplete="off" class="form-control" required >
 											<input type="hidden" name="convert_money">
 										</div>
 									</div>
@@ -123,7 +130,7 @@
 								<input type="hidden" name="deal_type" value="1">
 								<div class="form-group">
 									<label>عکس را قرار دهید </label>
-									<input type="file" name="deal_pic[]" class="file-styled" multiple="multiple">
+									<input type="file" class="file-styled" name="deal_pic[]" multiple="multiple">
 								</div>
 								<div class="form-group">
 									<label>توضیحات خرید:</label>
@@ -164,6 +171,8 @@
 
 	</div>
 </div>
+<?php $str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");?>
+
 
 <script>
 	function autocomplete( inp, arr ) {
@@ -189,7 +198,7 @@
 					match = arr[ i ].slice( arr[ i ].indexOf( search ), -lastIndx );
 				}
 				if ( match.length == search.length ) {
-					let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length );
+					let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) )+'<strong style="color:#46a64c;">'+match+'</strong>'+arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length );
 
 					b = document.createElement( "DIV" );
 					b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";
@@ -201,7 +210,6 @@
 				}
 			}
 		} );
-		/*execute a function presses a key on the keyboard:*/
 		inp.addEventListener( "keydown", function ( e ) {
 			var x = document.getElementById( this.id + "autocomplete-list" );
 			if ( x ) x = x.getElementsByTagName( "div" );
@@ -246,9 +254,7 @@
 			closeAllLists( e.target );
 		} );
 	}
-
-	/*An array containing all the country names in the world:*/
-	var customer = [ "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua & Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bosnia & Herzegovina", "Botswana", "Brazil", "British Virgin Islands", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Central Arfrican Republic", "Chad", "Chile", "China", "Colombia", "Congo", "Cook Islands", "Costa Rica", "Cote D Ivoire", "Croatia", "Cuba", "Curacao", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Falkland Islands", "Faroe Islands", "Fiji", "Finland", "France", "French Polynesia", "French West Indies", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan", "Jersey", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macau", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauro", "Nepal", "Netherlands", "Netherlands Antilles", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Reunion", "Romania", "Russia", "Rwanda", "Saint Pierre & Miquelon", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "St Kitts & Nevis", "St Lucia", "St Vincent", "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor L'Este", "Togo", "Tonga", "Trinidad & Tobago", "Tunisia", "Turkey", "Turkmenistan", "Turks & Caicos", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Virgin Islands (US)", "Yemen", "Zambia", "Zimbabwe" ];
+	var customer = [<?php echo $str; ?>];
 
 	function search_customer( input ) {
 		autocomplete( input, customer );
