@@ -116,7 +116,7 @@
 </div>
 <div class="panel panel-flat">
 	<div class="panel-body">
-		<legend class="text-semibold"><i class="icon-law position-left"></i> اطلاعات معامله</legend>
+		<legend class="text-semibold"><i class="icon-law position-left"></i> اطلاعات هماهنگی</legend>
 		<table class="table datatable-basic">
 			<thead>
 				<tr>

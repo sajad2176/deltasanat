@@ -45,7 +45,7 @@ class Deal extends CI_Controller {
            $deal['customer_id'] = $id;
            $deal['money_id'] = $this->input->post('money_id');
            $deal['pub'] = 1;
-           if($deal['type_deal'] == 1){$page = 'buy';}else {$page = "sell"};
+           if($deal['type_deal'] == 1){$page = 'buy';}else {$page = "sell";}
            $deal_id = $this->base_model->insert_data('deal' , $deal);
            if($deal_id == FALSE){
                $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است. لطفا دوباره سعی کنید';
