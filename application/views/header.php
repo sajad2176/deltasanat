@@ -14,6 +14,7 @@
 	<link href="<?php echo base_url('files/');?>assets/css/core.css" rel="stylesheet" type="text/css">
 	<link href="<?php echo base_url('files/');?>assets/css/components.css" rel="stylesheet" type="text/css">
 	<link href="<?php echo base_url('files/');?>assets/css/colors.css" rel="stylesheet" type="text/css">
+	<script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
 	
 	<!-- /global stylesheets -->
 </head>
