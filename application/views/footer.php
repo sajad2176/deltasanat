@@ -58,6 +58,26 @@ window.onclick = function(event) {
     });
 });
 	
+	  $(document).ready(function(){
+    var maxField = 10;
+    var addButton = $('.add_button3');
+    var wrapper = $('.field_wrapper');
+    var fieldHTML = '<div><div class="col-md-4"><div class="form-group"><label>نام مشتری:</label><input type="text" placeholder="علی شیرازی" class="form-control"></div></div><div class="col-md-4"><div class="form-group"><label>نام بانک:</label><input class="form-control" onFocus="search_customer(this)" name="customer[]" type="text" placeholder="نام بانک خود را وارد کنید" autocomplete="off" required></div></div><div class="col-md-4"><div class="form-group input-group"><label>مبلغ هماهنگی:</label><input type="text" placeholder="111,000,000" class="form-control"><span class="input-group-btn remove_button3"><button type="button" class="btn btn-danger  mt-25"><span class="icon-minus2"></span></button></span></div></div></div>';
+		
+    var x = 1;
+    		
+    $(addButton).click(function(){
+        if(x < maxField){ 
+            x++;
+            $(wrapper).append(fieldHTML);
+        }
+    });
+    $(wrapper).on('click', '.remove_button3', function(e){
+        e.preventDefault();
+        $(this).parent('div').parent('div').parent('div').remove();
+        x--; 
+    });
+});
 	
 		$(document).ready(function(){
     var maxField = 3;
@@ -81,9 +101,7 @@ window.onclick = function(event) {
 });
 </script>
 	<!-- /page container -->
-	<div class="footer text-muted">
-						&copy; 2015. <a href="#">Limitless Web App Kit</a> by <a href="http://themeforest.net/user/Kopyov" target="_blank">Eugene Kopyov</a>
-					</div>
+
 <!-- Core JS files -->
 	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/core/libraries/bootstrap.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/loaders/blockui.min.js"></script>

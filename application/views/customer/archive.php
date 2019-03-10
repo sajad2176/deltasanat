@@ -45,7 +45,7 @@
 			</div>
 		</div>
 	</div>
-	<table class="table datatable-selection-single table-striped">
+	<table class="table datatable-selection-single table-hover table-responsive">
 		<thead>
 			<tr>
 				<th>ردیف</th>
