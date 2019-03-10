@@ -75,6 +75,14 @@ class Deal extends CI_Controller {
 
         
     }
+    public function handle(){
+        $header['title'] = 'آرشیو معاملات';
+        $header['active'] = 'deal';
+        $header['active_sub'] = 'deal_archive';
+        $this->load->view('header' , $header);
+        $this->load->view('deal/handle');
+        $this->load->view('footer');
+    }
 
 }
 
