@@ -263,8 +263,9 @@ $msg = $this->session->userdata('msg');?>
 
 	function show_bank( input ) {
 		var txt = input.value;
+		var name_bank = input.parentElement.parentElement.nextElementSibling.firstElementChild.lastElementChild;
 		if ( txt[ 6 ] != '_' && txt[ 7 ] != '_' && txt[ 8 ] != '_' ) {
-			var name_bank = input.parentElement.parentElement.nextElementSibling.firstElementChild.lastElementChild;
+			
 			var bank = txt.slice( 6, 9 );
 			if ( bank == '055' ) {
 				name_bank.value = 'بانک اقتصاد نوین';

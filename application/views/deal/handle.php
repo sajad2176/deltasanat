@@ -197,7 +197,7 @@ $msg = $this->session->userdata('msg');?>
 <form action="<?php echo base_url('deal/handle/').$deal->id;?>" method="post">
 	<div class="panel panel-flat">
 		<div class="panel-body">
-			<div class="row field_wrapper">
+			<div class="row field_wrapper3">
 				<div>
 					<legend class="text-semibold"><i class="icon-address-book position-left"></i> افزودن هماهنگی</legend>
 					<div class="col-md-4">
@@ -246,10 +246,11 @@ $msg = $this->session->userdata('msg');?>
 				<thead>
 					<tr>
 						<th width="4%">ردیف</th>
-						<th width="15%">نام مشتری</th>
-						<th width="15%">حجم هماهنگ شده</th>
-						<th width="15%">حجم پرداخت شده</th>
-						<th width="15%">حجم باقی مانده</th>
+						<th width="12%">نام مشتری</th>
+						<th width="12%">حجم هماهنگ شده</th>
+						<th width="12%">حجم پرداخت شده</th>
+						<th width="12%">حجم باقی مانده</th>
+						<th width="12%">اطلاعات حساب</th>
 						<th width="10%">تاریخ ثبت</th>
 						<th width="12%">آخرین ویرایش</th>
 						<th width="14%" class="text-center">ابزار</th>
@@ -263,36 +264,19 @@ $msg = $this->session->userdata('msg');?>
 					<tr>
 						<td><?php echo $key+1; ?></td>
 						<td><?php echo $row->fullname; ?></td>
-						<td><?php echo $row->volume_handle; ?></td>
-						<td><?php echo $row->handle_pay; ?></td>
-						<td><?php echo $row->handle_rest; ?></td>
+						<td><?php echo number_format($row->volume_handle); ?></td>
+						<td><?php echo number_format($row->handle_pay); ?></td>
+						<td><?php echo number_format($row->handle_rest); ?></td>
+						<td><?php echo $row->number_shaba."<br>".$row->name_bank; ?></td>
 						<td><?php echo $row->date_handle."</br>".$row->time_handle; ?></td>
 						<td><?php if($row->date_modified == ''){echo '-';}else{echo $row->$date_modified;} ?></td>
 						</td>
 						<td class="text-center">
-							<ul class="icons-list">
-								<li class="dropdown">
-									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-									<i class=""></i>
-								</a>
-
-
-
-
-
-
-
-
-											<ul class="icons-list">
-												<li title="پرداخت کامل" class="text-success"><a data-toggle="modal" href="#modal_theme_success"><i class="icon-checkmark4"></i></a>
-												</li>
-												<li title="پرداخت جزئی" class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i class="icon-stack-empty"></i></li>
-									
-									<li title="حذف هماهنگی" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i class="icon-cross2"></i></a>
-												</li>
-											</ul>
-										</li>
-									</ul>
+								<ul class="icons-list">
+				<li title="پرداخت کامل" class="text-success"><a data-toggle="modal" href="#modal_theme_success"><i onclick="pay_all(<?php echo $row->id;?> , <?php echo $row->handle_rest;?>)" class="icon-checkmark4"></i></a></li>
+				<li title="پرداخت جزئی" class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i onclick="pay_slice(<?php echo $row->id;?>)" class="icon-stack-empty"></i></li>
+				<li title="حذف هماهنگی" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i class="icon-cross2"></i></a></li>
+								</ul>
 						</td>
 					</tr>
 					<?php }} ?>
@@ -304,17 +288,18 @@ $msg = $this->session->userdata('msg');?>
 					<div class="modal-content">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h5 class="modal-title text-center">بخشی از مطلب هماهنگ شده را به صورت جزئی پرداخت کنید</h5>
+							<h5 class="modal-title text-center">بخشی از مبلغ هماهنگ شده را به صورت جزئی پرداخت کنید</h5>
 
 						</div>
 						<hr>
-						<form action="#">
+						<form method = "post" id="form_slice">
 							<div class="modal-body">
 								<div class="form-group input-group">
 									<label>مبلغ هماهنگی:</label>
-									<input type="text" placeholder="111,000,000" class="form-control">
+									<input type="text" placeholder="111,000,000" onkeyup ='slice_input(this)' class="form-control">
+									<input type="hidden" name="slice">
 									<span class="input-group-btn">
-							<button type="submit" class="btn btn-success mt-25">ذخیره</button>
+							<button type="submit" name="sub" class="btn btn-success mt-25">ذخیره</button>
 											</span>
 								
 
@@ -341,14 +326,14 @@ $msg = $this->session->userdata('msg');?>
 
 						<div class="modal-body">
 
-							<h5 class="text-center">آیا میخواهید تمام مبلغ هماهنگی پرداخت شود ؟</h5>
+							<h5 class="text-center" id="p_all"></h5>
 
 
 						</div>
 
 						<div class="modal-footer text-center">
 							<button type="button" class="btn btn-danger" data-dismiss="modal">خیر</button>
-							<button type="button" class="btn btn-success">بله </button>
+							<a id="button_all"  class="btn btn-success">بله </a>
 						</div>
 					</div>
 				</div>
@@ -608,6 +593,17 @@ $msg = $this->session->userdata('msg');?>
 	}
 	function volume_handle(input){
 		input.value  = numeral(input.value).format('0,0');
-		input.nextElementSibling.value = numeral(input.value).value()
+		input.nextElementSibling.value = numeral(input.value).value();
+	}
+	function pay_all(link  , rest){
+      document.getElementById('button_all').setAttribute('href' , "<?php echo base_url("deal/pay_all/").$deal->id."/"?>" + link );
+		document.getElementById('p_all').innerHTML = " آیا می خواهید تمام مبلغ "  + numeral(rest).format('0,0') + " پرداخت شود ؟";
 	}	
+	function pay_slice(link){
+		document.getElementById('form_slice').setAttribute('action' , "<?php echo base_url("deal/pay_slice/").$deal->id."/"?>" + link );
+	}
+	function slice_input(input){
+		input.value = numeral(input.value).format('0,0');
+		input.nextElementSibling.value = numeral(input.value).value();
+	}
 		</script>

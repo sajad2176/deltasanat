@@ -62,29 +62,7 @@ window.onclick = function(event) {
         $(this).parent('div').parent('div').parent('div').remove();
         x--; 
     });
-});
-	
-	  $(document).ready(function(){
-    var maxField = 3;
-    var addButton = $('.add_button3');
-    var wrapper = $('.field_wrapper');
-    var fieldHTML = '<div><div class="col-md-4"><div class="form-group"><label>نام مشتری:</label><input class="form-control" onFocus="search_customer(this)" name="customer[]" type="text" placeholder="نام مشتری خود را وارد کنید" autocomplete="off" required></div></div><div class="col-md-4"><div class="form-group"><label>انتخاب حساب : </label>	<select class="form-control" name="bank_id[]" required><?php if(isset($str)){ echo $str;}else{echo "<option value = '0'>شماره حسابی ثبت نشده است</option>";} ?></select></div></div><div class="col-md-4"><div class="form-group input-group"><label>مبلغ هماهنگی:</label><input type="text" onkeyup="volume_handle(this)" placeholder="111,000,000" class="form-control" required><input type="hidden" name="volume_handle[]"><span class="input-group-btn remove_button3"><button type="button" class="btn btn-danger  mt-25"><span class="icon-minus2"></span></button></span></div></div></div>';
-		
-    var x = 1;
-    		
-    $(addButton).click(function(){
-        if(x < maxField){ 
-            x++;
-            $(wrapper).append(fieldHTML);
-        }
-    });
-    $(wrapper).on('click', '.remove_button3', function(e){
-        e.preventDefault();
-        $(this).parent('div').parent('div').parent('div').remove();
-        x--; 
-    });
-});
-	
+});	
 		$(document).ready(function(){
     var maxField = 3;
     var addButton = $('.add_button2');
@@ -102,6 +80,26 @@ window.onclick = function(event) {
     $(wrapper).on('click', '.remove_button2', function(e){
         e.preventDefault();
         $(this).parent('div').parent('div').parent('div').parent('div').remove();
+        x--; 
+    });
+});
+$(document).ready(function(){
+    var maxField = 3;
+    var addButton = $('.add_button3');
+    var wrapper = $('.field_wrapper3');
+    var fieldHTML = '<div><div class="col-md-4"><div class="form-group"><label>نام مشتری:</label><input class="form-control" onFocus="search_customer(this)" name="customer[]" type="text" placeholder="نام مشتری خود را وارد کنید" autocomplete="off" required></div></div><div class="col-md-4"><div class="form-group"><label>انتخاب حساب : </label>	<select class="form-control" name="bank_id[]" required><?php if(isset($str)){ echo $str;}else{echo '<option value = "0">شماره حسابی ثبت نشده است</option>';} ?></select></div></div><div class="col-md-4"><div class="form-group input-group"><label>مبلغ هماهنگی:</label><input type="text" onkeyup="volume_handle(this)" placeholder="111,000,000" class="form-control" required><input type="hidden" name="volume_handle[]"><span class="input-group-btn remove_button3"><button type="button" class="btn btn-danger  mt-25"><span class="icon-minus2"></span></button></span></div></div></div>';
+		
+    var x = 1;
+    		
+    $(addButton).click(function(){
+        if(x < maxField){ 
+            x++;
+            $(wrapper).append(fieldHTML);
+        }
+    });
+    $(wrapper).on('click', '.remove_button3', function(e){
+        e.preventDefault();
+        $(this).parent('div').parent('div').parent('div').remove();
         x--; 
     });
 });

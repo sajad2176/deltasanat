@@ -233,12 +233,6 @@ $data['count'] = $config['total_rows'];
                 $this->session->set_flashdata($message);
                 redirect("deal/handle/$id");
             }
-            
-
-          echo "<pre>";
-          var_dump($_POST);
-          var_dump($handle);
-          echo "<pre>";
         }else{
             $header['title'] = 'هماهنگی ها';
             $header['active'] = 'deal';
@@ -250,7 +244,7 @@ $data['count'] = $config['total_rows'];
             }else{
                 $data['bank'] = $this->base_model->get_data('deal_bank' , '*' , 'result' , array('deal_id' => $id) , NULL , NULL , array('id' , 'DESC'));
                 $data['select'] = $this->base_model->get_data('deal_bank' , 'id , number_shaba , name_bank' , 'result' , array('deal_id' => $id , 'active' => 1) , NULL , NULL , array('id' , 'DESC'));
-                $data['handle'] = $this->base_model->get_data_join('deal_handle','customer' , 'deal_handle.* , customer.fullname','deal_handle.customer_id = customer.id', 'result' , array('deal_handle.deal_id' => $id));
+                $data['handle'] = $this->base_model->get_data_join('deal_handle','customer' , 'deal_handle.* , customer.fullname , deal_bank.number_shaba , deal_bank.name_bank','deal_handle.customer_id = customer.id', 'result' , array('deal_handle.deal_id' => $id) , NULL , NULL , array('deal_handle.id' , 'DESC') , array('deal_bank' , 'deal_handle.bank_id = deal_bank.id'));
                 $this->load->view('header' , $header);
                 $this->load->view('deal/handle' , $data);
                 $this->load->view('footer');
@@ -297,6 +291,63 @@ $data['count'] = $config['total_rows'];
       }else{
           show_404();
       }
+    }
+    public function pay_all($deal_all , $id){
+        $handle = $this->base_model->get_data_join('deal_handle' , 'deal' , 'deal_handle.handle_pay , deal_handle.handle_rest , deal_handle.bank_id , deal.volume_pay , deal.volume_rest , deal_bank.pay' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id'=> $id) , NULL , NULL , NULL , array('deal_bank','deal_bank.id = deal_handle.bank_id'));
+        $deal['volume_pay'] = $handle->volume_pay + $handle->handle_rest;
+        $deal['volume_rest'] = $handle->volume_rest - $handle->handle_rest;
+        $deal_handle['handle_rest'] = 0;
+        $deal_handle['handle_pay'] = $handle->handle_pay + $handle->handle_rest;
+        $deal_bank['pay'] = $handle->pay + $handle->handle_rest;
+        $this->base_model->update_data('deal' , $deal , array('id'=>$deal_all));
+        $this->base_model->update_data('deal_handle' , $deal_handle , array('id' => $id));
+        $res = $this->base_model->update_data('deal_bank' , $deal_bank , array('id' => $handle->bank_id));
+        if($res == FALSE){
+            $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید';
+            $message['msg'][1] = 'danger';
+            $this->session->set_flashdata($message);
+            redirect("deal/handle/$deal_all");
+        }else{
+          $message['msg'][0] = 'پرداخت به صورت کامل انجام شد';
+          $message['msg'][1] = 'success';
+          $this->session->set_flashdata($message);
+          redirect("deal/handle/$deal_all");
+        }
+    }
+    public function pay_slice($deal_id , $id){
+        if(isset($_POST['sub'])){
+            var_dump($_POST);
+        $handle = $this->base_model->get_data_join('deal_handle','deal','deal_handle.handle_pay,deal_handle.handle_rest,deal_handle.bank_id,deal.volume_pay , deal.volume_rest ,  deal_bank.pay' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id'=> $id) , NULL , NULL , NULL , array('deal_bank','deal_bank.id = deal_handle.bank_id'));
+            // if($handle->handle_rest < $this->input->post('slice')){
+            //     $message['msg'][0] = 'مبلغ پرداختی نمی تواند بیشتر از مبلغ هماهنگ شده باشد';
+            //     $message['msg'][1] = 'danger';
+            //     $this->session->set_flashdata($message);
+            //     redirect("deal/handle/$deal_id");
+            // }
+            $slice = $this->input->post('slice');
+        $deal_handle['handle_rest'] = $handle->handle_rest - $slice;
+        $deal_handle['handle_pay'] = $handle->handle_pay + $slice;
+        $deal['volume_pay'] = $handle->volume_pay + $slice;
+        $deal['volume_rest'] = $handle->volume_rest - $slice;
+        $deal_bank['pay'] = $handle->pay + $slice;
+        $this->base_model->update_data('deal' , $deal , array('id' => $deal_id));
+        $this->base_model->update_data('deal_handle' , $deal_handle , array('id' => $id));
+        $res = $this->base_model->update_data('deal_bank' , $deal_bank , array('id' => $handle->bank_id));
+        if($res == TRUE){
+            $message['msg'][0] = 'پرداخت با موفقیت انجام شد';
+            $message['msg'][1] = 'success';
+            $this->session->set_flashdata($message);
+            redirect("deal/handle/$deal_id");
+        }else{
+            $message['msg'][0] = 'مشکلی در روند عملیات رخ داده است . لطفا دوباره سعی کنید';
+            $message['msg'][1] = 'danger';
+            $this->session->set_flashdata($message);
+            redirect("deal/handle/$deal_id");
+        }
+
+        }else{
+            show_404();
+        }
     }
 
 public function photo(){
