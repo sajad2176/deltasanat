@@ -9,6 +9,7 @@
 
 </div>
 <div class="panel panel-flat">
+	<div class="panel-body">
 	<div class="panel-heading">
 		<h5 class="panel-title">آرشیو معاملات</h5>
 
@@ -16,18 +17,28 @@
 
 	<div class="datatable-header">
 		<div class="row">
-			<div class="  col-md-6 text-right">
-				<div class="dataTables_filter"><label><span>جستجو:</span> <input type="search" onkeyup="search_cust(this)" placeholder="عنوان خود را جستجو کنید ..."></label>
+			<div class="col-md-7">
+				<div class="text-right">
+					<div class="dataTables_filter"><label><span>جستجو نام:</span> <input type="search" onkeyup="search_cust(this)" placeholder="عنوان خود را جستجو کنید ..."></label>
+					</div>
+				</div>
+				<div class="text-right">
+					<div class="dataTables_filter"><label><span>تاریخ:</span> <input type="search" onkeyup="search_cust(this)" placeholder="عنوان خود را جستجو کنید ..."></label>
+					</div>
+				</div>
+				<div class="text-right">
+					<div class="dataTables_filter"><label><span>تا:</span> <input type="search" onkeyup="search_cust(this)" placeholder="عنوان خود را جستجو کنید ..."></label>
+					</div>
 				</div>
 			</div>
-
 			<div class=" col-md-5  mb-10  text-left">
 				<label><span>نمایش:</span></label>
 				<ul class="icons-list display-inline-block">
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle border p-10 text-black " data-toggle="dropdown">
-							<span class=" icon-arrow-down5"><?php if($this->uri->segment(3) == 'show'){echo $this->uri->segment(4);}else{echo '10';} ?></span>
+							<span class="text-muted"><span class="icon-arrow-down5"></span><span><?php if($this->uri->segment(3) == 'show'){echo $this->uri->segment(4);}else{echo '10';} ?></span></span>
 						</a>
+					
 						<ul class="dropdown-menu dorpdown-custom dropdown-menu-right">
 							<li><a class="dropdown-item" href="<?php echo base_url('deal/archive/show/10')?>">10</a>
 							</li>
@@ -45,7 +56,8 @@
 			</div>
 		</div>
 	</div>
-	<table class="table datatable-selection-single table-hover table-responsive">
+
+	<table class="table datatable-selection-single table-hover table-responsive-lg ">
 		<thead>
 			<tr>
 				<th>ردیف</th>
@@ -65,7 +77,7 @@
 			<tr></tr>
 		</tbody>
 		<tbody>
-		
+
 			<?php 
 							if($this->uri->segment(3) == 'show'){
 								$show = $this->uri->segment(5);
@@ -83,28 +95,45 @@
 				<td>
 					<?php echo $rows->fullname; ?>
 				</td>
-				<td><?php if($rows->type_deal == 1){echo 'خرید';}else{echo 'فروش';}?></td>
-				<td><?php echo number_format($rows->count_money)." ".$rows->name;?></td>
-				<td><?php echo number_format($rows->convert_money); ?></td>
-				<td><?php echo number_format($rows->volume_deal);?></td>
-				<td><?php echo number_format($rows->volume_pay);?></td>
-				<td><?php echo number_format($rows->volume_rest);?></td>
-				<td><?php echo $rows->date_deal."</br>".$rows->time_deal; ?></td>
-				<td><?php if($rows->date_modified == ''){echo '-';}else{echo $rows->date_modified;}?></td>
+				<td>
+					<?php if($rows->type_deal == 1){echo 'خرید';}else{echo 'فروش';}?>
+				</td>
+				<td>
+					<?php echo number_format($rows->count_money)." ".$rows->name;?>
+				</td>
+				<td>
+					<?php echo number_format($rows->convert_money); ?>
+				</td>
+				<td>
+					<?php echo number_format($rows->volume_deal);?>
+				</td>
+				<td>
+					<?php echo number_format($rows->volume_pay);?>
+				</td>
+				<td>
+					<?php echo number_format($rows->volume_rest);?>
+				</td>
+				<td>
+					<?php echo $rows->date_deal."</br>".$rows->time_deal; ?>
+				</td>
+				<td>
+					<?php if($rows->date_modified == ''){echo '-';}else{echo $rows->date_modified;}?>
+				</td>
 				<td class="text-center">
 					<ul class="icons-list">
-						<li class="text-primary-600"><a href="<?php echo base_url('deal/handle/').$rows->id;?>"><i class="icon-pencil7"></i></a>
+						<li class="text-success"><a href="<?php echo base_url('deal/handle/').$rows->id;?>"><i class="icon-notebook"></i></a>
 						</li>
-						<li class="text-teal-600"><a href="<?php echo base_url('customer/edit/').$rows->id;?>"><i class="icon-cog7"></i></a>
+						<li class="text-primary"><a href="<?php echo base_url('customer/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a>
 						</li>
-						<li class="text-danger-600"><a href="#"><i class="icon-trash"></i></a>
+						<li class="text-danger"><a href="#"><i class="icon-trash"></i></a>
 						</li>
 					</ul>
 				</td>
 			</tr>
 			<?php
 			$num++;
-			} }
+			}
+			}
 			?>
 			<?php if(sizeof($deal) != 0){ ?>
 			<tr>
@@ -125,6 +154,7 @@
 
 
 
+</div>
 </div>
 <script>
 	function search_cust( input ) {
