@@ -185,18 +185,77 @@ $data['count'] = $config['total_rows'];
     }
     public function handle($id){
         if(isset($_POST['sub'])){
+            $date = $this->convertdate->convert(time());
+            $d = $date['year']."-".$date['month_num']."-".$date['day'];
+            $t = $date['hour'].":".$date['minute'].":".$date['second'];
+            for($i = 0 ; $i < sizeof($_POST['customer']) ; $i++){
+                if($_POST['bank_id'][$i] == 0){
+                    $message['msg'][0] = 'لطفا شماره حساب را از لیست مربوطه انتخاب کنید . در صورت موجود نبودن شماره حساب لطفا اقدام به افزودن شماره حساب کنید' ;
+                    $message['msg'][1] = 'danger';
+                    $this->session->set_flashdata($message);
+                    redirect("deal/handle/$id");
+                 }else{
+                $check = $this->base_model->get_data('customer' , 'id' , 'row' , array('pub' => 1 , 'fullname'=> $_POST['customer'][$i]));
+                if($check == FALSE){
+                    $customer = array(
+                        'fullname'=>$_POST['customer'][$i],
+                        'address'=>'',
+                        'email'=>'',
+                        'customer_tel'=> '',
+                        'pub'=> 1
+                    );
+                    $customer_id = $this->base_model->insert_data('customer' , $customer);
+                }else{
+                   $customer_id = $check->id;
+                }
+                $handle[] = array(
+                 'volume_handle'=> htmlspecialchars($_POST['volume_handle'][$i]),
+                  'handle_pay' => 0 ,
+                  'handle_rest'=> htmlspecialchars($_POST['volume_handle'][$i]),
+                  'date_handle' => $d , 
+                  'time_handle' => $t , 
+                  'date_modified' => '',
+                  'customer_id' => $customer_id,
+                  'deal_id'=> $id,
+                  'bank_id' => htmlspecialchars($_POST['bank_id'][$i])
+                );
+            }
+            }
+            $res = $this->base_model->insert_batch('deal_handle' , $handle);
+            if($res == FALSE){
+                $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید';
+                $message['msg'][1] = 'danger';
+                $this->session->set_flashdata($message);
+                redirect("deal/handle/$id");
+            }else{
+                $message['msg'][0] = 'اطلاعات هماهنگی با موفقیت ثبت شد';
+                $message['msg'][1] = 'success';
+                $this->session->set_flashdata($message);
+                redirect("deal/handle/$id");
+            }
+            
 
+          echo "<pre>";
+          var_dump($_POST);
+          var_dump($handle);
+          echo "<pre>";
         }else{
             $header['title'] = 'هماهنگی ها';
             $header['active'] = 'deal';
             $header['active_sub'] = 'deal_archive';
-            $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , currency_unit.name' , 'deal.customer_id = customer.id' ,'row'  , array('deal.pub'=> 1 , 'deal.id'=>$id) , NULL , NULL , NULL , array('currency_unit','deal.money_id = currency_unit.id'));
-            $data['bank'] = $this->base_model->get_data('deal_bank' , '*' , 'result' , array('deal_id' => $id));
-            $data['select'] = $this->base_model->get_data('deal_bank' , '*' , 'result' , array('deal_id' => $id , 'active' => 1));
-            $data['handle'] = $this->base_model->get_data('deal_handle' , '*' , 'result' , array('deal_id' => $id));
-            $this->load->view('header' , $header);
-            $this->load->view('deal/handle' , $data);
-            $this->load->view('footer');
+            $data['customer'] = $this->base_model->get_data('customer' ,'fullname' , 'result' , array('pub' => 1));
+            $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , currency_unit.name , sum(deal_handle.volume_handle) as vh' , 'deal.customer_id = customer.id' ,'row'  , array('deal.pub'=> 1 , 'deal.id'=>$id) , NULL , NULL , NULL , array('currency_unit','deal.money_id = currency_unit.id') , array('deal_handle','deal_handle.deal_id = deal.id'));
+            if(sizeof($data['deal']) == 0){
+            show_404();
+            }else{
+                $data['bank'] = $this->base_model->get_data('deal_bank' , '*' , 'result' , array('deal_id' => $id) , NULL , NULL , array('id' , 'DESC'));
+                $data['select'] = $this->base_model->get_data('deal_bank' , 'id , number_shaba , name_bank' , 'result' , array('deal_id' => $id , 'active' => 1) , NULL , NULL , array('id' , 'DESC'));
+                $data['handle'] = $this->base_model->get_data_join('deal_handle','customer' , 'deal_handle.* , customer.fullname','deal_handle.customer_id = customer.id', 'result' , array('deal_handle.deal_id' => $id));
+                $this->load->view('header' , $header);
+                $this->load->view('deal/handle' , $data);
+                $this->load->view('footer');
+            }
+ 
         }
     }
     public function handle_profile(){
@@ -207,7 +266,47 @@ $data['count'] = $config['total_rows'];
         $this->load->view('deal/handle_profile');
         $this->load->view('footer');
     }
+    public function active(){
+        $deal_id = $this->uri->segment(3);
+        $id = $this->uri->segment(4);
+        $data['active'] = $this->uri->segment(5);
+        $this->base_model->update_data('deal_bank' , $data , array('id' => $id));
+        redirect("deal/handle/$deal_id");
+    }
+    public function add_bank($id){
+      if(isset($_POST['sub'])){
+          $data['explain'] = $this->input->post('bank_explain');
+          $data['name_bank'] = $this->input->post('name_bank');
+          $data['number_shaba'] = $this->input->post('number_shaba');
+          $data['amount'] = $this->input->post('amount_bank');
+          $data['pay'] = 0;
+          $data['deal_id'] = $id;
+          $data['active'] = 1;
+          $res = $this->base_model->insert_data('deal_bank' , $data);
+          if($res == FALSE){
+              $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید';
+              $message['msg'][1] = 'danger';
+              $this->session->set_flashdata($message);
+              redirect("deal/handle/$id");
+          }else{
+            $message['msg'][0] = 'اطلاعات حساب بانکی با موفقیت ثبت شد';
+            $message['msg'][1] = 'success';
+            $this->session->set_flashdata($message);
+            redirect("deal/handle/$id");
+          }
+      }else{
+          show_404();
+      }
+    }
 
+public function photo(){
+   $header['title'] = 'عکس ها';
+   $header['active'] = 'deal';
+   $header['active_sub'] = 'deal_archive';
+   $this->load->view('header' , $header);
+   $this->load->view('deal/photo');
+   $this->load->view('footer');
+}
 }
 
 /* End of file Controllername.php */
