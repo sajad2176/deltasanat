@@ -6746,6 +6746,9 @@ border-top: 1px solid #ddd;
   padding-right: 20px!important;
   padding-left: 20px!important;
 }
+.mt-50{
+	margin-top: 47px!important;
+}
 .jc-center {
   -ms-flex-pack: center !important;
   justify-content: center !important;
@@ -6890,4 +6893,4 @@ border-top: 1px solid #ddd;
 }
 /* /responsive table */
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
-  padding: 8px 5px;;}
+  padding: 12px 5px;;}

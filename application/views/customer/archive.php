@@ -9,57 +9,59 @@
 
 </div>
 <div class="panel panel-flat">
-	<div class="panel-heading">
-		<h5 class="panel-title">آرشیو مشتریان</h5>
+	<div class="panel-body">
+		<div class="panel-heading">
+			<h5 class="panel-title">آرشیو مشتریان</h5>
 
-	</div>
+		</div>
 
-	<div class="datatable-header">
-		<div class="row">
-			<div class="  col-md-6 text-right">
-				<div class="dataTables_filter"><label><span>جستجو:</span> <input type="search" onkeyup="search_cust(this)" placeholder="عنوان خود را جستجو کنید ..."></label>
+		<div class="datatable-header">
+			<div class="row">
+				<div class="  col-md-6 text-right">
+					<div class="dataTables_filter"><label><span>جستجو:</span> <input type="search" onkeyup="search_cust(this)" placeholder="عنوان خود را جستجو کنید ..."></label>
+					</div>
+				</div>
+
+				<div class=" col-md-5  mb-10  text-left">
+					<label><span>نمایش:</span></label>
+					<ul class="icons-list display-inline-block">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle border p-10 text-black " data-toggle="dropdown">
+							<span class="text-muted"><span class=" icon-arrow-down5"></span> <span ><?php if($this->uri->segment(3) == 'show'){echo $this->uri->segment(4);}else{echo '10';} ?></span></span>
+						</a>
+						
+							<ul class="dropdown-menu dorpdown-custom dropdown-menu-right">
+								<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/10')?>">10</a>
+								</li>
+								<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/25')?>">25</a>
+								</li>
+								<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/50')?>">50</a>
+								</li>
+								<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/100')?>">100</a>
+								</li>
+								<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/all')?>">نمایش همه</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
 				</div>
 			</div>
-
-			<div class=" col-md-5  mb-10  text-left">
-				<label><span>نمایش:</span></label>
-				<ul class="icons-list display-inline-block">
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle border p-10 text-black " data-toggle="dropdown">
-							<span class=" icon-arrow-down5"><?php if($this->uri->segment(3) == 'show'){echo $this->uri->segment(4);}else{echo '10';} ?></span>
-						</a>
-						<ul class="dropdown-menu dorpdown-custom dropdown-menu-right">
-							<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/10')?>">10</a>
-							</li>
-							<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/25')?>">25</a>
-							</li>
-							<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/50')?>">50</a>
-							</li>
-							<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/100')?>">100</a>
-							</li>
-							<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/all')?>">نمایش همه</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-			</div>
 		</div>
-	</div>
-	<table class="table datatable-selection-single table-hover table-responsive">
-		<thead>
-			<tr>
-				<th>ردیف</th>
-				<th>نام و نام خانوادگی</th>
-				<th>تعداد معاملات انجام شده</th>
-				<th>مجموع معامله</th>
-				<th class="text-center">ابزارک</th>
-			</tr>
-		</thead>
-		<tbody id="search_cust" tyle="display: none;">
-			<tr></tr>
-		</tbody>
-		<tbody>
-			<?php 
+		<table class="table datatable-selection-single table-hover ">
+			<thead>
+				<tr>
+					<th>ردیف</th>
+					<th>نام و نام خانوادگی</th>
+					<th>تعداد معاملات انجام شده</th>
+					<th>مجموع معامله</th>
+					<th class="text-center">ابزارک</th>
+				</tr>
+			</thead>
+			<tbody id="search_cust" tyle="display: none;">
+				<tr></tr>
+			</tbody>
+			<tbody>
+				<?php 
 							if($this->uri->segment(3) == 'show'){
 								$show = $this->uri->segment(5);
 								$num = $this->uri->segment(5) + 1;
@@ -70,48 +72,49 @@
 							if(sizeof($customer) == 0){echo '<tr><td colspan="5" class="text-center p-20">موردی یافت نشد</td></tr>';}
 							else{
 							foreach($customer as $rows){ ?>
-			<tr class="base_cust">
-				<td>
-					<?php echo $num;?>
-				</td>
-				<td>
-					<?php echo $rows->fullname; ?>
-				</td>
-				<td>10</td>
-				<td>10</td>
-				<td class="text-center">
-					<ul class="icons-list">
-						<li class="text-primary-600"><a href="<?php echo base_url('customer/edit/').$rows->id;?>"><i class="icon-pencil7"></i></a>
-						</li>
-						<li class="text-teal-600"><a href="<?php echo base_url('customer/edit/').$rows->id;?>"><i class="icon-cog7"></i></a>
-						</li>
-						<li class="text-danger-600"><a href="#"><i class="icon-trash"></i></a>
-						</li>
-					</ul>
-				</td>
-			</tr>
-			<?php
-			$num++;
-			} }
-			?>
-			<?php if(sizeof($customer) != 0){ ?> 
-			<tr>
-				<td colspan="3" class="pt-20 pb-20">
-					نمایش
-					<?php echo  $show + 1;?> تا
-					<?php echo $num - 1; ?> از
-					<?php echo $count;?>
-				</td>
-				<td colspan="2" class="text-left pt-20 pb-20">
-					<?php echo $page; ?>
-				</td>
-			</tr>
-			<?php } ?>
-		</tbody>
+				<tr class="base_cust">
+					<td>
+						<?php echo $num;?>
+					</td>
+					<td>
+						<?php echo $rows->fullname; ?>
+					</td>
+					<td>10</td>
+					<td>10</td>
+					<td class="text-center">
+						<ul class="icons-list">
+							<li class="text-primary-600"><a href="<?php echo base_url('customer/edit/').$rows->id;?>"><i class="icon-pencil7"></i></a>
+							</li>
+							<li class="text-teal-600"><a href="<?php echo base_url('customer/edit/').$rows->id;?>"><i class="icon-cog7"></i></a>
+							</li>
+							<li class="text-danger-600"><a href="#"><i class="icon-trash"></i></a>
+							</li>
+						</ul>
+					</td>
+				</tr>
+				<?php
+				$num++;
+				}
+				}
+				?>
+				<?php if(sizeof($customer) != 0){ ?>
+				<tr>
+					<td colspan="3" class="pt-20 pb-20">
+						نمایش
+						<?php echo  $show + 1;?> تا
+						<?php echo $num - 1; ?> از
+						<?php echo $count;?>
+					</td>
+					<td colspan="2" class="text-left pt-20 pb-20">
+						<?php echo $page; ?>
+					</td>
+				</tr>
+				<?php } ?>
+			</tbody>
 
-	</table>
+		</table>
 
-
+	</div>
 
 </div>
 <script>
