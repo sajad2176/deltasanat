@@ -6665,6 +6665,19 @@ border-top: 1px solid #ddd;
 .dorpdown-custom{
   min-width: 100px;
 }
+
+.float-btn-left{
+  float: left;
+}
+.panel-body-custom{
+  position: relative;
+  padding-bottom:20px;
+  padding-left: 20px;
+  padding-right: 20px; 
+}
+
+/* /custom style */
+/*bootstrap*/
 .border{
   border: #dddddd solid 1px;
   border-radius: 3px;
@@ -6733,17 +6746,11 @@ border-top: 1px solid #ddd;
   padding-right: 20px!important;
   padding-left: 20px!important;
 }
-.float-btn-left{
-  float: left;
+.jc-center {
+  -ms-flex-pack: center !important;
+  justify-content: center !important;
 }
-.panel-body-custom{
-  position: relative;
-  padding-bottom:20px;
-  padding-left: 20px;
-  padding-right: 20px; 
-}
-
-/* /custom style */
+/*/bootstrap*/
 /* search_customer */
 .autocomplete {
   position: relative;

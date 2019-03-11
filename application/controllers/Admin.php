@@ -29,7 +29,14 @@ class Admin extends CI_Controller {
         $this->load->view('footer');
     }
     }
- 
+  public function log(){
+        $header['title'] = 'فعالیت کاربران';
+        $header['active'] = 'admin';
+        $header['active_sub'] = 'admin_archive';
+        $this->load->view('header' , $header);
+        $this->load->view('admin/log');
+        $this->load->view('footer');
+    }
     
 
 }

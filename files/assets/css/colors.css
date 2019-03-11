@@ -2124,11 +2124,21 @@
 .text-success-800:focus {
   color: #2E7D32 !important;
 }
-.text-warning,
-.text-warning:hover,
-.text-warning:focus {
-  color:#FFDF71;
+.text-warning {
+  color: #ffc107 !important;
 }
+
+a.text-warning:hover, a.text-warning:focus {
+  color: #ba8b00 !important;
+}
+.text-light {
+  color: #f8f9fa !important;
+}
+
+a.text-light:hover, a.text-light:focus {
+  color: #cbd3da !important;
+}
+
 .text-warning-300,
 .text-warning-300:hover,
 .text-warning-300:focus {
