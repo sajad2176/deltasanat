@@ -1,1 +1,1 @@
-<a href="deal/handle" class="btn btn-success">هماهنگی</a>
+<a href="<?php echo base_url('deal/handle_profile/')?>" class="btn btn-success">هماهنگی</a>

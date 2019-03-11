@@ -199,6 +199,14 @@ $data['count'] = $config['total_rows'];
             $this->load->view('footer');
         }
     }
+    public function handle_profile(){
+        $header['title'] = 'هماهنگی';
+        $header['active'] = 'deal';
+        $header['active_sub'] = 'deal_archive';
+        $this->load->view('header' , $header);
+        $this->load->view('deal/handle_profile');
+        $this->load->view('footer');
+    }
 
 }
 
