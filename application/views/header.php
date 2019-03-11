@@ -285,9 +285,6 @@
 					<div class="sidebar-category sidebar-category-visible">
 						<div class="category-content no-padding">
 							<ul class="navigation navigation-main navigation-accordion">
-
-								<!-- Main -->
-								<li class="navigation-header"><span>Main</span> <i class="icon-menu" title="Main pages"></i></li>
 								<li class="<?php if($active == 'dashbord'){echo 'active';}?>"><a href="<?php echo base_url('home'); ?>"><i class="icon-home4"></i> <span>داشبورد</span></a></li>
 								<li>
 									<a href=""><i class="icon-stack2"></i> <span>مشتریان</span></a>
@@ -305,25 +302,10 @@
 									</ul>
 								</li>
 								<li>
-									<a href="#"><i class="icon-droplet2"></i> <span>Color system</span></a>
+									<a href=""><i class="icon-droplet2 <?php if($active == 'admin'){echo 'active';} ?>"></i> <span>کاربران</span></a>
 									<ul>
-										<li><a href="colors_primary.html">Primary palette</a></li>
-										<li><a href="colors_danger.html">Danger palette</a></li>
-										<li><a href="colors_success.html">Success palette</a></li>
-										<li><a href="colors_warning.html">Warning palette</a></li>
-										<li><a href="colors_info.html">Info palette</a></li>
-										<li class="navigation-divider"></li>
-										<li><a href="colors_pink.html">Pink palette</a></li>
-										<li><a href="colors_violet.html">Violet palette</a></li>
-										<li><a href="colors_purple.html">Purple palette</a></li>
-										<li><a href="colors_indigo.html">Indigo palette</a></li>
-										<li><a href="colors_blue.html">Blue palette</a></li>
-										<li><a href="colors_teal.html">Teal palette</a></li>
-										<li><a href="colors_green.html">Green palette</a></li>
-										<li><a href="colors_orange.html">Orange palette</a></li>
-										<li><a href="colors_brown.html">Brown palette</a></li>
-										<li><a href="colors_grey.html">Grey palette</a></li>
-										<li><a href="colors_slate.html">Slate palette</a></li>
+										<li class="<?php if($active_sub == 'admin_archive'){echo 'active';} ?>"><a href="<?php echo base_url('admin/archive') ?>">آرشیو کاربران</a></li>
+										<li class="<?php if($active_sub == 'admin_add'){echo 'active';} ?>"><a href="<?php echo base_url('admin/add') ?>">افزودن کاربر</a></li>
 									</ul>
 								</li>
 								<li>
