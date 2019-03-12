@@ -185,73 +185,79 @@ $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$dat
             $this->load->view('deal/sell', $data);
             $this->load->view('footer');
     }
-    public function handle($id){
-        if(isset($_POST['sub'])){
-            $date = $this->convertdate->convert(time());
-            $d = $date['year']."-".$date['month_num']."-".$date['day'];
-            $t = $date['hour'].":".$date['minute'].":".$date['second'];
-            for($i = 0 ; $i < sizeof($_POST['customer']) ; $i++){
-                if($_POST['bank_id'][$i] == 0){
-                    $message['msg'][0] = 'لطفا شماره حساب را از لیست مربوطه انتخاب کنید . در صورت موجود نبودن شماره حساب لطفا اقدام به افزودن شماره حساب کنید' ;
+    public function handle(){
+        $id = $this->uri->segment(3);
+        if(isset($id) and is_numeric($id)){
+            if(isset($_POST['sub'])){
+                $date = $this->convertdate->convert(time());
+                $d = $date['year']."-".$date['month_num']."-".$date['day'];
+                $t = $date['hour'].":".$date['minute'].":".$date['second'];
+                for($i = 0 ; $i < sizeof($_POST['customer']) ; $i++){
+                    if($_POST['bank_id'][$i] == 0){
+                        $message['msg'][0] = 'لطفا شماره حساب را از لیست مربوطه انتخاب کنید . در صورت موجود نبودن شماره حساب لطفا اقدام به افزودن شماره حساب کنید' ;
+                        $message['msg'][1] = 'danger';
+                        $this->session->set_flashdata($message);
+                        redirect("deal/handle/$id");
+                     }else{
+                    $check = $this->base_model->get_data('customer' , 'id' , 'row' , array('pub' => 1 , 'fullname'=> $_POST['customer'][$i]));
+                    if($check == FALSE){
+                        $customer = array(
+                            'fullname'=>$_POST['customer'][$i],
+                            'address'=>'',
+                            'email'=>'',
+                            'customer_tel'=> '',
+                            'pub'=> 1
+                        );
+                        $customer_id = $this->base_model->insert_data('customer' , $customer);
+                    }else{
+                       $customer_id = $check->id;
+                    }
+                    $handle[] = array(
+                     'volume_handle'=> htmlspecialchars($_POST['volume_handle'][$i]),
+                      'handle_pay' => 0 ,
+                      'handle_rest'=> htmlspecialchars($_POST['volume_handle'][$i]),
+                      'date_handle' => $d , 
+                      'time_handle' => $t , 
+                      'date_modified' => '',
+                      'customer_id' => $customer_id,
+                      'deal_id'=> $id,
+                      'bank_id' => htmlspecialchars($_POST['bank_id'][$i])
+                    );
+                }
+                }
+                $res = $this->base_model->insert_batch('deal_handle' , $handle);
+                if($res == FALSE){
+                    $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید';
                     $message['msg'][1] = 'danger';
                     $this->session->set_flashdata($message);
                     redirect("deal/handle/$id");
-                 }else{
-                $check = $this->base_model->get_data('customer' , 'id' , 'row' , array('pub' => 1 , 'fullname'=> $_POST['customer'][$i]));
-                if($check == FALSE){
-                    $customer = array(
-                        'fullname'=>$_POST['customer'][$i],
-                        'address'=>'',
-                        'email'=>'',
-                        'customer_tel'=> '',
-                        'pub'=> 1
-                    );
-                    $customer_id = $this->base_model->insert_data('customer' , $customer);
                 }else{
-                   $customer_id = $check->id;
+                    $message['msg'][0] = 'اطلاعات هماهنگی با موفقیت ثبت شد';
+                    $message['msg'][1] = 'success';
+                    $this->session->set_flashdata($message);
+                    redirect("deal/handle/$id");
                 }
-                $handle[] = array(
-                 'volume_handle'=> htmlspecialchars($_POST['volume_handle'][$i]),
-                  'handle_pay' => 0 ,
-                  'handle_rest'=> htmlspecialchars($_POST['volume_handle'][$i]),
-                  'date_handle' => $d , 
-                  'time_handle' => $t , 
-                  'date_modified' => '',
-                  'customer_id' => $customer_id,
-                  'deal_id'=> $id,
-                  'bank_id' => htmlspecialchars($_POST['bank_id'][$i])
-                );
-            }
-            }
-            $res = $this->base_model->insert_batch('deal_handle' , $handle);
-            if($res == FALSE){
-                $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید';
-                $message['msg'][1] = 'danger';
-                $this->session->set_flashdata($message);
-                redirect("deal/handle/$id");
             }else{
-                $message['msg'][0] = 'اطلاعات هماهنگی با موفقیت ثبت شد';
-                $message['msg'][1] = 'success';
-                $this->session->set_flashdata($message);
-                redirect("deal/handle/$id");
+                $header['title'] = 'هماهنگی ها';
+                $header['active'] = 'deal';
+                $header['active_sub'] = 'deal_archive';
+                $data['customer'] = $this->base_model->get_data('customer' ,'fullname' , 'result' , array('pub' => 1));
+                $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , currency_unit.name , sum(deal_handle.volume_handle) as vh , sum(deal_handle.handle_rest) as vr' , 'deal.customer_id = customer.id' ,'row'  , array('deal.pub'=> 1 , 'deal.id'=>$id) , NULL , NULL , NULL , array('currency_unit','deal.money_id = currency_unit.id') , array('deal_handle','deal_handle.deal_id = deal.id'));
+                if(sizeof($data['deal']) == 0){
+                show_404();
+                }else{
+                    $data['bank'] = $this->base_model->get_data('deal_bank' , '*' , 'result' , array('deal_id' => $id) , NULL , NULL , array('id' , 'DESC'));
+                    $data['select'] = $this->base_model->get_data('deal_bank' , 'id , number_shaba , name_bank' , 'result' , array('deal_id' => $id , 'active' => 1) , NULL , NULL , array('id' , 'DESC'));
+                    $data['handle'] = $this->base_model->get_data_join('deal_handle','customer' , 'deal_handle.* , customer.fullname , deal_bank.number_shaba , deal_bank.name_bank','deal_handle.customer_id = customer.id', 'result' , array('deal_handle.deal_id' => $id) , NULL , NULL , array('deal_handle.id' , 'DESC') , array('deal_bank' , 'deal_handle.bank_id = deal_bank.id'));
+                    $this->load->view('header' , $header);
+                    $this->load->view('deal/handle' , $data);
+                    $this->load->view('footer');
+                }
+     
             }
+           
         }else{
-            $header['title'] = 'هماهنگی ها';
-            $header['active'] = 'deal';
-            $header['active_sub'] = 'deal_archive';
-            $data['customer'] = $this->base_model->get_data('customer' ,'fullname' , 'result' , array('pub' => 1));
-            $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , currency_unit.name , sum(deal_handle.volume_handle) as vh' , 'deal.customer_id = customer.id' ,'row'  , array('deal.pub'=> 1 , 'deal.id'=>$id) , NULL , NULL , NULL , array('currency_unit','deal.money_id = currency_unit.id') , array('deal_handle','deal_handle.deal_id = deal.id'));
-            if(sizeof($data['deal']) == 0){
             show_404();
-            }else{
-                $data['bank'] = $this->base_model->get_data('deal_bank' , '*' , 'result' , array('deal_id' => $id) , NULL , NULL , array('id' , 'DESC'));
-                $data['select'] = $this->base_model->get_data('deal_bank' , 'id , number_shaba , name_bank' , 'result' , array('deal_id' => $id , 'active' => 1) , NULL , NULL , array('id' , 'DESC'));
-                $data['handle'] = $this->base_model->get_data_join('deal_handle','customer' , 'deal_handle.* , customer.fullname , deal_bank.number_shaba , deal_bank.name_bank','deal_handle.customer_id = customer.id', 'result' , array('deal_handle.deal_id' => $id) , NULL , NULL , array('deal_handle.id' , 'DESC') , array('deal_bank' , 'deal_handle.bank_id = deal_bank.id'));
-                $this->load->view('header' , $header);
-                $this->load->view('deal/handle' , $data);
-                $this->load->view('footer');
-            }
- 
         }
     }
     public function handle_profile(){

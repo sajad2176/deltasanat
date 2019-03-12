@@ -36,7 +36,7 @@ $msg = $this->session->userdata('msg');?>
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>نام ارز: </label>
-											<select class="form-control" name="money_id" required>
+											<select class="form-control" name="money_id" id="money_id" required>
 												<option value="1">دلار</option>
 												<option value="2">یورو</option>
 												<option value="3">یوان</option>
@@ -59,7 +59,7 @@ $msg = $this->session->userdata('msg');?>
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>کامزد:</label>
-											<input type="text" onkeyup="wage_money()" id="wage" placeholder="999999" autocomplete="off" class="form-control" required>
+											<input type="text" id="wage" placeholder="999999" autocomplete="off" class="form-control" required>
 											<input type="hidden" name="wage">
 										</div>
 									</div>
@@ -67,7 +67,7 @@ $msg = $this->session->userdata('msg');?>
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>نرخ تبدیل:</label>
-											<input type="text" onkeyup="convert_money()" id="convert" placeholder="100000" autocomplete="off" class="form-control" required >
+											<input type="text" id="convert" placeholder="100000" autocomplete="off" class="form-control" required >
 											<input type="hidden" name="convert_money">
 										</div>
 									</div>
@@ -264,7 +264,8 @@ $msg = $this->session->userdata('msg');?>
 	function show_bank( input ) {
 		var txt = input.value;
 		var name_bank = input.parentElement.parentElement.nextElementSibling.firstElementChild.lastElementChild;
-		if ( txt[ 6 ] != '_' && txt[ 7 ] != '_' && txt[ 8 ] != '_' ) {
+		if ( txt[ 6 ] != '_' && txt[ 7 ] != '_' && txt[ 8 ] != '_' && txt[0].toLowerCase() == 'i' && txt[1].toLowerCase() == 'r'  ) {
+			name_bank.setAttribute("readonly" , 'readonley');
 			var bank = txt.slice( 6, 9 );
 			if ( bank == '055' ) {
 				name_bank.value = 'بانک اقتصاد نوین';
@@ -326,8 +327,10 @@ $msg = $this->session->userdata('msg');?>
 				name_bank.value = 'بانک ایران زمین';
 			} else {
 				name_bank.value = '';
+				name_bank.removeAttribute("readonly"); 
 			}
 		} else {
+			name_bank.removeAttribute("readonly"); 
 			name_bank.value = '';
 		}
 
@@ -336,8 +339,17 @@ $msg = $this->session->userdata('msg');?>
 	var wage = document.getElementById( 'wage' );
 	var convert = document.getElementById( 'convert' );
 	var volume = document.getElementById( 'volume_deal' );
+	var money_name = document.getElementById('money_id');
+	money_name.onclick = function(){
+		name = money_name.options[money_name.selectedIndex].innerHTML;
+		value_count = numeral(count.value).value();
+		count.value = numeral(value_count).format('0,0') + ' '+ name;
+		value_wage = numeral(wage.value).value();
+		wage.value = numeral(value_wage).format('0,0') + ' ' + name;
+	}
 	count.onkeyup = function () {
-		count.value = numeral( count.value ).format( '0,0' );
+		var name = money_name.options[money_name.selectedIndex].innerHTML;
+		count.value = numeral( count.value ).format( '0,0' ) + ' ' + name;
 		var x = numeral( count.value ).value();
 		var y = numeral( wage.value ).value();
 		var z = numeral( convert.value ).value();
@@ -345,7 +357,8 @@ $msg = $this->session->userdata('msg');?>
 		volume.innerHTML = numeral( ( x + y ) * z ).format( '0 , 0' ) + ' ریـال  ';
 	}
 	wage.onkeyup = function () {
-		wage.value = numeral( wage.value ).format( '0,0' );
+		var name = money_name.options[money_name.selectedIndex].innerHTML;
+		wage.value = numeral( wage.value ).format( '0,0' ) + ' ' + name;
 		var x = numeral( count.value ).value();
 		var y = numeral( wage.value ).value();
 		var z = numeral( convert.value ).value();
@@ -353,7 +366,7 @@ $msg = $this->session->userdata('msg');?>
 		volume.innerHTML = numeral( ( x + y ) * z ).format( '0 , 0' ) + ' ریـال  ';
 	}
 	convert.onkeyup = function () {
-		convert.value = numeral( convert.value ).format( '0,0' );
+		convert.value = numeral( convert.value ).format( '0,0' ) +  ' ریـال ';
 		var x = numeral( count.value ).value();
 		var y = numeral( wage.value ).value();
 		var z = numeral( convert.value ).value();
@@ -363,7 +376,7 @@ $msg = $this->session->userdata('msg');?>
 
 	function amount_bank( input ) {
 		var volume = document.getElementById( 'volume_deal');
-		input.value = numeral( input.value ).format( '0,0' );
+		input.value = numeral( input.value ).format( '0,0' ) + " ریـال ";
 		input.nextElementSibling.value = numeral( input.value ).value();
 		if(numeral(volume.innerHTML).value() < numeral(input.value).value()){
          input.nextElementSibling.nextElementSibling.style.display = 'block';

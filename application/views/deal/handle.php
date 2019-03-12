@@ -44,34 +44,34 @@ $msg = $this->session->userdata('msg');?>
 							</div>
 							<div class="col-sm-3">
 								<div class="form-group">
-									<label>نرخ تبدیل: </label>
-									<p class="form-control"><?php echo number_format($deal->convert_money); ?></p>
+									<label>حجم معامله : </label>
+									<p class="form-control"  id="volume_deal" ><?php echo number_format($deal->volume_deal) . " ریـال ";?></p>
 								</div>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-sm-3">
 								<div class="form-group">
-									<label>حجم معامله: </label>
-									<p class="form-control" id="volume_deal"><?php echo number_format($deal->volume_deal);?></p>
-								</div>
-							</div>
-							<div class="col-sm-3">
-								<div class="form-group">
-									<label>حجم پرداخت شده: </label>
-									<p class="form-control"><?php echo number_format($deal->volume_pay);?></p>
+									<label>حجم پرداخت شده : </label>
+									<p class="form-control"><?php echo number_format($deal->volume_pay) . " ریـال ";?></p>
 								</div>
 							</div>
 							<div class="col-sm-3">
 								<div class="form-group">
 									<label>حجم قابل پرداخت: </label>
-									<p class="form-control"><?php echo number_format($deal->volume_rest);?></p>
+									<p class="form-control"><?php echo number_format($deal->volume_rest). " ریـال ";?></p>
 								</div>
 							</div>
 							<div class="col-sm-3">
 								<div class="form-group">
-									<label>حجم هماهنگ شده: </label>
-									<p class="form-control"><?php echo number_format($deal->vh);?></p>
+									<label>حجم هماهنگ شده : </label>
+									<p class="form-control"><?php echo number_format($deal->vh). " ریـال ";?></p>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<label>مانده هماهنگ شده: </label>
+									<p class="form-control"><?php echo number_format($deal->vr)." ریـال ";?></p>
 								</div>
 							</div>
 						</div>
