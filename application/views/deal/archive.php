@@ -10,57 +10,86 @@
 </div>
 <div class="panel panel-flat">
 	<div class="panel-body">
-	<div class="panel-heading">
-		<h5 class="panel-title">آرشیو معاملات</h5>
+		<div class="panel-heading">
+			<h5 class="panel-title">آرشیو معاملات</h5>
 
-	</div>
+		</div>
 
-	<div class="datatable-header">
-		<div class="row">
-			<div class="col-md-7">
-				<div class="text-right">
-					<div class="dataTables_filter"><label><span>جستجو نام:</span> <input type="search" onkeyup="search_cust(this)" placeholder="عنوان خود را جستجو کنید ..."></label>
-					</div>
-				</div>
-						<div class="col-md-12">
+		<div class="datatable-header">
+			<div class="row">
+				<form action="">
+
+					<div class="col-md-11">
+						<div class="col-md-3">
 							<div class="form-group">
-								<label for="j_created_date">تاریخ ایجاد مطلب</label>
-								<input type="text" class="form-control" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="top" value="<?php echo $date; ?>" name="j_created_date" placeholder="Jalali Created Date">
+								<label>جستجو : </label>
+								<input class="form-control" type="search" onkeyup="search_cust(this)" placeholder="عنوان خود را جستجو کنید ...">
+
 							</div>
 						</div>
-										<div class="col-md-12">
-							<div class="form-group">
-								<label for="j_created_date">تاریخ ایجاد مطلب</label>
-								<input type="text" class="form-control" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="top" value="<?php echo $date;?>" name="j_created_date" placeholder="Jalali Created Date">
+						<div class="col-md-5">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="j_created_date">تاریخ ایجاد مطلب</label>
+									<input type="text" class="form-control" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date; ?>" name="j_created_date" placeholder="Jalali Created Date">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="j_created_date">تاریخ ایجاد مطلب</label>
+									<input type="text" class="form-control" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date;?>" name="j_created_date" placeholder="Jalali Created Date">
+								</div>
 							</div>
 						</div>
-				<div class="text-right">
-					<div class="dataTables_filter"><label><span>تا:</span> <input type="search" onkeyup="search_cust(this)" placeholder="عنوان خود را جستجو کنید ..."></label>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label>نوع معامله: </label>
+								<select class="form-control" name="money_id" required>
+									<option value="1">همه</option>
+									<option value="2">خرید</option>
+									<option value="3">فروش</option>
+									
+								</select>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label>ارز معامله: </label>
+								<select class="form-control" name="money_id" required>
+									<option value="1">دلار</option>
+									<option value="2">یورو</option>
+									<option value="3">یوان</option>
+									<option value="4">درهم</option>
+								</select>
+							</div>
+						</div>
 					</div>
-				</div>
-			</div>
-			<div class=" col-md-5  mb-10  text-left">
-				<label><span>نمایش:</span></label>
-				<ul class="icons-list display-inline-block">
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle border p-10 text-black " data-toggle="dropdown">
+				</form>
+				<div class=" col-md-1 mt-25 text-left">
+					<label>نمایش:</label>
+					<ul class="icons-list display-inline-block">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle border p-10 text-black " data-toggle="dropdown">
 							<span class="text-muted"><span class="icon-arrow-down5"></span><span><?php if($this->uri->segment(3) == 'show'){echo $this->uri->segment(4);}else{echo '10';} ?></span></span>
 						</a>
-					
-						<ul class="dropdown-menu dorpdown-custom dropdown-menu-right">
-							<li><a class="dropdown-item" href="<?php echo base_url('deal/archive/show/10')?>">10</a>
-							</li>
-							<li><a class="dropdown-item" href="<?php echo base_url('deal/archive/show/25')?>">25</a>
-							</li>
-							<li><a class="dropdown-item" href="<?php echo base_url('deal/archive/show/50')?>">50</a>
-							</li>
-							<li><a class="dropdown-item" href="<?php echo base_url('deal/archive/show/100')?>">100</a>
-							</li>
-							<li><a class="dropdown-item" href="<?php echo base_url('deal/archive/show/all')?>">نمایش همه</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
+						
+
+
+							<ul class="dropdown-menu dorpdown-custom dropdown-menu-right">
+								<li><a class="dropdown-item" href="<?php echo base_url('deal/archive/show/10')?>">10</a>
+								</li>
+								<li><a class="dropdown-item" href="<?php echo base_url('deal/archive/show/25')?>">25</a>
+								</li>
+								<li><a class="dropdown-item" href="<?php echo base_url('deal/archive/show/50')?>">50</a>
+								</li>
+								<li><a class="dropdown-item" href="<?php echo base_url('deal/archive/show/100')?>">100</a>
+								</li>
+								<li><a class="dropdown-item" href="<?php echo base_url('deal/archive/show/all')?>">نمایش همه</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -101,7 +130,9 @@
 					<?php echo $num;?>
 				</td>
 				<td>
-					<a href="<?php echo base_url('deal/handle_profile/').$rows->cust_id ?>"><?php echo $rows->fullname; ?></a>
+					<a href="<?php echo base_url('deal/handle_profile/').$rows->cust_id ?>">
+						<?php echo $rows->fullname; ?>
+					</a>
 				</td>
 				<td>
 					<?php if($rows->type_deal == 1){echo 'خرید';}else{echo 'فروش';}?>
@@ -129,7 +160,7 @@
 				</td>
 				<td class="text-center">
 					<ul class="icons-list">
-						<li class="text-success"><a href="<?php echo base_url('deal/handle/').$rows->id;?>"><i class="icon-notebook"></i></a>
+						<li title="هماهنگی ها" class="text-success"><a href="<?php echo base_url('deal/handle/').$rows->id;?>"><i class="icon-notebook"></i></a>
 						</li>
 						<li class="text-primary"><a href="<?php echo base_url('customer/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a>
 						</li>
