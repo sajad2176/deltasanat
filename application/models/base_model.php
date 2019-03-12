@@ -49,7 +49,7 @@ function get_data_join($from , $join , $select ,$join_where ,$ret = 'result' , $
     if($order_by != NULL){
         $this->db->order_by($order_by[0] , $order_by[1]);
     }
-   if($limit != NULL and $offset != NULL){
+   if($limit != NULL){
         $this->db->limit($limit , $offset);
     }
     $query = $this->db->get();

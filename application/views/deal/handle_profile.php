@@ -20,7 +20,7 @@
 	<table class="table datatable-selection-single table-hover table-responsive-lg ">
 		<thead>
 			<tr>
-				<th class="text-center">ردیف</th>
+				<th class="text-center">شناسه معامله</th>
 				<th class="text-center">نام مشتری</th>
 				<th class="text-center">نوع معامله</th>
 				<th class="text-center">تعداد ارز</th>
@@ -37,20 +37,22 @@
 			<tr></tr>
 		</tbody>
 		<tbody>
+		<?php 
+			foreach($deal as  $deals){?>
 			<tr class="base_cust">
-                <td class="text-center">علی شیرازی</td>
-                <td class="text-center">علی شیرازی</td>
-				<td class="text-center">علی شیرازی</td>
-				<td class="text-center">علی شیرازی</td>
-				<td class="text-center">علی شیرازی</td>
-				<td class="text-center">علی شیرازی</td>
-				<td class="text-center">علی شیرازی</td>
-				<td class="text-center">علی شیرازی</td>
-				<td class="text-center">علی شیرازی</td>
-				<td class="text-center">علی شیرازی</td>
+                <td class="text-center"><?php echo $deals->id + 100; ?></td>
+                <td class="text-center"><?php echo $deals->fullname; ?></td>
+				<td class="text-center"><?php if($deals->type_deal == 1 ){echo 'خرید';}else{echo 'فروش';} ?></td>
+				<td class="text-center"><?php echo number_format($deals->count_money) . " " . $deals->name;?></td>
+				<td class="text-center"><?php echo number_format($deals->convert_money); ?></td>
+				<td class="text-center"><?php echo number_format($deals->volume_deal); ?> </td>
+				<td class="text-center"><?php echo number_format($deals->volume_pay); ?> </td>
+				<td class="text-center"><?php echo number_format($deals->volume_rest); ?></td>
+				<td class="text-center"><?php echo $deals->date_deal."</br>".$deals->time_deal; ?> </td>
+				<td class="text-center"> </td>
 				<td class="text-center">
 					<ul class="icons-list">
-						<li class="text-success"><a href=""><i class="icon-notebook"></i></a>
+						<li class="text-success"><a href="<?php echo base_url('deal/handle/').$deals->id ;?>"><i class="icon-notebook"></i></a>
 						</li>
 						<li class="text-primary"><a href=""><i class=" icon-pencil6"></i></a>
 						</li>
@@ -58,8 +60,15 @@
 						</li>
 					</ul>
 				</td>
+			
 			</tr>
-		
+			<?php } ?>
+			<tr>
+				<td colspan="6" class="pt-20 pb-20"></td>
+				<td colspan="5" class="text-left pt-20 pb-20">
+					<?php echo $page; ?>
+				</td>
+			</tr>
 	
 		</tbody>
 
@@ -68,6 +77,55 @@
 
 </div>
 </div>
+
+	<div class="panel panel-flat">
+		<div class="panel-body">
+			<div class="row field_wrapper">
+				<div>
+					<legend class="text-semibold"><i class="icon-address-book position-left"></i> افزودن هماهنگی</legend>
+					<div class="col-md-3">
+						<div class="form-group">
+							<label>نام مشتری:</label>
+							<input type="text" placeholder="علی شیرازی" class="form-control">
+						</div>
+					</div>
+						<div class="col-md-3">
+						<div class="form-group">
+							<label>انتخاب معامله:</label>
+							<input type="text" placeholder="لطفا شناسه معامله را وارد کنید" class="form-control">
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-group">
+							<label>نام بانک:</label>
+                            <select class="form-control" name="money_id" required>
+                         <?php if(sizeof($select) == 0){ ?>
+							<option value="0">شماره حسابی ثبت نشده است</option>
+						 <?php } else { foreach($select as $selects){?>
+							<option value="1"><?php echo $selects->number_shaba." | ".$selects->name_bank." | ";echo $selects->deal_id + 100;?></option>
+						 <?php } }?>
+											</select>
+						</div>
+					</div>
+					
+					<div class="col-md-3">
+						<div class="form-group input-group">
+							<label>مبلغ هماهنگی:</label>
+							<input type="text" placeholder="111,000,000" class="form-control">
+							<span class="input-group-btn">
+							<button type="button" class="btn btn-success add_button3 mt-25">
+								<span class="icon-plus3"></span>
+							</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="text-right">
+				<button type="submit" class="btn btn-primary">ثبت هماهنگی <i class="icon-arrow-left13 position-right"></i></button>
+			</div>
+		</div>
+	</div>
 <div>
 	<div class="panel panel-flat">
 		<div class="panel-body">
@@ -76,24 +134,28 @@
 			<table class="table datatable-basic">
 				<thead>
 					<tr>
-						<th width="10%">ردیف</th>
-						<th width="20%">Last Name</th>
-						<th width="20%">Job Title</th>
-						<th width="20%">DOB</th>
-						<th width="20%">Status</th>
-						<th width="10%" class="text-center">Actions</th>
+						<th width="4%"  class="text-center">ردیف</th>
+						<th width="12%" class="text-center">نام بانک</th>
+						<th width="14%" class="text-center">شماره شبا</th>
+						<th width="14%" class="text-center">شناسه معامله</th>
+						<th width="18%" class="text-center">حجم تعیین شده</th>
+						<th width="18%" class="text-center">حجم واریز شده</th>
+						<th width="10%" class="text-center">وضعیت</th>
+						<th width="10%" class="text-center">ابزار</th>
 					</tr>
 				</thead>
 				<tbody>
+				<?php foreach($bank as $key => $banks){
+					?>
 					<tr>
-						<td>Marth</td>
-						<td>asdasdas
-						</td>
-						<td>
-							asdasdasd
-						</td>
-						<td>22 Jun 1972</td>
-						<td><span class="label label-success">Active</span>
+						<td  class="text-center"><?php echo $key +1 ;?></td>
+						<td  class="text-center"><?php echo $banks->name_bank; ?></td>
+						<td  class="text-center"><?php echo $banks->number_shaba; ?></td>
+						<td  class="text-center"><?php echo $banks->deal_id + 100;?></td>
+						<td  class="text-center"><?php echo number_format($banks->amount); ?></td>
+						<td  class="text-center"><?php echo number_format($banks->pay); ?></td>
+						<?php if($banks->active == 1){$class="success";$txt = 'فعال'; $act = 0;}else{$class = "danger"; $txt = 'غیرفعال'; $act = 1;} ?>
+						<td><a href="<?php echo base_url('deal/active/').$this->uri->segment(3)."/".$banks->id."/".$act."/group"; ?>"><span class="label label-<?php echo $class; ?>"><?php echo $txt;?></span></td></a>
 						</td>
 						<td class="text-center">
 							<ul class="icons-list">
@@ -114,6 +176,7 @@
 						</td>
 					</tr>
 					<tr>
+				<?php } ?>
 			</table>
 			<!-- add bank modal -->
 			<div id="add_bank_modal" class="modal fade">
@@ -178,58 +241,6 @@
 		
 			
 			
-		</div>
-	</div>
-	<div class="panel panel-flat">
-		<div class="panel-body">
-			<div class="row field_wrapper">
-				<div>
-					<legend class="text-semibold"><i class="icon-address-book position-left"></i> افزودن هماهنگی</legend>
-					<div class="col-md-3">
-						<div class="form-group">
-							<label>نام مشتری:</label>
-							<input type="text" placeholder="علی شیرازی" class="form-control">
-						</div>
-					</div>
-						<div class="col-md-3">
-						<div class="form-group">
-							<label>انتخاب معامله:</label>
-                            <select class="form-control" name="money_id" required>
-												<option value="1">اول </option>
-												<option value="2">دوم</option>
-												<option value="3">سوم</option>
-												<option value="4">چهارم</option>
-											</select>
-						</div>
-					</div>
-					<div class="col-md-3">
-						<div class="form-group">
-							<label>نام بانک:</label>
-                            <select class="form-control" name="money_id" required>
-												<option value="1">ملت</option>
-												<option value="2">ملی</option>
-												<option value="3">صادرات</option>
-												<option value="4">رفاه</option>
-											</select>
-						</div>
-					</div>
-					
-					<div class="col-md-3">
-						<div class="form-group input-group">
-							<label>مبلغ هماهنگی:</label>
-							<input type="text" placeholder="111,000,000" class="form-control">
-							<span class="input-group-btn">
-							<button type="button" class="btn btn-success add_button3 mt-25">
-								<span class="icon-plus3"></span>
-							</button>
-							</span>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="text-right">
-				<button type="submit" class="btn btn-primary">ثبت هماهنگی <i class="icon-arrow-left13 position-right"></i></button>
-			</div>
 		</div>
 	</div>
 	<div class="panel panel-flat">

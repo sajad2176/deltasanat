@@ -22,10 +22,18 @@
 					<div class="dataTables_filter"><label><span>جستجو نام:</span> <input type="search" onkeyup="search_cust(this)" placeholder="عنوان خود را جستجو کنید ..."></label>
 					</div>
 				</div>
-				<div class="text-right">
-					<div class="dataTables_filter"><label><span>تاریخ:</span> <input type="search" onkeyup="search_cust(this)" placeholder="عنوان خود را جستجو کنید ..."></label>
-					</div>
-				</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="j_created_date">تاریخ ایجاد مطلب</label>
+								<input type="text" class="form-control" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="top" value="<?php echo $date; ?>" name="j_created_date" placeholder="Jalali Created Date">
+							</div>
+						</div>
+										<div class="col-md-12">
+							<div class="form-group">
+								<label for="j_created_date">تاریخ ایجاد مطلب</label>
+								<input type="text" class="form-control" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="top" value="<?php echo $date;?>" name="j_created_date" placeholder="Jalali Created Date">
+							</div>
+						</div>
 				<div class="text-right">
 					<div class="dataTables_filter"><label><span>تا:</span> <input type="search" onkeyup="search_cust(this)" placeholder="عنوان خود را جستجو کنید ..."></label>
 					</div>
@@ -93,7 +101,7 @@
 					<?php echo $num;?>
 				</td>
 				<td>
-					<?php echo $rows->fullname; ?>
+					<a href="<?php echo base_url('deal/handle_profile/').$rows->cust_id ?>"><?php echo $rows->fullname; ?></a>
 				</td>
 				<td>
 					<?php if($rows->type_deal == 1){echo 'خرید';}else{echo 'فروش';}?>

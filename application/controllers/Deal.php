@@ -50,10 +50,11 @@ class Deal extends CI_Controller {
     $config['suffix'] = "";
 $this->pagination->initialize($config);
 $page = ($this->uri->segment($uri_segment)) ? $this->uri->segment($uri_segment) : 0;      
-$data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , currency_unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('deal.pub'=> 1), $config['per_page'] , $page , array('deal.id' , 'DESC') , array('currency_unit','deal.money_id = currency_unit.id'));
+$data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , customer.id as cust_id ,currency_unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('deal.pub'=> 1), $config['per_page'] , $page , array('deal.id' , 'DESC') , array('currency_unit','deal.money_id = currency_unit.id'));
 $data['page'] = $this->pagination->create_links();
 $data['count'] = $config['total_rows'];
-
+$date = $this->convertdate->convert(time());
+$data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$date['hour'].":".$date['minute'].":".$date['second'];
         $header['title'] = 'آرشیو معاملات';
         $header['active'] = 'deal';
         $header['active_sub'] = 'deal_archive';
@@ -138,30 +139,31 @@ $data['count'] = $config['total_rows'];
                }
            $this->base_model->insert_batch('deal_pic' , $img);
            }
-
-           for($i = 0 ; $i < sizeof($_POST['number_shaba']) ; $i++){
-            $bank[] = array(
-                'explain'=> htmlspecialchars($_POST['bank_explain'][$i]),
-                'number_shaba'=>htmlspecialchars($_POST['number_shaba'][$i]),
-                'name_bank'=> htmlspecialchars($_POST['name_bank'][$i]),
-                'amount'=> htmlspecialchars($_POST['amount_bank'][$i]),
-                'pay'=>0,
-                'active'=> 1,
-                'deal_id'=> $deal_id
-            );
-        }
-        $res_bank = $this->base_model->insert_batch('deal_bank' , $bank);
-        if($res_bank == FALSE){
-         $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است. لطفا دوباره سعی کنید';
-         $message['msg'][1] = 'danger';
-         $this->session->set_flashdata($message);
+          if($_POST['number_shaba'][0] != ''){
+            for($i = 0 ; $i < sizeof($_POST['number_shaba']) ; $i++){
+                $bank[] = array(
+                    'explain'=> htmlspecialchars($_POST['bank_explain'][$i]),
+                    'number_shaba'=>htmlspecialchars($_POST['number_shaba'][$i]),
+                    'name_bank'=> htmlspecialchars($_POST['name_bank'][$i]),
+                    'amount'=> htmlspecialchars($_POST['amount_bank'][$i]),
+                    'pay'=>0,
+                    'active'=> 1,
+                    'deal_id'=> $deal_id
+                );
+            }
+            $res_bank = $this->base_model->insert_batch('deal_bank' , $bank);
+            if($res_bank == FALSE){
+        $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است. لطفا دوباره سعی کنید';
+        $message['msg'][1] = 'danger';
+        $this->session->set_flashdata($message);
         redirect("deal/$page");
-     }else{
+            }
+          }
          $message['msg'][0] = 'اطلاعات معامله با موفقیت ثبت شد';
          $message['msg'][1] = 'success';
          $this->session->set_flashdata($message);
          redirect("deal/$page");
-     } 
+
         }else{
             $header['title'] = 'افزودن معامله';
             $header['active'] = 'deal';
@@ -253,19 +255,71 @@ $data['count'] = $config['total_rows'];
         }
     }
     public function handle_profile(){
-        $header['title'] = 'هماهنگی';
-        $header['active'] = 'deal';
-        $header['active_sub'] = 'deal_archive';
-        $this->load->view('header' , $header);
-        $this->load->view('deal/handle_profile');
-        $this->load->view('footer');
+        $id = $this->uri->segment(3);
+        if(isset($id) and is_numeric($id)){
+            if(isset($_POST['sub'])){
+             
+             
+            }else{
+                $header['title'] = 'هماهنگی';
+                $header['active'] = 'deal';
+                $header['active_sub'] = 'deal_archive';
+                $total_rows = $this->base_model->get_count("deal" , array('customer_id' => $id));
+                $config['base_url'] = base_url("deal/handle_profile/$id");
+                $config['total_rows'] = $total_rows;
+                $config['per_page'] = '5';
+                $config["uri_segment"] = '4';
+                $config['num_links'] = '5';
+                $config['next_link'] = '<i class="icon-arrow-left5"></i>';
+                $config['last_link'] = '<i class="icon-backward2"></i>';
+                $config['prev_link'] = '<i class="icon-arrow-right5"></i>';
+                $config['first_link'] = '<i class="icon-forward3"></i>';
+                $config['full_tag_open'] = '<nav><ul class="pagination pagination-sm">';
+                $config['full_tag_close'] = '</ul></nav>';
+                $config['cur_tag_open'] = '<li class="active"><a href="javascript:void(0)">';
+                $config['cur_tag_close'] = '</a></li>';
+                $config['num_tag_open'] = '<li>';
+                $config['num_tag_close'] = '</li>';
+                $config['next_tag_open'] = '<li>';
+                $config['next_tag_close'] = '</li>';
+                $config['last_tag_open'] = '<li>';
+                $config['last_tag_close'] = '</li>';
+                $config['first_tag_open'] = '<li>';
+                $config['first_tag_close'] = '</li>';
+                $config['prev_tag_open'] = '<li>';
+                $config['prev_tag_close'] = '</li>';
+                $config['suffix'] = "";
+            $this->pagination->initialize($config);
+            $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;      
+            $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname ,currency_unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('deal.pub'=> 1 , 'deal.customer_id'=> $id), $config['per_page'] , $page , array('deal.id' , 'DESC') , array('currency_unit','deal.money_id = currency_unit.id'));
+            $data['page'] = $this->pagination->create_links();
+            if(sizeof($data['deal']) == 0){
+                show_404();
+            }else{
+            $data['bank'] = $this->base_model->get_data_join('deal' , 'deal_bank'  ,'deal.id as deal_id , deal_bank.*','deal.id = deal_bank.deal_id' ,'result' ,array('deal.pub'=> 1 , 'deal.customer_id' => $id) , NULL , NULL , array('deal_bank.id', 'DESC'));
+            $data['select'] = $this->base_model->get_data_join('deal' , 'deal_bank' ,'deal_bank.id , deal_bank.number_shaba , deal_bank.name_bank , deal.id as deal_id','deal.id = deal_bank.deal_id' , 'result' , array('deal.customer_id' => $id , 'active' => 1) , NULL , NULL , array('id' , 'DESC'));  
+                $this->load->view('header' , $header);
+                $this->load->view('deal/handle_profile' , $data);
+                $this->load->view('footer');
+            }
+        }
+        }else{
+            show_404();
+        }
+
     }
     public function active(){
         $deal_id = $this->uri->segment(3);
         $id = $this->uri->segment(4);
         $data['active'] = $this->uri->segment(5);
         $this->base_model->update_data('deal_bank' , $data , array('id' => $id));
-        redirect("deal/handle/$deal_id");
+        $seg = $this->uri->segment(6);
+        if($seg == 'group'){
+            $red = 'handle_profile';
+        }else{
+            $red = 'handle';
+        }
+        redirect("deal/$red/$deal_id");
     }
     public function add_bank($id){
       if(isset($_POST['sub'])){

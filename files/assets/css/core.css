@@ -6893,4 +6893,51 @@ border-top: 1px solid #ddd;
 }
 /* /responsive table */
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
-  padding: 12px 5px;;}
+  padding: 12px 5px;
+}
+.datepicker-dropdown {
+	left: inherit !important;
+}
+
+[data-name="Md-PersianDateTimePicker"] table tr td {
+	width: 37px;
+	text-align: center;
+	padding: 0;
+}
+
+[data-name="Md-PersianDateTimePicker"] table tr td[data-name="day"], [data-name="Md-PersianDateTimePicker"] table tr td[data-name="today"] {
+	cursor: pointer;
+}
+
+[data-name="Md-PersianDateTimePicker"] table tr td button {
+	padding: 10px 5px;
+	background-color: transparent;
+}
+
+[data-name="Md-PersianDateTimePicker-HeaderTable"] tr td {
+	border: none;
+}
+
+[data-name="Md-PersianDateTimePicker"] table tr td[data-name="disabled-day"] {
+	color: #bbb;
+}
+
+[aria-labelledby="dropdownMenuPersianYear"] li, [aria-labelledby="dropdownMenuPersianMonths"] li {
+	padding: 5px;
+	text-align: center;
+}
+
+[aria-labelledby="dropdownMenuPersianYear"] li a, [aria-labelledby="dropdownMenuPersianMonths"] li a {
+	width: 100%;
+	display: block;
+	font-size: 16px;
+}
+
+[aria-labelledby="dropdownMenuPersianMonths"] li.divider {
+	border-bottom: 1px solid #eee;
+	padding: 0;
+}
+
+[data-name="Md-PersianDateTimePicker-HeaderTable"] {
+	margin-bottom: 0;
+}
