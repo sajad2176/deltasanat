@@ -353,61 +353,82 @@ $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$dat
       }
     }
     public function pay_all($deal_all , $id){
-        $handle = $this->base_model->get_data_join('deal_handle' , 'deal' , 'deal_handle.handle_pay , deal_handle.handle_rest , deal_handle.bank_id , deal.volume_pay , deal.volume_rest , deal_bank.pay' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id'=> $id) , NULL , NULL , NULL , array('deal_bank','deal_bank.id = deal_handle.bank_id'));
-        $deal['volume_pay'] = $handle->volume_pay + $handle->handle_rest;
-        $deal['volume_rest'] = $handle->volume_rest - $handle->handle_rest;
-        $deal_handle['handle_rest'] = 0;
-        $deal_handle['handle_pay'] = $handle->handle_pay + $handle->handle_rest;
-        $deal_bank['pay'] = $handle->pay + $handle->handle_rest;
-        $this->base_model->update_data('deal' , $deal , array('id'=>$deal_all));
-        $this->base_model->update_data('deal_handle' , $deal_handle , array('id' => $id));
-        $res = $this->base_model->update_data('deal_bank' , $deal_bank , array('id' => $handle->bank_id));
-        if($res == FALSE){
-            $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید';
-            $message['msg'][1] = 'danger';
-            $this->session->set_flashdata($message);
-            redirect("deal/handle/$deal_all");
+        $deal_all = $this->uri->segment(3);
+        $id = $this->uri->segment(4);
+        if(isset($deal_all) and isset($id)){
+
+            $handle = $this->base_model->get_data_join('deal_handle' , 'deal' , 'deal_handle.handle_pay , deal_handle.handle_rest , deal_handle.bank_id , deal.volume_pay , deal.volume_rest , deal_bank.pay' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id'=> $id) , NULL , NULL , NULL , array('deal_bank','deal_bank.id = deal_handle.bank_id'));
+            $date = $this->convertdate->convert(time());
+            $history['date_pay'] = $date['year']."-".$date['month_num']."-".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
+            $history['active'] = 1;
+            $history['volume'] = $handle->handle_rest;
+            $history['handle_id'] = $id;
+            $deal['volume_pay'] = $handle->volume_pay + $handle->handle_rest;
+            $deal['volume_rest'] = $handle->volume_rest - $handle->handle_rest;
+            $deal_handle['handle_rest'] = 0;
+            $deal_handle['handle_pay'] = $handle->handle_pay + $handle->handle_rest;
+            $deal_bank['pay'] = $handle->pay + $handle->handle_rest;
+            $this->base_model->update_data('deal' , $deal , array('id'=>$deal_all));
+            $this->base_model->update_data('deal_handle' , $deal_handle , array('id' => $id));
+            $this->base_model->update_data('deal_bank' , $deal_bank , array('id' => $handle->bank_id));
+            $res = $this->base_model->insert_data('handle_history' , $history);
+    
+            if($res == FALSE){
+                $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید';
+                $message['msg'][1] = 'danger';
+                $this->session->set_flashdata($message);
+                redirect("deal/handle/$deal_all");
+            }else{
+              $message['msg'][0] = 'پرداخت به صورت کامل انجام شد';
+              $message['msg'][1] = 'success';
+              $this->session->set_flashdata($message);
+              redirect("deal/handle/$deal_all");
+            }
+
         }else{
-          $message['msg'][0] = 'پرداخت به صورت کامل انجام شد';
-          $message['msg'][1] = 'success';
-          $this->session->set_flashdata($message);
-          redirect("deal/handle/$deal_all");
+         show_404();
         }
     }
-    public function pay_slice($deal_id , $id){
-        if(isset($_POST['sub'])){
-            var_dump($_POST);
-        $handle = $this->base_model->get_data_join('deal_handle','deal','deal_handle.handle_pay,deal_handle.handle_rest,deal_handle.bank_id,deal.volume_pay , deal.volume_rest ,  deal_bank.pay' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id'=> $id) , NULL , NULL , NULL , array('deal_bank','deal_bank.id = deal_handle.bank_id'));
-            // if($handle->handle_rest < $this->input->post('slice')){
-            //     $message['msg'][0] = 'مبلغ پرداختی نمی تواند بیشتر از مبلغ هماهنگ شده باشد';
-            //     $message['msg'][1] = 'danger';
-            //     $this->session->set_flashdata($message);
-            //     redirect("deal/handle/$deal_id");
-            // }
-            $slice = $this->input->post('slice');
-        $deal_handle['handle_rest'] = $handle->handle_rest - $slice;
-        $deal_handle['handle_pay'] = $handle->handle_pay + $slice;
-        $deal['volume_pay'] = $handle->volume_pay + $slice;
-        $deal['volume_rest'] = $handle->volume_rest - $slice;
-        $deal_bank['pay'] = $handle->pay + $slice;
-        $this->base_model->update_data('deal' , $deal , array('id' => $deal_id));
-        $this->base_model->update_data('deal_handle' , $deal_handle , array('id' => $id));
-        $res = $this->base_model->update_data('deal_bank' , $deal_bank , array('id' => $handle->bank_id));
-        if($res == TRUE){
-            $message['msg'][0] = 'پرداخت با موفقیت انجام شد';
-            $message['msg'][1] = 'success';
-            $this->session->set_flashdata($message);
-            redirect("deal/handle/$deal_id");
-        }else{
-            $message['msg'][0] = 'مشکلی در روند عملیات رخ داده است . لطفا دوباره سعی کنید';
-            $message['msg'][1] = 'danger';
-            $this->session->set_flashdata($message);
-            redirect("deal/handle/$deal_id");
-        }
-
+    public function pay_slice(){
+        $deal_id = $this->uri->segment(3);
+        $id = $this->uri->segment(4);
+        if(isset($deal_id) and isset($id)){
+            if(isset($_POST['sub'])){
+                $handle = $this->base_model->get_data_join('deal_handle','deal','deal_handle.handle_pay,deal_handle.handle_rest,deal_handle.bank_id,deal.volume_pay , deal.volume_rest ,  deal_bank.pay' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id'=> $id) , NULL , NULL , NULL , array('deal_bank','deal_bank.id = deal_handle.bank_id'));
+                $slice = $this->input->post('slice');
+                $date = $this->convertdate->convert(time());
+                $history['date_pay'] = $date['year']."-".$date['month_num']."-".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
+                $history['active'] = 1;
+                $history['volume'] = $slice;
+                $history['handle_id'] = $id;
+                $deal_handle['handle_rest'] = $handle->handle_rest - $slice;
+                $deal_handle['handle_pay'] = $handle->handle_pay + $slice;
+                $deal['volume_pay'] = $handle->volume_pay + $slice;
+                $deal['volume_rest'] = $handle->volume_rest - $slice;
+                $deal_bank['pay'] = $handle->pay + $slice;
+                $this->base_model->update_data('deal' , $deal , array('id' => $deal_id));
+                $this->base_model->update_data('deal_handle' , $deal_handle , array('id' => $id));
+                $this->base_model->update_data('deal_bank' , $deal_bank , array('id' => $handle->bank_id));
+                $res = $this->base_model->insert_data('handle_history' , $history);
+                if($res == TRUE){
+                    $message['msg'][0] = 'پرداخت با موفقیت انجام شد';
+                    $message['msg'][1] = 'success';
+                    $this->session->set_flashdata($message);
+                    redirect("deal/handle/$deal_id");
+                }else{
+                    $message['msg'][0] = 'مشکلی در روند عملیات رخ داده است . لطفا دوباره سعی کنید';
+                    $message['msg'][1] = 'danger';
+                    $this->session->set_flashdata($message);
+                    redirect("deal/handle/$deal_id");
+                }
+        
+                }else{
+                    show_404();
+                }
         }else{
             show_404();
         }
+ 
     }
 
 public function photo(){
@@ -417,6 +438,50 @@ public function photo(){
    $this->load->view('header' , $header);
    $this->load->view('deal/photo');
    $this->load->view('footer');
+}
+public function get_history(){
+    if(isset($_POST['handle_id'])){
+       $handle_id = $this->input->post('handle_id');
+       $history = $this->base_model->get_data('handle_history' , 'handle_history.*' , 'result' , array('handle_id'=> $handle_id , 'active'=> 1));
+       echo json_encode($history);
+    }else{
+        show_404();
+    }
+}
+public function restore(){
+    $id = $this->uri->segment(3);
+    $deal_id = $this->uri->segment(4);
+    if(isset($id) and isset($deal_id)){
+        $res = $this->base_model->get_data('handle_history' , 'handle_id ,volume' , 'row' , array('id' => $id));
+        $handle_id = $res->handle_id;
+        $restore = $res->volume;
+        $store = $this->base_model->get_data_join('deal_handle' , 'deal' , 'deal_handle.handle_pay , deal_handle.handle_rest , deal.volume_pay , deal.volume_rest , deal_bank.pay , deal_handle.bank_id' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id' => $handle_id) , NULL , NULL , NULL , array('deal_bank' , 'deal_bank.id = deal_handle.bank_id'));
+       $bank_id = $store->bank_id;
+       $handle['handle_pay'] = $store->handle_pay - $restore;
+       $handle['handle_rest'] = $store->handle_rest + $restore;
+       $deal['volume_pay'] = $store->volume_pay - $restore;
+       $deal['volume_rest'] = $store->volume_rest + $restore;
+       $bank['pay'] = $store->pay - $restore;
+       $history['active'] = 0;
+       $this->base_model->update_data('handle_history' , $history , array('id' => $id));
+       $this->base_model->update_data('deal_handle', $handle , array('id' => $handle_id));
+       $this->base_model->update_data('deal' , $deal , array('id' => $deal_id));
+       $res = $this->base_model->update_data('deal_bank' , $bank , array('id'=> $bank_id));
+       if($res == TRUE){
+        $message['msg'][0] = 'مبلغ مورد نظر با موفقیت بازگرداننده شد';
+        $message['msg'][1] = 'success';
+        $this->session->set_flashdata($message);
+        redirect("deal/handle/$deal_id");
+    }else{
+        $message['msg'][0] = 'مشکلی در روند عملیات رخ داده است . لطفا دوباره سعی کنید';
+        $message['msg'][1] = 'danger';
+        $this->session->set_flashdata($message);
+        redirect("deal/handle/$deal_id");
+    }
+       
+    }else{
+        show_404();
+    }
 }
 }
 

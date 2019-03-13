@@ -63,7 +63,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 							<div class="col-sm-3">
 								<div class="form-group">
 									<label>حجم پرداخت شده : </label>
-									<p class="form-control">
+									<p class="form-control <?php if($deal->volume_pay > $deal->volume_deal ){echo 'text-danger';}?>">
 										<?php echo number_format($deal->volume_pay) . " ریـال ";?>
 									</p>
 								</div>
@@ -71,7 +71,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 							<div class="col-sm-3">
 								<div class="form-group">
 									<label>حجم قابل پرداخت: </label>
-									<p class="form-control">
+									<p class="form-control <?php if($deal->volume_rest < 0 ){echo 'text-danger';}?>">
 										<?php echo number_format($deal->volume_rest). " ریـال ";?>
 									</p>
 								</div>
@@ -87,7 +87,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 							<div class="col-sm-3">
 								<div class="form-group">
 									<label>مانده هماهنگ شده: </label>
-									<p class="form-control">
+									<p class="form-control <?php if($deal->vr < 0){echo 'text-danger';}?>">
 										<?php echo number_format($deal->vr)." ریـال ";?>
 									</p>
 								</div>
@@ -143,16 +143,16 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 								<?php echo $rows->number_shaba;?>
 							</td>
 							<td>
-								<?php echo number_format($rows->amount); ?>
+								<?php echo number_format($rows->amount). " ریـال  "; ?>
 							</td>
-							<td>
-								<?php echo number_format($rows->pay); ?>
+							<td class="<?php if($rows->pay > $rows->amount){echo 'text-danger';}?>">
+								<?php echo number_format($rows->pay)." ریـال "; ?>
 							</td>
 							<td>
 								<?php echo $rows->explain; ?>
 							</td>
 							<?php if($rows->active == 1){$class="success";$txt = 'فعال'; $act = 0;}else{$class = "danger"; $txt = 'غیرفعال'; $act = 1;} ?>
-							<td><a href="<?php echo base_url('deal/active/').$deal->id."/ ".$rows->id."/ ".$act; ?>"><span class="label label-<?php echo $class; ?>"><?php echo $txt;?></span></td></a>
+							<td><a href="<?php echo base_url('deal/active/').$deal->id."/".$rows->id."/".$act; ?>"><span class="label label-<?php echo $class; ?>"><?php echo $txt;?></span></td></a>
 								<td class="text-center">
 									<ul class="icons-list">
 										<li title="ویرایش بانک" class="text-primary"><a data-toggle="modal" href="#edit_bank_modal"><i class="icon-credit-card"></i></li>
@@ -249,7 +249,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 											  <?php }else{
 												  foreach($select as $selects){ ?>
 												<option value="<?php echo $selects->id;?>"><?php echo $selects->number_shaba. " | ". $selects->name_bank ?></option>
-                                                <?php }} ?>
+                          <?php }} ?>
 											</select>
 						</div>
 					</div>
@@ -300,18 +300,19 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 						<td><?php echo $key+1; ?></td>
 						<td><?php echo $row->fullname; ?></td>
 						<td><?php echo number_format($row->volume_handle); ?></td>
-						<td><?php echo number_format($row->handle_pay); ?></td>
-						<td><?php echo number_format($row->handle_rest); ?></td>
+						<td class= "<?php if($row->handle_pay > $row->volume_handle){echo 'text-danger';}?>"><?php echo number_format($row->handle_pay); ?></td>
+						<td class="<?php if($row->handle_rest < 0){echo 'text-danger';}?>"><?php echo number_format($row->handle_rest); ?></td>
 						<td><?php echo $row->number_shaba."<br>".$row->name_bank; ?></td>
 						<td><?php echo $row->date_handle."</br>".$row->time_handle; ?></td>
 						<td><?php if($row->date_modified == ''){echo '-';}else{echo $row->$date_modified;} ?></td>
 						</td>
 						<td class="text-center">
 								<ul class="icons-list">
-				<li title="پرداخت کامل" class="text-success"><a data-toggle="modal" href="#modal_theme_success"><i onclick="pay_all(<?php echo $row->id;?> , <?php echo $row->handle_rest;?>)" class="icon-checkmark4"></i></a>
-										</li>
-										<li title="پرداخت جزئی" class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i onclick="pay_slice(<?php echo $row->id;?>)" class="icon-stack-empty"></i></li>
-					<li title="حذف پرداخت " class="text-warning-800"><a data-toggle="modal" href="#modal_form_dminor"><i onclick="pay_slice(<?php echo $row->id;?>)" class="icon-file-minus"></i></li>
+        <?php if($row->handle_rest > 0){?>
+				<li title="پرداخت کامل" class="text-success"><a data-toggle="modal" href="#modal_theme_success"><i onclick="pay_all(<?php echo $row->id;?> , <?php echo $row->handle_rest;?>)" class="icon-checkmark4"></i></a></li>
+				<li title="پرداخت جزئی" class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i onclick="pay_slice(<?php echo $row->id;?>)" class="icon-stack-empty"></i></li>
+				<?php } ?>
+				<li title="حذف پرداخت " class="text-warning-800"><a data-toggle="modal" href="#modal_form_dminor"><i onclick="history(<?php echo $row->id;?>)" class="icon-file-minus"></i></li>
 				<li title="حذف هماهنگی" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i class="icon-cross2"></i></a>
 										</li>
 									</ul>
@@ -339,15 +340,6 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 										<span class="input-group-btn">
 							<button type="submit" name="sub" class="btn btn-success mt-25">ذخیره</button>
 											</span>
-									
-
-
-
-
-
-
-
-
 									</div>
 							</form>
 							</div>
@@ -463,7 +455,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				</div>
 			</div>
 
-			<?php $str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");?>
+			
 			<!-- /edit bank modal -->
 		</div>
 		<!-- dminor form modal -->
@@ -476,59 +468,15 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 
 					</div>
 					<hr>
-					<form method="post" id="form_slice">
-						<div class="modal-body">
-							<div class="row">
-								<div class="col-md-3">
-									<div class="form-group">
-										<label>تاریخ پرداخت:</label>
-										<input class="form-control" type="text" readonly>
-									</div>
-								</div>
-								<div class="col-md-9">
-									<div class="form-group input-group">
-
-										<label>مبلغ پرداخت:</label>
-										<input type="text" readonly placeholder="111,000,000" class="form-control">
-
-										<span class="input-group-btn">
-							<button type="submit" name="sub" class="btn btn-danger mt-25">حذف</button>
-											</span>
-									
-
-
-									</div>
-								</div>
-							</div>
-							<hr>
-									<div class="row">
-								<div class="col-md-3">
-									<div class="form-group">
-										<label>تاریخ هماهنگی:</label>
-										<input class="form-control" type="text" readonly>
-									</div>
-								</div>
-								<div class="col-md-9">
-									<div class="form-group input-group">
-
-										<label>مبلغ هماهنگی:</label>
-										<input type="text" readonly placeholder="111,000,000" class="form-control">
-
-										<span class="input-group-btn">
-							<button type="submit" name="sub" class="btn btn-danger mt-25">حذف</button>
-											</span>
-									
-
-
-									</div>
-								</div>
+						<div class="modal-body" id="showhistory">
+							<div>
 							</div>
 						</div>
-					</form>
 
 				</div>
 			</div>
 		</div>
+		<?php $str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");?>
 		<!-- /dminor form modal -->
 		<script>
 			function autocomplete( inp, arr ) {
@@ -705,18 +653,82 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 			}
 
 			function pay_all( link, rest ) {
-				document.getElementById( 'button_all' ).setAttribute( 'href', "<?php echo base_url("
-					deal / pay_all / ").$deal->id." / "?>" + link );
+				document.getElementById( 'button_all' ).setAttribute( 'href', "<?php echo base_url("deal/pay_all/").$deal->id."/"?>" + link );
 				document.getElementById( 'p_all' ).innerHTML = " آیا می خواهید تمام مبلغ " + numeral( rest ).format( '0,0' ) + " پرداخت شود ؟";
 			}
 
 			function pay_slice( link ) {
-				document.getElementById( 'form_slice' ).setAttribute( 'action', "<?php echo base_url("
-					deal / pay_slice / ").$deal->id." / "?>" + link );
+				document.getElementById( 'form_slice' ).setAttribute( 'action', "<?php echo base_url("deal/pay_slice/").$deal->id."/"?>" + link );
 			}
 
 			function slice_input( input ) {
 				input.value = numeral( input.value ).format( '0,0' );
 				input.nextElementSibling.value = numeral( input.value ).value();
 			}
+			
+			
+			function history(id){
+		var xhr = new XMLHttpRequest();
+		xhr.onload = function(){
+			if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
+				
+					var result = JSON.parse(xhr.responseText);
+				    showHistory(result);
+				}else{
+					alert('request was unsuccessful : ' + xhr.status);
+				}
+		}
+		xhr.open('post' , "<?php echo base_url('deal/get_history/')?>" , true);
+		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		xhr.send('handle_id=' + id);
+			}
+			function showHistory(res){
+				var modal = document.getElementById('showhistory');
+				if(res.length == 0){
+					modal.innerHTML = '<div class="text-center pb-20">پرداختی صورت نگرفته است</div>';
+				}else{
+					var div = document.createElement('div');
+					for(var i = 0 ; i < res.length ; i++ ){
+						var row = div.appendChild(document.createElement('div'));
+						row.setAttribute('class' , 'row');
+						
+						var col4 = row.appendChild(document.createElement('div'));
+						col4.setAttribute('class' , 'col-md-4');
+						
+						var group = col4.appendChild(document.createElement('div'));
+						group.setAttribute('class' , 'form-group');
+						
+						var label = group.appendChild(document.createElement('label'));
+						label.innerHTML = 'تاریخ پرداخت';
+						
+						var p_date = group.appendChild(document.createElement('p'));
+						p_date.setAttribute('class' , 'form-control');
+						p_date.innerHTML = res[i].date_pay;
+						
+						var col8 = row.appendChild(document.createElement('div'));
+						col8.setAttribute('class' , 'col-md-8');
+						
+						var group1 = col8.appendChild(document.createElement('div'));
+						group1.setAttribute('class' , 'form-group input-group');
+						
+						var lable1 = group1.appendChild(document.createElement('label'));
+						lable1.innerHTML = 'مبلغ پرداخت';
+						
+						var p1 = group1.appendChild(document.createElement('p'));
+						p1.innerHTML = numeral(res[i].volume).format('0,0') + ' ریـال ';
+						p1.setAttribute('class' , 'form-control');
+						
+						var span = group1.appendChild(document.createElement('span'));
+						span.setAttribute('class' , 'input-group-btn');
+						 
+						var a = span.appendChild(document.createElement('a'));
+						a.setAttribute('class' , 'btn btn-danger mt-25');
+						a.setAttribute('href' , "<?php echo base_url('deal/restore/') ?>" + res[i].id + '/' + "<?php echo $deal->id; ?>");
+						a.innerHTML = 'حذف';
+						
+					}
+					modal.replaceChild(div , modal.firstChild);
+				}
+			}
+			
 		</script>
