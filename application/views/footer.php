@@ -114,16 +114,14 @@ $(document).ready(function(){
 	<!-- Theme JS files -->
 	
 
-	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/visualization/d3/d3.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/visualization/d3/d3_tooltip.js"></script>
-	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/forms/styling/switchery.min.js"></script>
+  <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/visualization/d3/d3.min.js"></script>
+  <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/visualization/d3/d3_tooltip.js"></script>
+  <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/forms/styling/switchery.min.js"></script>
   <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/forms/styling/uniform.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/forms/selects/bootstrap_multiselect.js"></script>
-	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/ui/moment/moment.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/pickers/daterangepicker.js"></script>
-    
+  <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/forms/selects/bootstrap_multiselect.js"></script>
+  <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/ui/moment/moment.min.js"></script>
+  <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/pickers/daterangepicker.js"></script>
   <script type="text/javascript" src="<?php echo base_url('files/'); ?>assets/js/plugins/forms/selects/select2.min.js"></script>
-
   <script type="text/javascript" src="<?php echo base_url('files/'); ?>assets/js/core/libraries/jasny_bootstrap.min.js"></script>
   <script type="text/javascript" src="<?php echo base_url('files/'); ?>assets/js/plugins/forms/inputs/autosize.min.js"></script>
   <script type="text/javascript" src="<?php echo base_url('files/'); ?>assets/js/plugins/forms/inputs/formatter.min.js"></script>
@@ -131,19 +129,17 @@ $(document).ready(function(){
   <script type="text/javascript" src="<?php echo base_url('files/'); ?>assets/js/plugins/forms/inputs/typeahead/handlebars.min.js"></script>
   <script type="text/javascript" src="<?php echo base_url('files/'); ?>assets/js/plugins/forms/inputs/passy.js"></script>
   <script type="text/javascript" src="<?php echo base_url('files/'); ?>assets/js/plugins/forms/inputs/maxlength.min.js"></script>
-
   <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/pages/form_layouts.js"></script>
   <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/core/app.js"></script>
   <script type="text/javascript" src="<?php echo base_url('files/'); ?>assets/js/pages/form_controls_extended.js"></script>
   <script type="text/javascript" src="<?php echo base_url('files/'); ?>assets/bootstrap-PersianDateTimePicker/jalaali.js"></script>
   <script type="text/javascript" src="<?php echo base_url('files/'); ?>assets/bootstrap-PersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.js"></script>
-  <!-- <script type="text/javascript" src="<?php //echo base_url('files/');?>assets/js/pages/dashboard.js"></script> -->
-  <!-- /theme JS files --> 
   <script>
 
  		$(function () {
             $('[data-toggle="tooltip"]').tooltip();
         })
-    </script>         
+    </script>  
+<script type="text/javascript" src="<?php echo base_url('files/'); ?>assets/js/pages/dashboard.js"></script>
 </body>
 </html>
