@@ -303,7 +303,8 @@ $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$dat
                 show_404();
             }else{
             $data['bank'] = $this->base_model->get_data_join('deal' , 'deal_bank'  ,'deal.id as deal_id , deal_bank.*','deal.id = deal_bank.deal_id' ,'result' ,array('deal.pub'=> 1 , 'deal.customer_id' => $id) , NULL , NULL , array('deal_bank.id', 'DESC'));
-            $data['select'] = $this->base_model->get_data_join('deal' , 'deal_bank' ,'deal_bank.id , deal_bank.number_shaba , deal_bank.name_bank , deal.id as deal_id','deal.id = deal_bank.deal_id' , 'result' , array('deal.customer_id' => $id , 'active' => 1) , NULL , NULL , array('id' , 'DESC'));  
+            $data['select2'] = $this->base_model->get_data_join('deal' , 'deal_bank' ,'deal_bank.id , deal_bank.number_shaba , deal_bank.name_bank , deal.id as deal_id','deal.id = deal_bank.deal_id' , 'result' , array('deal.customer_id' => $id , 'active' => 1) , NULL , NULL , array('id' , 'DESC'));  
+            $data['customer'] = $this->base_model->get_data('customer' ,'fullname' , 'result' , array('pub' => 1));
                 $this->load->view('header' , $header);
                 $this->load->view('deal/handle_profile' , $data);
                 $this->load->view('footer');
@@ -313,6 +314,14 @@ $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$dat
             show_404();
         }
 
+    }
+    public function search_deal(){
+    if(isset($_POST['deal_id'])){
+        $deal_id = $this->input->post('deal_id');
+        $customer_id = $this->input->post('customer_id');
+        $data = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname ,currency_unit.name' , 'deal.customer_id = customer.id' ,'row'  , array('deal.pub'=> 1 , 'deal.customer_id'=> $customer_id , 'deal.id'=>$deal_id), NULL , NULL , NULL , array('currency_unit','deal.money_id = currency_unit.id'));
+        echo json_encode($data);
+    }
     }
     public function active(){
         $deal_id = $this->uri->segment(3);

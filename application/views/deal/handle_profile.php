@@ -33,13 +33,14 @@
 				<th class="text-center">ابزارک</th>
 			</tr>
 		</thead>
-		<tbody id="search_cust" tyle="display: none;">
-			<tr></tr>
+		<tbody id="search_deal" tyle="display: none;">
+		
+			<tr><td>sd</td></tr>
 		</tbody>
 		<tbody>
 		<?php 
 			foreach($deal as  $deals){?>
-			<tr class="base_cust">
+			<tr class="deal_cust">
                 <td class="text-center"><?php echo $deals->id + 100; ?></td>
                 <td class="text-center"><?php echo $deals->fullname; ?></td>
 				<td class="text-center"><?php if($deals->type_deal == 1 ){echo 'خرید';}else{echo 'فروش';} ?></td>
@@ -77,32 +78,32 @@
 
 </div>
 </div>
-
+<p style="display: none;" id="cid"><?php echo $this->uri->segment(3)?></p>
 	<div class="panel panel-flat">
 		<div class="panel-body">
-			<div class="row field_wrapper">
+			<div class="row field_wrapper4">
 				<div>
 					<legend class="text-semibold"><i class="icon-address-book position-left"></i> افزودن هماهنگی</legend>
 					<div class="col-md-3">
 						<div class="form-group">
 							<label>نام مشتری:</label>
-							<input type="text" placeholder="علی شیرازی" class="form-control">
+							<input type="text" onFocus ="search_customer(this)" placeholder="علی شیرازی" class="form-control">
 						</div>
 					</div>
 						<div class="col-md-3">
 						<div class="form-group">
 							<label>انتخاب معامله:</label>
-							<input type="text" placeholder="لطفا شناسه معامله را وارد کنید" class="form-control">
+							<input type="text" name="deal_id[]" onkeyup="select_deal(this)" placeholder="لطفا شناسه معامله را وارد کنید" class="form-control">
 						</div>
 					</div>
 					<div class="col-md-3">
 						<div class="form-group">
 							<label>نام بانک:</label>
                             <select class="form-control" name="money_id" required>
-                         <?php if(sizeof($select) == 0){ ?>
+                         <?php if(sizeof($select2) == 0){ ?>
 							<option value="0">شماره حسابی ثبت نشده است</option>
-						 <?php } else { foreach($select as $selects){?>
-							<option value="1"><?php echo $selects->number_shaba." | ".$selects->name_bank." | ";echo $selects->deal_id + 100;?></option>
+						 <?php } else { foreach($select2 as $selects){?>
+							<option value="<?php echo $selects->id;?>"><?php echo $selects->number_shaba." | ".$selects->name_bank." | ";echo $selects->deal_id + 100;?></option>
 						 <?php } }?>
 											</select>
 						</div>
@@ -113,7 +114,7 @@
 							<label>مبلغ هماهنگی:</label>
 							<input type="text" placeholder="111,000,000" class="form-control">
 							<span class="input-group-btn">
-							<button type="button" class="btn btn-success add_button3 mt-25">
+							<button type="button" class="btn btn-success add_button4 mt-25">
 								<span class="icon-plus3"></span>
 							</button>
 							</span>
@@ -491,3 +492,115 @@
 		</div>
 		<!-- /dminor form modal -->
 		<!-- /edit bank modal -->
+		<?php $str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");?>
+		<script>
+				function autocomplete( inp, arr ) {
+				var currentFocus;
+				inp.addEventListener( "input", function ( e ) {
+					var a, b, i, val = this.value;
+					closeAllLists();
+					if ( !val ) {
+						return false;
+					}
+					currentFocus = -1;
+					a = document.createElement( "DIV" );
+					a.setAttribute( "id", this.id + "autocomplete-list" );
+					a.setAttribute( "class", "autocomplete-items" );
+					this.parentNode.appendChild( a );
+					for ( i = 0; i < arr.length; i++ ) {
+						let match;
+						let search = val;
+						let lastIndx = ( arr[ i ].length - 1 ) - arr[ i ].indexOf( search ) - ( search.length - 1 );
+						if ( lastIndx == 0 ) {
+							match = arr[ i ].slice( arr[ i ].indexOf( search ), arr[ i ].length );
+						} else {
+							match = arr[ i ].slice( arr[ i ].indexOf( search ), -lastIndx );
+						}
+						if ( match.length == search.length ) {
+							let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length );
+
+							b = document.createElement( "DIV" );
+							b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";
+							b.addEventListener( "click", function ( e ) {
+								inp.value = this.getElementsByTagName( "input" )[ 0 ].value;
+								closeAllLists();
+							} );
+							a.appendChild( b );
+						}
+					}
+				} );
+				inp.addEventListener( "keydown", function ( e ) {
+					var x = document.getElementById( this.id + "autocomplete-list" );
+					if ( x ) x = x.getElementsByTagName( "div" );
+					if ( e.keyCode == 40 ) {
+						currentFocus++;
+						addActive( x );
+					} else if ( e.keyCode == 38 ) {
+						currentFocus--;
+						addActive( x );
+					} else if ( e.keyCode == 13 ) {
+						e.preventDefault();
+						if ( currentFocus > -1 ) {
+							if ( x ) x[ currentFocus ].click();
+						}
+					}
+				} );
+
+				function addActive( x ) {
+					if ( !x ) return false;
+					removeActive( x );
+					if ( currentFocus >= x.length ) currentFocus = 0;
+					if ( currentFocus < 0 ) currentFocus = ( x.length - 1 );
+					x[ currentFocus ].classList.add( "autocomplete-active" );
+
+				}
+
+				function removeActive( x ) {
+					for ( var i = 0; i < x.length; i++ ) {
+						x[ i ].classList.remove( "autocomplete-active" );
+					}
+				}
+
+				function closeAllLists( elmnt ) {
+					var x = document.getElementsByClassName( "autocomplete-items" );
+					for ( var i = 0; i < x.length; i++ ) {
+						if ( elmnt != x[ i ] && elmnt != inp ) {
+							x[ i ].parentNode.removeChild( x[ i ] );
+						}
+					}
+				}
+				document.addEventListener( "click", function ( e ) {
+					closeAllLists( e.target );
+				} );
+			}
+			var customer = [ <?php echo $str; ?> ];
+
+			function search_customer( input ) {
+				autocomplete( input, customer );
+			}
+			var search = document.getElementById('search_deal');
+			var base = document.getElementById('deal_cust');
+			var cid = document.getElementById('cid').innerHTML;
+			function select_deal(input){
+				var text = input.value;
+				if(text == '' || isNaN(text) || text.length < 3){
+			search.style.display = 'none';
+			base.style.display = 'contents';
+					return;
+				}
+		var xhr = new XMLHttpRequest();
+		xhr.onload = function () {
+			if ( ( xhr.status >= 200 && xhr.status < 300 ) || xhr.status == 304 ) {
+				var result = JSON.parse( xhr.responseText );
+//				showdeal( result, input, search_cust );
+			} else {
+				alert( 'request was unsuccessful : ' + xhr.status );
+			}
+		}
+		text = text - 100;
+		xhr.open( 'post', "<?php echo base_url('deal/search_deal/')?>", true );
+		xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
+		xhr.send( 'deal_id=' + text + "&customer_id=" + cid );
+				
+			}
+		</script>

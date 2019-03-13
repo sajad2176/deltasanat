@@ -69,7 +69,7 @@
 						
 					</div>
 				</form>
-				<div class=" col-md-1 mt-25 text-left">
+				<!-- <div class=" col-md-1 mt-25 text-left">
 					<label>نمایش:</label>
 					<ul class="icons-list display-inline-block">
 						<li class="dropdown">
@@ -80,20 +80,20 @@
 
 
 							<ul class="dropdown-menu dorpdown-custom dropdown-menu-right">
-								<li><a class="dropdown-item" href="<?php echo base_url('deal/archive/show/10')?>">10</a>
+								<li><a class="dropdown-item" href="<?php //echo base_url('deal/archive/show/10')?>">10</a>
 								</li>
-								<li><a class="dropdown-item" href="<?php echo base_url('deal/archive/show/25')?>">25</a>
+								<li><a class="dropdown-item" href="<?php // echo base_url('deal/archive/show/25')?>">25</a>
 								</li>
-								<li><a class="dropdown-item" href="<?php echo base_url('deal/archive/show/50')?>">50</a>
+								<li><a class="dropdown-item" href="<?php //echo base_url('deal/archive/show/50')?>">50</a>
 								</li>
-								<li><a class="dropdown-item" href="<?php echo base_url('deal/archive/show/100')?>">100</a>
+								<li><a class="dropdown-item" href="<?php //echo base_url('deal/archive/show/100')?>">100</a>
 								</li>
-								<li><a class="dropdown-item" href="<?php echo base_url('deal/archive/show/all')?>">نمایش همه</a>
+								<li><a class="dropdown-item" href="<?php //echo base_url('deal/archive/show/all')?>">نمایش همه</a>
 								</li>
 							</ul>
 						</li>
 					</ul>
-				</div>
+				</div> -->
 			</div>
 		</div>
 	

@@ -23,7 +23,16 @@
 foreach($select as $selects){
 $str .= "<option value = \" $selects->id \">". $selects->number_shaba ." | ". $selects->name_bank ."</option>";
 }
-}?>
+}
+if(isset($select2) and sizeof($select2) != 0){ 
+  $str2 = '';
+foreach($select2 as $selects){
+  $id = $selects->deal_id + 100;
+$str2 .= "<option value = \" $selects->id \">". $selects->number_shaba ." | ". $selects->name_bank." | " . $id ."</option>";
+$id = 0;
+}
+}
+?>
 <script>
 var modal = document.getElementById('modal_logout');
 window.onclick = function(event) {
@@ -98,6 +107,26 @@ $(document).ready(function(){
         }
     });
     $(wrapper).on('click', '.remove_button3', function(e){
+        e.preventDefault();
+        $(this).parent('div').parent('div').parent('div').remove();
+        x--; 
+    });
+});
+$(document).ready(function(){
+    var maxField = 3;
+    var addButton = $('.add_button4');
+    var wrapper = $('.field_wrapper4');
+    var fieldHTML = '<div><div class="col-md-3"><div class="form-group"><label>نام مشتری:</label><input class="form-control" onFocus="search_customer(this)" name="customer[]" type="text" placeholder="نام مشتری خود را وارد کنید" autocomplete="off" required></div></div><div class="col-md-3"><div class="form-group"><label>انتخاب معامله:</label><input type="text" placeholder="لطفا شناسه معامله را وارد کنید" class="form-control"></div></div><div class="col-md-3"><div class="form-group"><label>انتخاب حساب : </label><select class="form-control" name="bank_id[]" required><?php if(isset($str2)){ echo $str2;}else{echo '<option value = "0">شماره حسابی ثبت نشده است</option>';} ?></select></div></div><div class="col-md-3"><div class="form-group input-group"><label>مبلغ هماهنگی:</label><input type="text" onkeyup="volume_handle(this)" placeholder="111,000,000" class="form-control" required><input type="hidden" name="volume_handle[]"><span class="input-group-btn remove_button4"><button type="button" class="btn btn-danger  mt-25"><span class="icon-minus2"></span></button></span></div></div></div>';
+		
+    var x = 1;
+    		
+    $(addButton).click(function(){
+        if(x < maxField){ 
+            x++;
+            $(wrapper).append(fieldHTML);
+        }
+    });
+    $(wrapper).on('click', '.remove_button4', function(e){
         e.preventDefault();
         $(this).parent('div').parent('div').parent('div').remove();
         x--; 

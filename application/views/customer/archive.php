@@ -52,12 +52,13 @@
 				<tr>
 					<th>ردیف</th>
 					<th>نام و نام خانوادگی</th>
-					<th>تعداد معاملات انجام شده</th>
+					<th>تعداد معاملات  </th>
 					<th>مجموع معامله</th>
+					<th>مجموع پرداخت نشده</th>
 					<th class="text-center">ابزارک</th>
 				</tr>
 			</thead>
-			<tbody id="search_cust" tyle="display: none;">
+			<tbody id="search_cust" style="display: none;">
 				<tr></tr>
 			</tbody>
 			<tbody>
@@ -69,7 +70,8 @@
 								$show = $this->uri->segment(3);
 								$num = $this->uri->segment(3) + 1;
 							}
-							if(sizeof($customer) == 0){echo '<tr><td colspan="5" class="text-center p-20">موردی یافت نشد</td></tr>';}
+									   if(sizeof($customer) == 0){echo '<tr><td colspan="6" class="text-center p-20">موردی یافت نشد</td></tr>';}
+							else if(sizeof($customer) > 0){ if($customer[0]->fullname == ''){echo '<tr><td colspan="6" class="text-center p-20">موردی یافت نشد</td></tr>';}
 							else{
 							foreach($customer as $rows){ ?>
 				<tr class="base_cust">
@@ -77,15 +79,14 @@
 						<?php echo $num;?>
 					</td>
 					<td>
-						<?php echo $rows->fullname; ?>
+						<a href="<?php echo base_url('deal/handle_profile/').$rows->id;?>"><?php echo $rows->fullname; ?></a>
 					</td>
-					<td>10</td>
-					<td>10</td>
+					<td><?php echo $rows->deal_count;?></td>
+					<td><?php echo number_format($rows->vd); ?></td>
+					<td><?php echo number_format($rows->vr); ?></td>
 					<td class="text-center">
 						<ul class="icons-list">
 							<li class="text-primary-600"><a href="<?php echo base_url('customer/edit/').$rows->id;?>"><i class="icon-pencil7"></i></a>
-							</li>
-							<li class="text-teal-600"><a href="<?php echo base_url('customer/edit/').$rows->id;?>"><i class="icon-cog7"></i></a>
 							</li>
 							<li class="text-danger-600"><a href="#"><i class="icon-trash"></i></a>
 							</li>
@@ -95,9 +96,10 @@
 				<?php
 				$num++;
 				}
-				}
+							}
+													 }
 				?>
-				<?php if(sizeof($customer) != 0){ ?>
+				<?php if(sizeof($customer) > 0){ if($customer[0]->fullname != ''){ ?>
 				<tr>
 					<td colspan="3" class="pt-20 pb-20">
 						نمایش
@@ -105,11 +107,11 @@
 						<?php echo $num - 1; ?> از
 						<?php echo $count;?>
 					</td>
-					<td colspan="2" class="text-left pt-20 pb-20">
+					<td colspan="3" class="text-left pt-20 pb-20">
 						<?php echo $page; ?>
 					</td>
 				</tr>
-				<?php } ?>
+				<?php }} ?>
 			</tbody>
 
 		</table>
@@ -144,8 +146,9 @@
 	function showCustResult( result, input, tbody ) {
 		tbody.style.display = 'contents';
 		tbody.nextElementSibling.style.display = 'none';
-		if ( result.length == 0 ) {
-			tbody.innerHTML = '<tr><td colspan="5" class="text-center p-20">موردی یافت نشد</td></tr>';
+		if ( result.length == 0) {
+			tbody.innerHTML = '<tr><td colspan="6" class="text-center p-20">موردی یافت نشد</td></tr>';
+			return;
 		} else {
 			var div = document.createElement( 'tbody' );
 			for ( var i = 0; i < result.length; i++ ) {
@@ -153,11 +156,15 @@
 				var td_row = tr.appendChild( document.createElement( 'td' ) );
 				td_row.innerHTML = i + 1;
 				var td_fullname = tr.appendChild( document.createElement( 'td' ) );
-				td_fullname.innerHTML = result[ i ].fullname;
+				var a_customer = td_fullname.appendChild(document.createElement('a'));
+				a_customer.setAttribute('href' , "<?php echo base_url('deal/handle_profile/')?>"+result[i].id);
+				a_customer.innerHTML = result[ i ].fullname;
 				var td_tel = tr.appendChild( document.createElement( 'td' ) );
-				td_tel.innerHTML = '10';
+				td_tel.innerHTML = result[i].deal_count;
 				var td_tel1 = tr.appendChild( document.createElement( 'td' ) );
-				td_tel1.innerHTML = '10';
+				td_tel1.innerHTML = numeral(result[i].vd).format('0,0');
+				var td_tel2 = tr.appendChild( document.createElement( 'td' ) );
+				td_tel2.innerHTML = numeral(result[i].vr).format('0,0');
 
 				var td_tool = tr.appendChild( document.createElement( 'td' ) );
 				td_tool.setAttribute( 'class', 'text-center' );
@@ -171,13 +178,6 @@
 				a_edit.setAttribute( 'href', "<?php echo base_url('customer/edit/')?>" + result[ i ].id );
 				var i_edit = a_edit.appendChild( document.createElement( 'i' ) );
 				i_edit.setAttribute( 'class', 'icon-pencil7' );
-
-				var li_detail = ul_tool.appendChild( document.createElement( 'li' ) );
-				li_detail.setAttribute( 'class', "text-teal-600" );
-				var a_detail = li_detail.appendChild( document.createElement( 'a' ) )
-				a_detail.setAttribute( 'href', "<?php echo base_url('customer/detail/')?>" + result[ i ].id );
-				var i_detail = a_detail.appendChild( document.createElement( 'i' ) );
-				i_detail.setAttribute( 'class', 'icon-cog7' );
 
 				var li_delete = ul_tool.appendChild( document.createElement( 'li' ) );
 				li_delete.setAttribute( 'class', "text-danger-600" );

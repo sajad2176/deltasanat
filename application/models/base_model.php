@@ -59,6 +59,29 @@ function get_data_join($from , $join , $select ,$join_where ,$ret = 'result' , $
         return $query->result();
     }
 }
+function get_data_left($from , $join , $select ,$join_where, $side ,$ret = 'result' , $where = NULL, $limit = NULL , $offset = NULL , $order_by = NULL , $group = NULL){
+    $this->db->select($select);
+    $this->db->from($from);
+    $this->db->join($join , $join_where , $side);
+    if($where != NULL){
+        $this->db->where($where);
+    }
+    if($order_by != NULL){
+        $this->db->order_by($order_by[0] , $order_by[1]);
+    }
+   if($limit != NULL){
+        $this->db->limit($limit , $offset);
+    }
+    if($group != NULL){
+        $this->db->group_by($group);
+    }
+    $query = $this->db->get();
+    if($ret != 'result'){
+        return $query->row();
+    }else{
+        return $query->result();
+    }
+}
 
 function insert_data($table , $data){
     if($this->db->insert($table , $data)){
@@ -89,16 +112,21 @@ function get_count($table , $where){
 			}
 }
 
-function search_data($table , $select , $like , $where = NULL , $order_by = NULL){
-	$this->db->select($select);
+function search_data($from , $join , $select ,$join_where , $side  , $like , $where = NULL , $order_by = NULL , $group_by = NULL){
+    $this->db->select($select);
+    $this->db->from($from);
+    $this->db->join($join , $join_where , $side);
 	if($where != NULL){
 		$this->db->where($array);
 	}
 	if($order_by != NULL){
 		$this->db->order_by($order_by[0] , $order_by[1]);
-	}
+    }
+    if($group_by != NULL){
+        $this->db->group_by($group_by);
+    }
 	$this->db->like($like);
-	$query = $this->db->get($table);
+	$query = $this->db->get();
 	return $query->result();
 }
 
