@@ -26,10 +26,10 @@ $msg = $this->session->userdata('msg');?>
 					<div class="row">
 						<div class="">
 							<fieldset>
-								<legend class="text-semibold"><i class="icon-cart5 position-left"></i> اطلاعات خرید</legend>
+								<legend class="text-semibold"><i class="icon-coins position-left"></i> اطلاعات فروش</legend>
 								<div class="form-group">
-									<label>نام فروشنده: </label>
-									<input class="form-control" onFocus="search_customer(this)" name="customer[]" type="text" placeholder="نام فروشنده خود را وارد کنید" autocomplete="off" required>
+									<label>نام خریدار: </label>
+									<input class="form-control" onFocus="search_customer(this)" name="customer[]" type="text" placeholder="نام خریدار خود را وارد کنید" autocomplete="off" required>
 								</div>
 
 								<div class="row">
@@ -112,7 +112,7 @@ $msg = $this->session->userdata('msg');?>
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
-												<label>مبلغ معامله: </label>
+												<label>مبلغ واریزی: </label>
 												<input type="text" onKeyUp="amount_bank(this)" placeholder="100000" class="form-control">
 												<input type="hidden" name="amount_bank[]">
 												<p class="text-danger" style ="display: none;">مبلغ وارد شده بیشتر از حجم معامله است</p>

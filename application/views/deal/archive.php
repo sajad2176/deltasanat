@@ -27,7 +27,7 @@
 
 							</div>
 						</div>
-						<div class="col-md-5">
+						<div class="col-md-4">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">تاریخ ایجاد مطلب</label>
@@ -63,6 +63,10 @@
 								</select>
 							</div>
 						</div>
+						<div class="col-md-1">
+							<button class="btn btn-success mt-25" type="submit" >جستجو</button>
+						</div>
+						
 					</div>
 				</form>
 				<div class=" col-md-1 mt-25 text-left">
@@ -92,7 +96,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	
 
 	<table class="table datatable-selection-single table-hover table-responsive-lg ">
 		<thead>
@@ -160,11 +164,11 @@
 				</td>
 				<td class="text-center">
 					<ul class="icons-list">
-						<li title="هماهنگی ها" class="text-success"><a href="<?php echo base_url('deal/handle/').$rows->id;?>"><i class="icon-notebook"></i></a>
+						<li title="هماهنگی ها" data-toggle="tooltip" class="text-success"><a href="<?php echo base_url('deal/handle/').$rows->id;?>"><i class="icon-notebook"></i></a>
 						</li>
-						<li class="text-primary"><a href="<?php echo base_url('customer/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a>
+						<li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('customer/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a>
 						</li>
-						<li class="text-danger"><a href="#"><i class="icon-trash"></i></a>
+						<li title="حذف معامله" data-toggle="tooltip" class="text-danger"><a href="#"><i class="icon-trash"></i></a>
 						</li>
 					</ul>
 				</td>
@@ -192,7 +196,7 @@
 	</table>
 
 
-
+</div>
 </div>
 </div>
 <script>

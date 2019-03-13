@@ -141,7 +141,9 @@ $(document).ready(function(){
   <!-- /theme JS files --> 
   <script>
 
-
+ 		$(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        })
     </script>         
 </body>
 </html>

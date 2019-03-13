@@ -167,7 +167,7 @@
 
 									<ul class="icons-list">
 
-										<li title="ویرایش بانک" class="text-primary"><a data-toggle="modal" href="#edit_bank_modal"><i class="icon-credit-card"></i></li>
+										<li title="ویرایش بانک" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#edit_bank_modal"><i class="icon-credit-card"></i></li>
 									
 									
 									</ul>
@@ -238,11 +238,9 @@
 
 			</div>
 		</div>
-		
-			
-			
 		</div>
 	</div>
+<div>
 	<div class="panel panel-flat">
 		<div class="panel-body">
 			<legend class="text-semibold"><i class="icon-notebook position-left"></i> اطلاعات هماهنگی</legend>
@@ -274,20 +272,13 @@
 									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 									<i class=""></i>
 								</a>
-
-
-
-
-
-
-
-
 											<ul class="icons-list">
-												<li title="پرداخت کامل" class="text-success"><a data-toggle="modal" href="#modal_theme_success"><i class="icon-checkmark4"></i></a>
+												<li title="پرداخت کامل" data-toggle="tooltip" class="text-success"><a data-toggle="modal" href="#modal_theme_success"><i class="icon-checkmark4"></i></a>
 												</li>
-												<li title="پرداخت جزئی" class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i class="icon-stack-empty"></i></li>
+												<li title="پرداخت جزئی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i class="icon-stack-empty"></i></li>
+													<li title="حذف پرداخت " data-toggle="tooltip" class="text-warning-800"><a data-toggle="modal" href="#modal_form_dminor"><i  class="icon-file-minus"></i></li>
 									
-									<li title="حذف هماهنگی" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i class="icon-cross2"></i></a>
+									<li title="حذف هماهنگی" data-toggle="tooltip" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i class="icon-cross2"></i></a>
 												</li>
 											</ul>
 										</li>
@@ -434,4 +425,69 @@
 				</div>
 			</div>
 		</div>
+		</div>
+				<!-- dminor form modal -->
+		<div id="modal_form_dminor" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h5 class="modal-title text-center">بخشی از مبلغ هماهنگ شده را حذف کنید</h5>
+
+					</div>
+					<hr>
+					<form method="post" id="form_slice">
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-md-3">
+									<div class="form-group">
+										<label>تاریخ پرداخت:</label>
+										<input class="form-control" type="text" readonly>
+									</div>
+								</div>
+								<div class="col-md-9">
+									<div class="form-group input-group">
+
+										<label>مبلغ پرداخت:</label>
+										<input type="text" readonly placeholder="111,000,000" class="form-control">
+
+										<span class="input-group-btn">
+							<button type="submit" name="sub" class="btn btn-danger mt-25">حذف</button>
+											</span>
+									
+
+
+									</div>
+								</div>
+							</div>
+							<hr>
+									<div class="row">
+								<div class="col-md-3">
+									<div class="form-group">
+										<label>تاریخ هماهنگی:</label>
+										<input class="form-control" type="text" readonly>
+									</div>
+								</div>
+								<div class="col-md-9">
+									<div class="form-group input-group">
+
+										<label>مبلغ هماهنگی:</label>
+										<input type="text" readonly placeholder="111,000,000" class="form-control">
+
+										<span class="input-group-btn">
+							<button type="submit" name="sub" class="btn btn-danger mt-25">حذف</button>
+											</span>
+									
+
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+
+				</div>
+			</div>
+		</div>
+		<!-- /dminor form modal -->
 		<!-- /edit bank modal -->

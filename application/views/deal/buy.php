@@ -112,7 +112,7 @@ $msg = $this->session->userdata('msg');?>
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
-												<label>مبلغ معامله: </label>
+												<label>مبلغ واریزی: </label>
 												<input type="text" onKeyUp="amount_bank(this)" placeholder="100000" class="form-control">
 												<input type="hidden" name="amount_bank[]">
 												<p class="text-danger" style ="display: none;">مبلغ وارد شده بیشتر از حجم معامله است</p>
