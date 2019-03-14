@@ -38,6 +38,10 @@
 							<label> تکرارکلمه عبور  : </label>
 							<input type="password" class="form-control" placeholder="************">
 						</div>
+						<div class="form-group">
+									<label>انتخاب آواتار</label>
+									<input type="file" class="file-styled" name="picname">
+								</div>
 
 					</fieldset>
 				</div>
