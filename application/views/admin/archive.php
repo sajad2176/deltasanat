@@ -1,10 +1,10 @@
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 	<ul class="breadcrumb">
-		<li><a href="index.html"><i class="icon-home2 position-left"></i> Home</a>
+		<li><a href="<?php echo base_url('home')?>"><i class="icon-home2 position-left"></i> داشبورد</a>
 		</li>
-		<li><a href="alpaca_basic.html">Alpaca</a>
+		<li><a href="<?php echo base_url('admin/archive/') ?>">کاربران</a>
 		</li>
-		<li class="active">Basic examples</li>
+		<li class="active">آرشیو کاربران</li>
 	</ul>
 </div>
 <div class="panel panel-flat">
@@ -13,44 +13,50 @@
 		<table class="table datatable-basic">
 			<thead>
 				<tr>
-					<th width="10%">ردیف</th>
-					<th width="20%">Last Name</th>
-					<th width="20%">Job Title</th>
-					<th width="20%">DOB</th>
-					<th width="20%">Status</th>
-					<th width="10%" class="text-center">Actions</th>
+					<th width="5%">ردیف</th>
+					<th width="21%">نام و نام خانوادگی</th>
+					<th width="21%">نام کاربری </th>
+					<th width="22%">زمان آخرین ورود</th>
+					<th width="11%">وضعیت</th>
+					<th width="15%" class="text-center">ابزار</th>
 				</tr>
 			</thead>
 			<tbody>
+			<?php if(sizeof($user) == 0){?>
+			<tr><td colspan="6" class="text-center p-20">موردی یافت نشد</td></tr>
+			<?php }else{
+				$row = $this->uri->segment(3) + 1;
+				foreach($user as $rows){?>	
+				
 				<tr>
-					<td>Marth</td>
-					<td>asdasdas
-					</td>
-					<td>
-						asdasdasd
-					</td>
-					<td>22 Jun 1972</td>
-					<td><span class="label label-success">Active</span>
-					</td>
+					<td><?php echo $row;?></td>
+					<td><?php echo $rows->firstname."  ".$rows->lastname;?></td>
+					<td><?php echo $rows->username;?></td>
+					<td><?php if($rows->date_login == '0000-00-00'){echo 'ثبت نشده است';}else{echo $rows->date_login."  ".$rows->time_login;}?></td>
+					<?php if($rows->active == 1){$class='success';$txt = 'فعال';$url = '0';}else{$class='danger';$txt = 'غیر فعال';$url = '1';} ?>
+	<td><a href="<?php echo base_url('admin/active/').$rows->id."/".$url; ?>"><span class="label label-<?php echo $class;?>"><?php echo $txt;?></span></a></td>
 					<td class="text-center">
-						<ul class="icons-list">
-							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-									<i class=""></i>
-								</a>
-
-								<ul class="icons-list">
-
-									<li title="ادیت کاربر" class="text-success"><a href="#"><i class=" icon-pencil3"></i></li>
-									<li title="ادیت کاربر" class="text-primary"><a href="log"><i class=" icon-eye4"></i></li>
-									<li title="حذف کاربر" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i class="icon-cross2"></i></a>
-									</li>
-								</ul>
-							</li>
-						</ul>
+					   <ul class="icons-list">
+		<li title="ویرایش کاربر <?php echo $rows->username;?>" class="text-success" data-toggle="tooltip"><a href="<?php echo base_url('admin/edit/').$rows->id;?>"><i class=" icon-pencil3"></i></li>
+		<li title="تاریخچه کاربر <?php echo $rows->username;?>" class="text-primary" data-toggle="tooltip"><a href="<?php echo base_url('admin/log/').$rows->id;?>"><i class=" icon-eye4"></i></li>
+<li title=" حذف کاربر <?php echo $rows->username;?>" class="text-danger" data-toggle="tooltip"><a data-toggle="modal" href="#modal_theme_danger"><i class="icon-cross2"></i></a></li>
+					  </ul>
 					</td>
 				</tr>
 				<tr>
+			<?php $row++; }?>
+			<tr>
+					<td colspan="3" class="pt-20 pb-20">
+						نمایش
+						<?php echo  $this->uri->segment(3) +1 ;?> تا
+						<?php echo  $row - 1; ?> از
+						<?php echo $count;?>
+					</td>
+					<td colspan="3" class="text-left pt-20 pb-20">
+						<?php echo $page; ?>
+					</td>
+				</tr>
+				<?php }?>
 		</table>
 
 

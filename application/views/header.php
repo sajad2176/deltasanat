@@ -56,7 +56,7 @@
 
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">
-						<img src="<?php echo base_url('files/')."assets/img/avatar/".$this->session->userdata('pic_name');?>" alt="">
+						<img src="<?php echo base_url('uploads/avatar/').$this->session->userdata('pic_name');?>" alt="">
 						<span><?php echo $this->session->userdata('username');?></span>
 						<i class="caret"></i>
 					</a>
@@ -89,7 +89,7 @@
 					<div class="sidebar-user">
 						<div class="category-content">
 							<div class="media">
-								<a href="#" class="media-left"><img src="<?php echo base_url('files/')."assets/img/avatar/".$this->session->userdata('pic_name');?>" class="img-circle img-sm" alt=""></a>
+								<a href="#" class="media-left"><img src="<?php echo base_url('uploads/avatar/').$this->session->userdata('pic_name');?>" class="img-circle img-sm" alt=""></a>
 								<div class="media-body">
 									<span class="media-heading text-semibold display-inline-block mt-10">
 										<?php echo $this->session->userdata('username');?>
@@ -109,6 +109,15 @@
 						<div class="category-content no-padding">
 							<ul class="navigation navigation-main navigation-accordion">
 								<li class="<?php if($active == 'dashbord'){echo 'active';}?>"><a href="<?php echo base_url('home'); ?>"><i class="icon-home4"></i> <span>داشبورد</span></a>
+								</li>
+							<li>
+									<a href=""><i class="icon-users4 <?php if($active == 'admin'){echo 'active';} ?>"></i> <span>کاربران</span></a>
+									<ul>
+										<li class="<?php if($active_sub == 'admin_archive'){echo 'active';} ?>"><a href="<?php echo base_url('admin/archive') ?>">آرشیو کاربران</a>
+										</li>
+										<li class="<?php if($active_sub == 'admin_add'){echo 'active';} ?>"><a href="<?php echo base_url('admin/add') ?>">افزودن کاربر</a>
+										</li>
+									</ul>
 								</li>
 								<li>
 									<a href=""><i class="icon-user-tie"></i> <span>مشتریان</span></a>
@@ -130,15 +139,7 @@
 										</li>
 									</ul>
 								</li>
-								<li>
-									<a href=""><i class="icon-users4 <?php if($active == 'admin'){echo 'active';} ?>"></i> <span>کاربران</span></a>
-									<ul>
-										<li class="<?php if($active_sub == 'admin_archive'){echo 'active';} ?>"><a href="<?php echo base_url('admin/archive') ?>">آرشیو کاربران</a>
-										</li>
-										<li class="<?php if($active_sub == 'admin_add'){echo 'active';} ?>"><a href="<?php echo base_url('admin/add') ?>">افزودن کاربر</a>
-										</li>
-									</ul>
-								</li>
+
 
 
 								<!-- /main -->

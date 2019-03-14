@@ -47,7 +47,12 @@ class Login extends CI_Controller{
 			$data['date_login'] = $date['year']. "-" .$date['month_num']."-".$date['day'];
 			$data['time_login'] = $date['hour']. ":".$date['minute']. ":" .$date['second'];
 			$this->base_model->update_data('member' , $data , array('id'=> $res->id));
-				
+			$log['user_id'] = $res->id;
+			$log['date_log'] = $data['date_login'];
+			$log['time_log'] = $data['time_login'];
+			$log['activity_id'] = 1;
+			$log['explain'] = 'ورود به سامانه';
+			$this->base_model->insert_data('log' , $log);	
              $ses = array(
 			 'id' => $res->id , 
 			 'name' => $res->firstname." ".$res->lastname,
