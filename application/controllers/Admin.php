@@ -242,12 +242,20 @@ redirect("admin/edit/$id");
       }
   }
   public function log(){
+      $id = $this->uri->segment(3);
+      if(isset($id) and is_numeric($id)){
         $header['title'] = 'فعالیت کاربران';
         $header['active'] = 'admin';
         $header['active_sub'] = 'admin_archive';
+        $data['logs'] = $this->base_model->get_data_join('log','activity' , 'log.* , activity.name' , 'log.activity_id = activity.id','result' , array('log.user_id' => 3));
+$date = $this->convertdate->convert(time());
+$data['date'] = $date['year']."-".$date['month_num']."-".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];;
         $this->load->view('header' , $header);
-        $this->load->view('admin/log');
+        $this->load->view('admin/log', $data);
         $this->load->view('footer');
+      }else{
+          show_404();
+      }
     }
     
 
