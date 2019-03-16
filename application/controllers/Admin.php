@@ -92,7 +92,13 @@ $data['count'] = $config['total_rows'];
         $user['firstname'] = $this->input->post('firstname'); 
         $user['lastname'] = $this->input->post('lastname');
         $user['username'] = $this->input->post('username');
-        $check = $this->get_data('member' , 'username' , 'row' , array('username'=>$user['username']));
+        $check = $this->base_model->get_data('member' , 'username' , 'row' , array('username'=>$user['username']));
+        if($check != NULL){
+            $message['msg'][0] = "این نام کاربری قبلا استفاده شده است . لطفا نام کاربری دیگری انتخاب کنید";
+            $message['msg'][1] = 'danger';
+            $this->session->set_flashdata($message);
+            redirect("admin/add");
+        }
         $pass = $this->input->post('password');
         $user['password'] = password_hash($pass, PASSWORD_DEFAULT);
         $user['active'] = 1;
@@ -128,9 +134,9 @@ $data['count'] = $config['total_rows'];
         $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
         $log['user_id'] = $this->session->userdata('id');
         $log['activity_id'] = 3;
-        $log['explain'] = ' کاربر ' . $user['username'] . 'را به کاربران سامانه افزود';
+        $log['explain'] = ' کاربر ' . $user['username'] . ' را به کاربران سامانه افزود ';
         $res_log = $this->base_model->insert_data('log' , $log);
-        $message['msg'][0] = " کاربر  ".$user['username'] . "با موفقیت افزوده شد";
+        $message['msg'][0] = " کاربر  ".$user['username'] . " با موفقیت افزوده شد ";
         $message['msg'][1] = 'success';
         $this->session->set_flashdata($message);
         redirect('admin/add/');
@@ -154,72 +160,72 @@ $data['count'] = $config['total_rows'];
                 $message['msg'][0] = "لطفا اطلاعات خواسته شده را وارد کنید";
                 $message['msg'][1] = 'danger';
                 $this->session->set_flashdata($message);
-                redirect('admin/add');
+                redirect("admin/edit/$id");
 }
+if($this->input->post('password') != '' or $this->input->post('repeat') != ''){
+    if($this->input->post('password') != $this->input->post('repeat')){
+    $message['msg'][0] = "کلمه عبور و تکرار کلمه عبور باید یکسان باشد";
+    $message['msg'][1] = 'danger';
+    $this->session->set_flashdata($message);
+    redirect("admin/edit/$id");
+}else{
+    $pass = $this->input->post('password');
+    $user['password'] = password_hash($pass, PASSWORD_DEFAULT);
+}
+}
+$user['firstname'] = $this->input->post('firstname');
+$user['lastname'] =$this->input->post('lastname');
 $user['username']  = $this->input->post('username');
-
-$check = $this->base_model->get_data('member' , 'username' , 'row' , array('username'=>$user['username']));
-if(count($check) == 0){
-    echo 'sd';
+$check = $this->base_model->get_data('member' , 'id ,username' , 'row' , array('username'=>$user['username']));
+if($check != NULL and $check->id != $id){
+    $message['msg'][0] = "این نام کاربری قبلا استفاده شده است . لطفا نام کاربری دیگری انتخاب کنید";
+    $message['msg'][1] = 'danger';
+    $this->session->set_flashdata($message);
+    redirect("admin/edit/$id");
 }
-echo "<pre>";
-var_dump($check);
-var_dump($_FILES);
-var_dump($_POST);
-echo "</pre>";
-            // else if($this->input->post('password') !=  $this->input->post('repeat')){
-            //     $message['msg'][0] = "کلمه عبور و تکرار کلمه عبور باید یکسان باشد";
-            //     $message['msg'][1] = 'danger';
-            //     $this->session->set_flashdata($message);
-            //     redirect('admin/add');
-            // }
-            // $user['firstname'] = $this->input->post('firstname');
-            // $user['lastname'] = $this->input->post('lastname');
-            // $user['username'] = $this->input->post('username');
-            // $pass = $this->input->post('password');
-            // $user['password'] = password_hash($pass, PASSWORD_DEFAULT);
-            // $user['active'] = 1;
-            // if($_FILES['picname']['name'] == '' or $_FILES['picname']['size'] == 0){
-            //  $user['picname'] = 'default_avatar.png';
-            // }else{
-            //     $config = array(
-            //         'upload_path' => "./uploads/avatar",
-            //         'allowed_types' => "gif|jpg|png|jpeg",
-            //         'max_size' => "4100"
-            //     );
-            //     $this->load->library('upload', $config);
-            //     if ($this->upload->do_upload('picname')) {
-            //         $user['picname'] = $_FILES['picname']['name'];
-            //     } else {
-            //         $message['msg'][0] = "مشکلی در ارسال عکس پیش آمده است لطفا دوباره سعی کنید";
-            //         $message['msg'][1] = 'danger';
-            //         $this->session->set_flashdata($message);
-            //         redirect('admin/add/');
-            //     }
-            // }
-            // $user['date_login'] = '0000-00-00';
-            // $user['time_login'] = 'ثبت نشده است';
-            // $res_user = $this->base_model->insert_data('member' , $user);
-            // if($res_user == FALSE){
-            //     $message['msg'][0] = "مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید";
-            //     $message['msg'][1] = 'danger';
-            //     $this->session->set_flashdata($message);
-            //     redirect('admin/add/');
-            // }
-            // $date = $this->convertdate->convert(time());
-            // $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
-            // $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
-            // $log['user_id'] = $this->session->userdata('id');
-            // $log['activity_id'] = 3;
-            // $log['explain'] = ' کاربر ' . $user['username'] . 'را به کاربران سامانه افزود';
-            // $res_log = $this->base_model->insert_data('log' , $log);
-            // $message['msg'][0] = " کاربر  ".$user['username'] . "با موفقیت افزوده شد";
-            // $message['msg'][1] = 'success';
-            // $this->session->set_flashdata($message);
-            // redirect('admin/add/');
-        }else{
-            $data['user'] = $this->base_model->get_data('member' , 'id , firstname , lastname , username , picname' , 'row' , array('id' => $id));
-            if(sizeof($data['user']) == 0){
+if($_FILES['picname']['name'] != '' or $_FILES['picname']['size'] != 0){
+    $config = array(
+        'upload_path' => "./uploads/avatar",
+        'allowed_types' => "gif|jpg|png|jpeg",
+        'max_size' => "4100"
+    );
+    $this->load->library('upload', $config);
+    if ($this->upload->do_upload('picname')) {
+        $user['picname'] = $_FILES['picname']['name'];
+        $pic = $user['picname'];
+        $avatar = array(
+            'pic_name' => $pic
+        );
+        $this->session->set_userdata( $avatar );
+        
+    } else {
+        $message['msg'][0] = "مشکلی در ارسال عکس پیش آمده است لطفا دوباره سعی کنید";
+        $message['msg'][1] = 'danger';
+        $this->session->set_flashdata($message);
+        redirect("admin/edit/$id");
+    }
+}
+$date = $this->convertdate->convert(time());
+$log['user_id'] = $this->session->userdata('id');
+$log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
+$log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+$log['activity_id'] = 4;
+$log['explain'] = ' مشخصات کاربر  '. $user['username'] . ' را ویرایش کرد ';
+$res = $this->base_model->update_data('member' , $user , array('id' => $id));
+if($res == FALSE){
+    $message['msg'][0] = "مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید";
+    $message['msg'][1] = 'danger';
+    $this->session->set_flashdata($message);
+    redirect("admin/edit/$id");
+}
+$this->base_model->insert_data('log' , $log);
+$message['msg'][0] = "اطلاعات با موفقیت ویرایش شد";
+$message['msg'][1] = 'success';
+$this->session->set_flashdata($message);
+redirect("admin/edit/$id");
+}else{
+            $data['user'] = $this->base_model->get_data('member' , 'id , firstname , lastname , username' , 'row' , array('id' => $id));
+            if($data['user'] == NULL){
                 show_404();
             }
             else{
