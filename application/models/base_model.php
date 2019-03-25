@@ -169,7 +169,7 @@ function delete_data($table , $where){
     }
 }
 function run_query($query) {
-    return $this->db->query($query)->result()‍;
+    return $this->db->query($query)->result() ;
 }
 
 // --select--update--insert--delete--  //
