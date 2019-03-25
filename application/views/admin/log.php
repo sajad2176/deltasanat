@@ -2,7 +2,7 @@
 	<ul class="breadcrumb">
 		<li><a href="<?php echo base_url('home');?>"><i class="icon-home2 position-left"></i> داشبورد</a>
 		</li>
-		<li><a href="<?php echo base_url('deal/log/').$this->uri->segment(4); ?>">کاربران</a>
+		<li><a href="<?php echo base_url('deal/log/').$this->uri->segment(3); ?>">کاربران</a>
 		</li>
 		<li class="active">فعالیت کاربر</li>
 	</ul>
@@ -68,10 +68,10 @@
 		<thead>
 			<tr>
 				<th width="5%">ردیف</th>
-				<th width="15%">تاریخ</th>
-				<th width="15%">زمان</th>
+				<th width="10%">تاریخ</th>
+				<th width="10%">زمان</th>
 				<th width="15%">نوع فعالیت</th>
-				<th width="50%">توضحیات</th>
+				<th width="60%">توضحیات</th>
 			</tr>
 		</thead>
 		<tbody>

@@ -11,7 +11,7 @@ $msg = $this->session->userdata('msg');?>
   <ul class="breadcrumb">
     <li><a href="<?php echo base_url('home');?>"><i class="icon-home2 position-left"></i> داشبورد </a></li>
     <li><a href="<?php echo base_url('admin/edit/').$user->id;?>">کاربران </a></li>
-    <li class="active"> ویرایش کاربر</li>
+    <li class="active"> ویرایش کاربر </li>
   </ul>
 </div>
 <!-- 2 columns form -->
@@ -21,7 +21,7 @@ $msg = $this->session->userdata('msg');?>
 			<div class="row">
 				<div class="col-md-6">
 					<fieldset>
-						<legend class="text-semibold"><i class="icon-user-plus position-left"></i> ویرایش کاربر </legend>
+						<legend class="text-semibold"><i class="icon-user-plus position-left"></i> ویرایش کاربر <?php echo $user->firstname." ".$user->lastname;?> </legend>
 						<div class="row">
 
 							<div class="form-group col-md-6">

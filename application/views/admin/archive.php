@@ -1,4 +1,12 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');?>
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
+if($this->session->has_userdata('msg')){
+$msg = $this->session->userdata('msg');?>
+<div class="alert bg-<?php echo $msg[1];?> alert-styled-left">
+										<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
+										<?php echo $msg[0];?>
+								    </div>
+<?php }?>
+
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 	<ul class="breadcrumb">
 		<li><a href="<?php echo base_url('home')?>"><i class="icon-home2 position-left"></i> داشبورد</a>
@@ -62,29 +70,4 @@
 
 	</div>
 
-</div>
-<!-- danger modal -->
-<div id="modal_theme_danger" class="modal fade">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header bg-danger">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">حذف هماهنگی</h4>
-			</div>
-
-			<div class="modal-body">
-
-				<h5 class="text-center">آیا میخواهید کاربر حذف شود ؟</h5>
-
-
-			</div>
-
-			<div class="modal-footer text-center">
-				<button type="button" class="btn btn-danger" data-dismiss="modal">خیر</button>
-				<button type="button" class="btn btn-success">بله </button>
-			</div>
-		</div>
-	</div>
-</div>
-<!-- /danger modal -->
 </div>

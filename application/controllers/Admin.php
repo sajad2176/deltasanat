@@ -11,6 +11,7 @@ class Admin extends CI_Controller {
         $this->load->library('Convertdate');
         $this->load->library('pagination');
     }
+    // -----archive-----//
     public function archive(){
         $total_rows = $this->base_model->get_count("member" , 'ALL');
         $config['base_url'] = base_url('admin/archive/');
@@ -49,6 +50,8 @@ $data['count'] = $config['total_rows'];
         $this->load->view('admin/archive' ,$data);
         $this->load->view('footer');
     }
+    // -----archive-----//
+    // -----active-----//
     public function active(){
         $user_id = $this->uri->segment(3);
         $active = $this->uri->segment(4);
@@ -62,15 +65,18 @@ $data['count'] = $config['total_rows'];
         $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
         $log['user_id'] = $user_log;
         $log['activity_id'] = 5;
-        if($active == 0){$txt = ' را غیر فعال کرد ';}else{$txt = ' را فعال کرد ';}
+        if($active == 0){$txt = ' را غیر فعال کرد '; $txt2 = ' غیرفعال شد ';}else{$txt = ' را فعال کرد '; $txt2 = '  فعال شد ';}
         $log['explain'] = ' حساب کاربری '. $name->username . $txt;
         $this->base_model->insert_data('log' , $log);
+        $message['msg'][0] = "حساب کاربری ".$name->username." با موفقیت  ".$txt2;
+        $message['msg'][1] = 'success';
+        $this->session->set_flashdata($message);
         redirect('admin/archive');
         }else{
             show_404();
         }
     }
-
+    // -----active-----//
     public function add(){
     if(isset($_POST['sub'])){
         $this->form_validation->set_rules('firstname' , 'firstname' , 'required');

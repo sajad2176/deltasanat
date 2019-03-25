@@ -124,7 +124,7 @@
 	</div>
 	<div class="inputGroup inputGroup2">
 		<label for="loginPassword" id="loginPasswordLabel">کلمه عبور</label>
-		<input name="password" title="لطفا رمز عبور خود را وارد کنید" placeholder="Password" type="password" id="loginPassword" required />
+		<input name="password" title="لطفا کلمه عبور خود را وارد کنید" placeholder="Password" type="password" id="loginPassword" required />
 		<label id="showPasswordToggle" for="showPasswordCheck">نمایش
 			<input id="showPasswordCheck" type="checkbox"/>
 			<div class="indicator"></div>
