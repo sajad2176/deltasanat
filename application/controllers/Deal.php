@@ -105,7 +105,7 @@ $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$dat
     public function search(){
         if(isset($_POST['text_search'])){
             $title = $this->input->post('text_search');
-            $data = $this->base_model->search_data('deal' , 'customer' , 'deal.* , customer.fullname , customer.id as cust_id ,currency_unit.name' ,'deal.customer_id = customer.id' , 'inner'  , array('customer.fullname'=>$title) , NULL , NULL , NULL , array('currency_unit','deal.money_id = currency_unit.id'));
+            $data = $this->base_model->search_data('deal' , 'customer' , 'deal.* , customer.fullname , customer.id as cust_id ,currency_unit.name' ,'deal.customer_id = customer.id' , 'inner'  , array('customer.fullname'=>$title) , NULL , array('deal.id' , 'DESC') , NULL , array('currency_unit','deal.money_id = currency_unit.id'));
             echo json_encode($data);
         }else{
             show_404();

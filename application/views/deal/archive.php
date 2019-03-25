@@ -142,7 +142,7 @@
 						</li>
 						<li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$rows->id;?>"><i class="icon-stack-picture"></i></a>
 						</li>
-						<li title="حذف معامله" data-toggle="tooltip" class="text-danger"><a href="#"><i class="icon-trash"></i></a>
+						<li class="text-danger" data-toggle="tooltip" title="حذف هماهنگی"><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->volume_pay; ?>)" ></i></a></li>
 						</li>
 					</ul>
 				</td>
@@ -170,8 +170,34 @@
 
 </div>
 </div>
+<div id="modal_theme_danger" class="modal fade">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header bg-danger">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">حذف هماهنگی</h4>
+						</div>
+
+						<div class="modal-body">
+
+							<h6 class="text-center" id="titleDelete"></h6>
+
+
+						</div>
+
+						<div class="modal-footer text-center">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">بستن</button>
+							<button type="button" class="btn btn-success">بله </button>
+						</div>
+					</div>
+				</div>
+			</div>
 </div>
 <script>
+	function deleteDeal(id , rest){
+		alert(id);
+		alert(rest);
+	}
 	function search_cust( input ) {
 		var search_cust = document.getElementById( 'search_cust' );
 		var text = input.value;
@@ -206,7 +232,7 @@
 			for ( var i = 0; i < len ; i++ ) {
 				var tr = div.appendChild( document.createElement( 'tr' ) );
 				var td_row = tr.appendChild( document.createElement( 'td' ) );
-				td_row.innerHTML = i + 1;
+				td_row.innerHTML = Number(result[i].id) + Number(100);
 				
 				var td_fullname = tr.appendChild( document.createElement( 'td' ) );
 				var a_customer = td_fullname.appendChild(document.createElement('a'));

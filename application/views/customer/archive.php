@@ -27,12 +27,12 @@
 		<table class="table datatable-selection-single table-hover ">
 			<thead>
 				<tr>
-					<th>ردیف</th>
-					<th>نام و نام خانوادگی</th>
-					<th>تعداد معاملات  </th>
-					<th>مجموع معامله</th>
-					<th>مجموع پرداخت نشده</th>
-					<th class="text-center">ابزار</th>
+					<th width="10%">ردیف</th>
+					<th width="15%">نام و نام خانوادگی</th>
+					<th width="20%">تعداد معاملات  </th>
+					<th width="20%">مجموع معامله</th>
+					<th width="20%">مجموع پرداخت نشده</th>
+					<th width= "15%" class="text-center">ابزار</th>
 				</tr>
 			</thead>
 			<tbody id="search_cust" style="display: none;">
@@ -59,8 +59,6 @@
 						<ul class="icons-list">
 							<li class="text-primary-600"><a href="<?php echo base_url('customer/edit/').$rows->id;?>" title="ویرایش" data-toggle="tooltip"><i class="icon-pencil7"></i></a>
 							</li>
-							<li class="text-danger"><a data-toggle="modal" title="حذف مشتری" href="#modal_theme_danger"><i class="icon-cross2" onclick="delete_cust(<?php echo $rows->id;?>)" ></i></a>
-							</li>
 						</ul>
 					</td>
 				</tr>
@@ -85,30 +83,6 @@
 		</table>
 
 	</div>
-	<div id="modal_theme_danger" class="modal fade">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header bg-danger">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h4 class="modal-title">حذف مشتری</h4>
-						</div>
-
-						<div class="modal-body">
-
-		                  <h4 class="text-center"> تمام اطلاعات مربوط به مشتری از جمله معاملات و هماهنگی ها و ... حذف می شوند</h4>
-						  </br>
-						  <h5 class="text-center">آیا می خواهید ادامه دهید؟</h5>
-
-
-						</div>
-
-						<div class="modal-footer text-center">
-							<button type="button" class="btn btn-danger" data-dismiss="modal">خیر</button>
-							<a id="delete_customer" class="btn btn-success">بله </a>
-						</div>
-					</div>
-				</div>
-			</div>
 </div>
 <script>
 	function search_cust( input ) {
@@ -170,20 +144,8 @@
 				var i_edit = a_edit.appendChild( document.createElement( 'i' ) );
 				i_edit.setAttribute( 'class', 'icon-pencil7' );
 
-				var li_delete = ul_tool.appendChild( document.createElement( 'li' ) );
-				li_delete.setAttribute( 'class', "text-danger" );
-				var a_delete = li_delete.appendChild( document.createElement( 'a' ) );
-				a_delete.setAttribute( 'data-toggle', "modal" );
-				a_delete.setAttribute( 'href', "#modal_theme_danger" );
-				var i_delete = a_delete.appendChild( document.createElement( 'i' ) );
-				i_delete.setAttribute( 'class', 'icon-cross2' );
-				i_delete.setAttribute( 'onclick', delete_cust(result[i].id) );
 			}
 			tbody.replaceChild( div, tbody.firstChild );
 		}
-	}
-	function delete_cust(id){
-		var del = document.getElementById( 'delete_customer' );
-		del.setAttribute( 'href', "<?php echo base_url('customer/delete/')?>" + id );
 	}
 </script>

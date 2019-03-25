@@ -139,13 +139,5 @@ $data['count'] = $total_rows;
 			show_404();
 		}	
     }
-    public function delete(){
-        $id = $this->uri->segment(3);
-        if(isset($id) and is_numeric($id)){
-
-        }else{
-            show_404();
-        }
-    }
 }
 ?>

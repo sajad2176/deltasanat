@@ -25,7 +25,7 @@ $msg = $this->session->userdata('msg');?>
 											<legend class="text-semibold"><i class="icon-reading position-left"></i> اطلاعات فردی</legend>
 
 											<div class="form-group">
-												<label>نام و نام خانوادگی: </label>
+												<label>نام و نام خانوادگی : </label>
 												<input type="text" name="fullname" value="<?php echo $customer->fullname;?>" class="form-control" placeholder="علی شیرازی" required>
 											</div>
 
