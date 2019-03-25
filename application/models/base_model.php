@@ -5,18 +5,15 @@ class base_model extends CI_Model{
         parent :: __construct();
     }
 // --select--update--insert--delete--  //
-function get_data($table,$select, $ret = 'result', $where=NULL,$limit=NULL , $offset=NULL ,$order_by=NULL ,$group_by=NULL, $or_where=NULL,$where_in=NULL){
+function get_data($table,$select, $ret = 'result', $where=NULL,$limit=NULL , $offset=NULL ,$order_by=NULL ,$group_by=NULL, $between = NULL){
     
     $this->db->select($select);
     
     if($where !=NULL){
         $this -> db -> where($where);
     }
-    if($or_where!=NULL){
-        $this -> db -> or_where($or_where);
-    }
-    if($where_in !=NULL){
-        $this -> db -> where_in($where_in);
+    if($between != NULL){
+        $this->db->where($between);
     }
     if($group_by !=NULL){
         $this -> db -> group_by($group_by);
@@ -33,7 +30,7 @@ function get_data($table,$select, $ret = 'result', $where=NULL,$limit=NULL , $of
     }
 }
 
-function get_data_join($from , $join , $select ,$join_where ,$ret = 'result' , $where = NULL, $limit = NULL , $offset = NULL , $order_by = NULL , $join2 = NULL , $join3 = NULL){
+function get_data_join($from , $join , $select ,$join_where ,$ret = 'result' , $where = NULL, $limit = NULL , $offset = NULL , $order_by = NULL , $join2 = NULL , $join3 = NULL , $between = NULL ){
     $this->db->select($select);
     $this->db->from($from);
     $this->db->join($join , $join_where);
@@ -45,6 +42,9 @@ function get_data_join($from , $join , $select ,$join_where ,$ret = 'result' , $
 	}
     if($where != NULL){
         $this->db->where($where);
+    }
+    if($between != NULL){
+        $this->db->where($between);
     }
     if($order_by != NULL){
         $this->db->order_by($order_by[0] , $order_by[1]);
@@ -111,11 +111,25 @@ function get_count($table , $where){
 			return $this->db->count_all_results();	
 			}
 }
+function get_count_between($table , $where = NULL , $between = NULL){
+    $this->db->count_all_results($table);
+    if($where != NULL){
+        $this->db->where($where);
+    }
+    if($between != NULL){
+        $this->db->where($between);
+    }
+    $this->db->from($table);
+    return $this->db->count_all_results();	
 
-function search_data($from , $join , $select ,$join_where , $side  , $like , $where = NULL , $order_by = NULL , $group_by = NULL){
+}
+function search_data($from , $join , $select ,$join_where , $side  , $like , $where = NULL , $order_by = NULL , $group_by = NULL , $join2 = NULL){
     $this->db->select($select);
     $this->db->from($from);
     $this->db->join($join , $join_where , $side);
+    if($join2 != NULL){
+		$this->db->join($join2[0] , $join2[1]);
+	}
 	if($where != NULL){
 		$this->db->where($array);
 	}
@@ -154,6 +168,10 @@ function delete_data($table , $where){
         return FALSE;
     }
 }
+function run_query($query) {
+    return $this->db->query($query)->result();
+}
+
 // --select--update--insert--delete--  //
 
 }

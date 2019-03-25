@@ -1,4 +1,6 @@
-<?php if($this->session->has_userdata('msg')){
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+if($this->session->has_userdata('msg')){
 $msg = $this->session->userdata('msg');?>
 <div class="alert bg-<?php echo $msg[1];?> alert-styled-left">
 										<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
@@ -23,12 +25,12 @@ $msg = $this->session->userdata('msg');?>
 											<legend class="text-semibold"><i class="icon-reading position-left"></i> اطلاعات فردی</legend>
 
 											<div class="form-group">
-												<label>نام و نام خانوادگی: </label>
-												<input type="text" name="fullname" class="form-control" placeholder="علی شیرازی" required>
+												<label>نام و نام خانوادگی : </label>
+												<input type="text" name="fullname" class="form-control" placeholder="Full Name" required>
 											</div>
 
 											<div class="form-group">
-												<label>آدرس:</label>
+												<label>آدرس: </label>
 												<input type="text" name="address" class="form-control" placeholder="شیراز،خیابان ایمان شمالی،ساختمان...">
 											</div>
 											<div class="form-group">

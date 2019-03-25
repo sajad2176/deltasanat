@@ -11,7 +11,7 @@ class Convertdate{
     $month2 = $monthNumber;
     $year = date("Y",$time);
     $weekDayNumber = date("w" , $time);
-    $hour = date("G" , $time);
+    $hour = date("H" , $time);
     $minute = date("i" , $time);
     $second = date("s" , $time);
     switch ($monthNumber)

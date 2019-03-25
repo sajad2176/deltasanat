@@ -1,3 +1,4 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed');?>
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 	<ul class="breadcrumb">
 		<li><a href="<?php echo base_url('home')?>"><i class="icon-home2 position-left"></i> داشبورد</a>
@@ -39,7 +40,6 @@
 					   <ul class="icons-list">
 		<li title="ویرایش کاربر <?php echo $rows->username;?>" class="text-success" data-toggle="tooltip"><a href="<?php echo base_url('admin/edit/').$rows->id;?>"><i class=" icon-pencil3"></i></li>
 		<li title="تاریخچه کاربر <?php echo $rows->username;?>" class="text-primary" data-toggle="tooltip"><a href="<?php echo base_url('admin/log/').$rows->id;?>"><i class=" icon-eye4"></i></li>
-<li title=" حذف کاربر <?php echo $rows->username;?>" class="text-danger" data-toggle="tooltip"><a data-toggle="modal" href="#modal_theme_danger"><i class="icon-cross2"></i></a></li>
 					  </ul>
 					</td>
 				</tr>

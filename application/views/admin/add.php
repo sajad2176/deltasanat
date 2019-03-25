@@ -1,4 +1,6 @@
-<?php if($this->session->has_userdata('msg')){
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+if($this->session->has_userdata('msg')){
 $msg = $this->session->userdata('msg');?>
 <div class="alert bg-<?php echo $msg[1];?> alert-styled-left">
 										<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
@@ -27,17 +29,17 @@ $msg = $this->session->userdata('msg');?>
 								<input type="text" name="firstname" class="form-control" placeholder="First Name " required>
 							</div>
 							<div class="form-group col-md-6">
-								<label>  نام خانوادگی: </label>
+								<label>  نام خانوادگی : </label>
 								<input type="text" name="lastname" class="form-control" placeholder="Last Name" required>
 							</div>
 						</div>
 
 						<div class="form-group">
-							<label>نام کاربری:</label>
+							<label>نام کاربری :</label>
 							<input type="text" name="username" class="form-control" placeholder="User Name" required>
 						</div>
 						<div class="form-group">
-							<label>کلمه عبور: </label>
+							<label>کلمه عبور : </label>
 							<input type="password"  id ="pass" name ="password" class="form-control" placeholder="Password" required>
 						</div>
 						<div class="form-group">
@@ -47,7 +49,7 @@ $msg = $this->session->userdata('msg');?>
 						</div>
 						
 						<div class="form-group">
-									<label>انتخاب آواتار</label>
+									<label> انتخاب آواتار :</label>
 									<input type="file" class="file-styled" name="picname">
 								</div>
 

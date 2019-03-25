@@ -62,7 +62,7 @@ $data['count'] = $config['total_rows'];
         $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
         $log['user_id'] = $user_log;
         $log['activity_id'] = 5;
-        if($active == 0){$txt = ' را غیر فعال کرد ';}else{$txt = 'را فعال کرد ';}
+        if($active == 0){$txt = ' را غیر فعال کرد ';}else{$txt = ' را فعال کرد ';}
         $log['explain'] = ' حساب کاربری '. $name->username . $txt;
         $this->base_model->insert_data('log' , $log);
         redirect('admin/archive');
@@ -91,15 +91,15 @@ $data['count'] = $config['total_rows'];
         }
         $user['firstname'] = $this->input->post('firstname'); 
         $user['lastname'] = $this->input->post('lastname');
-        $user['username'] = $this->input->post('username');
+        $user['username'] = $this->db->escape_str($this->input->post('username'));
         $check = $this->base_model->get_data('member' , 'username' , 'row' , array('username'=>$user['username']));
-        if($check != NULL){
+        if(sizeof($check) != 0){
             $message['msg'][0] = "این نام کاربری قبلا استفاده شده است . لطفا نام کاربری دیگری انتخاب کنید";
             $message['msg'][1] = 'danger';
             $this->session->set_flashdata($message);
             redirect("admin/add");
         }
-        $pass = $this->input->post('password');
+        $pass = $this->db->escape_str($this->input->post('password'));
         $user['password'] = password_hash($pass, PASSWORD_DEFAULT);
         $user['active'] = 1;
         if($_FILES['picname']['name'] == '' or $_FILES['picname']['size'] == 0){
@@ -169,13 +169,13 @@ if($this->input->post('password') != '' or $this->input->post('repeat') != ''){
     $this->session->set_flashdata($message);
     redirect("admin/edit/$id");
 }else{
-    $pass = $this->input->post('password');
+    $pass = $this->db->escape_str($this->input->post('password'));
     $user['password'] = password_hash($pass, PASSWORD_DEFAULT);
 }
 }
 $user['firstname'] = $this->input->post('firstname');
-$user['lastname'] =$this->input->post('lastname');
-$user['username']  = $this->input->post('username');
+$user['lastname'] = $this->input->post('lastname');
+$user['username']  = $this->db->escape_str($this->input->post('username'));
 $check = $this->base_model->get_data('member' , 'id ,username' , 'row' , array('username'=>$user['username']));
 if($check != NULL and $check->id != $id){
     $message['msg'][0] = "این نام کاربری قبلا استفاده شده است . لطفا نام کاربری دیگری انتخاب کنید";
@@ -192,12 +192,13 @@ if($_FILES['picname']['name'] != '' or $_FILES['picname']['size'] != 0){
     $this->load->library('upload', $config);
     if ($this->upload->do_upload('picname')) {
         $user['picname'] = $_FILES['picname']['name'];
-        $pic = $user['picname'];
-        $avatar = array(
-            'pic_name' => $pic
-        );
-        $this->session->set_userdata( $avatar );
-        
+        if($this->session->userdata('id') == $id){
+            $pic = $user['picname'];
+            $avatar = array(
+                'pic_name' => $pic
+            );
+            $this->session->set_userdata( $avatar );
+        }
     } else {
         $message['msg'][0] = "مشکلی در ارسال عکس پیش آمده است لطفا دوباره سعی کنید";
         $message['msg'][1] = 'danger';
@@ -225,7 +226,7 @@ $this->session->set_flashdata($message);
 redirect("admin/edit/$id");
 }else{
             $data['user'] = $this->base_model->get_data('member' , 'id , firstname , lastname , username' , 'row' , array('id' => $id));
-            if($data['user'] == NULL){
+            if(sizeof($data['user']) == 0){
                 show_404();
             }
             else{
@@ -244,16 +245,80 @@ redirect("admin/edit/$id");
   public function log(){
       $id = $this->uri->segment(3);
       if(isset($id) and is_numeric($id)){
-        $header['title'] = 'فعالیت کاربران';
-        $header['active'] = 'admin';
-        $header['active_sub'] = 'admin_archive';
-        $data['logs'] = $this->base_model->get_data_join('log','activity' , 'log.* , activity.name' , 'log.activity_id = activity.id','result' , array('log.user_id' => 3));
-$date = $this->convertdate->convert(time());
-$data['date'] = $date['year']."-".$date['month_num']."-".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];;
-        $this->load->view('header' , $header);
-        $this->load->view('admin/log', $data);
-        $this->load->view('footer');
-      }else{
+        if(isset($_POST['sub'])){
+            if($_POST['start_date'] != $_POST['end_date']){
+            $persian_num = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
+            $latin_num = range(0, 9);
+            $slash = '/';
+            $dash = '-';
+            $start = str_replace($persian_num, $latin_num, $_POST['start_date']);
+            $start = str_replace($slash, $dash, $start);
+            $end = str_replace($persian_num, $latin_num, $_POST['end_date']);
+            $end = str_replace($slash, $dash, $end); 
+            $date_start = substr($start , 0 , 10);
+            $date_end = substr($end , 0 , 10);
+            $between = "log.date_log BETWEEN '$date_start' AND '$date_end'";
+            if($_POST['select_act'] == 'all'){
+                $where = array('log.user_id' => $id);
+                $total_rows = $this->base_model->get_count_between("log" , array('user_id'=> $id) , $between);
+            }else{
+               $where = array('log.user_id'=> $id , 'log.activity_id' => $_POST['select_act']);
+               $total_rows = $this->base_model->get_count_between("log" , array('user_id'=> $id , 'log.activity_id'=> $_POST['select_act']) , $between);
+            }
+            }else{
+                if($_POST['select_act'] == 'all'){
+                    $where = array('log.user_id' => $id);
+                    $total_rows = $this->base_model->get_count("log" , array('user_id'=> $id));
+                    $between = NULL;
+                }else{
+                   $where = array('log.user_id'=> $id , 'log.activity_id' => $_POST['select_act']);
+                   $total_rows = $this->base_model->get_count("log" , array('log.user_id'=> $id , 'log.activity_id'=> $_POST['select_act']));
+                   $between = NULL;
+                }
+            }
+        }else{
+            $between = NULL;
+            $where = array('log.user_id' => $id);
+            $total_rows = $this->base_model->get_count("log" , array('user_id'=> $id));
+        }
+            $header['title'] = 'فعالیت کاربران';
+            $header['active'] = 'admin';
+            $header['active_sub'] = 'admin_archive';
+            $config['base_url'] = base_url("admin/log/$id");
+            $config['total_rows'] = $total_rows;
+            $config['per_page'] = '10';
+            $config["uri_segment"] = '4';
+            $config['num_links'] = '5';
+            $config['next_link'] = '<i class="icon-arrow-left5"></i>';
+            $config['last_link'] = '<i class="icon-backward2"></i>';
+            $config['prev_link'] = '<i class="icon-arrow-right5"></i>';
+            $config['first_link'] = '<i class="icon-forward3"></i>';
+            $config['full_tag_open'] = '<nav><ul class="pagination pagination-sm">';
+            $config['full_tag_close'] = '</ul></nav>';
+            $config['cur_tag_open'] = '<li class="active"><a href="javascript:void(0)">';
+            $config['cur_tag_close'] = '</a></li>';
+            $config['num_tag_open'] = '<li>';
+            $config['num_tag_close'] = '</li>';
+            $config['next_tag_open'] = '<li>';
+            $config['next_tag_close'] = '</li>';
+            $config['last_tag_open'] = '<li>';
+            $config['last_tag_close'] = '</li>';
+            $config['first_tag_open'] = '<li>';
+            $config['first_tag_close'] = '</li>';
+            $config['prev_tag_open'] = '<li>';
+            $config['prev_tag_close'] = '</li>';
+            $config['suffix'] = "";
+            $this->pagination->initialize($config);
+            $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;           
+            $data['logs'] = $this->base_model->get_data_join('log','activity' , 'log.* , activity.name' , 'log.activity_id = activity.id','result' , $where , $config['per_page'] , $page , array('log.id' , 'DESC') , NULL , NULL , $between);
+            $date = $this->convertdate->convert(time());
+            $data['date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
+            $data['page'] = $this->pagination->create_links();
+            $data['count'] = $config['total_rows'];
+                $this->load->view('header' , $header);
+                $this->load->view('admin/log', $data);
+                $this->load->view('footer');
+       }else{
           show_404();
       }
     }

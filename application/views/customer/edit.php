@@ -1,4 +1,6 @@
-<?php if($this->session->has_userdata('msg')){
+<?php 
+defined('BASEPATH') OR exit('No direct script access allowed');
+if($this->session->has_userdata('msg')){
 $msg = $this->session->userdata('msg');?>
 <div class="alert bg-<?php echo $msg[1];?> alert-styled-left">
 										<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
@@ -8,8 +10,8 @@ $msg = $this->session->userdata('msg');?>
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 						<ul class="breadcrumb">
 							<li><a href="<?php echo base_url('home');?>"><i class="icon-home2 position-left"></i>داشبورد</a></li>
-							<li><a href=""> مشتریان</a></li>
-							<li class="active"><a href="<?php echo base_url('customer/add/')?>">افزودن مشتری جدید</a></li>
+							<li><a href="<?php echo base_url('customer/edit/').$customer->id;?>"> مشتریان</a></li>
+							<li class="active">ویرایش مشتری</li>
 						</ul>
 					</div>
 

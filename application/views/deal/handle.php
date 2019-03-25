@@ -1,4 +1,5 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 if ( $this->session->has_userdata( 'msg' ) ) {
 	$msg = $this->session->userdata( 'msg' );
 	?>
@@ -11,7 +12,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 		<ul class="breadcrumb">
 			<li><a href="<?php echo base_url('home');?>"><i class="icon-home2 position-left"></i> داشبورد</a>
 			</li>
-			<li><a href="<?php echo base_url(" deal/handle/ ").$this->uri->segment(3); ?>">معامله</a>
+			<li><a href="<?php echo base_url(" deal/handle/ ").$deal->id; ?>">معامله</a>
 			</li>
 			<li class="active">هماهنگی </li>
 		</ul>
@@ -30,7 +31,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 								<div class="form-group">
 									<label>نام مشتری: </label>
 									<p class="form-control">
-										<?php echo $deal->fullname;?>
+										<a href="<?php echo base_url('deal/handle_profile/').$deal->cust_id?>">	<?php echo $deal->fullname;?></a>
 									</p>
 								</div>
 							</div>
@@ -117,12 +118,12 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 						<tr>
 							<th width="4%">ردیف</th>
 							<th width="10%">نام بانک</th>
-							<th width="17%">شماره شبا</th>
+							<th width="19%">شماره شبا</th>
 							<th width="15%">حجم تعیین شده</th>
 							<th width="15%">حجم واریز شده</th>
 							<th width="15%">توضیحات</th>
 							<th width="10%">وضعیت</th>
-							<th width="8%" class="text-center">ابزار</th>
+							<th width="6%" class="text-center">ابزار</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -155,7 +156,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 							<td><a href="<?php echo base_url('deal/active/').$deal->id."/".$rows->id."/".$act; ?>"><span class="label label-<?php echo $class; ?>"><?php echo $txt;?></span></td></a>
 								<td class="text-center">
 									<ul class="icons-list">
-										<li title="ویرایش بانک" class="text-primary"><a data-toggle="modal" href="#edit_bank_modal"><i class="icon-credit-card"></i></li>
+										<li title="ویرایش بانک" class="text-primary"><a data-toggle="modal" href="#edit_bank_modal"><i onclick = "edit_bank(<?php echo $rows->id;?>)" class="icon-credit-card"></i></li>
 									</ul>
 						</td>
 					</tr>
@@ -179,36 +180,31 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 										<div class="row">
 											<div class="col-md-6">
 												<div class="form-group">
-													<label>شماره شبا: </label>
+													<label>شماره شبا : </label>
 													<input onkeyup="show_bank(this)" data-mask="aa-99-999-9999999999999999999" type="text" placeholder="IR-06-017-0000000123014682799" name="number_shaba" class="form-control" required>
 												</div>
 											</div>
-
-
-
 											<div class="col-md-6">
 												<div class="form-group">
-													<label>بانک:</label>
+													<label>بانک :</label>
 													<input type="text" name="name_bank" placeholder="ملت،ملی،.." class="form-control" readonly>
 												</div>
 											</div>
 										</div>
-
-
 									</div>
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
-												<label>مبلغ معامله: </label>
-												<input type="text" id="ambank" placeholder="100000" class="form-control" required>
+												<label>مبلغ معامله : </label>
+												<input type="hidden" value ='0'>
+												<input type="text" onkeyup = "ambank(this)" placeholder="100000" class="form-control" required>
 												<input type="hidden" name="amount_bank">
-												<p class="text-danger" style="display:none;">مبلغ وارد شده بیشتر از حجم معامله است</p>
+												<p class="text-danger" style="display:none;"></p>
 											</div>
 										</div>
-
 										<div class="col-md-6">
 											<div class="form-group input-group">
-												<label>توضیحات حساب:</label>
+												<label>توضیحات حساب :</label>
 												<input type="text" name="bank_explain" placeholder="توضیحات خود را وارد کنید" class="form-control">
 												<span class="input-group-btn "><button type="submit" name="sub" style="top: 13px;" class="btn btn btn-success">ذخیره</button></span>
 											</div>
@@ -223,9 +219,6 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 
 			</div>
 		</div>
-		
-			
-			
 		</div>
 	</div>
 <form action="<?php echo base_url('deal/handle/').$deal->id;?>" method="post">
@@ -248,7 +241,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
                                                 <option value = '0'>شماره حسابی ثبت نشده است</option>
 											  <?php }else{
 												  foreach($select as $selects){ ?>
-												<option value="<?php echo $selects->id;?>"><?php echo $selects->number_shaba. " | ". $selects->name_bank ?></option>
+												<option value="<?php echo $selects->id;?>"><?php echo $selects->number_shaba. " | ". $selects->name_bank;?></option>
                           <?php }} ?>
 											</select>
 						</div>
@@ -312,7 +305,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<li title="پرداخت کامل" class="text-success"><a data-toggle="modal" href="#modal_theme_success"><i onclick="pay_all(<?php echo $row->id;?> , <?php echo $row->handle_rest;?>)" class="icon-checkmark4"></i></a></li>
 				<li title="پرداخت جزئی" class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i onclick="pay_slice(<?php echo $row->id;?>)" class="icon-stack-empty"></i></li>
 				<?php } ?>
-				<li title="حذف پرداخت " class="text-warning-800"><a data-toggle="modal" href="#modal_form_dminor"><i onclick="history(<?php echo $row->id;?>)" class="icon-file-minus"></i></li>
+				<li title="بازگشت پرداخت " class="text-warning-800"><a data-toggle="modal" href="#modal_form_dminor"><i onclick="history(<?php echo $row->id;?>)" class="icon-file-minus"></i></li>
 				<li title="حذف هماهنگی" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i class="icon-cross2"></i></a>
 										</li>
 									</ul>
@@ -408,15 +401,15 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 
 					</div>
 					<hr>
-					<form action="#">
+					<form action="" method="post" id='act_edit'>
 						<div class="modal-body">
 							<div class="field_wrapper2">
 								<div>
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
-												<label>شماره شبا: </label>
-												<input onkeyup="show_bank(this)" data-mask="aa-99-999-9999999999999999999" type="text" placeholder="IR-06-017-0000000123014682799" name="number_shaba[]" class="form-control">
+												<label>شماره شبا : </label>
+												<input onkeyup="show_bank(this)" id="num_shaba" value="" data-mask="aa-99-999-9999999999999999999" type="text" placeholder="IR-06-017-0000000123014682799" name="number_shaba" class="form-control">
 											</div>
 										</div>
 
@@ -424,8 +417,8 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 
 										<div class="col-md-6">
 											<div class="form-group">
-												<label>بانک:</label>
-												<input type="text" name="name_bank[]" placeholder="ملت،ملی،.." class="form-control" readonly>
+												<label>بانک :</label>
+												<input type="text" name="name_bank" id="nam_bank" value="" placeholder="ملت،ملی،.." class="form-control" readonly>
 											</div>
 										</div>
 									</div>
@@ -435,17 +428,19 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
-											<label>مبلغ معامله: </label>
-											<input type="text" onKeyUp="amount_ban(this)" placeholder="100000" class="form-control">
-											<input type="hidden" name="amount_bank[]">
+											<label>مبلغ معامله : </label>
+											<input type="hidden" id="amo_pay" value =''>
+											<input type="text" onkeyup="ambank(this)" placeholder="100000" value="" class="form-control">
+											<input type="hidden" value='' id="amo_bank" name="amount_bank">
+											<p class="text-danger" style="display:none;"></p>
 										</div>
 									</div>
 
 									<div class="col-md-6">
 										<div class="form-group input-group">
-											<label>توضیحات حساب:</label>
-											<input type="text" name="bank_explain[]" placeholder="توضیحات خود را وارد کنید" class="form-control">
-											<span class="input-group-btn "><button type="submit" style="top: 13px;" class="btn btn btn-success">ذخیره</button></span>
+											<label>توضیحات حساب :</label>
+											<input type="text" id="exp_bank" name="bank_explain" value='' placeholder="توضیحات خود را وارد کنید" class="form-control">
+											<span class="input-group-btn "><button type="submit" name="sub" style="top: 13px;" class="btn btn btn-success">ذخیره</button></span>
 										</div>
 									</div>
 								</div>
@@ -464,7 +459,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h5 class="modal-title text-center">بخشی از مبلغ هماهنگ شده را حذف کنید</h5>
+						<h5 class="modal-title text-center">پرداخت های هماهنگ شده را برگردانید</h5>
 
 					</div>
 					<hr>
@@ -636,17 +631,20 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 
 			}
 			var volume = document.getElementById( 'volume_deal' );
-			var ambank = document.getElementById( 'ambank' );
-			ambank.onkeyup = function () {
-				ambank.value = numeral( ambank.value ).format( '0,0' );
-				ambank.nextElementSibling.value = numeral( ambank.value ).value();
-				if ( numeral( volume.innerHTML ).value() < numeral( ambank.value ).value() ) {
-					ambank.nextElementSibling.nextElementSibling.style.display = 'block';
-				} else {
-					ambank.nextElementSibling.nextElementSibling.style.display = 'none';
-				}
-			}
-
+			function ambank( input ) {
+    input.value = numeral( input.value ).format( '0,0' ) + " ریـال ";
+    input.nextElementSibling.value = numeral( input.value ).value();
+    if(input.previousElementSibling.value > numeral(input.value).value()){
+        input.nextElementSibling.nextElementSibling.style.display = 'block';
+        input.nextElementSibling.nextElementSibling.innerHTML = ' مبلغ تعیین شده از مبلغی که به این حساب واریز شده  کمتر است  ';
+    }
+   else if(numeral(volume.innerHTML).value() < numeral(input.value).value()){
+     input.nextElementSibling.nextElementSibling.style.display = 'block';
+     input.nextElementSibling.nextElementSibling.innerHTML = ' مبلغ وارد شده بیشتر از حجم معامله است';
+    }else{
+        input.nextElementSibling.nextElementSibling.style.display = 'none';
+    }
+}
 			function volume_handle( input ) {
 				input.value = numeral( input.value ).format( '0,0' );
 				input.nextElementSibling.value = numeral( input.value ).value();
@@ -684,11 +682,12 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 			}
 			function showHistory(res){
 				var modal = document.getElementById('showhistory');
-				if(res.length == 0){
+				var len = res.length ;
+				if(len == 0){
 					modal.innerHTML = '<div class="text-center pb-20">پرداختی صورت نگرفته است</div>';
 				}else{
 					var div = document.createElement('div');
-					for(var i = 0 ; i < res.length ; i++ ){
+					for(var i = 0 ; i < len ; i++ ){
 						var row = div.appendChild(document.createElement('div'));
 						row.setAttribute('class' , 'row');
 						
@@ -730,5 +729,34 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 					modal.replaceChild(div , modal.firstChild);
 				}
 			}
-			
+			var num_shaba = document.getElementById( 'num_shaba' );
+			var nam_bank = document.getElementById( 'nam_bank' );
+			var act_edit = document.getElementById( 'act_edit' );
+			var amo_pay = document.getElementById( 'amo_pay' );
+			var amo_bank = document.getElementById( 'amo_bank' );
+			var exp_bank = document.getElementById( 'exp_bank' );
+			function edit_bank(id){
+				var xhr = new XMLHttpRequest();
+		xhr.onload = function(){
+			if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
+				
+					var result = JSON.parse(xhr.responseText);
+				    showBank(result);
+				}else{
+					alert('request was unsuccessful : ' + xhr.status);
+				}
+		}
+		xhr.open('post' , "<?php echo base_url('deal/show_bank/')?>" , true);
+		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		xhr.send('bank_id=' + id);
+			}
+			function showBank(result){
+				act_edit.action = "<?php echo base_url('deal/edit_bank/')?>"+result.deal_id +"/"+result.id;
+				num_shaba.value = result.number_shaba;
+				nam_bank.value = result.name_bank;
+				amo_pay.value = result.pay;
+				amo_bank.value = result.amount;
+        amo_bank.previousElementSibling.value = numeral(result.amount).format('0,0') + 'ریال';
+
+			}
 		</script>

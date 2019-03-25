@@ -17,7 +17,7 @@
 	<link href="<?php echo base_url('files/');?>assets/css/components.css" rel="stylesheet" type="text/css">
 	<link href="<?php echo base_url('files/');?>assets/css/colors.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="<?php echo base_url('files/'); ?>assets/bootstrap-PersianDateTimePicker/jquery.Bootstrap-PersianDateTimePicker.min.css">
-	<script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+	<script type="text/javascript" src="<?php echo base_url('files/');?>Numeral/min/numeral.min.js"></script>
 
 	<!-- /global stylesheets -->
 </head>

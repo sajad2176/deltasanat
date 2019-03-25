@@ -11,7 +11,7 @@
 							<span class="heading-text badge bg-teal-800">+53,6%</span>
 						</div>
 
-						<h3 class="no-margin">3,450</h3> هماهنگ شده
+						<h3 class="no-margin">3,450</h3> sd شده
 						<div class="text-muted text-size-small">489 avg</div>
 					</div>
 
@@ -164,10 +164,10 @@
 									</div>
 								</td>
 								<td>
-									<span class="text-muted text-size-small">06:28 pm</span>
+									<span class="text-muted text-size-small"><?php echo number_format($buy_dollar->cd + $buy_dollar->wd);?></span>
 								</td>
 								<td>
-									<h6 class="text-semibold no-margin">$49.90</h6>
+									<h6 class="text-semibold no-margin"><?php echo number_format($sell_dollar->cd + $sell_dollar->wd); ?></h6>
 								</td>
 							</tr>
 
@@ -195,10 +195,10 @@
 									</div>
 								</td>
 								<td>
-									<span class="text-muted text-size-small">01:26 pm</span>
+									<span class="text-muted text-size-small"><?php echo number_format($buy_yuan->cd + $buy_yuan->wd); ?></span>
 								</td>
 								<td>
-									<h6 class="text-semibold no-margin">$60.00</h6>
+									<h6 class="text-semibold no-margin"><?php echo number_format($sell_yuan->cd + $sell_yuan->wd); ?></h6>
 								</td>
 							</tr>
 
@@ -222,10 +222,10 @@
 									</div>
 								</td>
 								<td>
-									<span class="text-muted text-size-small">11:46 am</span>
+									<span class="text-muted text-size-small"><?php echo number_format($buy_euro->cd + $buy_euro->wd); ?></span>
 								</td>
 								<td>
-									<h6 class="text-semibold no-margin">$55.00</h6>
+									<h6 class="text-semibold no-margin"><?php echo number_format($sell_euro->cd + $sell_euro->wd); ?></h6>
 								</td>
 							</tr>
 
@@ -249,10 +249,10 @@
 									</div>
 								</td>
 								<td>
-									<span class="text-muted text-size-small">10:29 am</span>
+									<span class="text-muted text-size-small"><?php echo number_format($buy_derham->cd + $buy_derham->wd); ?></span>
 								</td>
 								<td>
-									<h6 class="text-semibold no-margin">$90.50</h6>
+									<h6 class="text-semibold no-margin"><?php echo number_format($sell_derham->cd + $sell_derham->wd); ?></h6>
 								</td>
 							</tr>
 						</tbody>
@@ -268,15 +268,12 @@
 
 		</div>
 				<div class="row">
+				<?php foreach($remain as $remains){ ?>
 				<div class="col-md-6">
 				<div class="panel bg-teal-400">
 					<div class="panel-body">
-						<div class="heading-elements">
-							<span class="heading-text badge bg-teal-800">+53,6%</span>
-						</div>
-
-						<h3 class="no-margin">3,450</h3> هماهنگ شده
-						<div class="text-muted text-size-small">489 avg</div>
+						<h3 class="no-margin"><?php echo $remains->amount_unit;?></h3>
+						<div class="text-muted text-size-small"><?php echo $remains->name;?></div>
 					</div>
 
 					<div class="container-fluid">
@@ -285,7 +282,7 @@
 				</div>
 				</div>
 				<!-- /members online -->
-
+				<?php } ?>
 			
 
 			<div class="col-lg-6">

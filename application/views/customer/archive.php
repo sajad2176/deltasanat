@@ -1,3 +1,4 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed');?>
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 	<ul class="breadcrumb">
 		<li><a href="<?php echo base_url('home');?>"><i class="icon-home2 position-left"></i> داشبورد</a>
@@ -17,33 +18,9 @@
 
 		<div class="datatable-header">
 			<div class="row">
-				<div class="  col-md-6 text-right">
-					<div class="dataTables_filter"><label><span>جستجو:</span> <input type="search" onkeyup="search_cust(this)" placeholder="عنوان خود را جستجو کنید ..."></label>
+				<div class="col-md-7 text-right">
+					<div class="dataTables_filter"><label><span>جستجو : </span> <input type="search" onkeyup="search_cust(this)" placeholder="نام مشتری خود را جتسجو کنید"></label>
 					</div>
-				</div>
-
-				<div class=" col-md-5  mb-10  text-left">
-					<label><span>نمایش:</span></label>
-					<ul class="icons-list display-inline-block">
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle border p-10 text-black " data-toggle="dropdown">
-							<span class="text-muted"><span class=" icon-arrow-down5"></span> <span ><?php if($this->uri->segment(3) == 'show'){echo $this->uri->segment(4);}else{echo '10';} ?></span></span>
-						</a>
-						
-							<ul class="dropdown-menu dorpdown-custom dropdown-menu-right">
-								<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/10')?>">10</a>
-								</li>
-								<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/25')?>">25</a>
-								</li>
-								<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/50')?>">50</a>
-								</li>
-								<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/100')?>">100</a>
-								</li>
-								<li><a class="dropdown-item" href="<?php echo base_url('customer/archive/show/all')?>">نمایش همه</a>
-								</li>
-							</ul>
-						</li>
-					</ul>
 				</div>
 			</div>
 		</div>
@@ -55,7 +32,7 @@
 					<th>تعداد معاملات  </th>
 					<th>مجموع معامله</th>
 					<th>مجموع پرداخت نشده</th>
-					<th class="text-center">ابزارک</th>
+					<th class="text-center">ابزار</th>
 				</tr>
 			</thead>
 			<tbody id="search_cust" style="display: none;">
@@ -63,16 +40,10 @@
 			</tbody>
 			<tbody>
 				<?php 
-							if($this->uri->segment(3) == 'show'){
-								$show = $this->uri->segment(5);
-								$num = $this->uri->segment(5) + 1;
-							}else{
-								$show = $this->uri->segment(3);
-								$num = $this->uri->segment(3) + 1;
-							}
-									   if(sizeof($customer) == 0){echo '<tr><td colspan="6" class="text-center p-20">موردی یافت نشد</td></tr>';}
-							else if(sizeof($customer) > 0){ if($customer[0]->fullname == ''){echo '<tr><td colspan="6" class="text-center p-20">موردی یافت نشد</td></tr>';}
-							else{
+						if(sizeof($customer) == 0){ ?>
+							<tr><td colspan="6" class="text-center p-20">موردی یافت نشد</td></tr>
+						<?php }else{
+							$num = $this->uri->segment(3) + 1;
 							foreach($customer as $rows){ ?>
 				<tr class="base_cust">
 					<td>
@@ -86,24 +57,21 @@
 					<td><?php echo number_format($rows->vr); ?></td>
 					<td class="text-center">
 						<ul class="icons-list">
-							<li class="text-primary-600"><a href="<?php echo base_url('customer/edit/').$rows->id;?>"><i class="icon-pencil7"></i></a>
+							<li class="text-primary-600"><a href="<?php echo base_url('customer/edit/').$rows->id;?>" title="ویرایش" data-toggle="tooltip"><i class="icon-pencil7"></i></a>
 							</li>
-							<li class="text-danger-600"><a href="#"><i class="icon-trash"></i></a>
+							<li class="text-danger"><a data-toggle="modal" title="حذف مشتری" href="#modal_theme_danger"><i class="icon-cross2" onclick="delete_cust(<?php echo $rows->id;?>)" ></i></a>
 							</li>
 						</ul>
 					</td>
 				</tr>
 				<?php
 				$num++;
-				}
-							}
-													 }
+				} 
 				?>
-				<?php if(sizeof($customer) > 0){ if($customer[0]->fullname != ''){ ?>
 				<tr>
 					<td colspan="3" class="pt-20 pb-20">
 						نمایش
-						<?php echo  $show + 1;?> تا
+						<?php echo  $this->uri->segment(3) + 1;?> تا
 						<?php echo $num - 1; ?> از
 						<?php echo $count;?>
 					</td>
@@ -111,13 +79,36 @@
 						<?php echo $page; ?>
 					</td>
 				</tr>
-				<?php }} ?>
+				<?php } ?>
 			</tbody>
 
 		</table>
 
 	</div>
+	<div id="modal_theme_danger" class="modal fade">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header bg-danger">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">حذف مشتری</h4>
+						</div>
 
+						<div class="modal-body">
+
+		                  <h4 class="text-center"> تمام اطلاعات مربوط به مشتری از جمله معاملات و هماهنگی ها و ... حذف می شوند</h4>
+						  </br>
+						  <h5 class="text-center">آیا می خواهید ادامه دهید؟</h5>
+
+
+						</div>
+
+						<div class="modal-footer text-center">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">خیر</button>
+							<a id="delete_customer" class="btn btn-success">بله </a>
+						</div>
+					</div>
+				</div>
+			</div>
 </div>
 <script>
 	function search_cust( input ) {
@@ -180,13 +171,19 @@
 				i_edit.setAttribute( 'class', 'icon-pencil7' );
 
 				var li_delete = ul_tool.appendChild( document.createElement( 'li' ) );
-				li_delete.setAttribute( 'class', "text-danger-600" );
-				var a_delete = li_delete.appendChild( document.createElement( 'a' ) )
-				a_delete.setAttribute( 'href', "<?php echo base_url('customer/detail/')?>" + result[ i ].id );
+				li_delete.setAttribute( 'class', "text-danger" );
+				var a_delete = li_delete.appendChild( document.createElement( 'a' ) );
+				a_delete.setAttribute( 'data-toggle', "modal" );
+				a_delete.setAttribute( 'href', "#modal_theme_danger" );
 				var i_delete = a_delete.appendChild( document.createElement( 'i' ) );
-				i_delete.setAttribute( 'class', 'icon-trash' );
+				i_delete.setAttribute( 'class', 'icon-cross2' );
+				i_delete.setAttribute( 'onclick', delete_cust(result[i].id) );
 			}
 			tbody.replaceChild( div, tbody.firstChild );
 		}
+	}
+	function delete_cust(id){
+		var del = document.getElementById( 'delete_customer' );
+		del.setAttribute( 'href', "<?php echo base_url('customer/delete/')?>" + id );
 	}
 </script>

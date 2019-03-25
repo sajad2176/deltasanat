@@ -17,83 +17,59 @@
 
 		<div class="datatable-header">
 			<div class="row">
-				<form action="">
+				<form action="<?php echo base_url('deal/archive'); ?>" method="post">
 
-					<div class="col-md-11">
+					<div class="col-md-12">
 						<div class="col-md-3">
 							<div class="form-group">
 								<label>جستجو : </label>
-								<input class="form-control" type="search" onkeyup="search_cust(this)" placeholder="عنوان خود را جستجو کنید ...">
+								<input class="form-control" type="search" onkeyup="search_cust(this)" placeholder="نام مشتری خود را جستجو کنید">
 
 							</div>
 						</div>
 						<div class="col-md-4">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="j_created_date">تاریخ ایجاد مطلب</label>
-									<input type="text" class="form-control" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date; ?>" name="j_created_date" placeholder="Jalali Created Date">
+									<label for="j_created_date">از تاریخ :</label>
+									<input type="text" class="form-control" name="start_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date; ?>" name="j_created_date" placeholder="Jalali Created Date">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="j_created_date">تاریخ ایجاد مطلب</label>
-									<input type="text" class="form-control" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date;?>" name="j_created_date" placeholder="Jalali Created Date">
+									<label for="j_created_date">تا تاریخ :</label>
+									<input type="text" class="form-control" name="end_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date;?>" name="j_created_date" placeholder="Jalali Created Date">
 								</div>
 							</div>
 						</div>
 						<div class="col-md-2">
 							<div class="form-group">
-								<label>نوع معامله: </label>
-								<select class="form-control" name="money_id" required>
-									<option value="1">همه</option>
-									<option value="2">خرید</option>
-									<option value="3">فروش</option>
+								<label>نوع معامله : </label>
+								<select class="form-control" name="deal_type" required>
+									<option value="0" <?php if($t == 0){echo 'selected';}?> >همه</option>
+									<option value="1" <?php if($t == 1){echo 'selected';}?> >خرید</option>
+									<option value="2" <?php if($t == 2){echo 'selected';}?> >فروش</option>
 									
 								</select>
 							</div>
 						</div>
 						<div class="col-md-2">
 							<div class="form-group">
-								<label>ارز معامله: </label>
+								<label>ارز معامله : </label>
 								<select class="form-control" name="money_id" required>
-									<option value="1">دلار</option>
-									<option value="2">یورو</option>
-									<option value="3">یوان</option>
-									<option value="4">درهم</option>
+								    <option value="0" <?php if($m == 0){echo 'selected';}?>>همه</option>
+									<option  value="1" <?php if($m == 1){echo 'selected';}?> >دلار</option>
+									<option value="2" <?php if($m == 2){echo 'selected';}?> >یورو</option>
+									<option value="3"  <?php if($m == 3){echo 'selected';}?> >یوان</option>
+									<option value="4"  <?php if($m == 4){echo 'selected';}?> >درهم</option>
 								</select>
 							</div>
 						</div>
 						<div class="col-md-1">
-							<button class="btn btn-success mt-25" type="submit" >جستجو</button>
+							<button class="btn btn-success mt-25" name="sub" type="submit" >اعمال فیلتر</button>
 						</div>
 						
 					</div>
 				</form>
-				<!-- <div class=" col-md-1 mt-25 text-left">
-					<label>نمایش:</label>
-					<ul class="icons-list display-inline-block">
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle border p-10 text-black " data-toggle="dropdown">
-							<span class="text-muted"><span class="icon-arrow-down5"></span><span><?php if($this->uri->segment(3) == 'show'){echo $this->uri->segment(4);}else{echo '10';} ?></span></span>
-						</a>
-						
-
-
-							<ul class="dropdown-menu dorpdown-custom dropdown-menu-right">
-								<li><a class="dropdown-item" href="<?php //echo base_url('deal/archive/show/10')?>">10</a>
-								</li>
-								<li><a class="dropdown-item" href="<?php // echo base_url('deal/archive/show/25')?>">25</a>
-								</li>
-								<li><a class="dropdown-item" href="<?php //echo base_url('deal/archive/show/50')?>">50</a>
-								</li>
-								<li><a class="dropdown-item" href="<?php //echo base_url('deal/archive/show/100')?>">100</a>
-								</li>
-								<li><a class="dropdown-item" href="<?php //echo base_url('deal/archive/show/all')?>">نمایش همه</a>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</div> -->
 			</div>
 		</div>
 	
@@ -101,7 +77,7 @@
 	<table class="table datatable-selection-single table-hover table-responsive-lg ">
 		<thead>
 			<tr>
-				<th>ردیف</th>
+				<th>شناسه معامله</th>
 				<th>نام مشتری</th>
 				<th>نوع معامله</th>
 				<th>تعداد ارز</th>
@@ -111,7 +87,7 @@
 				<th>حجم باقی مانده</th>
 				<th>تاریخ ثبت</th>
 				<th>آخرین ویرایش</th>
-				<th class="text-center">ابزارک</th>
+				<th class="text-center">ابزار</th>
 			</tr>
 		</thead>
 		<tbody id="search_cust" tyle="display: none;">
@@ -120,18 +96,14 @@
 		<tbody>
 
 			<?php 
-							if($this->uri->segment(3) == 'show'){
-								$show = $this->uri->segment(5);
-								$num = $this->uri->segment(5) + 1;
-							}else{
-								$show = $this->uri->segment(3);
-								$num = $this->uri->segment(3) + 1;
-							}
-							if(sizeof($deal) == 0){ echo "<tr><td colspan = '11' class='text-center p-20'>موردی یافت نشد</td></tr>"; }else{
-							foreach($deal as $rows){ ?>
+			if(sizeof($deal) == 0){ ?>
+			<tr><td colspan = '11' class='text-center p-20'>موردی یافت نشد</td></tr>
+			<?php }else{
+			$num = $this->uri->segment(3) + 1;
+			foreach($deal as $rows){ ?>
 			<tr class="base_cust">
 				<td>
-					<?php echo $num;?>
+					<?php echo $rows->id + 100;?>
 				</td>
 				<td>
 					<a href="<?php echo base_url('deal/handle_profile/').$rows->cust_id ?>">
@@ -147,13 +119,13 @@
 				<td>
 					<?php echo number_format($rows->convert_money); ?>
 				</td>
-				<td>
+				<td class="<?php if($rows->volume_deal < $rows->volume_pay){echo 'text-danger';}?>">
 					<?php echo number_format($rows->volume_deal);?>
 				</td>
-				<td>
+				<td class="<?php if($rows->volume_deal < $rows->volume_pay){echo 'text-danger';}?>">
 					<?php echo number_format($rows->volume_pay);?>
 				</td>
-				<td>
+				<td class="<?php if($rows->volume_rest < 0){echo 'text-danger';}?>">
 					<?php echo number_format($rows->volume_rest);?>
 				</td>
 				<td>
@@ -166,7 +138,9 @@
 					<ul class="icons-list">
 						<li title="هماهنگی ها" data-toggle="tooltip" class="text-success"><a href="<?php echo base_url('deal/handle/').$rows->id;?>"><i class="icon-notebook"></i></a>
 						</li>
-						<li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('customer/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a>
+						<li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a>
+						</li>
+						<li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$rows->id;?>"><i class="icon-stack-picture"></i></a>
 						</li>
 						<li title="حذف معامله" data-toggle="tooltip" class="text-danger"><a href="#"><i class="icon-trash"></i></a>
 						</li>
@@ -176,13 +150,11 @@
 			<?php
 			$num++;
 			}
-			}
 			?>
-			<?php if(sizeof($deal) != 0){ ?>
 			<tr>
 				<td colspan="6" class="pt-20 pb-20">
 					نمایش
-					<?php echo  $show + 1;?> تا
+					<?php echo  $this->uri->segment(3) + 1;?> تا
 					<?php echo $num - 1; ?> از
 					<?php echo $count;?>
 				</td>
@@ -218,7 +190,7 @@
 				alert( 'request was unsuccessful : ' + xhr.status );
 			}
 		}
-		xhr.open( 'post', "<?php echo base_url('customer/search/')?>", true );
+		xhr.open( 'post', "<?php echo base_url('deal/search/')?>", true );
 		xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
 		xhr.send( 'text_search=' + text );
 	}
@@ -230,16 +202,42 @@
 			tbody.innerHTML = "<tr><td colspan = '11' class='text-center p-20'>موردی یافت نشد</td></tr>";
 		} else {
 			var div = document.createElement( 'tbody' );
-			for ( var i = 0; i < result.length; i++ ) {
+			var len = result.length;
+			for ( var i = 0; i < len ; i++ ) {
 				var tr = div.appendChild( document.createElement( 'tr' ) );
 				var td_row = tr.appendChild( document.createElement( 'td' ) );
 				td_row.innerHTML = i + 1;
+				
 				var td_fullname = tr.appendChild( document.createElement( 'td' ) );
-				td_fullname.innerHTML = result[ i ].fullname;
-				var td_tel = tr.appendChild( document.createElement( 'td' ) );
-				td_tel.innerHTML = '10';
-				var td_tel1 = tr.appendChild( document.createElement( 'td' ) );
-				td_tel1.innerHTML = '10';
+				var a_customer = td_fullname.appendChild(document.createElement('a'));
+				a_customer.setAttribute('href' , "<?php echo base_url('deal/handle_profile/');?>" + result[i].cust_id);
+			    a_customer.innerHTML = result[i].fullname;
+				
+				var td_type = tr.appendChild( document.createElement('td'));
+				if(result[i].type_deal == 1){var type = 'خرید';}
+				else{var type = 'فروش';}
+				td_type.innerHTML = type;
+				
+				var td_count = tr.appendChild( document.createElement( 'td' ) );
+				td_count.innerHTML = numeral(result[i].count_money).format('0,0') + ' ' + result[i].name;
+                
+				var td_convert = tr.appendChild(document.createElement('td'));
+				td_convert.innerHTML = numeral(result[i].convert_money).format('0,0');
+				
+				var td_volume = tr.appendChild(document.createElement('td'));
+				td_volume.innerHTML = numeral(result[i].volume_deal).format('0,0');
+				
+				var td_pay = tr.appendChild(document.createElement('td'));
+				td_pay.innerHTML = numeral(result[i].volume_pay).format('0,0');
+				
+				var td_rest = tr.appendChild(document.createElement('td'));
+				td_rest.innerHTML = numeral(result[i].volume_rest).format('0,0');
+				
+				var td_date = tr.appendChild(document.createElement('td'));
+				td_date.innerHTML = result[i].date_deal + '</br>' + result[i].time_deal;
+
+				var td_modify = tr.appendChild(document.createElement('td'));
+				td_modify.innerHTML = result[i].date_modified;
 
 				var td_tool = tr.appendChild( document.createElement( 'td' ) );
 				td_tool.setAttribute( 'class', 'text-center' );
@@ -247,24 +245,31 @@
 				var ul_tool = td_tool.appendChild( document.createElement( 'ul' ) );
 				ul_tool.setAttribute( 'class', 'icons-list' );
 
-				var li_edit = ul_tool.appendChild( document.createElement( 'li' ) );
-				li_edit.setAttribute( 'class', "text-primary-600" );
-				var a_edit = li_edit.appendChild( document.createElement( 'a' ) )
-				a_edit.setAttribute( 'href', "<?php echo base_url('customer/edit/')?>" + result[ i ].id );
-				var i_edit = a_edit.appendChild( document.createElement( 'i' ) );
-				i_edit.setAttribute( 'class', 'icon-pencil7' );
+				var li_handle = ul_tool.appendChild( document.createElement( 'li' ) );
+				li_handle.setAttribute( 'class', "text-success" );
+				var a_handle = li_handle.appendChild( document.createElement( 'a' ) )
+				a_handle.setAttribute( 'href', "<?php echo base_url('deal/handle/')?>" + result[ i ].id );
+				var i_handle = a_handle.appendChild( document.createElement( 'i' ) );
+				i_handle.setAttribute( 'class', 'icon-notebook' );
 
 				var li_detail = ul_tool.appendChild( document.createElement( 'li' ) );
-				li_detail.setAttribute( 'class', "text-teal-600" );
+				li_detail.setAttribute( 'class', "text-primary" );
 				var a_detail = li_detail.appendChild( document.createElement( 'a' ) )
-				a_detail.setAttribute( 'href', "<?php echo base_url('customer/detail/')?>" + result[ i ].id );
+				a_detail.setAttribute( 'href', "<?php echo base_url('deal/edit/')?>" + result[ i ].id );
 				var i_detail = a_detail.appendChild( document.createElement( 'i' ) );
-				i_detail.setAttribute( 'class', 'icon-cog7' );
+				i_detail.setAttribute( 'class', 'icon-pencil6' );
+				
+				var li_photo = ul_tool.appendChild( document.createElement( 'li' ) );
+				li_photo.setAttribute( 'class', "text-indigo-600" );
+				var a_photo = li_photo.appendChild( document.createElement( 'a' ) )
+				a_photo.setAttribute( 'href', "<?php echo base_url('deal/photo/')?>" + result[ i ].id );
+				var i_photo = a_photo.appendChild( document.createElement( 'i' ) );
+				i_photo.setAttribute( 'class', 'icon-stack-picture' );
 
 				var li_delete = ul_tool.appendChild( document.createElement( 'li' ) );
 				li_delete.setAttribute( 'class', "text-danger-600" );
 				var a_delete = li_delete.appendChild( document.createElement( 'a' ) )
-				a_delete.setAttribute( 'href', "<?php echo base_url('customer/detail/')?>" + result[ i ].id );
+				a_delete.setAttribute( 'href', "<?php echo base_url('deal/delete/')?>" + result[ i ].id );
 				var i_delete = a_delete.appendChild( document.createElement( 'i' ) );
 				i_delete.setAttribute( 'class', 'icon-trash' );
 			}
