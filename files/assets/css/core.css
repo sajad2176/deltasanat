@@ -6734,6 +6734,7 @@ border-top: 1px solid #ddd;
   padding-right: 5px!important;
   padding-left: 5px!important;
 }
+
 .prl-10 {
   padding-right: 10px!important;
   padding-left: 10px!important;
@@ -6746,9 +6747,16 @@ border-top: 1px solid #ddd;
   padding-right: 20px!important;
   padding-left: 20px!important;
 }
+.pr-8{
+	padding-right: 8px!important;
+}
+.pr-34{
+	padding-right: 34px!important;
+}
 .mt-50{
 	margin-top: 47px!important;
 }
+
 .jc-center {
   -ms-flex-pack: center !important;
   justify-content: center !important;
