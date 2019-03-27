@@ -52,8 +52,37 @@ $msg = $this->session->userdata('msg');?>
 									<label> انتخاب آواتار :</label>
 									<input type="file" class="file-styled" name="picname">
 								</div>
+											
+										<label >دسترسی ها:</label>
+												<div class="row">
+										<div class="checkbox col-md-3">
+											<label>
+												<input type="checkbox" class="styled" checked="checked">
+												مدیر کل
+											</label>
+										</div>
 
-					</fieldset>
+										<div class="checkbox col-md-3 mt-5">
+											<label>
+												<input type="checkbox" class="styled">
+												ادیتر
+											</label>
+										</div>
+
+										<div class="checkbox col-md-3 mt-5">
+											<label>
+												<input type="checkbox" class="styled">
+												ویزیتور
+											</label>
+										</div>
+												<div class="checkbox col-md-3 mt-5">
+											<label>
+												<input type="checkbox" class="styled">
+												Disabled styled
+											</label>
+										</div>
+									</div>
+												
 				</div>
 
 			</div>

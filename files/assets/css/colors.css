@@ -508,6 +508,28 @@
   border-color: #37474F;
   color: #fff;
 }
+/*custom bg*/
+.bg-blue-1 {
+  background-color: #1ab7ea;
+  border-color: #1ab7ea;
+  color: #fff;
+}
+.bg-blue-2 {
+  background-color: #284B5F;
+  border-color: #284B5F;
+  color: #fff;
+}
+.bg-blue-3 {
+  background-color: #5077a6;
+  border-color: #5077a6;
+  color: #fff;
+}
+.bg-blue-4 {
+  background-color: #57ACFF;
+  border-color: #57ACFF;
+  color: #fff;
+}
+/*/custom bg*/
 .bg-white {
   background-color: #fff;
   color: #333333;
