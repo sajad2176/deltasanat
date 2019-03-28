@@ -53,26 +53,7 @@ window.onclick = function(event) {
 	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/add_input.js"></script>
   <script>
 
-		$(document).ready(function(){
-    var maxField = 3;
-    var addButton = $('.add_button2');
-    var wrapper = $('.field_wrapper2');
-    var fieldHTML = '<div><div class="row"><div class="col-md-6"><div class="form-group"><label>شماره شبا: </label><input type="text" name="number_shaba[]" class="form-control" onkeyup="show_bank(this)" data-mask="aa-99-999-9999999999999999999" placeholder="IR-06-017-0000000123014682799" required></div></div><div class="col-md-6"><div class="form-group"><label>بانک:</label><input type="text" name="name_bank[]" placeholder="ملی ، ملت ..." readonly class="form-control"></div></div></div><div class="row"><div class="col-md-6"><div class="form-group"><label>مبلغ معامله: </label><input type="hidden" name="pay[]" value="0"><input type="text" onKeyUp="amount_bank(this)" placeholder="100,000" class="form-control"><input type="hidden" name="amount_bank[]"><p class="text-danger" style ="display: none;"></p><input type="hidden" name="active[]" value="1"></div></div><div class="col-md-6"><div class="form-group input-group"><label>توضیحات حساب :</label><input type="text" name="bank_explain[]" class="form-control"><span class="input-group-btn remove_button2 "><button type="button" style="top: 14px;" class="btn btn btn-danger icon-minus2"></button></span></div></div></div></div>';
-		
-    var x = 1;
-    
-    $(addButton).click(function(){
-        if(x < maxField){ 
-            x++;
-            $(wrapper).append(fieldHTML);
-        }
-    });
-    $(wrapper).on('click', '.remove_button2', function(e){
-        e.preventDefault();
-        $(this).parent('div').parent('div').parent('div').parent('div').remove();
-        x--; 
-    });
-});
+
 $(document).ready(function(){
     var maxField = 3;
     var addButton = $('.add_button3');

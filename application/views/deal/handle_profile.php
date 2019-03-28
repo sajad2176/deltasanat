@@ -67,8 +67,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 						</li>
 						<li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$deals->id;?>"><i class="icon-stack-picture"></i></a>
 						</li>
-						<li class="text-danger"><a href="#"><i class="icon-trash"></i></a>
-						</li>
+						<li class="text-danger" data-toggle="tooltip" title="حذف معامله"><a data-toggle="modal" href="#modal_theme_danger1"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $deals->id;?> , <?php echo $deals->volume_pay; ?>)" ></i></a></li>
 					</ul>
 				</td>
 			
@@ -283,8 +282,9 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 													
 				<li title="بازگشت پرداخت " class="text-warning-800"><a data-toggle="modal" href="#modal_form_dminor"><i onclick="history(<?php echo $handles->id;?> , <?php echo $handles->deal_id; ?>)" class="icon-file-minus"></i></li>
 									
-									<li title="حذف هماهنگی" data-toggle="tooltip" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i class="icon-cross2"></i></a>
-												</li>
+				<li title="حذف هماهنگی" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger">
+					<i onClick="deleteHandle(<?php echo $handles->id; ?>, <?php echo $handles->handle_pay; ?>)" class="icon-cross2"></i></a>
+										</li>
 											</ul>
 						</td>
 					</tr>
@@ -343,28 +343,28 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 			<!-- /success modal -->
 		</div>
 		<!-- Success modal -->
-		<div id="modal_theme_danger" class="modal fade">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header bg-danger">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">حذف هماهنگی</h4>
-					</div>
+			<div id="modal_theme_danger" class="modal fade">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header bg-danger">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">حذف هماهنگی</h4>
+						</div>
 
-					<div class="modal-body">
+						<div class="modal-body">
 
-						<h5 class="text-center">آیا میخواهید هماهنگی حذف شود ؟</h5>
+							<h5 class="text-center" id="titleHandle"></h5>
 
 
-					</div>
+						</div>
 
-					<div class="modal-footer text-center">
-						<button type="button" class="btn btn-danger" data-dismiss="modal">خیر</button>
-						<button type="button" class="btn btn-success">بله </button>
+						<div class="modal-footer text-center">
+							<button type="button" class="btn btn-danger" data-dismiss="modal" id="closeHandle">خیر</button>
+							<a id="confirmHandle" class="btn btn-success">بله </a>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
 		<!-- /success modal -->
 	</div>
 	<!-- edit bank modal -->
@@ -444,10 +444,65 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				</div>
 			</div>
 		</div>
+	<div id="modal_theme_danger1" class="modal fade">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header bg-danger">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">حذف معامله</h4>
+						</div>
+
+						<div class="modal-body">
+
+							<h6 class="text-center" id="titleDelete"></h6>
+
+
+						</div>
+
+						<div class="modal-footer text-center">
+							<button type="button" class="btn btn-danger" data-dismiss="modal" id='closeDelete'>بستن</button>
+							<a class="btn btn-success" id="confirmDelete">بله </a>
+						</div>
+					</div>
+				</div>
+			</div>
 		<!-- /dminor form modal -->
 		<!-- /edit bank modal -->
 		<?php $str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");?>
 		<script>
+	var titleDelete = document.getElementById('titleDelete');
+	var closeDelete = document.getElementById('closeDelete');
+	var confirmDelete = document.getElementById('confirmDelete');
+	function deleteDeal(id , rest){
+      if(rest != 0){
+		  titleDelete.innerHTML = " حجم پرداختی این معامله صفر نمی باشد . اگر مایل به حذف معامله می باشید جهت جلوگیری از ناسازگاری در سامانه ابتدا مبالغ پرداختی را بازگردانید. ";
+		  closeDelete.style.display = 'none';
+		  confirmDelete.style.display = 'none';
+		  return;
+	  }else{
+		  titleDelete.innerHTML = "با حذف معامله تمام اطلاعات مربوط به معامله ، هماهنگی ها ،اطلاعات بانکی حذف خواهد شد.</br> آیا می خواهید ادامه دهید؟";
+		  closeDelete.style.display = 'inline-block';
+		  confirmDelete.style.display = 'inline-block';
+		  confirmDelete.setAttribute('href' , "<?php echo base_url('deal/delete_deal/')?>" + id + "<?php echo "/".$this->uri->segment(3)."/group";?>");
+	  }
+	}
+			var titleHandle = document.getElementById('titleHandle');
+			var closeHandle = document.getElementById('closeHandle');
+			var confirmHandle = document.getElementById('confirmHandle');
+			function deleteHandle(id , pay){
+               if(pay != 0){
+				   titleHandle.innerHTML = 'حجم پرداختی این هماهنگی صفر نمی باشد . اگر مایل به حذف هماهنگی  می باشید جهت جلوگیری از ناسازگاری در سامانه ابتدا مبالغ پرداختی را بازگردانید. ';
+				   closeHandle.style.display = 'none';
+				   confirmHandle.style.display = 'none';
+				   return;
+			   }else{
+				   titleHandle.innerHTML = 'آیا مایل به حذف هماهنگی می باشید ؟';
+				   closeHandle.style.display = 'inline-block';
+				   confirmHandle.style.display = 'inline-block';
+				   confirmHandle.setAttribute('href' , "<?php echo base_url('deal/delete_handle/');?>" + id + "<?php echo "/".$this->uri->segment(3)."/group"; ?>");
+			   }
+			}			
+			
 			function pay_all( link, rest , deal_id ) {
 	document.getElementById( 'button_all' ).setAttribute( 'href', "<?php echo base_url("deal/pay_all/")?>"+ deal_id +'/'+link + '/group/'+<?php echo $this->uri->segment(3);?> );
 				document.getElementById( 'p_all' ).innerHTML = " آیا می خواهید تمام مبلغ " + numeral( rest ).format( '0,0' ) + " پرداخت شود ؟";

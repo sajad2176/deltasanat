@@ -9,7 +9,7 @@ $msg = $this->session->userdata('msg');?>
 <?php }?>
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 	<ul class="breadcrumb">
-		<li><a href="<?php echo base_url('home');?>"><i class="icon-home2 position-left"></i> داشبورد</a>
+		<li><a href="<?php echo base_url('home');?>"><i class="icon-home2 position-left"></i> داشبورد </a>
 		</li>
 		<li><a href="<?php echo base_url('deal/buy')?>">معاملات</a>
 		</li>
@@ -29,7 +29,7 @@ $msg = $this->session->userdata('msg');?>
 							<fieldset>
 								<legend class="text-semibold"><i class="icon-cart5 position-left"></i> اطلاعات خرید</legend>
 								<div class="form-group">
-									<label>نام فروشنده: </label>
+									<label>نام فروشنده : </label>
 									<input class="form-control" onFocus="search_customer(this)" name="customer[]" type="text" placeholder="نام فروشنده خود را وارد کنید" autocomplete="off" required>
 								</div>
 
@@ -94,12 +94,9 @@ $msg = $this->session->userdata('msg');?>
 											<div class="col-md-6">
 												<div class="form-group">
 													<label>شماره شبا : </label>
-													<input onkeyup="show_bank(this)" data-mask="aa-99-999-9999999999999999999" type="text" placeholder="IR-06-017-0000000123014682799" name="number_shaba[]" class="form-control">
+													<input onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="number_shaba[]" class="form-control">
 												</div>
 											</div>
-
-
-
 											<div class="col-md-6">
 												<div class="form-group">
 													<label>بانک :</label>
@@ -107,8 +104,6 @@ $msg = $this->session->userdata('msg');?>
 												</div>
 											</div>
 										</div>
-
-
 									</div>
 									<div class="row">
 										<div class="col-md-6">

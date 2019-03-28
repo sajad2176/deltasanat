@@ -95,7 +95,7 @@ $msg = $this->session->userdata('msg');?>
 											<div class="col-md-6">
 												<div class="form-group">
 													<label>شماره شبا : </label>
-													<input onkeyup="show_bank(this)" data-mask="aa-99-999-9999999999999999999" type="text" placeholder="IR-06-017-0000000123014682799" name="number_shaba[]" class="form-control">
+													<input onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999" type="text" placeholder="IR-06-017-0000000123014682799" name="number_shaba[]" class="form-control">
 												</div>
 											</div>
 

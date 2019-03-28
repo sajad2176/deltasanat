@@ -1,9 +1,9 @@
 function show_bank( input ) {
     var txt = input.value;
     var name_bank = input.parentElement.parentElement.nextElementSibling.firstElementChild.lastElementChild;
-    if ( txt[ 6 ] != '_' && txt[ 7 ] != '_' && txt[ 8 ] != '_' && txt[0].toLowerCase() == 'i' && txt[1].toLowerCase() == 'r'  ) {
+    if ( txt[ 3 ] != '_' && txt[ 4 ] != '_' && txt[ 5 ] != '_'  ) {
         name_bank.setAttribute("readonly" , 'readonley');
-        var bank = txt.slice( 6, 9 );
+        var bank = txt.slice( 3, 6 );
         if ( bank == '055' ) {
             name_bank.value = 'بانک اقتصاد نوین';
         } else if ( bank == '054' ) {

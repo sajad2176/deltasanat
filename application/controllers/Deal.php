@@ -112,7 +112,78 @@ $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$dat
         }
     }
     //----- search customer -----//
+    //-----delete deal--------//
+    public function delete_deal(){
+        $id = $this->uri->segment(3);
+        if(isset($id) and is_numeric($id)){
+         $deal = $this->base_model->get_data_join('deal' , 'customer' ,'deal.* , customer.fullname , currency_unit.name','deal.customer_id = customer.id', 'row' , array('deal.id' => $id) , NULL , NULL , NULL , array('currency_unit' , 'deal.money_id = currency_unit.id'));
+         if($deal->volume_pay != 0 or sizeof($deal) == 0){
+             show_404();
+         }else{
+            $deal_handle = $this->base_model->get_data('deal_handle' , 'volume_handle' ,  'result' , array('deal_handle.deal_id' => $id));
+            $deal_bank = $this->base_model->get_data('deal_bank' , '*' , 'result' , array('deal_id' => $id));
+            $deal_pic = $this->base_model->get_data('deal_pic' , '*' , 'result' , array('deal_id'=> $id));
+            $a = $id +100;
+            $explain = ' شناسه معامله :  '. $a . " | نام مشتری : ".$deal->fullname . " | نام ارز : ".$deal->name ." | تعداد ارز : ".number_format($deal->count_money)." | کارمزد : " . number_format($deal->wage)." | نرخ تبدیل : ".number_format($deal->convert_money)." | حجم معامله : ".number_format($deal->volume_deal)."</br>";
+           if(sizeof($deal_handle) != 0){
+            for($i = 0 ; $i < sizeof($deal_handle) ; $i++){
+                $b = $i + 1;
+                $explain .= " هماهنگی شماره ".$b." - حجم هماهنگی : ".number_format($deal_handle[$i]->volume_handle)."</br>";
+            }
+           }
+         if(sizeof($deal_bank) != 0){
+            for($j = 0 ; $j < sizeof($deal_bank) ; $j++){
+                $c = $j + 1;
+                $explain .= " اطلاعات حساب شماره  ".$c." - نام بانک : ".$deal_bank[$j]->name_bank." | شماره شبا : ".$deal_bank[$j]->number_shaba." | مبلغ تعیین شده : ".number_format($deal_bank[$j]->amount)."</br>";
+            }
+         }
+         if(sizeof($deal_pic)  != 0){
+            for($z = 0 ; $z < sizeof($deal_pic) ; $z++){
+                $d = $z + 1;
+                $explain .= ' نام عکس قبض شماره  '.$d." : ".$deal_pic[$z]->pic_name."</br>";
+            }
+         }
 
+$explain .= ' حذف شد ';
+$date = $this->convertdate->convert(time());
+$log['user_id'] = $this->session->userdata('id');
+$log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
+$log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+$log['activity_id'] = 20;
+$log['explain'] = $explain;
+$back['explain'] =  $explain;
+$back['date_backup'] = $log['date_log'];
+$back['time_backup'] = $log['time_log'];
+$this->base_model->delete_data('deal_handle' , array('deal_id'=>$id));
+$this->base_model->delete_data('deal_bank' , array('deal_id' => $id));
+$this->base_model->delete_data('deal_pic' , array('deal_id'=> $id));
+$res = $this->base_model->delete_data('deal' , array('id' => $id));
+$this->base_model->insert_data('log' , $log);
+$this->base_model->insert_data('backup' , $back);
+if($this->uri->segment(5) == 'group'){
+    $red = 'handle_profile';
+    $red_id = $this->uri->segment(4);
+}else{
+    $red = 'archive';
+    $red_id = '';
+}
+if($res == TRUE){
+    $message['msg'][0] = ' معامله با موفقیت حذف شد  ';
+    $message['msg'][1] = 'success';
+    $this->session->set_flashdata($message);
+    redirect("deal/$red/$red_id");
+}else{
+    $message['msg'][0] = 'مشکلی در حذف معامله رخ داده است . لطفا دوباره سعی کنید';
+    $message['msg'][1] = 'danger';
+    $this->session->set_flashdata($message);
+    redirect("deal/$red/$red_id");
+}
+         }
+        }else{
+            show_404();
+        }
+    }
+    //-----delete deal--------//
     //----- buy and sell -----//
     public function buy(){
         if(isset($_POST['sub'])){
@@ -126,7 +197,7 @@ $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$dat
             }else{
                 $id = $check->id;
             }
-            $date = $this->convertdate->convert(time());
+           $date = $this->convertdate->convert(time());
            $deal['count_money'] = $this->input->post('count_money');
            $deal['wage'] = $this->input->post('wage');
            $deal['convert_money'] = $this->input->post('convert_money');
@@ -261,7 +332,6 @@ $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$dat
              $deal['explain'] = $this->input->post('explain');
              $deal['date_modified'] = $date['year']."-".$date['month_num']."-".$date['day']."</br>".$date['hour'].":".$date['minute'].":".$date['second'];
              $deal['volume_rest'] = $deal['volume_deal'] - $this->input->post('volume_pay');
-             $deal['customer_id'] = $cust_id;
              $deal['money_id'] = $this->input->post('money_id');
              $res = $this->base_model->update_data('deal' , $deal , array('id'=> $id));
              if($res == FALSE){
@@ -313,19 +383,16 @@ $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$dat
             if($_POST['number_shaba'][0] != ''){
               for($i = 0 ; $i < sizeof($_POST['number_shaba']) ; $i++){
                   $bank[] = array(
+                      'id'=>htmlspecialchars($_POST['bank_id'][$i]),
                       'explain'=> htmlspecialchars($_POST['bank_explain'][$i]),
                       'number_shaba'=>htmlspecialchars($_POST['number_shaba'][$i]),
                       'name_bank'=> htmlspecialchars($_POST['name_bank'][$i]),
-                      'amount'=> htmlspecialchars($_POST['amount_bank'][$i]),
-                      'pay'=>htmlspecialchars($_POST['pay'][$i]),
-                      'active'=> htmlspecialchars($_POST['active'][$i]),
-                      'deal_id'=> $id
+                      'amount'=> htmlspecialchars($_POST['amount_bank'][$i])
                   );
               }
-              $this->base_model->delete_data('deal_bank' , array('deal_id'=> $id));
-              $res_bank = $this->base_model->insert_batch('deal_bank' , $bank);
+              $res_bank = $this->base_model->update_batch('deal_bank' , $bank , 'id');
               if($res_bank == FALSE){
-          $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است. لطفا دوباره سعی کنید';
+          $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است. لطفا1 دوباره سعی کنید';
           $message['msg'][1] = 'danger';
           $this->session->set_flashdata($message);
           redirect("deal/edit/$id");
@@ -399,7 +466,7 @@ $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$dat
                         redirect("deal/handle/$id");
                      }else{
                     $check = $this->base_model->get_data('customer' , 'id' , 'row' , array('fullname'=> $_POST['customer'][$i]));
-                    if($check == FALSE){
+                    if(sizeof($check) == 0){
                         $customer = array(
                             'fullname'=>$_POST['customer'][$i],
                             'address'=>'',
@@ -468,7 +535,51 @@ $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$dat
         }
     }
     //----- handle -----//
-
+    // ----delete handle---//
+    public function delete_handle(){
+        $id = $this->uri->segment(3);
+        if(isset($id) and is_numeric($id)){
+           $handle = $this->base_model->get_data('deal_handle' , 'volume_handle , deal_id , handle_pay' , 'row' , array('id' => $id));
+           if($handle->handle_pay != 0 or sizeof($handle) == 0){
+               show_404();
+           }else{
+            $a = $handle->deal_id + 100 ;
+            $explain = 'هماهنگی با حجم : '.number_format($handle->volume_handle)." مربوطه به معامله با شناسه ".$a . "حذف شد";
+            $date = $this->convertdate->convert(time());
+            $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
+            $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+            $log['user_id'] = $this->session->userdata('id');
+            $log['activity_id'] = 16;
+            $log['explain'] = $explain;
+            $back['explain'] =  $explain;
+            $back['time_backup'] = $log['time_log'];
+            $back['date_backup'] = $log['date_log'];
+            $res = $this->base_model->delete_data('deal_handle' , array('id'=>$id));
+            $this->base_model->insert_data('log' , $log);
+            $this->base_model->insert_data('backup' , $back);
+            $red_id = $this->uri->segment(4);
+            if($this->uri->segment(5) == 'group'){
+                $red = 'handle_profile';
+            }else{
+                $red = "handle";
+            }
+            if($res == FALSE){
+                $message['msg'][0] = 'متاسفانه مشکلی در روند عملیات رخ داده است . لطفا دوباره سعی کنید';
+                $message['msg'][1] = 'danger';
+                $this->session->set_flashdata($message);
+                redirect("deal/$red/$red_id");
+            }else{
+                $message['msg'][0] = 'هماهنگی با موفقیت حذف شد';
+                $message['msg'][1] = 'success';
+                $this->session->set_flashdata($message);
+                redirect("deal/$red/$red_id");
+            }
+           }
+        }else{
+            show_404();
+        }
+    }
+    // ----delete handle---//
     //----- add_bank -----//
     public function add_bank(){
         $id = $this->uri->segment(3);
@@ -487,7 +598,7 @@ $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$dat
                 $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
                 $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
                 $log['activity_id'] = 17;
-                $log['explain'] = 'حساب جدید با مشخصات  '.$data['number_shaba']." | ".$data['name_bank']." | مقدار واریزی :  ".$data['amount']." | توضحیات :".$data['explain']." افزوده شد ";
+                $log['explain'] = 'حساب جدید با مشخصات  '.$data['number_shaba']." | ".$data['name_bank']." | مقدار تعیین شده :  ".$data['amount']." | توضحیات :".$data['explain']." افزوده شد ";
                 $this->base_model->insert_data('log' , $log);
                 if($res == FALSE){
                     $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید';
@@ -535,7 +646,7 @@ public function edit_bank(){
       $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
       $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
       $log['activity_id'] = 18;
-      $log['explain'] = 'حساب  با مشخصات  '.$data['number_shaba']." | ".$data['name_bank']." | مقدار واریزی :  ".$data['amount']." | توضحیات :".$data['explain']." ویرایش کرد ";
+      $log['explain'] = 'حساب  با مشخصات  '.$data['number_shaba']." | ".$data['name_bank']." | مقدار تعیین شده :  ".$data['amount']." | توضحیات :".$data['explain']." ویرایش کرد ";
       $this->base_model->insert_data('log' , $log);
       $message['msg'][0] = 'اطلاعات حساب بانکی با موفقیت ویرایش شد';
       $message['msg'][1] = 'success';
@@ -591,7 +702,7 @@ public function pay_all(){
     $id = $this->uri->segment(4);
     if(isset($deal_id) and isset($id) and is_numeric($deal_id) and is_numeric($id)){
 
-        $handle = $this->base_model->get_data_join('deal_handle' , 'deal' , 'deal_handle.handle_pay , deal_handle.handle_rest , deal_handle.bank_id , deal.volume_pay , deal.volume_rest , deal_bank.pay , deal.money_id, currency_unit.amount_unit' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id'=> $id) , NULL , NULL , NULL , array('deal_bank','deal_bank.id = deal_handle.bank_id') , array('currency_unit' , 'deal.money_id = currency_unit.id'));
+        $handle = $this->base_model->get_data_join('deal_handle' , 'deal' , 'deal_handle.handle_pay , deal_handle.handle_rest , deal_handle.bank_id , deal.volume_pay , deal.volume_rest , deal_bank.pay , deal.money_id, deal.type_deal ,currency_unit.amount_unit' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id'=> $id) , NULL , NULL , NULL , array('deal_bank','deal_bank.id = deal_handle.bank_id') , array('currency_unit' , 'deal.money_id = currency_unit.id'));
         $date = $this->convertdate->convert(time());
         $history['date_pay'] = $date['year']."-".$date['month_num']."-".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
         $history['active'] = 1;
@@ -602,14 +713,18 @@ public function pay_all(){
         $deal_handle['handle_rest'] = 0;
         $deal_handle['handle_pay'] = $handle->handle_pay + $handle->handle_rest;
         $deal_bank['pay'] = $handle->pay + $handle->handle_rest;
-        $unit['amount_unit'] = $handle->amount_unit + $handle->handle_rest;
+        if($handle->type_deal == 1){
+            $unit['amount_unit'] = $handle->amount_unit + $handle->handle_rest;
+        }else{
+            $unit['amount_unit'] = $handle->amount_unit - $handle->handle_rest;
+        }
         $log['user_id'] = $this->session->userdata('id');
         $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
         $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
         $log['activity_id'] = 13;
         $aa = $deal_id +100;
         $log['explain'] = "شناسه معامله : ".$aa . " | حجم پرداخت : ". number_format($handle->handle_rest)." به صورت کامل پرداخت کرد ";
-        
+        $deal_handle['date_modified'] =  $date['year']."-".$date['month_num']."-".$date['day']."</br>".$date['hour'].":".$date['minute'].":".$date['second'];
         $this->base_model->update_data('deal' , $deal , array('id'=>$deal_id));
         $this->base_model->update_data('deal_handle' , $deal_handle , array('id' => $id));
         $this->base_model->update_data('deal_bank' , $deal_bank , array('id' => $handle->bank_id));
@@ -646,7 +761,7 @@ public function pay_slice(){
     $id = $this->uri->segment(4);
     if(isset($deal_id) and isset($id) and is_numeric($deal_id) and is_numeric($id)){
         if(isset($_POST['sub'])){
-            $handle = $this->base_model->get_data_join('deal_handle','deal','deal_handle.handle_pay,deal_handle.handle_rest,deal_handle.bank_id,deal.volume_pay , deal.volume_rest ,  deal_bank.pay , deal.money_id, currency_unit.amount_unit' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id'=> $id) , NULL , NULL , NULL , array('deal_bank','deal_bank.id = deal_handle.bank_id'), array('currency_unit' , 'deal.money_id = currency_unit.id'));
+            $handle = $this->base_model->get_data_join('deal_handle','deal','deal_handle.handle_pay,deal_handle.handle_rest,deal_handle.bank_id,deal.volume_pay , deal.volume_rest ,  deal_bank.pay , deal.type_deal , deal.money_id, currency_unit.amount_unit' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id'=> $id) , NULL , NULL , NULL , array('deal_bank','deal_bank.id = deal_handle.bank_id'), array('currency_unit' , 'deal.money_id = currency_unit.id'));
             $slice = $this->input->post('slice');
             $date = $this->convertdate->convert(time());
             $history['date_pay'] = $date['year']."-".$date['month_num']."-".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
@@ -658,13 +773,18 @@ public function pay_slice(){
             $deal['volume_pay'] = $handle->volume_pay + $slice;
             $deal['volume_rest'] = $handle->volume_rest - $slice;
             $deal_bank['pay'] = $handle->pay + $slice;
-            $unit['amount_unit'] = $handle->amount_unit + $slice;
+            if($handle->type_deal == 1){
+                $unit['amount_unit'] = $handle->amount_unit + $slice;
+            }else{
+                $unit['amount_unit'] = $handle->amount_unit - $slice;
+            }
             $log['user_id'] = $this->session->userdata('id');
             $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
             $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
             $log['activity_id'] = 14;
             $aa = $deal_id +100;
             $log['explain'] = "شناسه معامله : ".$aa . " | حجم پرداخت : ". number_format($slice)." به صورت جزیی پرداخت کرد ";
+            $deal_handle['date_modified'] = $log['date_log']."</br>".$log['time_log'];
             $this->base_model->update_data('deal' , $deal , array('id' => $deal_id));
             $this->base_model->update_data('deal_handle' , $deal_handle , array('id' => $id));
             $this->base_model->update_data('deal_bank' , $deal_bank , array('id' => $handle->bank_id));
@@ -714,49 +834,59 @@ public function restore(){
     $id = $this->uri->segment(3);
     $deal_id = $this->uri->segment(4);
     if(isset($id) and isset($deal_id) and is_numeric($id) and is_numeric($deal_id)){
-        $res = $this->base_model->get_data('handle_history' , 'handle_id ,volume' , 'row' , array('id' => $id));
-        $handle_id = $res->handle_id;
-        $restore = $res->volume;
-        $store = $this->base_model->get_data_join('deal_handle' , 'deal' , 'deal_handle.handle_pay , deal_handle.handle_rest , deal.volume_pay , deal.volume_rest , deal_bank.pay , deal_handle.bank_id  , deal.money_id, currency_unit.amount_unit' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id' => $handle_id) , NULL , NULL , NULL , array('deal_bank' , 'deal_bank.id = deal_handle.bank_id'), array('currency_unit' , 'deal.money_id = currency_unit.id'));
-       $bank_id = $store->bank_id;
-       $handle['handle_pay'] = $store->handle_pay - $restore;
-       $handle['handle_rest'] = $store->handle_rest + $restore;
-       $deal['volume_pay'] = $store->volume_pay - $restore;
-       $deal['volume_rest'] = $store->volume_rest + $restore;
-       $bank['pay'] = $store->pay - $restore;
-       $unit['amount_unit'] = $store->amount_unit - $restore;
-       $history['active'] = 0;
-       $date = $this->convertdate->convert(time());
-       $log['user_id'] = $this->session->userdata('id');
-       $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
-       $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
-       $log['activity_id'] = 15;
-       $aa = $deal_id + 100;
-       $log['explain'] = "شناسه معامله : ".$aa." | مبلغ پرداخت : ".number_format($restore)." را باز گردانید ";
-       $this->base_model->update_data('handle_history' , $history , array('id' => $id));
-       $this->base_model->update_data('deal_handle', $handle , array('id' => $handle_id));
-       $this->base_model->update_data('deal' , $deal , array('id' => $deal_id));
-       $this->base_model->update_data('currency_unit' , $unit , array('id'=> $store->money_id));
-       $this->base_model->insert_data('log' , $log);
-       $res = $this->base_model->update_data('deal_bank' , $bank , array('id'=> $bank_id));
-       if($this->uri->segment(5) == 'group'){
-        $red = 'handle_profile';
-        $red_id = $this->uri->segment(6);
-    }else{
-        $red = 'handle' ;
-        $red_id = $deal_id;
-    }
-    if($res == TRUE){
-        $message['msg'][0] = 'مبلغ مورد نظر با موفقیت بازگرداننده شد';
-        $message['msg'][1] = 'success';
-        $this->session->set_flashdata($message);
-        redirect("deal/$red/$red_id");
-    }else{
-        $message['msg'][0] = 'مشکلی در روند عملیات رخ داده است . لطفا دوباره سعی کنید';
-        $message['msg'][1] = 'danger';
-        $this->session->set_flashdata($message);
-        redirect("deal/$red/$red_id");
-    }
+        $res = $this->base_model->get_data('handle_history' , 'handle_id ,volume' , 'row' , array('id' => $id , 'active'=> 1));
+        if(sizeof($res) == 0){
+            show_404();
+        }else{
+            $handle_id = $res->handle_id;
+            $restore = $res->volume;
+            $store = $this->base_model->get_data_join('deal_handle' , 'deal' , 'deal_handle.handle_pay , deal_handle.handle_rest , deal.volume_pay , deal.volume_rest , deal.type_deal ,deal_bank.pay , deal_handle.bank_id  , deal.money_id, currency_unit.amount_unit' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id' => $handle_id) , NULL , NULL , NULL , array('deal_bank' , 'deal_bank.id = deal_handle.bank_id'), array('currency_unit' , 'deal.money_id = currency_unit.id'));
+           $bank_id = $store->bank_id;
+           $handle['handle_pay'] = $store->handle_pay - $restore;
+           $handle['handle_rest'] = $store->handle_rest + $restore;
+           $deal['volume_pay'] = $store->volume_pay - $restore;
+           $deal['volume_rest'] = $store->volume_rest + $restore;
+           $bank['pay'] = $store->pay - $restore;
+           if($store->type_deal == 1){
+            $unit['amount_unit'] = $store->amount_unit - $restore;
+           }else{
+            $unit['amount_unit'] = $store->amount_unit + $restore;
+           }
+           $history['active'] = 0;
+           $date = $this->convertdate->convert(time());
+           $log['user_id'] = $this->session->userdata('id');
+           $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
+           $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+           $log['activity_id'] = 15;
+           $aa = $deal_id + 100;
+           $log['explain'] = "شناسه معامله : ".$aa." | مبلغ پرداخت : ".number_format($restore)." را باز گردانید ";
+           $handle['date_modified'] = $log['date_log']."</br>".$log['time_log'];
+           $this->base_model->update_data('handle_history' , $history , array('id' => $id));
+           $this->base_model->update_data('deal_handle', $handle , array('id' => $handle_id));
+           $this->base_model->update_data('deal' , $deal , array('id' => $deal_id));
+           $this->base_model->update_data('currency_unit' , $unit , array('id'=> $store->money_id));
+           $this->base_model->insert_data('log' , $log);
+           $res = $this->base_model->update_data('deal_bank' , $bank , array('id'=> $bank_id));
+           if($this->uri->segment(5) == 'group'){
+            $red = 'handle_profile';
+            $red_id = $this->uri->segment(6);
+        }else{
+            $red = 'handle' ;
+            $red_id = $deal_id;
+        }
+        if($res == TRUE){
+            $message['msg'][0] = 'مبلغ مورد نظر با موفقیت بازگرداننده شد';
+            $message['msg'][1] = 'success';
+            $this->session->set_flashdata($message);
+            redirect("deal/$red/$red_id");
+        }else{
+            $message['msg'][0] = 'مشکلی در روند عملیات رخ داده است . لطفا دوباره سعی کنید';
+            $message['msg'][1] = 'danger';
+            $this->session->set_flashdata($message);
+            redirect("deal/$red/$red_id");
+        }
+
+        }
        
     }else{
         show_404();

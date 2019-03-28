@@ -7,9 +7,9 @@
 				<div class="panel bg-teal-400">
 					<div class="panel-body">
 						<div class="heading-elements">
-							<span class="heading-text badge bg-teal-800">هماهنگی شده</span>
+							<span class="heading-text badge bg-teal-800"> مجموع هماهنگ شده</span>
 						</div>
-						<h3 class="no-margin">3,450</h3> 
+						<h3 class="no-margin" id="sumHandle"><?php echo number_format($sum_handle->vh);?></h3> 
 						<div class="text-muted text-size-small">489 avg</div>
 					</div>
 
@@ -24,9 +24,9 @@
 				<div class="panel bg-pink-400">
 					<div class="panel-body">
 						<div class="heading-elements">
-							<span class="heading-text badge bg-success-800">پرداخت شده</span>
+							<span class="heading-text badge bg-success-800">مجموع پرداخت شده </span>
 						</div>
-						<h3 class="no-margin">49.4%</h3> 
+						<h3 class="no-margin" id="sumPay"><?php echo number_format($sum_pay->vp); ?></h3> 
 						<div class="text-muted text-size-small">34.6% avg</div>
 					</div>
 					<div class="chart" id="server-load"></div>
@@ -40,9 +40,9 @@
 				<div class="panel bg-blue-400">
 					<div class="panel-body">
 						<div class="heading-elements">
-							<span class="heading-text badge bg-blue-800">مانده هماهنگی</span>
+							<span class="heading-text badge bg-blue-800">مجموع مانده هماهنگی </span>
 						</div>
-						<h3 class="no-margin">$18,390</h3> 
+						<h3 class="no-margin" id="restHandle"><?php echo number_format($rest_handle->hr); ?></h3> 
 						<div class="text-muted text-size-small">$37,578 avg</div>
 					</div>
 					<div class="chart" id="today-revenue"></div>
@@ -71,7 +71,7 @@
 				<div style="padding-right: 0px" class="panel-heading">
 					<h6 class="panel-title">خرید و فروش ارز ها</h6>
 					<div  class="heading-elements">
-						<h6 class="  heading-text">تاریخ: <span class="text-bold text-black position-right">12 مرداد 98</span></h6>
+						<h6 class="  heading-text">تاریخ: <span class="text-bold text-black position-right" id="today"><?php echo $today;?></span></h6>
 
 					</div>
 				</div>
@@ -96,13 +96,13 @@
 									</div>
 								</td>
 								<td>
-									<h6 class="text-semibold text-success-800 pr-34 no-margin ">
-										<?php echo number_format($buy_dollar->cd + $buy_dollar->wd);?>
+									<h6 class="text-semibold text-success-800 pr-34 no-margin " id="buyDollar">
+										<?php echo number_format($buy_dollar);?>
 									</h6>
 								</td>
 								<td>
-									<h6 class="text-semibold text-primary pr-8 no-margin">
-										<?php echo number_format($sell_dollar->cd + $sell_dollar->wd); ?>
+									<h6 class="text-semibold text-primary pr-8 no-margin" id="sellDollar">
+										<?php echo number_format($sell_dollar); ?>
 									</h6>
 								</td>
 							</tr>
@@ -118,13 +118,13 @@
 									</div>
 								</td>
 								<td>
-									<h6 class=" text-semibold text-success-800 pr-34 no-margin">
-										<?php echo number_format($buy_yuan->cd + $buy_yuan->wd); ?>
+									<h6 class=" text-semibold text-success-800 pr-34 no-margin" id="buyYuan">
+										<?php echo number_format($buy_yuan); ?>
 									</h6>
 								</td>
 								<td>
-									<h6 class="text-semibold text-primary  pr-8 no-margin">
-										<?php echo number_format($sell_yuan->cd + $sell_yuan->wd); ?>
+									<h6 class="text-semibold text-primary  pr-8 no-margin" id="sellYuan">
+										<?php echo number_format($sell_yuan); ?>
 									</h6>
 								</td>
 							</tr>
@@ -137,13 +137,13 @@
 									</div>
 								</td>
 								<td>
-									<h6 class=" text-semibold text-success-800 pr-34 no-margin">
-										<?php echo number_format($buy_euro->cd + $buy_euro->wd); ?>
+									<h6 class=" text-semibold text-success-800 pr-34 no-margin" id="buyEuro">
+										<?php echo number_format($buy_euro); ?>
 									</h6>
 								</td>
 								<td>
-									<h6 class="text-semibold text-primary pr-8 no-margin">
-										<?php echo number_format($sell_euro->cd + $sell_euro->wd); ?>
+									<h6 class="text-semibold text-primary pr-8 no-margin" id="sellEuro">
+										<?php echo number_format($sell_euro); ?>
 									</h6>
 								</td>
 							</tr>
@@ -156,13 +156,13 @@
 									</div>
 								</td>
 								<td>
-									<h6 class="text-semibold text-success-800 pr-34 no-margin">
-										<?php echo number_format($buy_derham->cd + $buy_derham->wd); ?>
+									<h6 class="text-semibold text-success-800 pr-34 no-margin" id="buyDerham">
+										<?php echo number_format($buy_derham); ?>
 									</h6>
 								</td>
 								<td>
-									<h6 class="text-semibold text-primary pr-8 no-margin">
-										<?php echo number_format($sell_derham->cd + $sell_derham->wd); ?>
+									<h6 class="text-semibold text-primary pr-8 no-margin" id="sellDerham">
+										<?php echo number_format($sell_derham); ?>
 									</h6>
 								</td>
 							</tr>
@@ -184,6 +184,7 @@
 					<div class="row">
 					<?php 
 					$array = array('bg-blue-1' , 'bg-blue-2' , 'bg-blue-3' , 'bg-blue-4');
+					$set_id = array('dollar' , 'euro' , 'yuan' , 'derham');
 					foreach($remain as $i => $remains){ ?>
 					<div class="col-md-6">
 						<div class="panel <?php echo $array[$i]; ?>">
@@ -192,8 +193,8 @@
 								<div class="heading-elements">
 									<span class="heading-text badge bg-success-800">+53,6%</span>
 								</div>
-								<h3 class="no-margin">
-									<?php echo $remains->amount_unit;?>
+								<h3 class="no-margin" id="<?php echo $set_id[$i];?>">
+									<?php echo number_format($remains->amount_unit);?>
 								</h3>
 								<div class="text-white text-size-larg">
 									<?php echo $remains->name;?>
@@ -265,3 +266,58 @@
 					</div>
 				</div>
 				<!-- /add arz modal -->
+				<script>
+				window.onload = function(){
+					setInterval(update , 15000);
+				}
+		var buyDollar = document.getElementById('buyDollar');
+		var buyEuro = document.getElementById('buyEuro');
+		var buyYuan = document.getElementById('buyYuan');
+		var buyDerham = document.getElementById('buyDerham');
+		var sellDollar = document.getElementById('sellDollar');
+		var sellEuro = document.getElementById('sellEuro');
+		var sellYuan = document.getElementById('sellYuan');
+		var sellDerham = document.getElementById('sellDerham');	
+		var today = document.getElementById('today');
+		var sumHandle = document.getElementById('sumHandle');
+		var sumPay = document.getElementById('sumPay');
+		var restHandle = document.getElementById('restHandle');
+		var dollar = document.getElementById('dollar');			
+		var euro = document.getElementById('euro');			
+		var yuan = document.getElementById('yuan');			
+		var derham = document.getElementById('derham');			
+				function update(){
+		var xhr = new XMLHttpRequest();
+		xhr.onload = function(){
+			if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
+				var result = JSON.parse(xhr.responseText);
+				    showResult(result);
+				}else{
+					alert('request was unsuccessful : ' + xhr.status);
+					location.reload();
+				}
+		}
+		xhr.open('post' , "<?php echo base_url('home/update_dashbord')?>" , true);
+		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		xhr.send("request="+true);
+				}
+					function showResult(res){
+						sumHandle.innerHTML = numeral(res.sum_handle.vh).format('0,0');
+						sumPay.innerHTML = numeral(res.sum_pay.vp).format('0,0');
+						restHandle.innerHTML = numeral(res.rest_handle.hr).format('0,0');
+						today.innerHTML = res.today;
+						buyDollar.innerHTML = numeral(res.buy_dollar).format('0,0');
+						buyEuro.innerHTML = numeral(res.buy_euro).format('0,0');
+						buyYuan.innerHTML = numeral(res.buy_yuan).format('0,0');
+						buyDerham.innerHTML = numeral(res.buy_derham).format('0,0');
+						sellDollar.innerHTML = numeral(res.sell_dollar).format('0,0');
+						sellEuro.innerHTML = numeral(res.sell_euro).format('0,0');
+						sellYuan.innerHTML = numeral(res.sell_yuan).format('0,0');
+						sellDerham.innerHTML = numeral(res.sell_derham).format('0,0');
+						dollar.innerHTML = numeral(res.remain[0].amount_unit).format('0,0');
+						euro.innerHTML = numeral(res.remain[1].amount_unit).format('0,0');
+						yuan.innerHTML = numeral(res.remain[2].amount_unit).format('0,0');
+						derham.innerHTML = numeral(res.remain[3].amount_unit).format('0,0');
+					}
+				
+				</script>

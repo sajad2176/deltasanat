@@ -181,7 +181,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 											<div class="col-md-6">
 												<div class="form-group">
 													<label>شماره شبا : </label>
-													<input onkeyup="show_bank(this)" data-mask="aa-99-999-9999999999999999999" type="text" placeholder="IR-06-017-0000000123014682799" name="number_shaba" class="form-control" required>
+													<input onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="number_shaba" class="form-control" required>
 												</div>
 											</div>
 											<div class="col-md-6">
@@ -197,7 +197,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 											<div class="form-group">
 												<label>مبلغ معامله : </label>
 												<input type="hidden" value ='0'>
-												<input type="text" onkeyup = "ambank(this)" placeholder="100000" class="form-control" required>
+												<input type="text" onkeyup = "ambank(this)" placeholder="100,000" class="form-control" required>
 												<input type="hidden" name="amount_bank">
 												<p class="text-danger" style="display:none;"></p>
 											</div>
@@ -229,7 +229,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 					<legend class="text-semibold"><i class="icon-address-book position-left"></i> افزودن هماهنگی</legend>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label>نام مشتری:</label>
+							<label>نام مشتری :</label>
 							<input class="form-control" onFocus="search_customer(this)" name="customer[]" type="text" placeholder="نام مشتری خود را وارد کنید" autocomplete="off" required>
 						</div>
 					</div>
@@ -248,7 +248,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 					</div>
 					<div class="col-md-4">
 						<div class="form-group input-group">
-							<label>مبلغ هماهنگی:</label>
+							<label>مبلغ هماهنگی :</label>
 							<input type="text" onkeyup="volume_handle(this)" placeholder="111,000,000" class="form-control" required>
 							<input type="hidden" name="volume_handle[]">
 							<span class="input-group-btn">
@@ -280,7 +280,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 						<th width="12%">حجم باقی مانده</th>
 						<th width="12%">اطلاعات حساب</th>
 						<th width="10%">تاریخ ثبت</th>
-						<th width="12%">آخرین ویرایش</th>
+						<th width="12%">آخرین تغییر</th>
 						<th width="14%" class="text-center">ابزار</th>
 					</tr>
 				</thead>
@@ -297,7 +297,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 						<td class="<?php if($row->handle_rest < 0){echo 'text-danger';}?>"><?php echo number_format($row->handle_rest); ?></td>
 						<td><?php echo $row->number_shaba."<br>".$row->name_bank; ?></td>
 						<td><?php echo $row->date_handle."</br>".$row->time_handle; ?></td>
-						<td><?php if($row->date_modified == ''){echo '-';}else{echo $row->$date_modified;} ?></td>
+						<td><?php echo $row->date_modified; ?></td>
 						</td>
 						<td class="text-center">
 								<ul class="icons-list">
@@ -306,7 +306,8 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<li title="پرداخت جزئی" class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i onclick="pay_slice(<?php echo $row->id;?>)" class="icon-stack-empty"></i></li>
 				<?php } ?>
 				<li title="بازگشت پرداخت " class="text-warning-800"><a data-toggle="modal" href="#modal_form_dminor"><i onclick="history(<?php echo $row->id;?>)" class="icon-file-minus"></i></li>
-				<li title="حذف هماهنگی" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i class="icon-cross2"></i></a>
+				<li title="حذف هماهنگی" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger">
+					<i onClick="deleteHandle(<?php echo $row->id; ?>, <?php echo $row->handle_pay; ?>)" class="icon-cross2"></i></a>
 										</li>
 									</ul>
 								</td>
@@ -377,14 +378,14 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 
 						<div class="modal-body">
 
-							<h5 class="text-center">آیا میخواهید هماهنگی حذف شود ؟</h5>
+							<h5 class="text-center" id="titleHandle"></h5>
 
 
 						</div>
 
 						<div class="modal-footer text-center">
-							<button type="button" class="btn btn-danger" data-dismiss="modal">خیر</button>
-							<button type="button" class="btn btn-success">بله </button>
+							<button type="button" class="btn btn-danger" data-dismiss="modal" id="closeHandle">خیر</button>
+							<a id="confirmHandle" class="btn btn-success">بله </a>
 						</div>
 					</div>
 				</div>
@@ -409,7 +410,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 										<div class="col-md-6">
 											<div class="form-group">
 												<label>شماره شبا : </label>
-												<input onkeyup="show_bank(this)" id="num_shaba" value="" data-mask="aa-99-999-9999999999999999999" type="text" placeholder="IR-06-017-0000000123014682799" name="number_shaba" class="form-control">
+												<input onkeyup="show_bank(this)" id="num_shaba" value="" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="number_shaba" class="form-control">
 											</div>
 										</div>
 
@@ -474,6 +475,23 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 		<?php $str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");?>
 		<!-- /dminor form modal -->
 		<script>
+			var titleHandle = document.getElementById('titleHandle');
+			var closeHandle = document.getElementById('closeHandle');
+			var confirmHandle = document.getElementById('confirmHandle');
+			function deleteHandle(id , pay){
+               if(pay != 0){
+				   titleHandle.innerHTML = 'حجم پرداختی این هماهنگی صفر نمی باشد . اگر مایل به حذف هماهنگی  می باشید جهت جلوگیری از ناسازگاری در سامانه ابتدا مبالغ پرداختی را بازگردانید. ';
+				   closeHandle.style.display = 'none';
+				   confirmHandle.style.display = 'none';
+				   return;
+			   }else{
+				   titleHandle.innerHTML = 'آیا مایل به حذف هماهنگی می باشید ؟';
+				   closeHandle.style.display = 'inline-block';
+				   confirmHandle.style.display = 'inline-block';
+				   confirmHandle.setAttribute('href' , "<?php echo base_url('deal/delete_handle/');?>" + id + "<?php echo "/".$this->uri->segment(3); ?>");
+			   }
+			}
+			
 			function autocomplete( inp, arr ) {
 				var currentFocus;
 				inp.addEventListener( "input", function ( e ) {
@@ -562,8 +580,8 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 			function show_bank( input ) {
 				var txt = input.value;
 				var name_bank = input.parentElement.parentElement.nextElementSibling.firstElementChild.lastElementChild;
-				if ( txt[ 6 ] != '_' && txt[ 7 ] != '_' && txt[ 8 ] != '_' ) {
-					var bank = txt.slice( 6, 9 );
+				if ( txt[ 3 ] != '_' && txt[ 4 ] != '_' && txt[ 5 ] != '_' ) {
+					var bank = txt.slice( 3, 6 );
 					if ( bank == '055' ) {
 						name_bank.value = 'بانک اقتصاد نوین';
 					} else if ( bank == '054' ) {
@@ -623,9 +641,11 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 					} else if ( bank == '069' ) {
 						name_bank.value = 'بانک ایران زمین';
 					} else {
+						name_bank.removeAttribute("readonly"); 
 						name_bank.value = '';
 					}
 				} else {
+					name_bank.removeAttribute("readonly"); 
 					name_bank.value = '';
 				}
 

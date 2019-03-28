@@ -1,3 +1,13 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+if($this->session->has_userdata('msg')){
+$msg = $this->session->userdata('msg');?>
+<div class="alert bg-<?php echo $msg[1];?> alert-styled-left">
+										<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
+										<?php echo $msg[0];?>
+								    </div>
+<?php }?>
+
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 	<ul class="breadcrumb">
 		<li><a href="<?php echo base_url('home');?>"><i class="icon-home2 position-left"></i> داشبورد</a>
@@ -142,8 +152,7 @@
 						</li>
 						<li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$rows->id;?>"><i class="icon-stack-picture"></i></a>
 						</li>
-						<li class="text-danger" data-toggle="tooltip" title="حذف هماهنگی"><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->volume_pay; ?>)" ></i></a></li>
-						</li>
+						<li class="text-danger" data-toggle="tooltip" title="حذف معامله"><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->volume_pay; ?>)" ></i></a></li>
 					</ul>
 				</td>
 			</tr>
@@ -175,7 +184,7 @@
 					<div class="modal-content">
 						<div class="modal-header bg-danger">
 							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h4 class="modal-title">حذف هماهنگی</h4>
+							<h4 class="modal-title">حذف معامله</h4>
 						</div>
 
 						<div class="modal-body">
@@ -186,17 +195,29 @@
 						</div>
 
 						<div class="modal-footer text-center">
-							<button type="button" class="btn btn-danger" data-dismiss="modal">بستن</button>
-							<button type="button" class="btn btn-success">بله </button>
+							<button type="button" class="btn btn-danger" data-dismiss="modal" id='closeDelete'>بستن</button>
+							<a class="btn btn-success" id="confirmDelete">بله </a>
 						</div>
 					</div>
 				</div>
 			</div>
 </div>
 <script>
+	var titleDelete = document.getElementById('titleDelete');
+	var closeDelete = document.getElementById('closeDelete');
+	var confirmDelete = document.getElementById('confirmDelete');
 	function deleteDeal(id , rest){
-		alert(id);
-		alert(rest);
+      if(rest != 0){
+		  titleDelete.innerHTML = " حجم پرداختی این معامله صفر نمی باشد . اگر مایل به حذف معامله می باشید جهت جلوگیری از ناسازگاری در سامانه ابتدا مبالغ پرداختی را بازگردانید. ";
+		  closeDelete.style.display = 'none';
+		  confirmDelete.style.display = 'none';
+		  return;
+	  }else{
+		  titleDelete.innerHTML = "با حذف معامله تمام اطلاعات مربوط به معامله ، هماهنگی ها ،اطلاعات بانکی حذف خواهد شد.</br> آیا می خواهید ادامه دهید؟";
+		  closeDelete.style.display = 'inline-block';
+		  confirmDelete.style.display = 'inline-block';
+		  confirmDelete.setAttribute('href' , "<?php echo base_url('deal/delete_deal/')?>" + id);
+	  }
 	}
 	function search_cust( input ) {
 		var search_cust = document.getElementById( 'search_cust' );

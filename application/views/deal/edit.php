@@ -92,21 +92,21 @@ $msg = $this->session->userdata('msg');?>
 						<div class="">
 							<fieldset>
 								<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانکی</legend>
-								<div class="field_wrapper2">
+								<div>
                                   <?php foreach($bank as $key => $rows){
-                                      if($key > 0){$add = '' ; $remove = "remove_button2"; $alert = 'danger'; $icon = 'icon-minus2';}else{$add = 'add_button2' ; $remove = ""; $alert = 'success'; $icon = 'icon-plus3';}
                                       ?>
 									<div>
 										<div class="row">
 											<div class="col-md-6">
+											
 												<div class="form-group">
 													<label>شماره شبا : </label>
-													<input onkeyup="show_bank(this)" value="<?php echo $rows->number_shaba;?>" data-mask="aa-99-999-9999999999999999999" type="text" placeholder="IR-06-017-0000000123014682799" name="number_shaba[]" class="form-control">
+													<input onkeyup="show_bank(this)" value="<?php echo $rows->number_shaba;?>" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="number_shaba[]" class="form-control">
 												</div>
 											</div>
 
 
-
+                                                  
 											<div class="col-md-6">
 												<div class="form-group">
 													<label>بانک :</label>
@@ -114,23 +114,22 @@ $msg = $this->session->userdata('msg');?>
 												</div>
 											</div>
 										</div>
+										<input type="hidden" name="bank_id[]" value="<?php echo $rows->id;?>" >
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
 												<label>مبلغ واریزی : </label>
-												<input type="hidden" name="pay[]" value="<?php echo $rows->pay;?>">
+												<input type="hidden" value="<?php echo $rows->pay;?>">
 												<input type="text" onKeyUp="amount_bank(this)" value = "<?php echo number_format($rows->amount); ?>" placeholder="100,000" class="form-control">
 												<input type="hidden" name="amount_bank[]" value="<?php echo $rows->amount;?>">
 												<p class="text-danger" style ="display: none;"></p>
-                                                <input type="hidden" name="active[]" value="<?php echo $rows->active;?>">
 											</div>
 										</div>
 
 										<div class="col-md-6">
-											<div class="form-group input-group">
+											<div class="form-group">
 												<label>توضیحات حساب :</label>
 												<input type="text" name="bank_explain[]" value="<?php echo $rows->explain;?>" placeholder="توضیحات خود را وارد کنید" class="form-control">
-												<span class="input-group-btn <?php echo $remove;?>"><button type="button" style="top: 13px;" class="btn btn btn-<?php echo $alert." ".$add." ".$icon; ?>"></button></span>
 											</div>
 										</div>
 									</div>
@@ -144,7 +143,7 @@ $msg = $this->session->userdata('msg');?>
 								</div>
 								<div class="form-group">
 									<label>توضیحات معامله :</label>
-									<textarea rows="5" cols="5" name="explain" class="form-control" placeholder="توصیحات خود را وارد کنید"></textarea>
+									<textarea rows="5" cols="5" name="explain" class="form-control" placeholder="توصیحات خود را وارد کنید"><?php echo $deal->explain;?></textarea>
 								</div>
 
 
