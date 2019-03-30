@@ -154,11 +154,8 @@ function insert_batch($table , $data){
 }
 
 function update_batch($table , $data , $key){
-    if($this->db->update_batch($table , $data , $key)){
-        return TRUE;
-    }else{
-        return FALSE;
-    }
+    $affected_rows = $this->db->update_batch($table , $data , $key);
+    return $affected_rows;
 }
 
 function delete_data($table , $where){
