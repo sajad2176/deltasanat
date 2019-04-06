@@ -13,6 +13,9 @@ class Admin extends CI_Controller {
     }
     // -----archive-----//
     public function archive(){
+        if(!$this->session->has_userdata('see_users') or $this->session->userdata('see_users') != TRUE){
+         show_404();
+        }
         $total_rows = $this->base_model->get_count("member" , 'ALL');
         $config['base_url'] = base_url('admin/archive/');
         $config['total_rows'] = $total_rows;
@@ -53,17 +56,19 @@ $data['count'] = $config['total_rows'];
     // -----archive-----//
     // -----active-----//
     public function active(){
+        if(!$this->session->has_userdata('active_user') or $this->session->userdata('active_user') != TRUE){
+         show_404();
+        }
         $user_id = $this->uri->segment(3);
         $active = $this->uri->segment(4);
         if(isset($user_id) and isset($active) and is_numeric($user_id) and is_numeric($active)){
         $data['active'] = $active;
         $this->base_model->update_data('member' , $data , array('id'=>$user_id));
-        $user_log = $this->session->userdata('id');
         $name = $this->base_model->get_data('member'  , 'username' , 'row' , array('id'=>$user_id));
         $date = $this->convertdate->convert(time());
         $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
         $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
-        $log['user_id'] = $user_log;
+        $log['user_id'] = $this->session->userdata('id');
         $log['activity_id'] = 5;
         if($active == 0){$txt = ' را غیر فعال کرد '; $txt2 = ' غیرفعال شد ';}else{$txt = ' را فعال کرد '; $txt2 = '  فعال شد ';}
         $log['explain'] = ' حساب کاربری '. $name->username . $txt;
@@ -77,7 +82,11 @@ $data['count'] = $config['total_rows'];
         }
     }
     // -----active-----//
+    //------add--------//
     public function add(){
+    if(!$this->session->has_userdata('add_user') or $this->session->userdata('add_user') != TRUE){
+        show_404();
+    }
     if(isset($_POST['sub'])){
         $this->form_validation->set_rules('firstname' , 'firstname' , 'required');
         $this->form_validation->set_rules('lastname' , 'lastname' , 'required');
@@ -135,6 +144,15 @@ $data['count'] = $config['total_rows'];
             $this->session->set_flashdata($message);
             redirect('admin/add/');
         }
+        $count = sizeof($_POST['perm']);
+        $perm = array();
+        for($i = 0 ; $i < $count ; $i++){
+         $perm[] = array(
+             'user_id' => $res_user,
+             'perm_id' => $_POST['perm'][$i]
+         );
+        }
+        $this->base_model->insert_batch('member_perm' , $perm);
         $date = $this->convertdate->convert(time());
         $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
         $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
@@ -147,15 +165,21 @@ $data['count'] = $config['total_rows'];
         $this->session->set_flashdata($message);
         redirect('admin/add/');
     }else{
+        $data['perm'] = $this->base_model->get_data('permission' , '*');
         $header['title'] = 'افزودن کاربر جدید';
         $header['active'] = 'admin';
         $header['active_sub'] = 'admin_add';
         $this->load->view('header' , $header);
-        $this->load->view('admin/add');
+        $this->load->view('admin/add' , $data);
         $this->load->view('footer');
     }
     }
+    //-----add------//
+    //-----edit-----//
   public function edit(){
+      if(!$this->session->has_userdata('edit_user') or $this->session->userdata('edit_user') != TRUE){
+          show_404();
+      }
       $id = $this->uri->segment(3);
       if(isset($id) and is_numeric($id)){
         if(isset($_POST['sub'])){
@@ -212,6 +236,16 @@ if($_FILES['picname']['name'] != '' or $_FILES['picname']['size'] != 0){
         redirect("admin/edit/$id");
     }
 }
+$perm = array();
+$count = sizeof($_POST['perm']);
+    for($i = 0 ; $i < $count ; $i++){
+     $perm[] = array(
+      'user_id'=> $id,
+      'perm_id' => $_POST['perm'][$i]
+     );
+    }
+    $this->base_model->delete_data('member_perm' , array('user_id' => $id));
+    $this->base_model->insert_batch('member_perm' , $perm);
 $date = $this->convertdate->convert(time());
 $log['user_id'] = $this->session->userdata('id');
 $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
@@ -239,6 +273,8 @@ redirect("admin/edit/$id");
                 $header['title'] =  ' ویرایش کاربر '. $data['user']->firstname." ".$data['user']->lastname;
                 $header['active'] = 'admin';
                 $header['active_sub'] = 'admin_archive';
+                $data['perm'] = $this->base_model->get_data('permission' , '*');
+                $data['permission'] = $this->base_model->get_data('member_perm' , 'perm_id' , 'result' , array('user_id' => $id));
                 $this->load->view('header' , $header);
                 $this->load->view('admin/edit' , $data);
                 $this->load->view('footer');
@@ -249,6 +285,9 @@ redirect("admin/edit/$id");
       }
   }
   public function log(){
+      if(!$this->session->has_userdata('see_log') or $this->session->userdata('see_log') != TRUE){
+          show_404();
+      }
       $id = $this->uri->segment(3);
       if(isset($id) and is_numeric($id)){
         if(isset($_POST['sub'])){
@@ -331,7 +370,4 @@ redirect("admin/edit/$id");
     
 
 }
-
-/* End of file Controllername.php */
-
 ?>

@@ -52,15 +52,71 @@ class Login extends CI_Controller{
 			$log['time_log'] = $data['time_login'];
 			$log['activity_id'] = 1;
 			$log['explain'] = 'ورود به سامانه';
-			$this->base_model->insert_data('log' , $log);	
-             $ses = array(
-			 'id' => $res->id , 
-			 'name' => $res->firstname." ".$res->lastname,
-			 'pic_name' => $res->picname,
-			  'username'=>$res->username,
-			  'login' => TRUE
-			 );	
-			$this->session->set_userdata($ses);
+			$this->base_model->insert_data('log' , $log);
+			$id = $res->id;
+			$perm = $this->base_model->get_data('member_perm' , 'perm_id' , 'result' , array('user_id' => $id));
+			$sess = array();
+			if(sizeof($perm) != 0){
+			foreach($perm as $rows){
+				if($rows->perm_id == 1){
+					$sess['see_dashbord'] = TRUE;
+				}else if($rows->perm_id == 2){
+					$sess['see_currency'] = TRUE;
+				}else if($rows->perm_id == 3){
+					$sess['see_users'] = TRUE;
+				}else if($rows->perm_id == 4){
+					$sess['add_user'] = TRUE;
+				}else if($rows->perm_id == 5){
+					$sess['edit_user'] = TRUE;
+				}else if($rows->perm_id == 6){
+					$sess['see_log'] = TRUE;
+				}else if($rows->perm_id == 7){
+					$sess['active_user'] = TRUE;
+				}else if($rows->perm_id == 8){
+					$sess['see_customer'] = TRUE;
+				}else if($rows->perm_id == 9){
+					$sess['add_customer'] = TRUE;
+				}else if($rows->perm_id == 10){
+					$sess['edit_customer'] = TRUE;
+				}else if($rows->perm_id == 11){
+					$sess['see_deal'] = TRUE;
+				}else if($rows->perm_id == 12){
+					$sess['add_buy'] = TRUE;
+				}else if($rows->perm_id == 13){
+					$sess['add_sell'] = TRUE;
+				}else if($rows->perm_id == 14){
+					$sess['edit_deal'] = TRUE;
+				}else if($rows->perm_id == 15){
+					$sess['delete_deal'] = TRUE;
+				}else if($rows->perm_id == 16){
+					$sess['see_photo'] = TRUE;
+				}else if($rows->perm_id == 17){
+					$sess['see_handle'] = TRUE;
+				}else if($rows->perm_id == 18){
+					$sess['add_bank'] = TRUE;
+				}else if($rows->perm_id == 19){
+					$sess['edit_bank'] = TRUE;
+				}else if($rows->perm_id == 20){
+					$sess['active_bank'] = TRUE;
+				}else if($rows->perm_id == 21){
+					$sess['add_handle'] = TRUE;
+				}else if($rows->perm_id == 22){
+					$sess['pay_all'] = TRUE;
+				}else if($rows->perm_id == 23){
+					$sess['pay_slice'] = TRUE;
+				}else if($rows->perm_id == 24){
+					$sess['restore'] = TRUE;
+				}else if($rows->perm_id == 25){
+					$sess['delete_handle'] = TRUE;
+				}
+			}
+		}
+			$sess['id'] = $res->id;
+			$sess['name'] = $res->firstname." ".$res->lastname;
+			$sess['pic_name'] = $res->picname;
+			$sess['username'] = $res->username;
+			$sess['login'] = TRUE;
+			$this->session->set_userdata($sess);
 				redirect('home');	
 			}
 			}else{

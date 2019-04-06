@@ -9,6 +9,9 @@ class Customer extends CI_Controller{
         
     }
     public function archive(){
+        if(!$this->session->has_userdata('see_customer') or  $this->session->userdata('see_customer') != TRUE){
+            show_404();
+        }
         $total_rows = $this->base_model->get_count("customer" , 'ALL');
         $config['base_url'] = base_url('customer/archive');
         $config['total_rows'] = $total_rows;
@@ -47,8 +50,18 @@ $data['count'] = $total_rows;
         $this->load->view('footer');
     }
     public function add(){
+        if(!$this->session->has_userdata('add_customer') or $this->session->userdata('add_customer') != TRUE){
+            show_404();
+        }
         if(isset($_POST['sub'])){
             $customer['fullname'] = $this->input->post('fullname');
+            $check = $this->base_model->get_data('customer' , 'id' , 'row' , array('fullname' => $customer['fullname']));
+            if(sizeof($check) != 0){
+                $message['msg'][0] = 'این نام '.$customer['fullname'] . " قبلا استفاده شده است . لطفا جهت تمایز در نام مشتری ها از نام دیگری استفاده کنید ";
+                $message['msg'][1] = 'danger';
+                $this->session->set_flashdata($message);
+                redirect('customer/add');
+            }
             $customer['address'] = $this->input->post('address');
             $customer['email'] = $this->input->post('email');
             $tel[0] = $this->input->post('tel_title');
@@ -83,10 +96,20 @@ $data['count'] = $total_rows;
         }
     }
     public function edit(){
+        if(!$this->session->has_userdata('edit_customer') or $this->session->userdata('edit_customer') != TRUE){
+            show_404();
+        }
         $id = $this->uri->segment(3);
         if(isset($id) and is_numeric($id)){
             if(isset($_POST['sub'])){
                 $customer['fullname'] = $this->input->post('fullname');
+                $check = $this->base_model->get_data('customer' , 'id' , 'row' , array('fullname'=> $customer['fullname']));
+                if(sizeof($check) != 0 and $check->id != $id){
+                    $message['msg'][0] = 'این نام '.$customer['fullname'] . " قبلا استفاده شده است . لطفا جهت تمایز در نام مشتری ها از نام دیگری استفاده کنید ";
+                    $message['msg'][1] = 'danger';
+                    $this->session->set_flashdata($message);
+                    redirect("customer/edit/$id");
+                } 
                 $customer['address'] = $this->input->post('address');
                 $customer['email'] = $this->input->post('email');
                 $tel[0] = $this->input->post('tel_title');

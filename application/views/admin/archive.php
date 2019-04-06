@@ -41,13 +41,14 @@ $msg = $this->session->userdata('msg');?>
 					<td><?php echo $row;?></td>
 					<td><?php echo $rows->firstname."  ".$rows->lastname;?></td>
 					<td><?php echo $rows->username;?></td>
-					<td><?php if($rows->date_login == '0000-00-00'){echo 'ثبت نشده است';}else{echo $rows->date_login."  ".$rows->time_login;}?></td>
+          <td><?php if($rows->date_login == '0000-00-00'){echo 'ثبت نشده است';}else{echo $rows->date_login."  ".$rows->time_login;}?></td>
 					<?php if($rows->active == 1){$class='success';$txt = 'فعال';$url = '0';}else{$class='danger';$txt = 'غیر فعال';$url = '1';} ?>
-	<td><a href="<?php echo base_url('admin/active/').$rows->id."/".$url; ?>"><span class="label label-<?php echo $class;?>"><?php echo $txt;?></span></a></td>
+					
+				    <td><?php if($this->session->has_userdata('active_user')){?><a href="<?php echo base_url('admin/active/').$rows->id."/".$url; ?>"><span class="label label-<?php echo $class;?>"><?php echo $txt;?></span></a><?php } ?></td>
 					<td class="text-center">
 					   <ul class="icons-list">
-		<li title="ویرایش کاربر <?php echo $rows->username;?>" class="text-success" data-toggle="tooltip"><a href="<?php echo base_url('admin/edit/').$rows->id;?>"><i class=" icon-pencil3"></i></li>
-		<li title="تاریخچه کاربر <?php echo $rows->username;?>" class="text-primary" data-toggle="tooltip"><a href="<?php echo base_url('admin/log/').$rows->id;?>"><i class=" icon-eye4"></i></li>
+				<?php if($this->session->has_userdata('edit_user')){ ?><li title="ویرایش کاربر <?php echo $rows->username;?>" class="text-success" data-toggle="tooltip"><a href="<?php echo base_url('admin/edit/').$rows->id;?>"><i class=" icon-pencil3"></i></li> <?php } ?>
+		        <?php if($this->session->has_userdata('see_log')){ ?><li title="تاریخچه کاربر <?php echo $rows->username;?>" class="text-primary" data-toggle="tooltip"><a href="<?php echo base_url('admin/log/').$rows->id;?>"><i class=" icon-eye4"></i></li> <?php } ?>
 					  </ul>
 					</td>
 				</tr>

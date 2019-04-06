@@ -101,7 +101,7 @@ $msg = $this->session->userdata('msg');?>
 											
 												<div class="form-group">
 													<label>شماره شبا : </label>
-													<input onkeyup="show_bank(this)" value="<?php echo $rows->number_shaba;?>" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="number_shaba[]" class="form-control">
+													<input onkeyup="show_bank(this)" value="<?php echo $rows->number_shaba;?>" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="number_shaba[]" class="form-control" required>
 												</div>
 											</div>
 
@@ -110,7 +110,8 @@ $msg = $this->session->userdata('msg');?>
 											<div class="col-md-6">
 												<div class="form-group">
 													<label>بانک :</label>
-													<input type="text" name="name_bank[]" value="<?php echo $rows->name_bank; ?>" placeholder="ملت،ملی،.." class="form-control" readonly>
+													<span class="text-primary" style="font-size:12px; display:none;">(طبق شماره شبا وارد شده بانکی پیدا نشد. نام بانک را وارد کنید)</span>
+													<input type="text" name="name_bank[]" value="<?php echo $rows->name_bank; ?>" placeholder="ملت،ملی،.." class="form-control" readonly required>
 												</div>
 											</div>
 										</div>
@@ -120,7 +121,7 @@ $msg = $this->session->userdata('msg');?>
 											<div class="form-group">
 												<label>مبلغ واریزی : </label>
 												<input type="hidden" value="<?php echo $rows->pay;?>">
-												<input type="text" onKeyUp="amount_bank(this)" value = "<?php echo number_format($rows->amount); ?>" placeholder="100,000" class="form-control">
+												<input type="text" onKeyUp="amount_bank(this)" value = "<?php echo number_format($rows->amount); ?>" placeholder="100,000" class="form-control" required>
 												<input type="hidden" name="amount_bank[]" value="<?php echo $rows->amount;?>">
 												<p class="text-danger" style ="display: none;"></p>
 											</div>

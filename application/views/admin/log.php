@@ -67,19 +67,20 @@
 	<table class="table datatable-selection-single table-hover table-responsive-lg ">
 		<thead>
 			<tr>
-				<th width="5%">ردیف</th>
-				<th width="10%">تاریخ</th>
-				<th width="10%">زمان</th>
+				<th width="4%">ردیف</th>
+				<th width="7%" class="text-center">تاریخ</th>
+				<th width="6%" class="text-center">زمان</th>
 				<th width="15%">نوع فعالیت</th>
-				<th width="60%">توضحیات</th>
+				<th width="68%">توضحیات</th>
 			</tr>
 		</thead>
 		<tbody>
                  
-			<?php 
-			$num = $this->uri->segment(4) + 1;
-		if(sizeof($logs) == 0){ echo "<tr><td colspan = '5' class='text-center p-20'>موردی یافت نشد</td></tr>"; }else{
-							foreach($logs as $rows){ ?>
+	<?php if(sizeof($logs) == 0){ ?>  <tr><td colspan = '5' class='text-center p-20'>موردی یافت نشد</td></tr> <?php }
+			 
+			 else{
+		$num = $this->uri->segment(4) + 1;
+		foreach($logs as $rows){ ?>
 			<tr>
 				<td>
 					<?php echo $num;?>
@@ -101,9 +102,7 @@
 			<?php
 			$num++;
 			}
-			}
 			?>
-			<?php if(sizeof($logs) != 0){ ?>
 			<tr>
 				<td colspan="2" class="pt-20 pb-20">
 					نمایش

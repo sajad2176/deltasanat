@@ -5,16 +5,22 @@ class Home extends CI_Controller{
         $this->load->library('Convertdate');
     }
     public function index(){
+        if(!$this->session->has_userdata('see_dashbord') or $this->session->userdata('see_dashbord') != TRUE){
+           $header['title'] = 'خانه';
+           $header['active'] = '';
+           $header['active_sub'] = '';
+            $this->load->view('header' , $header);
+            $this->load->view('footer');
+        }else{
         $header['title'] = 'داشبورد';
         $header['active'] = 'dashbord';
         $header['active_sub'] = '';
         $date = $this->convertdate->convert(time());
         $start_date =  $date['year']."-".$date['month_num']."-".$date['day'];
-        $data['remain'] = $this->base_model->get_data('currency_unit' , '*');
-        $data['sum_handle'] = $this->base_model->get_data('deal_handle' , 'sum(volume_handle) as vh' , 'row');
-        $data['rest_handle'] = $this->base_model->get_data('deal_handle' , 'sum(handle_rest) as hr' , 'row');
-        $data['sum_pay'] = $this->base_model->get_data('deal' , 'sum(volume_pay) as vp' , 'row');
         $data['today'] = $date['day']." ".$date['month_name']." ".$date['year'];
+        $data['remain'] = $this->base_model->get_data('currency_unit' , '*');
+        $data['sum_handle'] = $this->base_model->get_data('deal_handle' , 'sum(volume_handle) as vh , sum(handle_rest) as hr' , 'row');
+        $data['sum_pay'] = $this->base_model->get_data('deal' , 'sum(volume_pay) as vp' , 'row');
         $buy = $this->base_model->get_data('deal' , 'count_money , wage , money_id' , 'result' , array('type_deal'=> 1 , 'date_deal'=> $start_date));
         $sell = $this->base_model->get_data('deal' , 'count_money , wage , money_id' , 'result' , array('type_deal'=> 2 , 'date_deal'=> $start_date));
         if(sizeof($buy) == 0){
@@ -67,13 +73,13 @@ class Home extends CI_Controller{
         $this->load->view('home/home' , $data);
         $this->load->view('footer');
     }
+    }
     public function update_dashbord(){
-      if(isset($_POST['request']) and $_POST['request'] == true){
+      if(isset($_POST['request']) and $_POST['request'] == true and $this->session->has_userdata('see_dashbord')){
         $date = $this->convertdate->convert(time());
         $start_date =  $date['year']."-".$date['month_num']."-".$date['day'];
         $data['remain'] = $this->base_model->get_data('currency_unit' , '*');
-        $data['sum_handle'] = $this->base_model->get_data('deal_handle' , 'sum(volume_handle) as vh' , 'row');
-        $data['rest_handle'] = $this->base_model->get_data('deal_handle' , 'sum(handle_rest) as hr' , 'row');
+        $data['sum_handle'] = $this->base_model->get_data('deal_handle' , 'sum(volume_handle) as vh ,sum(handle_rest) as hr' , 'row');
         $data['sum_pay'] = $this->base_model->get_data('deal' , 'sum(volume_pay) as vp' , 'row');
         $data['today'] = $date['day']." ".$date['month_name']." ".$date['year'];
         $buy = $this->base_model->get_data('deal' , 'count_money , wage , money_id' , 'result' , array('type_deal'=> 1 , 'date_deal'=> $start_date));
@@ -137,12 +143,10 @@ $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
 $log['activity_id'] = 2;
 $log['explain'] = 'خروج از سامانه';
 $this->base_model->insert_data('log' , $log);
-        $this->session->unset_userdata('login');
-        $this->session->unset_userdata('username');
+$this->session->sess_destroy();
+
         
-        redirect('login');
-        
-        
+        redirect('login');       
     }
 }
 ?>

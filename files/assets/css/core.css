@@ -18,7 +18,7 @@
  *  Latest update: May 25, 2015
  *
  * ---------------------------------------------------------------------------- */
-@font-face {
+ @font-face {
   font-family: 'Glyphicons Halflings';
   src: url('../css/icons/glyphicons/glyphicons-halflings-regular.eot');
   src: url('../css/icons/glyphicons/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../css/icons/glyphicons/glyphicons-halflings-regular.woff2') format('woff2'), url('../css/icons/glyphicons/glyphicons-halflings-regular.woff') format('woff'), url('../css/icons/glyphicons/glyphicons-halflings-regular.ttf') format('truetype'), url('../css/icons/glyphicons/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
@@ -6553,7 +6553,7 @@ h6.panel-title,
 .modal_logout{
   display: none;
   position: fixed;
-  z-index: 100;
+  z-index: 10000;
   left: 0;
   top: 0;
   width: 100%;
@@ -6568,8 +6568,13 @@ h6.panel-title,
   background-color: #fefefe;
   margin: 5% auto 15% auto;
   border: 1px solid #888;
-  width: 28%;
+  width: 35%;
   text-align: center;
+}
+@media (max-width: 800px){
+  .modal_content{
+    width: 90%;
+  }
 }
 .animate_logout {
   -webkit-animation: animatezoom 0.3s;
@@ -6581,10 +6586,10 @@ h6.panel-title,
    transform: scale(0.7);
  }
  45%{
-   transform: scale(1.05);
+   transform: scale(1.1);
  }
  80%{
-   transform: scale(0.95);
+   transform: scale(0.9);
  }
  100%{
    transform: scale(1);
@@ -6596,22 +6601,23 @@ h6.panel-title,
    transform: scale(0.7);
  }
  45%{
-   transform: scale(1.05);
+   transform: scale(1.1);
  }
  80%{
-   transform: scale(0.95);
+   transform: scale(0.9);
  }
  100%{
    transform: scale(1);
  }
 }
 .dang_modal{
-    animation: change_color 0.75s infinite alternate;
+    animation: change_color 0.6s infinite alternate;
     margin: 20px auto;
     width: 100px;
     height: 100px;
     border:4px solid #F8D486;
     border-radius: 100px;
+    position: static;
 }
 @keyframes change_color{
     0%{
@@ -6622,17 +6628,19 @@ h6.panel-title,
     }
 }
 .dang_body , .dang_dot{
-  animation: change_bg 0.75s infinite alternate;
-  position: absolute;
-  top: 60px;
-  right: 50%;
+  animation: change_bg 0.6s infinite alternate;
+  position: relative;
+  top: 8px;
+  right: 5px;
   width: 6px;
   height: 60px;
   background-color: #F8D486;
   border-radius: 5px; 
+  display: inline-block;
 }
 .dang_dot{
-  top: 125px;
+  top: 20px;
+  right: -5px;
   height: 6px; 
 }
 @keyframes change_bg{
@@ -6948,4 +6956,46 @@ border-top: 1px solid #ddd;
 
 [data-name="Md-PersianDateTimePicker-HeaderTable"] {
 	margin-bottom: 0;
+}
+/* check box style */
+
+.option-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+  position: relative;
+  top: 7px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  transition: all 0.15s ease-out 0s;
+  background: #cbd1d8;
+  border-radius: 3px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  margin-right: 0.5rem;
+  outline: none;
+  position: relative;
+  z-index: 1000;
+}
+.option-input:hover {
+  background: #9faab7;
+}
+.option-input:checked {
+  background: #48a64c;
+}
+.option-input:checked::before {
+  height: 20px;
+  width: 20px;
+  position: absolute;
+  content: '✔';
+  display: inline-block;
+  font-size: 16px;
+  text-align: center;
+  line-height: 20px;
 }

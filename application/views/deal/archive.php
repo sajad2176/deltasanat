@@ -111,7 +111,7 @@ $msg = $this->session->userdata('msg');?>
 			<?php }else{
 			$num = $this->uri->segment(3) + 1;
 			foreach($deal as $rows){ ?>
-			<tr class="base_cust">
+			<tr>
 				<td>
 					<?php echo $rows->id + 100;?>
 				</td>
@@ -142,17 +142,14 @@ $msg = $this->session->userdata('msg');?>
 					<?php echo $rows->date_deal."</br>".$rows->time_deal; ?>
 				</td>
 				<td>
-					<?php if($rows->date_modified == ''){echo '-';}else{echo $rows->date_modified;}?>
+					<?php if($rows->date_modified == ''){echo 'ثبت نشده است';}else{echo $rows->date_modified;}?>
 				</td>
 				<td class="text-center">
 					<ul class="icons-list">
-						<li title="هماهنگی ها" data-toggle="tooltip" class="text-success"><a href="<?php echo base_url('deal/handle/').$rows->id;?>"><i class="icon-notebook"></i></a>
-						</li>
-						<li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a>
-						</li>
-						<li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$rows->id;?>"><i class="icon-stack-picture"></i></a>
-						</li>
-						<li class="text-danger" data-toggle="tooltip" title="حذف معامله"><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->volume_pay; ?>)" ></i></a></li>
+<?php if($this->session->has_userdata('see_handle') and $this->session->userdata('see_handle') == TRUE){?><li title="هماهنگی ها" data-toggle="tooltip" class="text-success"><a href="<?php echo base_url('deal/handle/').$rows->id;?>"><i class="icon-notebook"></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('edit_deal') and $this->session->userdata('edit_deal') == TRUE){?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('see_photo') and $this->session->userdata('see_photo') == TRUE){?><li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$rows->id;?>"><i class="icon-stack-picture"></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('delete_deal') and $this->session->userdata('delete_deal') == TRUE){?><li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->volume_pay; ?>)" ></i></a></li><?php } ?>
 					</ul>
 				</td>
 			</tr>
@@ -247,6 +244,7 @@ $msg = $this->session->userdata('msg');?>
 		tbody.nextElementSibling.style.display = 'none';
 		if ( result.length == 0 ) {
 			tbody.innerHTML = "<tr><td colspan = '11' class='text-center p-20'>موردی یافت نشد</td></tr>";
+			return;
 		} else {
 			var div = document.createElement( 'tbody' );
 			var len = result.length;
@@ -258,11 +256,10 @@ $msg = $this->session->userdata('msg');?>
 				var td_fullname = tr.appendChild( document.createElement( 'td' ) );
 				var a_customer = td_fullname.appendChild(document.createElement('a'));
 				a_customer.setAttribute('href' , "<?php echo base_url('deal/handle_profile/');?>" + result[i].cust_id);
-			    a_customer.innerHTML = result[i].fullname;
+			  a_customer.innerHTML = result[i].fullname;
 				
 				var td_type = tr.appendChild( document.createElement('td'));
-				if(result[i].type_deal == 1){var type = 'خرید';}
-				else{var type = 'فروش';}
+				if(result[i].type_deal == 1){var type = 'خرید';}else{var type = 'فروش';}
 				td_type.innerHTML = type;
 				
 				var td_count = tr.appendChild( document.createElement( 'td' ) );
@@ -279,12 +276,17 @@ $msg = $this->session->userdata('msg');?>
 				
 				var td_rest = tr.appendChild(document.createElement('td'));
 				td_rest.innerHTML = numeral(result[i].volume_rest).format('0,0');
-				
+
 				var td_date = tr.appendChild(document.createElement('td'));
 				td_date.innerHTML = result[i].date_deal + '</br>' + result[i].time_deal;
 
 				var td_modify = tr.appendChild(document.createElement('td'));
-				td_modify.innerHTML = result[i].date_modified;
+				if(result[i].date_modified == ''){
+					td_modify.innerHTML = 'ثبت نشده است';
+				}else{
+					td_modify.innerHTML = result[i].date_modified;
+				}
+
 
 				var td_tool = tr.appendChild( document.createElement( 'td' ) );
 				td_tool.setAttribute( 'class', 'text-center' );

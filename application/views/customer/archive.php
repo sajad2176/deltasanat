@@ -57,8 +57,9 @@
 					<td><?php echo number_format($rows->vr); ?></td>
 					<td class="text-center">
 						<ul class="icons-list">
-							<li class="text-primary-600"><a href="<?php echo base_url('customer/edit/').$rows->id;?>" title="ویرایش" data-toggle="tooltip"><i class="icon-pencil7"></i></a>
-							</li>
+						<?php if($this->session->has_userdata('edit_customer') and $this->session->userdata('edit_customer') == TRUE){?>
+							<li class="text-primary-600"><a href="<?php echo base_url('customer/edit/').$rows->id;?>" title="ویرایش" data-toggle="tooltip"><i class="icon-pencil7"></i></a></li>
+						<?php } ?>
 						</ul>
 					</td>
 				</tr>
@@ -124,12 +125,15 @@
 				var a_customer = td_fullname.appendChild(document.createElement('a'));
 				a_customer.setAttribute('href' , "<?php echo base_url('deal/handle_profile/')?>"+result[i].id);
 				a_customer.innerHTML = result[ i ].fullname;
-				var td_tel = tr.appendChild( document.createElement( 'td' ) );
-				td_tel.innerHTML = result[i].deal_count;
-				var td_tel1 = tr.appendChild( document.createElement( 'td' ) );
-				td_tel1.innerHTML = numeral(result[i].vd).format('0,0');
-				var td_tel2 = tr.appendChild( document.createElement( 'td' ) );
-				td_tel2.innerHTML = numeral(result[i].vr).format('0,0');
+
+				var td_count = tr.appendChild( document.createElement( 'td' ) );
+				td_count.innerHTML = result[i].deal_count;
+
+				var td_sum = tr.appendChild( document.createElement( 'td' ) );
+				td_sum.innerHTML = numeral(result[i].vd).format('0,0');
+
+				var td_rest = tr.appendChild( document.createElement( 'td' ) );
+				td_rest.innerHTML = numeral(result[i].vr).format('0,0');
 
 				var td_tool = tr.appendChild( document.createElement( 'td' ) );
 				td_tool.setAttribute( 'class', 'text-center' );

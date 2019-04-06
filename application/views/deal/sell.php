@@ -31,7 +31,8 @@ $msg = $this->session->userdata('msg');?>
 								<legend class="text-semibold"><i class="icon-coins position-left"></i> اطلاعات فروش</legend>
 								<div class="form-group">
 									<label>نام خریدار : </label>
-									<input class="form-control" onFocus="search_customer(this)" name="customer[]" type="text" placeholder="نام خریدار خود را وارد کنید" autocomplete="off" required>
+									<input class="form-control" onFocus="search_customer(this)" name="customer" type="text" placeholder="نام خریدار خود را وارد کنید" autocomplete="off" required>
+									<p class="text-primary" style="display:none;"></p>
 								</div>
 
 								<div class="row">
@@ -104,6 +105,7 @@ $msg = $this->session->userdata('msg');?>
 											<div class="col-md-6">
 												<div class="form-group">
 													<label>بانک :</label>
+													<span class="text-primary" style="font-size:12px; display:none;">(طبق شماره شبا وارد شده بانکی پیدا نشد. نام بانک را وارد کنید)</span>
 													<input type="text" name="name_bank[]" placeholder="ملت،ملی،.." class="form-control" readonly>
 												</div>
 											</div>
@@ -178,85 +180,6 @@ $msg = $this->session->userdata('msg');?>
 
 
 <script>
-	function autocomplete( inp, arr ) {
-		var currentFocus;
-		inp.addEventListener( "input", function ( e ) {
-			var a, b, i, val = this.value;
-			closeAllLists();
-			if ( !val ) {
-				return false;
-			}
-			currentFocus = -1;
-			a = document.createElement( "DIV" );
-			a.setAttribute( "id", this.id + "autocomplete-list" );
-			a.setAttribute( "class", "autocomplete-items" );
-			this.parentNode.appendChild( a );
-			for ( i = 0; i < arr.length; i++ ) {
-				let match;
-				let search = val;
-				let lastIndx = ( arr[ i ].length - 1 ) - arr[ i ].indexOf( search ) - ( search.length - 1 );
-				if ( lastIndx == 0 ) {
-					match = arr[ i ].slice( arr[ i ].indexOf( search ), arr[ i ].length );
-				} else {
-					match = arr[ i ].slice( arr[ i ].indexOf( search ), -lastIndx );
-				}
-				if ( match.length == search.length ) {
-					let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) )+'<strong style="color:#46a64c;">'+match+'</strong>'+arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length );
-
-					b = document.createElement( "DIV" );
-					b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";
-					b.addEventListener( "click", function ( e ) {
-						inp.value = this.getElementsByTagName( "input" )[ 0 ].value;
-						closeAllLists();
-					} );
-					a.appendChild( b );
-				}
-			}
-		} );
-		inp.addEventListener( "keydown", function ( e ) {
-			var x = document.getElementById( this.id + "autocomplete-list" );
-			if ( x ) x = x.getElementsByTagName( "div" );
-			if ( e.keyCode == 40 ) {
-				currentFocus++;
-				addActive( x );
-			} else if ( e.keyCode == 38 ) {
-				currentFocus--;
-				addActive( x );
-			} else if ( e.keyCode == 13 ) {
-				e.preventDefault();
-				if ( currentFocus > -1 ) {
-					if ( x ) x[ currentFocus ].click();
-				}
-			}
-		} );
-
-		function addActive( x ) {
-			if ( !x ) return false;
-			removeActive( x );
-			if ( currentFocus >= x.length ) currentFocus = 0;
-			if ( currentFocus < 0 ) currentFocus = ( x.length - 1 );
-			x[ currentFocus ].classList.add( "autocomplete-active" );
-
-		}
-
-		function removeActive( x ) {
-			for ( var i = 0; i < x.length; i++ ) {
-				x[ i ].classList.remove( "autocomplete-active" );
-			}
-		}
-
-		function closeAllLists( elmnt ) {
-			var x = document.getElementsByClassName( "autocomplete-items" );
-			for ( var i = 0; i < x.length; i++ ) {
-				if ( elmnt != x[ i ] && elmnt != inp ) {
-					x[ i ].parentNode.removeChild( x[ i ] );
-				}
-			}
-		}
-		document.addEventListener( "click", function ( e ) {
-			closeAllLists( e.target );
-		} );
-	}
 	var customer = [<?php echo $str; ?>];
 
 	function search_customer( input ) {

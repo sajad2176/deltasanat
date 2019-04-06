@@ -42,7 +42,7 @@
 						<div class="heading-elements">
 							<span class="heading-text badge bg-blue-800">مجموع مانده هماهنگی </span>
 						</div>
-						<h3 class="no-margin" id="restHandle"><?php echo number_format($rest_handle->hr); ?></h3> 
+						<h3 class="no-margin" id="restHandle"><?php echo number_format($sum_handle->hr); ?></h3> 
 						<div class="text-muted text-size-small">$37,578 avg</div>
 					</div>
 					<div class="chart" id="today-revenue"></div>
@@ -56,7 +56,7 @@
 				<div class="panel-heading">
 					<h5 class="panel-title">مجموع معاملات</h5>
 				</div>
-				<img style="width: 100%" src="<?php echo base_url('files/');?>/assets/img/Annotation 2019-03-13 161608.jpg" </div>
+				<img style="width: 100%" src="<?php echo base_url('files/');?>/assets/img/Annotation 2019-03-13 161608.jpg"/>
 			</div>
 			<!-- /marketing campaigns -->
 			<!-- Quick stats boxes -->
@@ -178,7 +178,7 @@
 			<div style="padding-bottom: 30px " class="panel-heading">
 					<h6 class="panel-title">موجودی</h6>
 					<div  class="heading-elements">
-						<a href="#add_arz_modal" data-toggle="modal" class=" btn btn-success">ارز اولیه </a>
+						<a href="#add_arz_modal" data-toggle="modal" class="btn btn-success">ارز اولیه </a>
 					</div>
 				</div>
 					<div class="row">
@@ -304,7 +304,7 @@
 					function showResult(res){
 						sumHandle.innerHTML = numeral(res.sum_handle.vh).format('0,0');
 						sumPay.innerHTML = numeral(res.sum_pay.vp).format('0,0');
-						restHandle.innerHTML = numeral(res.rest_handle.hr).format('0,0');
+						restHandle.innerHTML = numeral(res.sum_handle.hr).format('0,0');
 						today.innerHTML = res.today;
 						buyDollar.innerHTML = numeral(res.buy_dollar).format('0,0');
 						buyEuro.innerHTML = numeral(res.buy_euro).format('0,0');

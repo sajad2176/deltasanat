@@ -6,6 +6,7 @@ $msg = $this->session->userdata('msg');?>
 										<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
 										<?php echo $msg[0];?>
 								    </div>
+									
 <?php }?>
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
   <ul class="breadcrumb">
@@ -19,7 +20,7 @@ $msg = $this->session->userdata('msg');?>
 	<div class="panel panel-flat">
 		<div class="panel-body">
 			<div class="row">
-				<div class="col-md-6">
+				<div class="col-md-12">
 					<fieldset>
 						<legend class="text-semibold"><i class="icon-user-plus position-left"></i> افزودن کاربر</legend>
 						<div class="row">
@@ -54,39 +55,55 @@ $msg = $this->session->userdata('msg');?>
 								</div>
 											
 										<label >دسترسی ها:</label>
-												<div class="row">
-										<div class="checkbox col-md-3">
-											<label>
-												<input type="checkbox" class="styled" checked="checked">
-												مدیر کل
-											</label>
-										</div>
+                                       <?php foreach($perm as $key => $rows ){ 
+                                          if($key == 0 or $key == 2 or $key == 7 or $key == 10 or $key == 15 or $key == 20){
+                                             $row = '<div class="row">';
+                                          }else{
+                                             $row = '';
+                                          }
+                                          if($key == 1 or $key == 6 or $key == 9 or $key == 14 or $key == 19 or $key == 24){
+                                             $row_div = '</div>';
+                                          }else{
+                                             $row_div = '';
+                                          }
+                                          if($key == 2){
+                                             $select_all = '<div class="row"><div class="col-md-12"><label><input type="checkbox" class="option-input" id="select_users" checked /> کاربران</label></div></div>';
+                                          }else if($key == 7){
+                                             $select_all = '<div class="row"><div class="col-md-12"><label><input type="checkbox" class="option-input" id="select_customer" checked/> مشتریان</label></div></div>';
+                                          }else if($key == 10){
+                                             $select_all = '<div class="row"><div class="col-md-12"><label><input type="checkbox" class="option-input" id="select_deal" checked/> معاملات</label></div></div>';
+                                          }else{
+                                             $select_all = '';
+                                          }if($key >= 2 and $key <= 6){
+                                              $select_class = 'check_users';
+                                          }else if($key >= 7 and $key <= 9){
+                                             $select_class = 'check_customer';
+                                          }else if($key >= 10 ){
+                                             $select_class = 'check_deal';
+                                          }else{
+                                             $select_class = '';
+                                          }
+                                          ?>
+                                        <?php
+                                        echo $select_all;
+                                        echo $row;
+                                        ?>
 
-										<div class="checkbox col-md-3 mt-5">
-											<label>
-												<input type="checkbox" class="styled">
-												ادیتر
-											</label>
-										</div>
-
-										<div class="checkbox col-md-3 mt-5">
-											<label>
-												<input type="checkbox" class="styled">
-												ویزیتور
-											</label>
-										</div>
-												<div class="checkbox col-md-3 mt-5">
-											<label>
-												<input type="checkbox" class="styled">
-												Disabled styled
-											</label>
-										</div>
-									</div>
-												
+                                          <div class="col-md-2">
+                                                   <label>
+	                                          <input name='perm[]' value="<?php echo $rows->id; ?>" type="checkbox" class="option-input <?php echo $select_class;?>" checked/>
+	                                              <?php echo $rows->name_perm;?>
+                                                 </label>
+                                                 </div>
+                                       <?php echo $row_div; 
+                                       if($key == 1 or $key == 6 or $key == 9){echo '<hr>';}
+                                       ?>
+                                    
+                                       <?php } ?>							
 				</div>
 
 			</div>
-			<div class="text-right">
+			<div class="text-right mt-50">
 	<button type="submit" name="sub" class="btn btn-success">افزودن کاربر <i class="icon-arrow-left13 position-right"></i></button>
 		</div>
 		</div>

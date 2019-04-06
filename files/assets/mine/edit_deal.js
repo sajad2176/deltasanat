@@ -2,6 +2,7 @@ function show_bank( input ) {
     var txt = input.value;
     var name_bank = input.parentElement.parentElement.nextElementSibling.firstElementChild.lastElementChild;
     if ( txt[ 3 ] != '_' && txt[ 4 ] != '_' && txt[ 5 ] != '_'  ) {
+        name_bank.previousElementSibling.style.display = 'none';
         name_bank.setAttribute("readonly" , 'readonley');
         var bank = txt.slice( 3, 6 );
         if ( bank == '055' ) {
@@ -64,7 +65,9 @@ function show_bank( input ) {
             name_bank.value = 'بانک ایران زمین';
         } else {
             name_bank.value = '';
+            name_bank.previousElementSibling.style.display = 'inline';
             name_bank.removeAttribute("readonly"); 
+            
         }
     } else {
         name_bank.removeAttribute("readonly"); 
@@ -72,6 +75,7 @@ function show_bank( input ) {
     }
 
 }
+// count convert volume
 var vpay = document.getElementById('vpay');
 var alert_msg = document.getElementById('alert');
 var count = document.getElementById( 'count' );
@@ -79,16 +83,15 @@ var wage = document.getElementById( 'wage' );
 var convert = document.getElementById( 'convert' );
 var volume = document.getElementById( 'volume_deal' );
 var money_name = document.getElementById('money_id');
-money_name.onclick = function(){
+money_name.onchange = function(){
     name = money_name.options[money_name.selectedIndex].innerHTML;
-    value_count = numeral(count.value).value();
-    count.value = numeral(value_count).format('0,0') + ' '+ name;
-    value_wage = numeral(wage.value).value();
-    wage.value = numeral(value_wage).format('0,0') + ' ' + name;
+    value1 = numeral(count.value).value();
+    count.value = numeral(value1).format('0,0') + ' '+ name;
+    value2 = numeral(wage.value).value();
+    wage.value = numeral(value2).format('0,0') + ' ' + name;
 }
-count.onkeyup = function () {
+count.onkeyup = function (e) {
     var name = money_name.options[money_name.selectedIndex].innerHTML;
-    count.value = numeral( count.value ).format( '0,0' ) + ' ' + name;
     var x = numeral( count.value ).value();
     var y = numeral( wage.value ).value();
     var z = numeral( convert.value ).value();
@@ -96,14 +99,17 @@ count.onkeyup = function () {
     volume.innerHTML = numeral( ( x + y ) * z ).format( '0 , 0' ) + ' ریـال  ';
     if(numeral(volume.innerHTML).value() < vpay.value){
         alert_msg.style.display = 'block';
-        alert_msg.innerHTML = 'مبلغ معامله کمتر از مبلغ پرداخت شده است';
+        alert_msg.innerHTML = ' مبلغ پرداختی برای این معامله ' + numeral(vpay.value).format('0,0') + " می باشد و این مقدار بیشتر از حجم معامله است که تعیین کردید ";
     }else{
         alert_msg.style.display = 'none';
     }
+    if(e.keyCode == 8){
+        return;
+    }
+    count.value = numeral( count.value ).format( '0,0' ) + ' ' + name;
 }
-wage.onkeyup = function () {
+wage.onkeyup = function (e) {
     var name = money_name.options[money_name.selectedIndex].innerHTML;
-    wage.value = numeral( wage.value ).format( '0,0' ) + ' ' + name;
     var x = numeral( count.value ).value();
     var y = numeral( wage.value ).value();
     var z = numeral( convert.value ).value();
@@ -111,13 +117,16 @@ wage.onkeyup = function () {
     volume.innerHTML = numeral( ( x + y ) * z ).format( '0 , 0' ) + ' ریـال  ';
     if(numeral(volume.innerHTML).value() < vpay.value){
         alert_msg.style.display = 'block';
-        alert_msg.innerHTML = 'مبلغ معامله کمتر از مبلغ پرداخت شده است';
+        alert_msg.innerHTML = ' مبلغ پرداختی برای این معامله ' + numeral(vpay.value).format('0,0') + " می باشد و این مقدار بیشتر از حجم معامله است که تعیین کردید ";
     }else{
         alert_msg.style.display = 'none';
     }
+    if(e.keyCode == 8){
+        return;
+    }
+    wage.value = numeral( wage.value ).format( '0,0' ) + ' ' + name;
 }
-convert.onkeyup = function () {
-    convert.value = numeral( convert.value ).format( '0,0' ) +  ' ریـال ';
+convert.onkeyup = function (e) {
     var x = numeral( count.value ).value();
     var y = numeral( wage.value ).value();
     var z = numeral( convert.value ).value();
@@ -125,15 +134,18 @@ convert.onkeyup = function () {
     volume.innerHTML = numeral( ( x + y ) * z ).format( '0 , 0' ) + ' ریـال  ';
     if(numeral(volume.innerHTML).value() < vpay.value){
         alert_msg.style.display = 'block';
-        alert_msg.innerHTML = 'مبلغ معامله کمتر از مبلغ پرداخت شده است';
+        alert_msg.innerHTML = ' مبلغ پرداختی برای این معامله ' + numeral(vpay.value).format('0,0') + " می باشد و این مقدار بیشتر از حجم معامله است که تعیین کردید ";
     }else{
         alert_msg.style.display = 'none';
     }
+    if(e.keyCode == 8){
+        return;
+    }
+    convert.value = numeral( convert.value ).format( '0,0' ) +  ' ریـال ';
 }
-
+// count convert volume
 function amount_bank( input ) {
     var volume = document.getElementById( 'volume_deal');
-    input.value = numeral( input.value ).format( '0,0' ) + " ریـال ";
     input.nextElementSibling.value = numeral( input.value ).value();
     if(input.previousElementSibling.value > numeral(input.value).value()){
         input.nextElementSibling.nextElementSibling.style.display = 'block';
@@ -145,4 +157,8 @@ function amount_bank( input ) {
     }else{
         input.nextElementSibling.nextElementSibling.style.display = 'none';
     }
+    if(event.keyCode == 8){
+        return;
+    }
+    input.value = numeral( input.value ).format( '0,0' ) + " ریـال ";
 }
