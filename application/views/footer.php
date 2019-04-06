@@ -28,7 +28,7 @@ if(isset($select2) and sizeof($select2) != 0){
   $str2 = '';
 foreach($select2 as $selects){
   $id = $selects->deal_id + 100;
-$str2 .= "<option value = \" $selects->id \">". $selects->number_shaba ." | ". $selects->name_bank." | " . $id ."</option>";
+$str2 .= "<option value = \" $selects->id \">". $selects->number_shaba ." | ". $selects->name_bank." | شناسه معامله : " . $id ."</option>";
 $id = 0;
 }
 }
@@ -78,7 +78,7 @@ $(document).ready(function(){
     var maxField = 3;
     var addButton = $('.add_button4');
     var wrapper = $('.field_wrapper4');
-    var fieldHTML = '<div><div class="col-md-3"><div class="form-group"><label>نام مشتری:</label><input class="form-control" onFocus="search_customer(this)" name="customer[]" type="text" placeholder="نام مشتری خود را وارد کنید" autocomplete="off" required></div></div><div class="col-md-3"><div class="form-group"><label>انتخاب معامله:</label><input type="text" placeholder="لطفا شناسه معامله را وارد کنید" onkeyup="select_deal(this)" name="deal_id[]" class="form-control" required></div></div><div class="col-md-3"><div class="form-group"><label>انتخاب حساب : </label><select class="form-control" name="bank_id[]" required><?php if(isset($str2)){ echo $str2;}else{echo '<option value = "0">شماره حسابی ثبت نشده است</option>';} ?></select></div></div><div class="col-md-3"><div class="form-group input-group"><label>مبلغ هماهنگی:</label><input type="text" onkeyup="ambank(this)" placeholder="111,000,000" class="form-control" required><input type="hidden" name="volume_handle[]" required><span class="input-group-btn remove_button4"><button type="button" class="btn btn-danger  mt-25"><span class="icon-minus2"></span></button></span></div></div></div>';
+    var fieldHTML = '<div><div class="col-md-3"><div class="form-group"><label>نام مشتری:</label><input class="form-control" onFocus="search_customer(this)" name="customer[]" type="text" placeholder="نام مشتری خود را وارد کنید" autocomplete="off" required><p class="text-primary" style="display:none; position:absolute;font-size:12px;"></p></div></div><div class="col-md-3"><div class="form-group"><label>انتخاب معامله:</label><input type="text" placeholder="لطفا شناسه معامله را وارد کنید" onkeyup="select_deal(this)" name="deal_id[]" class="form-control" required></div></div><div class="col-md-3"><div class="form-group"><label>انتخاب حساب : </label><select class="form-control" name="bank_id[]" required><?php if(isset($str2)){ echo $str2;}else{echo '<option value = "0">شماره حسابی ثبت نشده است</option>';} ?></select></div></div><div class="col-md-3"><div class="form-group input-group"><label>مبلغ هماهنگی:</label><input type="text" onkeyup="ambank(this)" placeholder="111,000,000" class="form-control" required><input type="hidden" name="volume_handle[]" required><span class="input-group-btn remove_button4"><button type="button" class="btn btn-danger  mt-25"><span class="icon-minus2"></span></button></span></div></div></div>';
 		
     var x = 1;
     		

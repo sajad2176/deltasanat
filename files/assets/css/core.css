@@ -6653,13 +6653,13 @@ h6.panel-title,
 }
 /* logout style */
 /*search */
-#search_cust tbody{
+#search_cust tbody , #search_deal tbody{
 	border-top: 2px solid #ddd;
 }
-#search_cust tr:nth-of-type(2n+1) {
+#search_cust tr:nth-of-type(2n+1) , #search_deal tr:nth-of-type(2n+1) {
     background-color: #fcfcfc;
 }
-#search_cust tr td{
+#search_cust tr td , #search_deal tr td{
 vertical-align: middle;
 padding: 12px 5px;
 line-height: 1.5384616;

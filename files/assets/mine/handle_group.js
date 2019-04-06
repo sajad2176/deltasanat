@@ -73,24 +73,7 @@ function show_bank( input ) {
     }
 
 }
-var volume = document.getElementById( 'volume_deal' );
-function ambank( input ) {
-input.nextElementSibling.value = numeral( input.value ).value();
-if(input.previousElementSibling.value > numeral(input.value).value()){
-input.nextElementSibling.nextElementSibling.style.display = 'block';
-input.nextElementSibling.nextElementSibling.innerHTML = ' مبلغ تعیین شده از مبلغی که به این حساب واریز شده  کمتر است  ';
-}
-else if(numeral(volume.innerHTML).value() < numeral(input.value).value()){
-input.nextElementSibling.nextElementSibling.style.display = 'block';
-input.nextElementSibling.nextElementSibling.innerHTML = ' مبلغ وارد شده بیشتر از حجم معامله است';
-}else{
-input.nextElementSibling.nextElementSibling.style.display = 'none';
-}
-if(event.keyCode == 8){
-    return;
-}
-input.value = numeral( input.value ).format( '0,0' ) + " ریـال ";
-}
+
 //search customer
 function autocomplete( inp, arr ) {
     var currentFocus;
@@ -179,19 +162,6 @@ function autocomplete( inp, arr ) {
     } );
 }
 //search customer
-function volume_handle( input ) {
-    input.nextElementSibling.value = numeral( input.value ).value();
-    if(numeral(input.value).value() > numeral(volume.innerHTML).value()){
-        input.nextElementSibling.nextElementSibling.style.display = 'block';
-        input.nextElementSibling.nextElementSibling.innerHTML = 'مبلغ وارد شده بیشتر از حجم هماهنگی می باشد';
-    }else{
-        input.nextElementSibling.nextElementSibling.style.display = 'none';
-    }
-    if(event.keyCode == 8){
-        return;
-    }
-    input.value = numeral( input.value ).format( '0,0' ) + ' ریال ';
-}
 //
 function slice_input( input ) {
     input.nextElementSibling.value = numeral( input.value ).value();

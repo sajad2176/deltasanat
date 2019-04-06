@@ -45,10 +45,8 @@
 
 			</ul>
 
-			<p class="navbar-text"><a href="<?php echo base_url('deal/buy');?>" class="label bg-warning">خرید</a>
-			</p>
-			<p class="navbar-text"><a href="<?php echo base_url('deal/sell');?>" class="label bg-primary">فروش</a>
-			</p>
+<?php if($this->session->has_userdata('add_buy') and $this->session->userdata('add_buy') == TRUE){?><p class="navbar-text"><a href="<?php echo base_url('deal/buy');?>" class="label bg-warning">خرید</a></p><?php } ?>
+<?php if($this->session->has_userdata('add_sell') and $this->session->userdata('add_sell') == TRUE){?><p class="navbar-text"><a href="<?php echo base_url('deal/sell');?>" class="label bg-primary">فروش</a></p><?php } ?>
 			<ul class="nav navbar-nav navbar-right">
 
 

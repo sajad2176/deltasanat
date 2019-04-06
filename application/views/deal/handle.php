@@ -331,7 +331,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 							<form method="post" id="form_slice">
 								<div class="modal-body">
 									<div class="form-group input-group">
-										<label>مبلغ هماهنگی:</label>
+										<label>مبلغ هماهنگی :</label>
 										<input type="text" placeholder="111,000,000" onkeyup='slice_input(this)' class="form-control">
 										<input type="hidden" name="slice">
 										<span class="input-group-btn">
@@ -510,12 +510,6 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 			function pay_slice( link ) {
 				document.getElementById( 'form_slice' ).setAttribute( 'action', "<?php echo base_url("deal/pay_slice/").$deal->id."/"?>" + link );
 			}
-
-			function slice_input( input ) {
-				input.value = numeral( input.value ).format( '0,0' );
-				input.nextElementSibling.value = numeral( input.value ).value();
-			}
-			
 			
 			function history(id){
 		var xhr = new XMLHttpRequest();
