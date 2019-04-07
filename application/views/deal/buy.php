@@ -38,8 +38,8 @@ $msg = $this->session->userdata('msg');?>
 								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
-											<label>نام ارز: </label>
-											<select class="form-control" name="money_id" id="money_id" required>
+											<label>نام ارز : </label>
+											<select class="form-control" name="money_id" required>
 												<option value="1">دلار</option>
 												<option value="2">یورو</option>
 												<option value="3">یوان</option>
@@ -52,9 +52,9 @@ $msg = $this->session->userdata('msg');?>
 
 									<div class="col-md-6">
 										<div class="form-group">
-											<label>تعداد ارز :</label>
+											<label>تعداد ارز : </label>
 											<input type="text" id="count" placeholder="100,000" class="form-control" autocomplete="off" required>
-											<input type="hidden" name="count_money">
+											<input type="hidden" name="count_money" value = "0">
 										</div>
 									</div>
 								</div>
@@ -63,7 +63,7 @@ $msg = $this->session->userdata('msg');?>
 										<div class="form-group">
 											<label>کارمزد :</label>
 											<input type="text" id="wage" placeholder="100" autocomplete="off" class="form-control" required>
-											<input type="hidden" name="wage">
+											<input type="hidden" name="wage" value = "0">
 										</div>
 									</div>
 
@@ -71,7 +71,7 @@ $msg = $this->session->userdata('msg');?>
 										<div class="form-group">
 											<label>نرخ تبدیل :</label>
 											<input type="text" id="convert" placeholder="100,000" autocomplete="off" class="form-control" required >
-											<input type="hidden" name="convert_money">
+											<input type="hidden" name="convert_money" value ="0">
 										</div>
 									</div>
 								</div>
@@ -103,7 +103,7 @@ $msg = $this->session->userdata('msg');?>
 												<div class="form-group">
 													<label>بانک :</label>
 													<span class="text-primary" style="font-size:12px; display:none;">(طبق شماره شبا وارد شده بانکی پیدا نشد. نام بانک را وارد کنید)</span>
-													<input type="text" name="name_bank[]" placeholder="ملت،ملی،.." class="form-control" readonly>
+													<input type="text" name="name_bank[]" placeholder="ملت،ملی،.." class="form-control">
 												</div>
 											</div>
 										</div>
@@ -128,9 +128,19 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 								</div>
 								<input type="hidden" name="deal_type" value="1">
+								<div class="row">
+								<div class="col-md-6">
+								<div class="form-group">
+									<label for="j_created_date"> تاریخ ثبت :</label>
+									<input type="text" class="form-control" name="date_deal" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date;?>" placeholder="Jalali Created Date">
+								</div>
+								</div>
+								<div class="col-md-6">
 								<div class="form-group">
 									<label>ارسال عکس (برای انتخاب چند عکس لطفا دکمه ctrl را نگه دارید)</label>
 									<input type="file" class="file-styled" name="deal_pic[]" multiple="multiple">
+								</div>
+								</div>
 								</div>
 								<div class="form-group">
 									<label>توضیحات معامله :</label>
@@ -154,22 +164,106 @@ $msg = $this->session->userdata('msg');?>
 		</form>
 	</div>
 	<div class="col-md-4">
-		<div class="panel panel-flat">
-			<div class="panel-heading">
-				<h6 class="panel-title">Balance changes</h6>
-				<div class="heading-elements">
-					<span class="heading-text"><i class="icon-arrow-down22 text-danger"></i> <span class="text-semibold">- 29.4%</span></span>
-				</div>
-			</div>
-
+	<div class="panel panel-flat">
 			<div class="panel-body">
-				<div class="chart-container">
-					<div class="chart" id="visits" style="height: 300px;"></div>
+				<div style="padding-right: 0px" class="panel-heading">
+					<h6 class="panel-title"> آمار مشتری :  </h6>
+				</div>
+				
+
+				<div class="table-responsive">
+					<table class="table text-nowrap">
+						<thead>
+							<tr>
+								<th style="width: 85px">ارز</th>
+								<th class="text-success-800" style="padding-right: 80px">طلب کار</th>
+								<th class="text-primary">بده کار</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<div class="media-body">
+										<div class="media-heading">
+											<h5 class="letter-icon-title">دلار</h5>
+										</div>
+									</div>
+								</td>
+								<td>
+									<h6 class="text-semibold text-success-800 pr-34 no-margin " id="buyDollar">-</h6>
+								</td>
+								<td>
+									<h6 class="text-semibold text-primary pr-8 no-margin" id="sellDollar">-</h6>
+								</td>
+							</tr>
+							<tr>
+							</tr>
+							<tr>
+								<td>
+								
+									<div class="media-body">
+										<div class="media-heading">
+											<h5  class="letter-icon-title">یوان</h5>
+										</div>
+									</div>
+								</td>
+								<td>
+									<h6 class=" text-semibold text-success-800 pr-34 no-margin" id="buyYuan">-</h6>
+								</td>
+								<td>
+									<h6 class="text-semibold text-primary  pr-8 no-margin" id="sellYuan">-</h6>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="media-body">
+										<div class="media-heading">
+											<h5 class="letter-icon-title">یورو</h5>
+										</div>	
+									</div>
+								</td>
+								<td>
+									<h6 class=" text-semibold text-success-800 pr-34 no-margin" id="buyEuro">-</h6>
+								</td>
+								<td>
+									<h6 class="text-semibold text-primary pr-8 no-margin" id="sellEuro">-</h6>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="media-body">
+										<div class="media-heading">
+											<h5 class="letter-icon-title">درهم</h5>
+										</div>
+									</div>
+								</td>
+								<td>
+									<h6 class="text-semibold text-success-800 pr-34 no-margin" id="buyDerham">-</h6>
+								</td>
+								<td>
+									<h6 class="text-semibold text-primary pr-8 no-margin" id="sellDerham">-</h6>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="media-body">
+										<div class="media-heading">
+											<h5 class="letter-icon-title">ریال</h5>
+										</div>
+									</div>
+								</td>
+								<td>
+									<h6 class="text-semibold text-success-800 pr-34 no-margin" id="buyDerham">-</h6>
+								</td>
+								<td>
+									<h6 class="text-semibold text-primary pr-8 no-margin" id="sellDerham">-</h6>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
-
-	</div>
 </div>
 <?php $str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");?>
 

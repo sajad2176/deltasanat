@@ -4,7 +4,6 @@
 		var name_bank = input.parentElement.parentElement.nextElementSibling.firstElementChild.lastElementChild;
 		if ( txt[ 3 ] != '_' && txt[ 4 ] != '_' && txt[ 5 ] != '_' ) {
 			name_bank.previousElementSibling.style.display = 'none';
-			name_bank.setAttribute("readonly" , 'readonley');
 			var bank = txt.slice( 3, 6 );
 			if ( bank == '055' ) {
 				name_bank.value = 'بانک اقتصاد نوین';
@@ -67,13 +66,8 @@
 			} else {
 				name_bank.value = '';
 				name_bank.previousElementSibling.style.display = 'inline';
-				name_bank.removeAttribute("readonly"); 
 			}
-		} else {
-			name_bank.removeAttribute("readonly"); 
-			name_bank.value = '';
 		}
-
 	}
 //show bank
 // count wage convert volume
@@ -81,49 +75,48 @@
 	var wage = document.getElementById( 'wage' );
 	var convert = document.getElementById( 'convert' );
 	var volume = document.getElementById( 'volume_deal' );
-	var money_name = document.getElementById('money_id');
+	// var money_name = document.getElementById('money_id');
 
-	money_name.onchange = function(){
-		name = money_name.options[money_name.selectedIndex].innerHTML;
-		value1 = numeral(count.value).value();
-		count.value = numeral(value1).format('0,0') + ' '+ name;
-		value2 = numeral(wage.value).value();
-		wage.value = numeral(value2).format('0,0') + ' ' + name;
-	}
+	// money_name.onchange = function(){
+	// 	name = money_name.options[money_name.selectedIndex].innerHTML;
+	// 	value1 = numeral(count.value).value();
+	// 	value2 = numeral(wage.value).value();
+	// 	if(value1 == null){
+	// 	  count.nextElementSibling.value = 0;
+	// 	}else{
+	// 	  count.nextElementSibling.value = value1;
+	// 	}
+	// 	if(value2 == null){
+    //       wage.nextElementSibling.value = 0;
+	// 	}else{
+	// 	  wage.nextElementSibling.value = value2;
+	// 	}
+	// 	count.value = numeral(value1).format('0,0') + ' '+ name;
+	// 	wage.value = numeral(value2).format('0,0') + ' ' + name;
+	// }
 	count.onkeyup = function (e) {
+		count.value = numeral( count.value ).format( '0,0' );
 		var x = numeral( count.value ).value();
 		var y = numeral( wage.value ).value();
 		var z = numeral( convert.value ).value();
-		count.nextElementSibling.value = x;
 		volume.innerHTML = numeral( ( x + y ) * z ).format( '0 , 0' ) + ' ریـال  ';
-		if(e.keyCode == 8){
-			return;
-		}
-		var name = money_name.options[money_name.selectedIndex].innerHTML;
-		count.value = numeral( count.value ).format( '0,0' ) + ' ' + name;
+		count.nextElementSibling.value = x;
 	}
 	wage.onkeyup = function (e) {
+		wage.value = numeral( wage.value ).format( '0,0' );
 		var x = numeral( count.value ).value();
 		var y = numeral( wage.value ).value();
 		var z = numeral( convert.value ).value();
-		wage.nextElementSibling.value = y;
 		volume.innerHTML = numeral( ( x + y ) * z ).format( '0 , 0' ) + ' ریـال  ';
-		if(e.keyCode == 8){
-			return;
-		}
-		var name = money_name.options[money_name.selectedIndex].innerHTML;
-		wage.value = numeral( wage.value ).format( '0,0' ) + ' ' + name;
+		wage.nextElementSibling.value = y;
 	}
 	convert.onkeyup = function (e) {
+		convert.value = numeral( convert.value ).format( '0,0' );
 		var x = numeral( count.value ).value();
 		var y = numeral( wage.value ).value();
 		var z = numeral( convert.value ).value();
-		convert.nextElementSibling.value = z;
 		volume.innerHTML = numeral( ( x + y ) * z ).format( '0 , 0' ) + ' ریـال  ';
-		if(e.keyCode == 8){
-			return;
-		}
-		convert.value = numeral( convert.value ).format( '0,0' ) +  ' ریـال ';
+		convert.nextElementSibling.value = z;
 	}
 	// count wage convert volume
    // bank
@@ -135,10 +128,7 @@
 		}else{
 			input.nextElementSibling.nextElementSibling.style.display = 'none';
 		}
-		if(event.keyCode == 8){
-			return;
-		}
-		input.value = numeral( input.value ).format( '0,0' ) + " ریـال ";
+		input.value = numeral( input.value ).format( '0,0' );
 	}
 	// bank
 	//search customer
