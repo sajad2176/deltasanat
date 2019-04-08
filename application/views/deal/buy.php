@@ -167,7 +167,7 @@ $msg = $this->session->userdata('msg');?>
 	<div class="panel panel-flat">
 			<div class="panel-body">
 				<div style="padding-right: 0px" class="panel-heading">
-					<h6 class="panel-title"> آمار مشتری :  </h6>
+					<h6 class="panel-title"> آمار مشتری :  <span id="name_customer"></span></h6>
 				</div>
 				
 
@@ -175,9 +175,8 @@ $msg = $this->session->userdata('msg');?>
 					<table class="table text-nowrap">
 						<thead>
 							<tr>
-								<th style="width: 85px">ارز</th>
-								<th class="text-success-800" style="padding-right: 80px">طلب کار</th>
-								<th class="text-primary">بده کار</th>
+								<th width="50%">ارز</th>
+								<th class="text-success-800" width="50%">مانده</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -190,13 +189,22 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 								</td>
 								<td>
-									<h6 class="text-semibold text-success-800 pr-34 no-margin " id="buyDollar">-</h6>
-								</td>
-								<td>
-									<h6 class="text-semibold text-primary pr-8 no-margin" id="sellDollar">-</h6>
+									<h6 class="text-semibold text-success-800 no-margin " id="dollar">-</h6>
 								</td>
 							</tr>
 							<tr>
+							</tr>
+							<tr>
+								<td>
+									<div class="media-body">
+										<div class="media-heading">
+											<h5 class="letter-icon-title">یورو</h5>
+										</div>	
+									</div>
+								</td>
+								<td>
+									<h6 class=" text-semibold text-success-800 no-margin" id="euro">-</h6>
+								</td>
 							</tr>
 							<tr>
 								<td>
@@ -208,25 +216,7 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 								</td>
 								<td>
-									<h6 class=" text-semibold text-success-800 pr-34 no-margin" id="buyYuan">-</h6>
-								</td>
-								<td>
-									<h6 class="text-semibold text-primary  pr-8 no-margin" id="sellYuan">-</h6>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<div class="media-body">
-										<div class="media-heading">
-											<h5 class="letter-icon-title">یورو</h5>
-										</div>	
-									</div>
-								</td>
-								<td>
-									<h6 class=" text-semibold text-success-800 pr-34 no-margin" id="buyEuro">-</h6>
-								</td>
-								<td>
-									<h6 class="text-semibold text-primary pr-8 no-margin" id="sellEuro">-</h6>
+									<h6 class=" text-semibold text-success-800 no-margin" id="yuan">-</h6>
 								</td>
 							</tr>
 							<tr>
@@ -238,10 +228,7 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 								</td>
 								<td>
-									<h6 class="text-semibold text-success-800 pr-34 no-margin" id="buyDerham">-</h6>
-								</td>
-								<td>
-									<h6 class="text-semibold text-primary pr-8 no-margin" id="sellDerham">-</h6>
+									<h6 class="text-semibold text-success-800 no-margin" id="derham">-</h6>
 								</td>
 							</tr>
 							<tr>
@@ -253,10 +240,7 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 								</td>
 								<td>
-									<h6 class="text-semibold text-success-800 pr-34 no-margin" id="buyDerham">-</h6>
-								</td>
-								<td>
-									<h6 class="text-semibold text-primary pr-8 no-margin" id="sellDerham">-</h6>
+									<h6 class="text-semibold text-success-800 no-margin" id="rial">-</h6>
 								</td>
 							</tr>
 						</tbody>
@@ -270,9 +254,24 @@ $msg = $this->session->userdata('msg');?>
 
 <script>
 	var customer = [<?php echo $str; ?>];
-
 	function search_customer( input ) {
 		autocomplete( input, customer );
 	}
+
+	function showHistory(text){
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+		// alert(xhttp.responseText);
+		var result = JSON.parse( xhttp.responseText );
+	    showCustResult( result , text );
+    }
+  };
+  xhttp.open("POST", "<?php echo base_url('deal/customer_history/')?>" , true);
+  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhttp.send('text_search='+text);
+	  
+	}
+
 </script>
 <script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/deal.js"></script>

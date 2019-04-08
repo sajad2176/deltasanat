@@ -9,12 +9,11 @@ $msg = $this->session->userdata('msg');?>
 <?php }?>
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 	<ul class="breadcrumb">
-		<li><a href="<?php echo base_url('home');?>"><i class="icon-home2 position-left"></i> داشبورد</a>
+		<li><a href="<?php echo base_url('home');?>"><i class="icon-home2 position-left"></i> داشبورد </a>
 		</li>
 		<li><a href="<?php echo base_url('deal/sell')?>">معاملات</a>
 		</li>
-		<li class="active"> خرید </a>
-		</li>
+		<li class="active"> فروش </li>
 	</ul>
 
 </div>
@@ -26,7 +25,7 @@ $msg = $this->session->userdata('msg');?>
 			<div class="panel panel-flat">
 				<div class="panel-body">
 					<div class="row">
-						<div class="">
+					<div class="">
 							<fieldset>
 								<legend class="text-semibold"><i class="icon-coins position-left"></i> اطلاعات فروش</legend>
 								<div class="form-group">
@@ -34,12 +33,13 @@ $msg = $this->session->userdata('msg');?>
 									<input class="form-control" onFocus="search_customer(this)" name="customer" type="text" placeholder="نام خریدار خود را وارد کنید" autocomplete="off" required>
 									<p class="text-primary" style="display:none;"></p>
 								</div>
+							
 
 								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>نام ارز : </label>
-											<select class="form-control" name="money_id" id="money_id" required>
+											<select class="form-control" name="money_id" required>
 												<option value="1">دلار</option>
 												<option value="2">یورو</option>
 												<option value="3">یوان</option>
@@ -52,18 +52,18 @@ $msg = $this->session->userdata('msg');?>
 
 									<div class="col-md-6">
 										<div class="form-group">
-											<label>تعداد ارز :</label>
+											<label>تعداد ارز : </label>
 											<input type="text" id="count" placeholder="100,000" class="form-control" autocomplete="off" required>
-											<input type="hidden" name="count_money">
+											<input type="hidden" name="count_money" value = "0">
 										</div>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
-											<label>کامزد :</label>
+											<label>کارمزد :</label>
 											<input type="text" id="wage" placeholder="100" autocomplete="off" class="form-control" required>
-											<input type="hidden" name="wage">
+											<input type="hidden" name="wage" value = "0">
 										</div>
 									</div>
 
@@ -71,7 +71,7 @@ $msg = $this->session->userdata('msg');?>
 										<div class="form-group">
 											<label>نرخ تبدیل :</label>
 											<input type="text" id="convert" placeholder="100,000" autocomplete="off" class="form-control" required >
-											<input type="hidden" name="convert_money">
+											<input type="hidden" name="convert_money" value ="0">
 										</div>
 									</div>
 								</div>
@@ -96,22 +96,17 @@ $msg = $this->session->userdata('msg');?>
 											<div class="col-md-6">
 												<div class="form-group">
 													<label>شماره شبا : </label>
-													<input onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999" type="text" placeholder="IR-06-017-0000000123014682799" name="number_shaba[]" class="form-control">
+													<input onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="number_shaba[]" class="form-control">
 												</div>
 											</div>
-
-
-
 											<div class="col-md-6">
 												<div class="form-group">
 													<label>بانک :</label>
 													<span class="text-primary" style="font-size:12px; display:none;">(طبق شماره شبا وارد شده بانکی پیدا نشد. نام بانک را وارد کنید)</span>
-													<input type="text" name="name_bank[]" placeholder="ملت،ملی،.." class="form-control" readonly>
+													<input type="text" name="name_bank[]" placeholder="ملت،ملی،.." class="form-control">
 												</div>
 											</div>
 										</div>
-
-
 									</div>
 									<div class="row">
 										<div class="col-md-6">
@@ -133,9 +128,19 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 								</div>
 								<input type="hidden" name="deal_type" value="2">
+								<div class="row">
+								<div class="col-md-6">
+								<div class="form-group">
+									<label for="j_created_date"> تاریخ ثبت :</label>
+									<input type="text" class="form-control" name="date_deal" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date;?>" placeholder="Jalali Created Date">
+								</div>
+								</div>
+								<div class="col-md-6">
 								<div class="form-group">
 									<label>ارسال عکس (برای انتخاب چند عکس لطفا دکمه ctrl را نگه دارید)</label>
 									<input type="file" class="file-styled" name="deal_pic[]" multiple="multiple">
+								</div>
+								</div>
 								</div>
 								<div class="form-group">
 									<label>توضیحات معامله :</label>
@@ -159,31 +164,114 @@ $msg = $this->session->userdata('msg');?>
 		</form>
 	</div>
 	<div class="col-md-4">
-		<div class="panel panel-flat">
-			<div class="panel-heading">
-				<h6 class="panel-title">Balance changes</h6>
-				<div class="heading-elements">
-					<span class="heading-text"><i class="icon-arrow-down22 text-danger"></i> <span class="text-semibold">- 29.4%</span></span>
-				</div>
-			</div>
-
+	<div class="panel panel-flat">
 			<div class="panel-body">
-				<div class="chart-container">
-					<div class="chart" id="visits" style="height: 300px;"></div>
+				<div style="padding-right: 0px" class="panel-heading">
+					<h6 class="panel-title"> آمار مشتری :  <span id="name_customer"></span></h6>
+				</div>
+				
+
+				<div class="table-responsive">
+					<table class="table text-nowrap">
+						<thead>
+							<tr>
+								<th width="50%">ارز</th>
+								<th class="text-success-800" width="50%">مانده</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<div class="media-body">
+										<div class="media-heading">
+											<h5 class="letter-icon-title">دلار</h5>
+										</div>
+									</div>
+								</td>
+								<td>
+									<h6 class="text-semibold text-success-800 no-margin " id="dollar">-</h6>
+								</td>
+							</tr>
+							<tr>
+							</tr>
+							<tr>
+								<td>
+									<div class="media-body">
+										<div class="media-heading">
+											<h5 class="letter-icon-title">یورو</h5>
+										</div>	
+									</div>
+								</td>
+								<td>
+									<h6 class=" text-semibold text-success-800 no-margin" id="euro">-</h6>
+								</td>
+							</tr>
+							<tr>
+								<td>
+								
+									<div class="media-body">
+										<div class="media-heading">
+											<h5  class="letter-icon-title">یوان</h5>
+										</div>
+									</div>
+								</td>
+								<td>
+									<h6 class=" text-semibold text-success-800 no-margin" id="yuan">-</h6>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="media-body">
+										<div class="media-heading">
+											<h5 class="letter-icon-title">درهم</h5>
+										</div>
+									</div>
+								</td>
+								<td>
+									<h6 class="text-semibold text-success-800 no-margin" id="derham">-</h6>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="media-body">
+										<div class="media-heading">
+											<h5 class="letter-icon-title">ریال</h5>
+										</div>
+									</div>
+								</td>
+								<td>
+									<h6 class="text-semibold text-success-800 no-margin" id="rial">-</h6>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
-
-	</div>
 </div>
 <?php $str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");?>
 
 
 <script>
 	var customer = [<?php echo $str; ?>];
-
 	function search_customer( input ) {
 		autocomplete( input, customer );
 	}
+
+	function showHistory(text){
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+		// alert(xhttp.responseText);
+		var result = JSON.parse( xhttp.responseText );
+	    showCustResult( result , text );
+    }
+  };
+  xhttp.open("POST", "<?php echo base_url('deal/customer_history/')?>" , true);
+  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhttp.send('text_search='+text);
+	  
+	}
+
 </script>
 <script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/deal.js"></script>

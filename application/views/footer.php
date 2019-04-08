@@ -130,6 +130,7 @@ $(document).ready(function(){
  		$(function () {
             $('[data-toggle="tooltip"]').tooltip();
         })
-    </script>  
+    </script>
+    <!-- <script type="text/javascript" src="<?php //echo base_url('files/');?>assets/mine/close_modal.js"></script> -->
 </body>
 </html>

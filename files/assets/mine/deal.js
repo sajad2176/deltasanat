@@ -139,6 +139,7 @@
 			closeAllLists();
 			if ( !val ) {
 				inp.nextElementSibling.style.display = 'none';
+				showDefault();
 				return false;
 			}
 			currentFocus = -1;
@@ -146,6 +147,7 @@
 			a.setAttribute( "id", this.id + "autocomplete-list" );
 			a.setAttribute( "class", "autocomplete-items" );
 			this.parentNode.appendChild( a );
+			matchHistory = 0;
 			for ( i = 0; i < arr.length; i++ ) {
 				let match;
 				let search = val;
@@ -162,14 +164,22 @@
 					b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";
 					b.addEventListener( "click", function ( e ) {
 						inp.value = this.getElementsByTagName( "input" )[ 0 ].value;
+						showHistory(inp.value);
 						closeAllLists();
 					} );
+					matchHistory++;
 					a.appendChild( b );
 				}
+			}
+			if(matchHistory == 1){
+				showHistory(val);
+			}else{
+				showDefault();
 			}
 			if(a.childElementCount == 0){
 				inp.nextElementSibling.style.display = 'block';
 				inp.nextElementSibling.innerHTML = 'بعد از اتمام معامله مشتری ' + val + ' به لیست مشتریان افزوده خواهد شد ';
+				showDefault();
 			}else{
 	            inp.nextElementSibling.style.display = 'none';
 			}
@@ -186,7 +196,7 @@
 			} else if ( e.keyCode == 13 ) {
 				e.preventDefault();
 				if ( currentFocus > -1 ) {
-					if ( x ) x[ currentFocus ].click();
+					if ( x ){ x[ currentFocus ].click();}
 				}
 			}
 		} );
@@ -217,4 +227,30 @@
 		document.addEventListener( "click", function ( e ) {
 			closeAllLists( e.target );
 		} );
+	}
+var	nameCustomer = document.getElementById('name_customer');
+var dollar = document.getElementById('dollar');
+var euro = document.getElementById('euro');
+var yuan = document.getElementById('yuan');
+var derham = document.getElementById('derham');
+var rial = document.getElementById('rial');	
+	function showDefault(){
+		nameCustomer.innerHTML = '';
+		dollar.innerHTML = '-';
+		euro.innerHTML = '-';
+		yuan.innerHTML = '-';
+		derham.innerHTML = '-';
+		rial.innerHTML = '-'
+	}
+	function showCustResult(res , txt){
+		if(res == false){
+			showDefault();
+		}else{
+			nameCustomer.innerHTML = txt;
+			dollar.innerHTML = numeral(res.dollar).format('0,0');
+			euro.innerHTML = numeral(res.euro).format('0,0');
+			yuan.innerHTML = numeral(res.yuan).format('0,0');
+			derham.innerHTML = numeral(res.derham).format('0,0');
+			rial.innerHTML = numeral(res.rial).format('0,0');
+		}
 	}

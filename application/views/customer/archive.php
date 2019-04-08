@@ -86,29 +86,26 @@
 	</div>
 </div>
 <script>
-	function search_cust( input ) {
-		var search_cust = document.getElementById( 'search_cust' );
-		var text = input.value;
+function search_cust( input ) {
+	var search_cust = document.getElementById( 'search_cust' );
+	var text = input.value;
 		if ( text == '' ) {
 			search_cust.style.display = 'none';
 			search_cust.nextElementSibling.style.display = 'contents';
 			return;
-		}
-		var xhr = new XMLHttpRequest();
-		xhr.onload = function () {
-			if ( ( xhr.status >= 200 && xhr.status < 300 ) || xhr.status == 304 ) {
-
-				var result = JSON.parse( xhr.responseText );
-				showCustResult( result, input, search_cust );
-			} else {
-				alert( 'request was unsuccessful : ' + xhr.status );
-			}
-		}
-		xhr.open( 'post', "<?php echo base_url('customer/search/')?>", true );
-		xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
-		xhr.send( 'text_search=' + text );
+		}else{
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+		var result = JSON.parse( xhttp.responseText );
+	    showCustResult( result, input, search_cust );
+    }
+  };
+  xhttp.open("POST", "<?php echo base_url('customer/search/')?>" , true);
+  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhttp.send('text_search='+text);
 	}
-
+}
 	function showCustResult( result, input, tbody ) {
 		tbody.style.display = 'contents';
 		tbody.nextElementSibling.style.display = 'none';

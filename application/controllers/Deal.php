@@ -17,7 +17,6 @@ class Deal extends CI_Controller {
     }   
     if(isset($_POST['sub'])){
         $data['m'] = $_POST['money_id']; $data['t'] = $_POST['deal_type'];
-        if($_POST['start_date'] != $_POST['end_date']){
         $persian_num = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
         $latin_num = range(0, 9);
         $slash = '/';
@@ -41,22 +40,6 @@ class Deal extends CI_Controller {
         }else{
             $where = array('deal.type_deal' => $_POST['deal_type'] , 'deal.money_id' => $_POST['money_id']);
             $total_rows = $this->base_model->get_count_between("deal" , array('type_deal' => $_POST['deal_type'] , 'money_id' => $_POST['money_id']) , $between);
-        }
-        }else{
-            $between = NULL;
-            if($_POST['deal_type'] == 0 and $_POST['money_id'] == 0){
-                $where = NULL;
-                $total_rows = $this->base_model->get_count("deal" ,'ALL');
-            }else if($_POST['deal_type'] == 0){
-               $where = array('deal.money_id' => $_POST['money_id']);
-               $total_rows = $this->base_model->get_count("deal" , array('money_id'=> $_POST['money_id']));
-            }else if($_POST['money_id'] == 0){
-                $where = array('deal.type_deal' => $_POST['deal_type']);
-                $total_rows = $this->base_model->get_count("deal" , array('type_deal'=> $_POST['deal_type']));
-            }else{
-                $where = array('deal.type_deal' => $_POST['deal_type'] , 'deal.money_id' => $_POST['money_id']);
-                $total_rows = $this->base_model->get_count("deal" , array('type_deal' => $_POST['deal_type'] , 'money_id' => $_POST['money_id']));
-            }
         }
     }else{
         $data['m'] = 0; $data['t'] = 0;
@@ -226,6 +209,8 @@ if($res == TRUE){
 				$this->session->set_flashdata($message);
 				redirect("deal/$page");
             }
+
+            //deal
             $customer['fullname'] = $this->input->post('customer');
             $check = $this->base_model->get_data('customer' , 'id' , 'row' , array('fullname'=>$customer['fullname']));
             if(sizeof($check) == 0){
@@ -258,6 +243,9 @@ if($res == TRUE){
            $deal['type_deal'] = $this->input->post('deal_type');
            $deal['customer_id'] = $id;
            $deal['money_id'] = $this->input->post('money_id');
+           // deal
+
+           //currency
            $amount_unit = $this->base_model->get_data('currency_unit' , 'amount_unit' , 'row' , array('id'=> $deal['money_id']));
            if($deal['type_deal'] == 1){
                $unit['amount_unit'] = $amount_unit->amount_unit + ($deal['count_money'] + $deal['wage']);
@@ -268,29 +256,51 @@ if($res == TRUE){
                $act = 10;
                $text = " کاهش یافت ";
            }
+           //currency
+
            $deal_id = $this->base_model->insert_data('deal' , $deal);
            if($deal_id == FALSE){
-               $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است. لطفا دوباره سعی کنید';
-               $message['msg'][1] = 'danger';
-               $this->session->set_flashdata($message);
-               redirect("deal/$page");
-           }
-           $this->base_model->update_data('currency_unit' , $unit , array('id' => $deal['money_id']));
-          if($_POST['number_shaba'][0] != ''){
-              $count = sizeof($_POST['number_shaba']);
+            $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است. لطفا دوباره سعی کنید';
+            $message['msg'][1] = 'danger';
+            $this->session->set_flashdata($message);
+            redirect("deal/$page");
+        }
+           //bank
+            $count = sizeof($_POST['number_shaba']);
             for($i = 0 ; $i < $count ; $i++){
-                $bank[] = array(
-                    'explain'=> htmlspecialchars($_POST['bank_explain'][$i]),
-                    'number_shaba'=>htmlspecialchars($_POST['number_shaba'][$i]),
-                    'name_bank'=> htmlspecialchars($_POST['name_bank'][$i]),
-                    'amount'=> htmlspecialchars($_POST['amount_bank'][$i]),
-                    'pay'=>0,
-                    'active'=> 1,
-                    'deal_id'=> $deal_id
-                );
+                if($_POST['bank_explain'][$i] != '' or $_POST['number_shaba'][$i] != '' or $_POST['name_bank'][$i] != '' or $_POST['amount_bank'][$i] != ''){
+                    $bank[] = array(
+                        'explain'=> htmlspecialchars($_POST['bank_explain'][$i]),
+                        'number_shaba'=>htmlspecialchars($_POST['number_shaba'][$i]),
+                        'name_bank'=> htmlspecialchars($_POST['name_bank'][$i]),
+                        'amount'=> htmlspecialchars($_POST['amount_bank'][$i]),
+                        'pay'=>0,
+                        'active'=> 1,
+                        'deal_id'=> $deal_id
+                    );
+                }
             }
-        $this->base_model->insert_batch('deal_bank' , $bank);
-          }
+            //bank
+
+        $this->base_model->update_data('currency_unit' , $unit , array('id' => $deal['money_id']));  
+
+        if(isset($bank) and sizeof($bank) != 0){
+            $this->base_model->insert_batch('deal_bank' , $bank);
+        }  
+
+        //log
+        if($deal['money_id'] == 1){$money = 'دلار';}else if($deal['money_id'] == 2){$money = 'یورو';}else if($deal['money_id'] == 3){$money = 'یوان';}else{$money = 'درهم';}
+        $aa = $deal_id + 100;
+        $log['user_id'] = $this->session->userdata('id');
+        $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
+        $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+        $log['activity_id'] = $act;
+        $am = $deal['count_money'] + $deal['wage'];
+        $log['explain'] = " نام مشتری :  ".$customer['fullname']." | شناسه معامله : ".$aa . " | ارز معامله : ". $money . " | تعداد ارز : ".number_format($deal['count_money']).$money ." | کارمزد : ".number_format($deal['wage']).$money . " | نرخ تبدیل : ".number_format($deal['convert_money'])." ریال "." حجم معامله :  ".number_format($deal['volume_deal'])." ریال "." | مقدار ارز  ".$money. " به اندازه ".number_format($am)." ".$text;
+        $this->base_model->insert_data('log' , $log);
+        //log
+
+        //photo
         $img = array();
         if($_FILES['deal_pic']['name'][0] != ''){
          $count = count($_FILES['deal_pic']['name']);
@@ -322,7 +332,7 @@ if($res == TRUE){
                      'date_upload'=> $deal['date_deal']."</br>".$deal['time_deal']
                  );
              }else{
-                 $message['msg'][0] = 'مشکلی در ارسال عکس ها پیش آمده لطفا دوباره سعی کنید';
+                 $message['msg'][0] = 'معامله با موفقیت ثبت شد . در ارسال عکس توجه داشته باشید که فرمت فایل باید معتبر باشد و نام عکس حاوی کلمه index نباشد . در بخش ویرایش معامله می توانید دوباره عکس های خود را اضافه کنید';
                  $message['msg'][1] = 'danger';
                  $this->session->set_flashdata($message);
                  redirect("deal/$page");
@@ -330,21 +340,14 @@ if($res == TRUE){
             }
         $this->base_model->insert_batch('deal_pic' , $img);
         }
-          if($deal['money_id'] == 1){$money = 'دلار';}else if($deal['money_id'] == 2){$money = 'یورو';}else if($deal['money_id'] == 3){$money = 'یوان';}else{$money = 'درهم';}
-          $aa = $deal_id + 100;
-          $log['user_id'] = $this->session->userdata('id');
-          $log['date_log'] = $deal['date_deal'];
-          $log['time_log'] = $deal['time_deal'];
-          $log['activity_id'] = $act;
-          $am = $deal['count_money'] + $deal['wage'];
-          $log['explain'] = " نام مشتری :  ".$customer['fullname']." | شناسه معامله : ".$aa . " | ارز معامله : ". $money . " | تعداد ارز : ".number_format($deal['count_money']).$money ." | کارمزد : ".number_format($deal['wage']).$money . " | نرخ تبدیل : ".number_format($deal['convert_money'])." ریال "." حجم معامله :  ".number_format($deal['volume_deal'])." ریال "." | مقدار ارز  ".$money. " به اندازه ".number_format($am)." ".$text;
-          $this->base_model->insert_data('log' , $log);
+         //photo
+
          $message['msg'][0] = 'اطلاعات معامله با موفقیت ثبت شد';
          $message['msg'][1] = 'success';
          $this->session->set_flashdata($message);
          redirect("deal/$page");
 
-        }else{
+}else{
     if(!$this->session->has_userdata('add_buy') or $this->session->userdata('add_buy') != TRUE){
          show_404();
      } 
@@ -359,6 +362,8 @@ if($res == TRUE){
             $this->load->view('footer');
         }  
     }
+
+
     public function sell(){
     if(!$this->session->has_userdata('add_sell') or $this->session->userdata('add_sell') != TRUE){
         show_404();
@@ -367,9 +372,83 @@ if($res == TRUE){
             $header['active'] = 'deal';
             $header['active_sub'] = 'deal_sell';
             $data['customer'] = $this->base_model->get_data('customer' ,'fullname' , 'result');
+            $date = $this->convertdate->convert(time());
+            $data['date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
             $this->load->view('header' , $header);
             $this->load->view('deal/sell', $data);
             $this->load->view('footer');
+    }
+
+
+    public function customer_history(){
+        $fullname = $this->input->post('text_search');
+        $cust_id = $this->base_model->get_data('customer' , 'id' , 'row' , array('fullname' => $fullname));
+        if(sizeof($cust_id) == 0){
+            echo json_encode(false);
+        }else{
+            $id = $cust_id->id;
+            $buy = $this->base_model->get_data('deal' , 'money_id , volume_rest , convert_money' , 'result' , array('type_deal'=> 1 , 'customer_id'=> $id));
+            $sell = $this->base_model->get_data('deal' , 'money_id , volume_rest , convert_money' , 'result' , array('type_deal'=> 2 , 'customer_id'=> $id));
+            if(sizeof($buy) == 0){
+                $buy_dollar = 0;
+                $buy_euro = 0;
+                $buy_yuan = 0;
+                $buy_derham = 0;
+                $give_rial = 0;
+            }else{
+                $b_dollar = 0; $b_euro = 0 ; $b_yuan = 0 ; $b_derham = 0; $g_rial = 0;
+                foreach($buy as $buys){
+                    if($buys->money_id == 1){
+                        $b_dollar += ($buys->volume_rest)/($buys->convert_money);
+                    }else if($buys->money_id == 2){
+                        $b_euro += ($buys->volume_rest)/($buys->convert_money);
+                    }else if($buys->money_id == 3){
+                        $b_yuan += ($buys->volume_rest)/($buys->convert_money);
+                    }else if($buys->money_id == 4){
+                        $b_derham += ($buys->volume_rest)/($buys->convert_money);
+                    }
+                    $g_rial += $buys->volume_rest;
+            }
+            $buy_dollar = $b_dollar;
+            $buy_euro = $b_euro;
+            $buy_yuan = $b_yuan;
+            $buy_derham = $b_derham;
+            $give_rial = $g_rial;;
+        }
+            if(sizeof($sell) == 0){
+                $sell_dollar = 0;
+                $sell_euro = 0;
+                $sell_yuan = 0;
+                $sell_derham = 0;
+                $want_rial = 0;
+            }else{
+                $s_dollar = 0; $s_euro = 0 ; $s_yuan = 0 ; $s_derham = 0; $w_rial = 0;
+                foreach($sell as $sells){
+                    if($sells->money_id == 1){
+                        $s_dollar += ($sells->volume_rest)/($sells->convert_money);
+                    }else if($sells->money_id == 2){
+                        $s_euro += ($sells->volume_rest)/($sells->convert_money);
+                    }else if($sells->money_id == 3){
+                        $s_yuan += ($sells->volume_rest)/($sells->convert_money);
+                    }else if($sells->money_id == 4){
+                        $s_derham += ($sells->volume_rest)/($sells->convert_money);
+                    }
+                    $w_rial += $sells->volume_rest;
+                }
+                $sell_dollar = $s_dollar;
+                $sell_euro = $s_euro;
+                $sell_yuan = $s_yuan;
+                $sell_derham = $s_derham;
+                $want_rial = $w_rial;
+            }
+            $data['dollar'] = $buy_dollar - $sell_dollar;
+            $data['euro'] = $buy_euro - $sell_euro;
+            $data['yuan'] = $buy_yuan - $sell_yuan;
+            $data['derham'] = $buy_derham - $sell_derham;
+            $data['rial'] = $give_rial - $want_rial;
+            // echo "<pre>";var_dump($data);echo "</pre>";
+            echo json_encode($data);
+        }
     }
       //----- buy and sell -----//
 
@@ -380,7 +459,7 @@ if($res == TRUE){
         }
         $id = $this->uri->segment(3);
         if(isset($id) and is_numeric($id)){
-            if(isset($_POST['sub'])){
+            if(isset($_POST['sub'])){  
               $customer['fullname'] = $this->input->post('customer');
               $cust_id = $this->input->post('cust_id');
               $check = $this->base_model->get_data('customer' , 'id' , 'row' , array('fullname' =>  $customer['fullname']));
@@ -391,6 +470,14 @@ if($res == TRUE){
                 redirect("deal/edit/$id");
               }
               $this->base_model->update_data('customer' , $customer , array('id'=> $cust_id));
+              $persian_num = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
+              $latin_num = range(0, 9);
+              $slash = '/';
+              $dash = '-';
+              $string = str_replace($persian_num, $latin_num, $_POST['date_deal']);
+              $string = str_replace($slash, $dash, $string); 
+              $date_deal = substr($string , 0 , 10);
+              $time_deal = substr($string , 10 , 20);
              $date = $this->convertdate->convert(time());
              $deal['count_money'] = $this->input->post('count_money');
              $deal['wage'] = $this->input->post('wage');
@@ -398,6 +485,8 @@ if($res == TRUE){
              $deal['volume_deal'] = ($deal['count_money'] + $deal['wage']) * $deal['convert_money'];
              $deal['explain'] = $this->input->post('explain');
              $deal['date_modified'] = $date['year']."-".$date['month_num']."-".$date['day']."</br>".$date['hour'].":".$date['minute'].":".$date['second'];
+             $deal['date_deal'] = $date_deal;
+             $deal['time_deal'] = $time_deal;
              $deal['volume_rest'] = $deal['volume_deal'] - $this->input->post('volume_pay');
              $deal['money_id'] = $this->input->post('money_id');
              $base = $this->base_model->get_data('deal' , 'count_money , wage , money_id , type_deal , volume_deal , convert_money' , 'row' , array('id' => $id));
@@ -405,10 +494,12 @@ if($res == TRUE){
               
              $base_count = $base->count_money + $base->wage;
              $send_count = $deal['count_money'] + $deal['wage'];
+
              $count_deal = " تعداد ارز معامله از : ".number_format($base->count_money)." به ".number_format($deal['count_money'])." تغییر یافت "."</br>";
              $wage_deal = "  کارمزد معامله از : ".number_format($base->wage)." به ".number_format($deal['wage'])." تغییر یافت "."</br>";
              $convert_deal = " نرخ تبدیل معامله از  ".number_format($base->convert_money)." به ".number_format($deal['convert_money'])." تغییر یافت "."</br>";
              $volume_deal = " حجم  معامله از  ".number_format($base->volume_deal)." به ".number_format($deal['volume_deal'])." تغییر یافت "."</br>";
+
              if($base->money_id != $deal['money_id']){
                 $new_unit = $this->base_model->get_data('currency_unit' , 'amount_unit , name' , 'row' , array('id'=> $deal['money_id']));
 
@@ -440,47 +531,7 @@ if($res == TRUE){
                  $this->session->set_flashdata($message);
                  redirect("deal/edit/$id");
              } 
-  
-             $img = array();
-  
-             if($_FILES['deal_pic']['name'][0] != ''){
-              $count = count($_FILES['deal_pic']['name']);
-              $files['name'] = $_FILES['deal_pic']['name'];
-              $files['type'] = $_FILES['deal_pic']['type'];
-              $files['tmp_name'] = $_FILES['deal_pic']['tmp_name'];
-              $files['error'] = $_FILES['deal_pic']['error'];
-              $files['size'] = $_FILES['deal_pic']['size'];
-  
-              for($j = 0 ; $j < $count ; $j++){
-              
-                  $_FILES['deal_pic']['name'] = $files['name'][$j];
-                  $_FILES['deal_pic']['type'] = $files['type'][$j];
-                  $_FILES['deal_pic']['tmp_name'] = $files['tmp_name'][$j];
-                  $_FILES['deal_pic']['error'] = $files['error'][$j];
-                  $_FILES['deal_pic']['size'] = $files['size'][$j];
-                  $config['upload_path'] = './uploads/deal';
-                  $config['allowed_types']        = 'gif|jpg|png|jpeg';
-                  $config['max_size']             = 1000000000;
-      
-                  $this->load->library('upload', $config);  
-                  $this->upload->initialize($config);
-      
-                  if($this->upload->do_upload('deal_pic')){
-                      $img[] = array(
-                          'deal_id'=> $id,
-                          'pic_name' => $files['name'][$j],
-                          'date_upload'=>$deal['date_modified']
-                      );
-                  }else{
-                      $message['msg'][0] = 'مشکلی در ارسال عکس ها پیش آمده لطفا دوباره سعی کنید';
-                      $message['msg'][1] = 'danger';
-                      $this->session->set_flashdata($message);
-                      redirect("deal/edit/$id");
-                  }
-                 }
-             $this->base_model->insert_batch('deal_pic' , $img);
-             }
-            if($_POST['number_shaba'][0] != ''){
+            if(isset($_POST['number_shaba'][0])){
               for($i = 0 ; $i < sizeof($_POST['number_shaba']) ; $i++){
                   $bank[] = array(
                       'id'=>htmlspecialchars($_POST['bank_id'][$i]),
@@ -490,15 +541,77 @@ if($res == TRUE){
                       'amount'=> htmlspecialchars($_POST['amount_bank'][$i])
                   );
               }
-              $this->base_model->update_batch('deal_bank' , $bank , 'id');
             }
+            if(isset($_POST['send_shaba'][0])){
+                for($i = 0 ; $i < sizeof($_POST['send_shaba']) ; $i++){
+                    if($_POST['send_shaba'][$i] != '' or $_POST['send_bank'][$i] != '' or $_POST['send_amount'][$i] != '' or $_POST['send_explain'][$i] != ''){
+                        $new_bank[] = array(
+                            'explain'=> htmlspecialchars($_POST['send_explain'][$i]),
+                            'number_shaba'=>htmlspecialchars($_POST['send_shaba'][$i]),
+                            'name_bank'=> htmlspecialchars($_POST['send_bank'][$i]),
+                            'amount'=> htmlspecialchars($_POST['send_amount'][$i]),
+                            'pay'=> 0,
+                            'deal_id' => $id ,
+                            'active' => 1
+                        );
+                    }
+                }
+              }
+              if(isset($new_bank) and sizeof($new_bank) != 0){
+                $this->base_model->insert_batch('deal_bank' , $new_bank);
+              }
+              if(isset($bank) and sizeof($bank) != 0){
+                $this->base_model->update_batch('deal_bank' , $bank , 'id');
+              }
             $log['user_id'] = $this->session->userdata('id');
             $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
             $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
             $log['activity_id'] = 11;
-             $aa = $id + 100;
+            $aa = $id + 100;
             $log['explain'] = " شناسه معامله : ".$aa." | نام مشتری :  ".$customer['fullname'] ."</br>". $change_unit . $count_deal . $wage_deal  . $convert_deal . $volume_deal;
             $this->base_model->insert_data('log' , $log);
+
+            $img = array();
+  
+            if($_FILES['deal_pic']['name'][0] != ''){
+             $count = count($_FILES['deal_pic']['name']);
+             $files['name'] = $_FILES['deal_pic']['name'];
+             $files['type'] = $_FILES['deal_pic']['type'];
+             $files['tmp_name'] = $_FILES['deal_pic']['tmp_name'];
+             $files['error'] = $_FILES['deal_pic']['error'];
+             $files['size'] = $_FILES['deal_pic']['size'];
+ 
+             for($j = 0 ; $j < $count ; $j++){
+             
+                 $_FILES['deal_pic']['name'] = $files['name'][$j];
+                 $_FILES['deal_pic']['type'] = $files['type'][$j];
+                 $_FILES['deal_pic']['tmp_name'] = $files['tmp_name'][$j];
+                 $_FILES['deal_pic']['error'] = $files['error'][$j];
+                 $_FILES['deal_pic']['size'] = $files['size'][$j];
+                 $config['upload_path'] = './uploads/deal';
+                 $config['allowed_types']        = 'gif|jpg|png|jpeg';
+                 $config['max_size']             = 1000000000;
+     
+                 $this->load->library('upload', $config);  
+                 $this->upload->initialize($config);
+     
+                 if($this->upload->do_upload('deal_pic')){
+                     $img[] = array(
+                         'deal_id'=> $id,
+                         'pic_name' => $files['name'][$j],
+                         'date_upload'=>$deal['date_modified']
+                     );
+                 }else{
+                     $message['msg'][0] = 'معامله با موفقیت ویرایش شد . در ارسال عکس توجه داشته باشید که عکس باید یکی از فرمت های gif|jpg|png|jpeg باشد و حاوی کلمه index نباشد ';
+                     $message['msg'][1] = 'danger';
+                     $this->session->set_flashdata($message);
+                     redirect("deal/edit/$id");
+                 }
+                }
+            $this->base_model->insert_batch('deal_pic' , $img);
+            }
+
+
            $message['msg'][0] = 'اطلاعات معامله با موفقیت ثبت شد';
            $message['msg'][1] = 'success';
            $this->session->set_flashdata($message);
@@ -509,6 +622,11 @@ if($res == TRUE){
                 if(sizeof($data['deal']) == 0){
                     show_404();
                 }else{
+                    $slash = '/';
+                    $dash = '-';
+                    $str = $data['deal']->date_deal;
+                    $data['date_deal'] = str_replace($dash, $slash , $str);
+                    $date = $this->convertdate->convert(time());
                     $data['bank'] = $this->base_model->get_data('deal_bank' , '*' , 'result' , array('deal_id'=> $id));
                     $header['title'] = ' ویرایش معامله ';
                     $header['active'] = 'deal';

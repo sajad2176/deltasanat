@@ -291,7 +291,6 @@ redirect("admin/edit/$id");
       $id = $this->uri->segment(3);
       if(isset($id) and is_numeric($id)){
         if(isset($_POST['sub'])){
-            if($_POST['start_date'] != $_POST['end_date']){
             $persian_num = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
             $latin_num = range(0, 9);
             $slash = '/';
@@ -310,18 +309,8 @@ redirect("admin/edit/$id");
                $where = array('log.user_id'=> $id , 'log.activity_id' => $_POST['select_act']);
                $total_rows = $this->base_model->get_count_between("log" , array('user_id'=> $id , 'log.activity_id'=> $_POST['select_act']) , $between);
             }
-            }else{
-                if($_POST['select_act'] == 'all'){
-                    $where = array('log.user_id' => $id);
-                    $total_rows = $this->base_model->get_count("log" , array('user_id'=> $id));
-                    $between = NULL;
-                }else{
-                   $where = array('log.user_id'=> $id , 'log.activity_id' => $_POST['select_act']);
-                   $total_rows = $this->base_model->get_count("log" , array('log.user_id'=> $id , 'log.activity_id'=> $_POST['select_act']));
-                   $between = NULL;
-                }
-            }
-        }else{
+        }
+        else{
             $between = NULL;
             $where = array('log.user_id' => $id);
             $total_rows = $this->base_model->get_count("log" , array('user_id'=> $id));

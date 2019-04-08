@@ -39,7 +39,7 @@ $msg = $this->session->userdata('msg');?>
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>نام ارز : </label>
-											<select class="form-control" name="money_id" id="money_id" required>
+											<select class="form-control" name="money_id" required>
 												<option value="1"<?php if($money == 1){echo 'selected';} ?>>دلار</option>
 												<option value="2"<?php if($money == 2){echo 'selected';} ?>>یورو</option>
 												<option value="3"<?php if($money == 3){echo 'selected';} ?>>یوان</option>
@@ -92,8 +92,48 @@ $msg = $this->session->userdata('msg');?>
 						<div class="">
 							<fieldset>
 								<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانکی</legend>
-								<div>
-                                  <?php foreach($bank as $key => $rows){
+								<div class="field_edit">
+                                  <?php if(sizeof($bank) == 0){ ?>
+									<div>
+										<div class="row">
+											<div class="col-md-6">
+												<div class="form-group">
+													<label>شماره شبا : </label>
+													<input onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="send_shaba[]" class="form-control">
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<label>بانک :</label>
+													<span class="text-primary" style="font-size:12px; display:none;">(طبق شماره شبا وارد شده بانکی پیدا نشد. نام بانک را وارد کنید)</span>
+													<input type="text" name="send_bank[]" placeholder="ملت،ملی،.." class="form-control">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>مبلغ واریزی : </label>
+												<input type="hidden" value="0">
+												<input type="text" onKeyUp="amount_bank(this)" placeholder="100,000" class="form-control">
+												<input type="hidden" name="send_amount[]">
+												<p class="text-danger" style ="display: none;">مبلغ وارد شده بیشتر از حجم معامله است</p>
+											</div>
+										</div>
+
+										<div class="col-md-6">
+											<div class="form-group input-group">
+												<label>توضیحات حساب :</label>
+												<input type="text" name="send_explain[]" placeholder="توضیحات خود را وارد کنید" class="form-control">
+												<span class="input-group-btn "><button type="button" style="top: 13px;" class="btn btn btn-success icon-plus3 add_edit"></button></span>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								  <?php }else{
+								  foreach($bank as $key => $rows){
                                       ?>
 									<div>
 										<div class="row">
@@ -101,7 +141,7 @@ $msg = $this->session->userdata('msg');?>
 											
 												<div class="form-group">
 													<label>شماره شبا : </label>
-													<input onkeyup="show_bank(this)" value="<?php echo $rows->number_shaba;?>" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="number_shaba[]" class="form-control" required>
+													<input onkeyup="show_bank(this)" value="<?php echo $rows->number_shaba;?>" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="number_shaba[]" class="form-control">
 												</div>
 											</div>
 
@@ -111,7 +151,7 @@ $msg = $this->session->userdata('msg');?>
 												<div class="form-group">
 													<label>بانک :</label>
 													<span class="text-primary" style="font-size:12px; display:none;">(طبق شماره شبا وارد شده بانکی پیدا نشد. نام بانک را وارد کنید)</span>
-													<input type="text" name="name_bank[]" value="<?php echo $rows->name_bank; ?>" placeholder="ملت،ملی،.." class="form-control" readonly required>
+													<input type="text" name="name_bank[]" value="<?php echo $rows->name_bank; ?>" placeholder="ملت،ملی،.." class="form-control">
 												</div>
 											</div>
 										</div>
@@ -121,7 +161,7 @@ $msg = $this->session->userdata('msg');?>
 											<div class="form-group">
 												<label>مبلغ واریزی : </label>
 												<input type="hidden" value="<?php echo $rows->pay;?>">
-												<input type="text" onKeyUp="amount_bank(this)" value = "<?php echo number_format($rows->amount); ?>" placeholder="100,000" class="form-control" required>
+												<input type="text" onKeyUp="amount_bank(this)" value = "<?php echo number_format($rows->amount); ?>" placeholder="100,000" class="form-control">
 												<input type="hidden" name="amount_bank[]" value="<?php echo $rows->amount;?>">
 												<p class="text-danger" style ="display: none;"></p>
 											</div>
@@ -136,11 +176,21 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 
 									</div>
-                                  <?php }?>
+                                  <?php } } ?>
 								</div>
+								<div class="row">
+								<div class="col-md-6">
 								<div class="form-group">
-									<label> ارسال عکس (برای انتخاب چند عکس لطفا دکمه ctrl را نگه دارید) </label>
+									<label for="j_created_date"> تاریخ ثبت :</label>
+									<input type="text" class="form-control" name="date_deal" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date_deal." ".$deal->time_deal;?>" placeholder="Jalali Created Date">
+								</div>
+								</div>
+								<div class="col-md-6">
+								<div class="form-group">
+									<label>ارسال عکس (برای انتخاب چند عکس لطفا دکمه ctrl را نگه دارید)</label>
 									<input type="file" class="file-styled" name="deal_pic[]" multiple="multiple">
+								</div>
+								</div>
 								</div>
 								<div class="form-group">
 									<label>توضیحات معامله :</label>
@@ -162,23 +212,6 @@ $msg = $this->session->userdata('msg');?>
 			</div>
 
 		</form>
-	</div>
-	<div class="col-md-4">
-		<div class="panel panel-flat">
-			<div class="panel-heading">
-				<h6 class="panel-title">Balance changes</h6>
-				<div class="heading-elements">
-					<span class="heading-text"><i class="icon-arrow-down22 text-danger"></i> <span class="text-semibold">- 29.4%</span></span>
-				</div>
-			</div>
-
-			<div class="panel-body">
-				<div class="chart-container">
-					<div class="chart" id="visits" style="height: 300px;"></div>
-				</div>
-			</div>
-		</div>
-
 	</div>
 </div>
 <script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/edit_deal.js"></script>
