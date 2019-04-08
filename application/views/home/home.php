@@ -1,8 +1,8 @@
 <!-- Dashboard content -->
 <div  class="row">
-	<div class="col-lg-8">
+	<div class="col-md-8">
 		<div class="row">
-			<div class="col-lg-4">
+			<div class="col-md-4">
 				<!-- Members online -->
 				<div class="panel bg-teal-400">
 					<div class="panel-body">
@@ -19,7 +19,7 @@
 				</div>
 				<!-- /members online -->
 			</div>
-			<div class="col-lg-4">
+			<div class="col-md-4">
 				<!-- Current server load -->
 				<div class="panel bg-pink-400">
 					<div class="panel-body">
@@ -35,7 +35,7 @@
 
 			</div>
 
-			<div class="col-lg-4">
+			<div class="col-md-4">
 				<!-- Today's revenue -->
 				<div class="panel bg-blue-400">
 					<div class="panel-body">
@@ -64,7 +64,7 @@
 		</div>
 	</div>
 
-	<div class="col-lg-4">
+	<div class="col-md-4">
 		<!-- Daily sales -->
 		<div class="panel panel-flat">
 			<div class="panel-body">
@@ -186,7 +186,7 @@
 					$array = array('bg-blue-1' , 'bg-blue-2' , 'bg-blue-3' , 'bg-blue-4');
 					$set_id = array('dollar' , 'euro' , 'yuan' , 'derham');
 					foreach($remain as $i => $remains){ ?>
-					<div class="col-md-6">
+					<div class="col-lg-6">
 						<div class="panel <?php echo $array[$i]; ?>">
 
 							<div class="panel-body">
