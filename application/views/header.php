@@ -155,7 +155,16 @@
 									</ul>
 								</li>
 							  <?php } ?>
-
+<!--
+										<li>
+									<a href="#"><i class="icon-transmission <?php if($active == 'settings'){echo 'active';} ?>"></i> <span>تنظیمات</span></a>
+									<ul>
+										<li class="<?php if($active_sub == 'set_unit'){echo 'active';} ?>"><a href="<?php echo base_url('settings/set_unit')?>">تبدیل ارز</a></li>
+										<li class="<?php if($active_sub == 'first_unit'){echo 'active';} ?>"><a href="<?php echo base_url('settings/first_unit')?>">ارز اولیه</a></li>
+										
+									</ul>
+								</li>
+-->
 
 								<!-- /main -->
 

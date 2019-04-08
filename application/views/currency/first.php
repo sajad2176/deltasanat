@@ -12,28 +12,34 @@
 	<div class="panel-body">
 		<form action="#">
 			<div class="row">
-				<legend class="text-semibold"><i class="icon-coin-dollar position-left"></i> نرخ تبدیل دلار به:</legend>
 				<div class="col-md-6">
 					<fieldset>
-						
-						<div class="col-md-4">
+						<legend class="text-semibold"><i class="icon-coin-dollar position-left"></i> ارز اولیه:</legend>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>دلار: </label>
+								<input type="text" class="form-control" placeholder="3.4">
+							</div>
+						</div>
+						<div class="col-md-3">
 							<div class="form-group">
 								<label>یورو: </label>
 								<input type="text" class="form-control" placeholder="1.2">
 							</div>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-3">
 							<div class="form-group">
 								<label>یوان: </label>
 								<input type="text" class="form-control" placeholder="0.5">
 							</div>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-3">
 							<div class="form-group">
 								<label>درهم: </label>
 								<input type="text" class="form-control" placeholder="3.4">
 							</div>
 						</div>
+					
 					</fieldset>
 				</div>
 			</div>
@@ -47,7 +53,10 @@
 <!--table arz-->
 	<div class="panel panel-flat">
 	<div class="panel-body">
-<legend class="text-semibold"><i class="icon-coin-dollar position-left"></i> نرخ تبدیل دلار به:</legend>
+	<div class="panel-heading">
+		<h5 class="panel-title">آرشیو تغیرات</h5>
+
+	</div>
 		<table class="table datatable-selection-single table-hover table-responsive-lg ">
 			<thead>
 				<tr>
