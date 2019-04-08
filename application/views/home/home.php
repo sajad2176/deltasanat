@@ -96,9 +96,8 @@
 		<!-- Marketing campaigns -->
 		<div class="panel panel-flat">
 			<div class="panel-body">
-			<div  class="panel-heading">
-					<h4 class="panel-title">موجودی</h4>
-					
+				<div class="panel-heading">
+					<h4 class="panel-title">میانگین دلاری</h4>
 				</div>
 							<div class="col-md-6">
 				<!-- Today's revenue -->
