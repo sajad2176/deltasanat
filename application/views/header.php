@@ -155,7 +155,6 @@
 									</ul>
 								</li>
 							  <?php } ?>
-<!--
 										<li>
 									<a href="#"><i class="icon-transmission <?php if($active == 'settings'){echo 'active';} ?>"></i> <span>تنظیمات</span></a>
 									<ul>
@@ -164,7 +163,6 @@
 										
 									</ul>
 								</li>
--->
 
 								<!-- /main -->
 

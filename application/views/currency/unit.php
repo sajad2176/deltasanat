@@ -12,10 +12,11 @@
 	<div class="panel-body">
 		<form action="#">
 			<div class="row">
-				<legend class="text-semibold"><i class="icon-coin-dollar position-left"></i> نرخ تبدیل دلار به:</legend>
+				<div class="col-md-12">
+					<legend class="text-semibold"><i class="icon-coin-dollar position-left"></i> نرخ تبدیل دلار به:</legend>
+				</div>
 				<div class="col-md-6">
 					<fieldset>
-						
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>یورو: </label>
@@ -45,9 +46,9 @@
 </div>
 <!-- /form arz -->
 <!--table arz-->
-	<div class="panel panel-flat">
+<div class="panel panel-flat">
 	<div class="panel-body">
-<legend class="text-semibold"><i class="icon-coin-dollar position-left"></i> نرخ تبدیل دلار به:</legend>
+		<legend class="text-semibold"><i class=" icon-stats-dots position-left"></i> آرشیو تغیرات</legend>
 		<table class="table datatable-selection-single table-hover table-responsive-lg ">
 			<thead>
 				<tr>

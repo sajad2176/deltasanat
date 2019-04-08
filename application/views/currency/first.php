@@ -12,9 +12,11 @@
 	<div class="panel-body">
 		<form action="#">
 			<div class="row">
+				<div class="col-md-12">
+					<legend class="text-semibold"><i class="icon-coin-dollar position-left"></i> ارز اولیه:</legend>
+				</div>
 				<div class="col-md-6">
 					<fieldset>
-						<legend class="text-semibold"><i class="icon-coin-dollar position-left"></i> ارز اولیه:</legend>
 						<div class="col-md-3">
 							<div class="form-group">
 								<label>دلار: </label>
@@ -39,7 +41,7 @@
 								<input type="text" class="form-control" placeholder="3.4">
 							</div>
 						</div>
-					
+
 					</fieldset>
 				</div>
 			</div>
@@ -51,12 +53,9 @@
 </div>
 <!-- /form arz -->
 <!--table arz-->
-	<div class="panel panel-flat">
+<div class="panel panel-flat">
 	<div class="panel-body">
-	<div class="panel-heading">
-		<h5 class="panel-title">آرشیو تغیرات</h5>
-
-	</div>
+		<legend class="text-semibold"><i class=" icon-stats-dots position-left"></i> آرشیو تغیرات</legend>
 		<table class="table datatable-selection-single table-hover table-responsive-lg ">
 			<thead>
 				<tr>
