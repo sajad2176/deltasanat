@@ -21,14 +21,16 @@
 <?php if(isset($select) and sizeof($select) != 0){ 
   $str = '';
 foreach($select as $selects){
-$str .= "<option value = \" $selects->id \">". $selects->number_shaba ." | ". $selects->name_bank ."</option>";
+  $a = $selects->id + 1000;
+$str .= "<option value = \" $selects->id \">". "شناسه بانک : ".$a ."</option>";
 }
 }
 if(isset($select2) and sizeof($select2) != 0){ 
   $str2 = '';
 foreach($select2 as $selects){
-  $id = $selects->deal_id + 100;
-$str2 .= "<option value = \" $selects->id \">". $selects->number_shaba ." | ". $selects->name_bank." | شناسه معامله : " . $id ."</option>";
+  $a = $selects->deal_id + 100;
+  $aa = $selects->id + 1000;
+$str2 .= "<option value = \" $selects->id \">". "شناسه بانک : ". $aa ." | شناسه معامله : " . $a ."</option>";
 $id = 0;
 }
 }

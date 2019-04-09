@@ -126,7 +126,7 @@ $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$dat
          if(sizeof($deal_bank) != 0){
             for($j = 0 ; $j < sizeof($deal_bank) ; $j++){
                 $c = $j + 1;
-                $explain .= " اطلاعات حساب شماره  ".$c." - نام بانک : ".$deal_bank[$j]->name_bank." | شماره شبا : ".$deal_bank[$j]->number_shaba." | مبلغ تعیین شده : ".number_format($deal_bank[$j]->amount)."</br>";
+                $explain .= " اطلاعات حساب شماره  ".$c." - نام بانک : ".$deal_bank[$j]->name_bank." | شماره شبا : ".$deal_bank[$j]->number_shaba." | مبلغ تعیین شده : ".number_format($deal_bank[$j]->amount)." | توضحیات : ".$deal_bank[$j]->explain."</br>";
             }
             $this->base_model->delete_data('deal_bank' , array('deal_id' => $id));
          }
@@ -266,6 +266,7 @@ if($res == TRUE){
             redirect("deal/$page");
         }
            //bank
+           if($data['type_deal'] == 1){
             $count = sizeof($_POST['number_shaba']);
             for($i = 0 ; $i < $count ; $i++){
                 if($_POST['bank_explain'][$i] != '' or $_POST['number_shaba'][$i] != '' or $_POST['name_bank'][$i] != '' or $_POST['amount_bank'][$i] != ''){
@@ -280,6 +281,7 @@ if($res == TRUE){
                     );
                 }
             }
+           }
             //bank
 
         $this->base_model->update_data('currency_unit' , $unit , array('id' => $deal['money_id']));  
@@ -708,7 +710,8 @@ if($res == TRUE){
                 }
                 $k = $i + 1;
                 $s = $id +100;
-                $str .= $k." - نام هماهنگ کننده : ".$_POST['customer'][$i]." | مبلغ هماهنگی : ".number_format($_POST['volume_handle'][$i])." | شناسه معامله : ".$s."</br>"; 
+                $b = $_POST['bank_id'][$i] + 1000;
+                $str .= $k." - نام هماهنگ کننده : ".$_POST['customer'][$i]." | مبلغ هماهنگی : ".number_format($_POST['volume_handle'][$i])." | شناسه معامله : ".$s."| شناسه بانک : ". $b ."</br>"; 
                 }
                 $res = $this->base_model->insert_batch('deal_handle' , $handle);
                 $log['user_id'] = $this->session->userdata('id');
@@ -735,14 +738,40 @@ if($res == TRUE){
                 $header['title'] = 'هماهنگی ها';
                 $header['active'] = 'deal';
                 $header['active_sub'] = 'deal_archive';
-                $data['customer'] = $this->base_model->get_data('customer' ,'fullname' , 'result');
                 $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname ,customer.id as cust_id, currency_unit.name , sum(deal_handle.volume_handle) as vh , sum(deal_handle.handle_rest) as vr' , 'deal.customer_id = customer.id' ,'row'  , array('deal.id'=>$id) , NULL , NULL , NULL , array('currency_unit','deal.money_id = currency_unit.id') , array('deal_handle','deal_handle.deal_id = deal.id'));
-                if(sizeof($data['deal']) == 0){
+                if(sizeof($data['deal']) == 0 or $data['deal']->type_deal != 1){
                 show_404();
                 }else{
+                    $data['customer'] = $this->base_model->get_data('customer' , 'fullname , id' , 'result');
+                    $want = $this->base_model->get_data('deal','customer_id , sum(deal.volume_rest) as want' , 'result' , array('deal.type_deal'=> 1), NULL , NULL , NULL , 'customer_id');
+                    $give = $this->base_model->get_data('deal','customer_id , sum(deal.volume_rest) as give' , 'result' , array('deal.type_deal'=> 2), NULL , NULL , NULL , 'customer_id');
+                    $want_rial = array();
+                    $give_rial = array();
+                    foreach($data['customer'] as $key => $customers){
+                        foreach($want as $wants ){
+                            if($customers->id  == $wants->customer_id){
+                                $want_rial[$key] = $wants->want;
+                                break;
+                            }else{
+                                $want_rial[$key] = 0;
+                            }
+                        }
+                    }
+                    foreach($data['customer'] as $key => $customers){
+                        foreach($give as $sells ){
+                            if($customers->id  == $sells->customer_id){
+                                $give_rial[$key] = $sells->give;
+                                break;
+                            }else{
+                                $give_rial[$key] = 0;
+                            }
+                        }
+                    }
+                    $data['want_rial'] = $want_rial;
+                    $data['give_rial'] = $give_rial;
                     $data['bank'] = $this->base_model->get_data('deal_bank' , '*' , 'result' , array('deal_id' => $id) , NULL , NULL , array('id' , 'DESC'));
-                    $data['select'] = $this->base_model->get_data('deal_bank' , 'id , number_shaba , name_bank' , 'result' , array('deal_id' => $id , 'active' => 1) , NULL , NULL , array('id' , 'DESC'));
-                    $data['handle'] = $this->base_model->get_data_join('deal_handle','customer' , 'deal_handle.* , customer.fullname , deal_bank.number_shaba , deal_bank.name_bank','deal_handle.customer_id = customer.id', 'result' , array('deal_handle.deal_id' => $id) , NULL , NULL , array('deal_handle.id' , 'DESC') , array('deal_bank' , 'deal_handle.bank_id = deal_bank.id'));
+                    $data['select'] = $this->base_model->get_data('deal_bank' , 'id' , 'result' , array('deal_id' => $id , 'active' => 1) , NULL , NULL , array('id' , 'DESC'));
+                    $data['handle'] = $this->base_model->get_data_join('deal_handle','customer' , 'deal_handle.* , customer.fullname','deal_handle.customer_id = customer.id', 'result' , array('deal_handle.deal_id' => $id) , NULL , NULL , array('deal_handle.id' , 'DESC'));
                     $this->load->view('header' , $header);
                     $this->load->view('deal/handle' , $data);
                     $this->load->view('footer');
@@ -779,16 +808,23 @@ if($res == TRUE){
                 $log['activity_id'] = 17;
                 $log['explain'] = ' حساب جدید مربوط به شناسه معامله '.$a." با مشخصات :  "."</br> شماره شبا : ".$data['number_shaba']." </br> نام بانک : ".$data['name_bank']." </br> مقدار تعیین شده :  ".number_format($data['amount'])." </br> توضحیات :".$data['explain']."</br> افزوده شد ";
                 $this->base_model->insert_data('log' , $log);
+                if($this->uri->segment(5) == 'group'){
+                    $red = 'handle_profile';
+                    $red_id = $this->uri->segment(4);
+                }else{
+                    $red = 'handle';
+                    $red_id = $id;
+                }
                 if($res == FALSE){
                     $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید';
                     $message['msg'][1] = 'danger';
                     $this->session->set_flashdata($message);
-                    redirect("deal/handle/$id");
+                    redirect("deal/$red/$red_id");
                 }else{
                   $message['msg'][0] = 'اطلاعات حساب بانکی با موفقیت ثبت شد';
                   $message['msg'][1] = 'success';
                   $this->session->set_flashdata($message);
-                  redirect("deal/handle/$id");
+                  redirect("deal/$red/$red_id");
                 }
             }else{
                 show_404();
@@ -804,7 +840,7 @@ public function show_bank(){
     if(!$this->session->has_userdata('edit_bank') or $this->session->userdata('edit_bank') != TRUE){
         show_404();
     }
- if(isset($_POST['bank_id'])){
+ if(isset($_POST['bank_id'])){ 
 $id = $this->input->post('bank_id');
 $bank = $this->base_model->get_data('deal_bank' , '*' , 'row' , array('id'=> $id));
 echo json_encode($bank);
@@ -1133,7 +1169,7 @@ public function restore(){
         if(isset($_POST['deal_id']) and isset($_POST['customer_id']) and is_numeric($_POST['deal_id']) and is_numeric($_POST['customer_id'])){
             $deal_id = $this->input->post('deal_id');
             $customer_id = $this->input->post('customer_id');
-            $data = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname ,currency_unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('deal.customer_id'=> $customer_id , 'deal.id'=>$deal_id), NULL , NULL , NULL , array('currency_unit','deal.money_id = currency_unit.id'));
+            $data = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname ,currency_unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('deal.customer_id'=> $customer_id , 'deal.id'=>$deal_id , 'deal.type_deal'=> 1), NULL , NULL , NULL , array('currency_unit','deal.money_id = currency_unit.id'));
             echo json_encode($data);
         }else{
             show_404();
@@ -1158,9 +1194,9 @@ public function restore(){
                         redirect("deal/handle_profile/$id");
                      }else{
                         $a = $_POST['deal_id'][$i] - 100;
-                        $check_deal = $this->base_model->get_data('deal' , 'id' , 'row' , array('id' => $a , 'customer_id'=>$id));
+                        $check_deal = $this->base_model->get_data('deal' , 'id' , 'row' , array('id' => $a , 'customer_id'=>$id , 'type_deal'=> 1));
                         if(sizeof($check_deal) == 0){
-                            $message['msg'][0] = 'لطفا در انتخاب معامله دقت فرمایید که شناسه معامله باید مربوط به معاملات آن شخص باشد';
+                            $message['msg'][0] = 'لطفا در انتخاب معامله دقت فرمایید که شناسه معامله باید مربوط به معاملات آن شخص و از نوع خرید باشد';
                             $message['msg'][1] = 'danger';
                             $this->session->set_flashdata($message);
                             redirect("deal/handle_profile/$id");
@@ -1251,9 +1287,35 @@ public function restore(){
                 show_404();
             }else{
             $data['bank'] = $this->base_model->get_data_join('deal' , 'deal_bank'  ,'deal.id as deal_id , deal_bank.*','deal.id = deal_bank.deal_id' ,'result' ,array('deal.customer_id' => $id) , NULL , NULL , array('deal_bank.id', 'DESC'));
-            $data['select2'] = $this->base_model->get_data_join('deal' , 'deal_bank' ,'deal_bank.id , deal_bank.number_shaba , deal_bank.name_bank , deal.id as deal_id','deal.id = deal_bank.deal_id' , 'result' , array('deal.customer_id' => $id , 'active' => 1) , NULL , NULL , array('deal_bank.id' , 'DESC'));  
-            $data['customer'] = $this->base_model->get_data('customer' ,'fullname' , 'result');           
+            $data['select2'] = $this->base_model->get_data_join('deal' , 'deal_bank' ,'deal_bank.id , deal.id as deal_id','deal.id = deal_bank.deal_id' , 'result' , array('deal.customer_id' => $id , 'active' => 1) , NULL , NULL , array('deal_bank.id' , 'DESC'));          
             $data['handle'] = $this->base_model->get_data_join('deal_handle' , 'deal' , 'deal_handle.* , customer.fullname , deal_bank.name_bank , deal_bank.number_shaba' , 'deal_handle.deal_id = deal.id' , 'result' , array('deal.customer_id'=>$id) , NULL , NULL , array('deal_handle.id' , 'DESC'),array('customer' , 'deal_handle.customer_id = customer.id') , array('deal_bank' , 'deal_handle.bank_id = deal_bank.id'));  
+            $data['customer'] = $this->base_model->get_data('customer' , 'fullname , id' , 'result');
+            $want = $this->base_model->get_data('deal','customer_id , sum(deal.volume_rest) as want' , 'result' , array('deal.type_deal'=> 1), NULL , NULL , NULL , 'customer_id');
+            $give = $this->base_model->get_data('deal','customer_id , sum(deal.volume_rest) as give' , 'result' , array('deal.type_deal'=> 2), NULL , NULL , NULL , 'customer_id');
+            $want_rial = array();
+            $give_rial = array();
+            foreach($data['customer'] as $key => $customers){
+                foreach($want as $wants ){
+                    if($customers->id  == $wants->customer_id){
+                        $want_rial[$key] = $wants->want;
+                        break;
+                    }else{
+                        $want_rial[$key] = 0;
+                    }
+                }
+            }
+            foreach($data['customer'] as $key => $customers){
+                foreach($give as $sells ){
+                    if($customers->id  == $sells->customer_id){
+                        $give_rial[$key] = $sells->give;
+                        break;
+                    }else{
+                        $give_rial[$key] = 0;
+                    }
+                }
+            }
+            $data['want_rial'] = $want_rial;
+            $data['give_rial'] = $give_rial;
             $this->load->view('header' , $header);
                 $this->load->view('deal/handle_profile' , $data);
                 $this->load->view('footer');

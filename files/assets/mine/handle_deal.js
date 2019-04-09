@@ -63,13 +63,9 @@ function show_bank( input ) {
         } else if ( bank == '069' ) {
             name_bank.value = 'بانک ایران زمین';
         } else {
-            name_bank.removeAttribute("readonly"); 
             name_bank.previousElementSibling.style.display = 'inline';
             name_bank.value = '';
         }
-    } else {
-        name_bank.removeAttribute("readonly"); 
-        name_bank.value = '';
     }
 
 }
@@ -86,13 +82,10 @@ input.nextElementSibling.nextElementSibling.innerHTML = ' مبلغ وارد شد
 }else{
 input.nextElementSibling.nextElementSibling.style.display = 'none';
 }
-if(event.keyCode == 8){
-    return;
-}
-input.value = numeral( input.value ).format( '0,0' ) + " ریـال ";
+input.value = numeral( input.value ).format( '0,0' );
 }
 //search customer
-function autocomplete( inp, arr ) {
+function autocomplete( inp, arr, want , give) {
     var currentFocus;
     inp.addEventListener( "input", function ( e ) {
         var a, b, i, val = this.value;
@@ -116,7 +109,7 @@ function autocomplete( inp, arr ) {
                 match = arr[ i ].slice( arr[ i ].indexOf( search ), -lastIndx );
             }
             if ( match.length == search.length ) {
-                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length );
+                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + " | طلب کار :  " + numeral(want[i]).format('0,0') + ' |  بده کار  :  ' + numeral(give[i]).format('0,0');
 
                 b = document.createElement( "DIV" );
                 b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";
@@ -183,20 +176,14 @@ function volume_handle( input ) {
     input.nextElementSibling.value = numeral( input.value ).value();
     if(numeral(input.value).value() > numeral(volume.innerHTML).value()){
         input.nextElementSibling.nextElementSibling.style.display = 'block';
-        input.nextElementSibling.nextElementSibling.innerHTML = 'مبلغ وارد شده بیشتر از حجم هماهنگی می باشد';
+        input.nextElementSibling.nextElementSibling.innerHTML = 'مبلغ وارد شده بیشتر از حجم معامله می باشد';
     }else{
         input.nextElementSibling.nextElementSibling.style.display = 'none';
     }
-    if(event.keyCode == 8){
-        return;
-    }
-    input.value = numeral( input.value ).format( '0,0' ) + ' ریال ';
+    input.value = numeral( input.value ).format( '0,0' );
 }
 //
 function slice_input( input ) {
     input.nextElementSibling.value = numeral( input.value ).value();
-    if(event.keyCode == 8){
-        return;
-    }
-    input.value = numeral( input.value ).format( '0,0' ) + ' ریال ';
+    input.value = numeral( input.value ).format( '0,0' );
 }

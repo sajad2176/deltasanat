@@ -62,7 +62,7 @@ $msg = $this->session->userdata('msg');?>
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>کارمزد :</label>
-											<input type="text" id="wage" placeholder="100" autocomplete="off" class="form-control" required>
+											<input type="text"  id="wage" placeholder="100" autocomplete="off" class="form-control" value = "0" readonly required style="background-color:#e2e2e2;" >
 											<input type="hidden" name="wage" value = "0">
 										</div>
 									</div>
@@ -89,6 +89,7 @@ $msg = $this->session->userdata('msg');?>
 					<div class="row">
 						<div class="">
 							<fieldset>
+<!--
 								<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانکی</legend>
 								<div class="field_wrapper2">
 									<div>
@@ -111,7 +112,7 @@ $msg = $this->session->userdata('msg');?>
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
-												<label>مبلغ واریزی : </label>
+												<label> تعیین حجم : </label>
 												<input type="text" onKeyUp="amount_bank(this)" placeholder="100,000" class="form-control">
 												<input type="hidden" name="amount_bank[]">
 												<p class="text-danger" style ="display: none;">مبلغ وارد شده بیشتر از حجم معامله است</p>
@@ -127,6 +128,7 @@ $msg = $this->session->userdata('msg');?>
 										</div>
 									</div>
 								</div>
+-->
 								<input type="hidden" name="deal_type" value="2">
 								<div class="row">
 								<div class="col-md-6">

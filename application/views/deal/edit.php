@@ -91,6 +91,7 @@ $msg = $this->session->userdata('msg');?>
 					<div class="row">
 						<div class="">
 							<fieldset>
+								<?php if($deal->type_deal == 1){ ?>
 								<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانکی</legend>
 								<div class="field_edit">
                                   <?php if(sizeof($bank) == 0){ ?>
@@ -114,7 +115,7 @@ $msg = $this->session->userdata('msg');?>
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
-												<label>مبلغ واریزی : </label>
+												<label> تعیین حجم : </label>
 												<input type="hidden" value="0">
 												<input type="text" onKeyUp="amount_bank(this)" placeholder="100,000" class="form-control">
 												<input type="hidden" name="send_amount[]">
@@ -159,7 +160,7 @@ $msg = $this->session->userdata('msg');?>
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
-												<label>مبلغ واریزی : </label>
+												<label> تعیین حجم : </label>
 												<input type="hidden" value="<?php echo $rows->pay;?>">
 												<input type="text" onKeyUp="amount_bank(this)" value = "<?php echo number_format($rows->amount); ?>" placeholder="100,000" class="form-control">
 												<input type="hidden" name="amount_bank[]" value="<?php echo $rows->amount;?>">
@@ -176,7 +177,7 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 
 									</div>
-                                  <?php } } ?>
+                                  <?php } } }?>
 								</div>
 								<div class="row">
 								<div class="col-md-6">
