@@ -125,7 +125,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 					<div class="col-md-3">
 						<div class="form-group input-group">
 							<label>مبلغ هماهنگی :</label>
-							<input type="text" placeholder="111,000,000"  onkeyup="ambank(this)" autocomplete="off" class="form-control" required>
+							<input type="text" placeholder="111,000,000"  onkeyup="amhandle(this)" autocomplete="off" class="form-control" required>
 							<input type = "hidden" name='volume_handle[]'>
 							<span class="input-group-btn">
 							<button type="button" class="btn btn-success add_button4 mt-25">

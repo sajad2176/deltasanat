@@ -175,3 +175,7 @@ function ambank( input ) {
             input.nextElementSibling.nextElementSibling.style.display = 'none';
         }
 }
+function amhandle(input){
+    input.nextElementSibling.value = numeral( input.value ).value();
+    input.value = numeral( input.value ).format( '0,0' );
+}
