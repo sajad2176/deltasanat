@@ -123,7 +123,7 @@ $data['count'] = $config['total_rows'];
             $config = array(
 				'upload_path' => "./uploads/avatar",
 				'allowed_types' => "gif|jpg|png|jpeg",
-				'max_size' => "4100"
+				'max_size' => "41000"
 			);
 			$this->load->library('upload', $config);
 			if ($this->upload->do_upload('picname')) {
@@ -217,7 +217,7 @@ if($_FILES['picname']['name'] != '' or $_FILES['picname']['size'] != 0){
     $config = array(
         'upload_path' => "./uploads/avatar",
         'allowed_types' => "gif|jpg|png|jpeg",
-        'max_size' => "4100"
+        'max_size' => "41000"
     );
     $this->load->library('upload', $config);
     if ($this->upload->do_upload('picname')) {

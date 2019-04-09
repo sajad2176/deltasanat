@@ -61,53 +61,59 @@ class Login extends CI_Controller{
 				if($rows->perm_id == 1){
 					$sess['see_dashbord'] = TRUE;
 				}else if($rows->perm_id == 2){
-					$sess['see_currency'] = TRUE;
-				}else if($rows->perm_id == 3){
 					$sess['see_users'] = TRUE;
-				}else if($rows->perm_id == 4){
+				}else if($rows->perm_id == 3){
 					$sess['add_user'] = TRUE;
-				}else if($rows->perm_id == 5){
+				}else if($rows->perm_id == 4){
 					$sess['edit_user'] = TRUE;
-				}else if($rows->perm_id == 6){
+				}else if($rows->perm_id == 5){
 					$sess['see_log'] = TRUE;
-				}else if($rows->perm_id == 7){
+				}else if($rows->perm_id == 6){
 					$sess['active_user'] = TRUE;
-				}else if($rows->perm_id == 8){
+				}else if($rows->perm_id == 7){
 					$sess['see_customer'] = TRUE;
-				}else if($rows->perm_id == 9){
+				}else if($rows->perm_id == 8){
 					$sess['add_customer'] = TRUE;
-				}else if($rows->perm_id == 10){
+				}else if($rows->perm_id == 9){
 					$sess['edit_customer'] = TRUE;
-				}else if($rows->perm_id == 11){
+				}else if($rows->perm_id == 10){
 					$sess['see_deal'] = TRUE;
-				}else if($rows->perm_id == 12){
+				}else if($rows->perm_id == 11){
 					$sess['add_buy'] = TRUE;
-				}else if($rows->perm_id == 13){
+				}else if($rows->perm_id == 12){
 					$sess['add_sell'] = TRUE;
-				}else if($rows->perm_id == 14){
+				}else if($rows->perm_id == 13){
 					$sess['edit_deal'] = TRUE;
-				}else if($rows->perm_id == 15){
+				}else if($rows->perm_id == 14){
 					$sess['delete_deal'] = TRUE;
-				}else if($rows->perm_id == 16){
+				}else if($rows->perm_id == 15){
 					$sess['see_photo'] = TRUE;
-				}else if($rows->perm_id == 17){
+				}else if($rows->perm_id == 16){
 					$sess['see_handle'] = TRUE;
-				}else if($rows->perm_id == 18){
+				}else if($rows->perm_id == 17){
 					$sess['add_bank'] = TRUE;
-				}else if($rows->perm_id == 19){
+				}else if($rows->perm_id == 18){
 					$sess['edit_bank'] = TRUE;
-				}else if($rows->perm_id == 20){
+				}else if($rows->perm_id == 19){
 					$sess['active_bank'] = TRUE;
-				}else if($rows->perm_id == 21){
+				}else if($rows->perm_id == 20){
 					$sess['add_handle'] = TRUE;
-				}else if($rows->perm_id == 22){
+				}else if($rows->perm_id == 21){
 					$sess['pay_all'] = TRUE;
-				}else if($rows->perm_id == 23){
+				}else if($rows->perm_id == 22){
 					$sess['pay_slice'] = TRUE;
-				}else if($rows->perm_id == 24){
+				}else if($rows->perm_id == 23){
 					$sess['restore'] = TRUE;
-				}else if($rows->perm_id == 25){
+				}else if($rows->perm_id == 24){
 					$sess['delete_handle'] = TRUE;
+				}else if($rows->perm_id == 25){
+					$sess['see_settings'] = TRUE;
+				}else if($rows->perm_id == 26){
+					$sess['set_unit'] = TRUE;
+				}else if($rows->perm_id == 27){
+					$sess['set_primitive'] = TRUE;
+				}else if($rows->perm_id == 28){
+					$sess['rest_unit'] = TRUE;
 				}
 			}
 		}

@@ -155,15 +155,17 @@
 									</ul>
 								</li>
 							  <?php } ?>
-										<li>
-									<a href="#"><i class="icon-transmission <?php if($active == 'settings'){echo 'active';} ?>"></i> <span>تنظیمات</span></a>
+							  <?php if($this->session->has_userdata('see_settings') and $this->session->userdata('see_settings') == TRUE){?>
+							    <li>
+									<a href=""><i class="icon-transmission <?php if($active == 'settings'){echo 'active';} ?>"></i> <span>تنظیمات</span></a>
 									<ul>
-										<li class="<?php if($active_sub == 'set_unit'){echo 'active';} ?>"><a href="<?php echo base_url('settings/set_unit')?>">تبدیل ارز</a></li>
-										<li class="<?php if($active_sub == 'first_unit'){echo 'active';} ?>"><a href="<?php echo base_url('settings/first_unit')?>">ارز اولیه</a></li>
+							  <?php if($this->session->has_userdata('set_unit') and $this->session->userdata('set_unit') == TRUE){?><li class="<?php if($active_sub == 'set_unit'){echo 'active';} ?>"><a href="<?php echo base_url('settings/set_unit')?>">تبدیل ارز</a></li><?php } ?>
+							  <?php if($this->session->has_userdata('set_primitive') and $this->session->userdata('set_primitive') == TRUE){?><li class="<?php if($active_sub == 'primitive_unit'){echo 'active';} ?>"><a href="<?php echo base_url('settings/primitive_unit')?>">ارز اولیه</a></li><?php } ?>
+							  <?php if($this->session->has_userdata('rest_unit') and $this->session->userdata('rest_unit') == TRUE){?><li class="<?php if($active_sub == 'rest_unit'){echo 'active';} ?>"><a href="<?php echo base_url('settings/rest_unit')?>">مانده حساب </a></li><?php } ?>
 										
 									</ul>
 								</li>
-
+							  <?php } ?>
 								<!-- /main -->
 
 

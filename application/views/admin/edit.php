@@ -66,48 +66,52 @@ $msg = $this->session->userdata('msg');?>
                         }
                      }
                   }
-                                          if($key == 0 or $key == 2 or $key == 7 or $key == 10 or $key == 15 or $key == 20){
-                                             $row = '<div class="row">';
-                                          }else{
-                                             $row = '';
-                                          }
-                                          if($key == 1 or $key == 6 or $key == 9 or $key == 14 or $key == 19 or $key == 24){
-                                             $row_div = '</div>';
-                                          }else{
-                                             $row_div = '';
-                                          }
-                                          if($key == 2){
-                                             $select_all = '<div class="row"><div class="col-md-12"><label><input type="checkbox" class="option-input" id="select_users" checked /> کاربران</label></div></div>';
-                                          }else if($key == 7){
-                                             $select_all = '<div class="row"><div class="col-md-12"><label><input type="checkbox" class="option-input" id="select_customer" checked/> مشتریان</label></div></div>';
-                                          }else if($key == 10){
-                                             $select_all = '<div class="row"><div class="col-md-12"><label><input type="checkbox" class="option-input" id="select_deal" checked/> معاملات</label></div></div>';
-                                          }else{
-                                             $select_all = '';
-                                          }if($key >= 2 and $key <= 6){
-                                              $select_class = 'check_users';
-                                          }else if($key >= 7 and $key <= 9){
-                                             $select_class = 'check_customer';
-                                          }else if($key >= 10 ){
-                                             $select_class = 'check_deal';
-                                          }else{
-                                             $select_class = '';
-                                          }
-                                          ?>
-                                        <?php
-                                        echo $select_all;
-                                        echo $row;
-                                        ?>
+                  if($key == 0 or $key == 1 or $key == 6 or $key == 9 or $key == 14 or $key == 19 or $key == 24){
+                     $row = '<div class="row">';
+                  }else{
+                     $row = '';
+                  }
+                  if($key == 0 or $key == 5 or $key == 8 or $key == 13 or $key == 18 or $key == 23 or $key == 27){
+                     $row_div = '</div>';
+                  }else{
+                     $row_div = '';
+                  }
+                  if($key == 1){
+                     $select_all = '<div class="row"><div class="col-md-12"><label><input type="checkbox" class="option-input" id="select_users" checked /> کاربران</label></div></div>';
+                  }else if($key == 6){
+                     $select_all = '<div class="row"><div class="col-md-12"><label><input type="checkbox" class="option-input" id="select_customer" checked/> مشتریان</label></div></div>';
+                  }else if($key == 9){
+                     $select_all = '<div class="row"><div class="col-md-12"><label><input type="checkbox" class="option-input" id="select_deal" checked/> معاملات</label></div></div>';
+                  }else if($key == 24){
+                     $select_all = '<div class="row"><div class="col-md-12"><label><input type="checkbox" class="option-input" id="select_settings" checked/> تظیمات</label></div></div>';
+                  }else{
+                     $select_all = '';
+                  }if($key >= 1 and $key <= 5){
+                      $select_class = 'check_users';
+                  }else if($key >= 6 and $key <= 8){
+                     $select_class = 'check_customer';
+                  }else if($key >= 9 and $key <= 23){
+                     $select_class = 'check_deal';
+                  }else if($key >= 24 and $key <= 27){
+                     $select_class = 'check_settings';
+                  }else{
+                     $select_class = '';
+                  }
+                  ?>
+                <?php
+                echo $select_all;
+                echo $row;
+                ?>
 
-                                          <div class="col-md-2">
-                                                   <label>
-	                                          <input name='perm[]' value="<?php echo $rows->id; ?>" type="checkbox" class="option-input <?php echo $select_class;?>" <?php echo $checked; ?>/>
-	                                              <?php echo $rows->name_perm;?>
-                                                 </label>
-                                                 </div>
-                                       <?php echo $row_div; 
-                                       if($key == 1 or $key == 6 or $key == 9){echo '<hr>';}
-                                       ?>
+                  <div class="col-md-2">
+                           <label>
+                     <input name='perm[]' value="<?php echo $rows->id; ?>" type="checkbox" class="option-input <?php echo $select_class;?>" <?php echo $checked; ?>/>
+                         <?php echo $rows->name_perm;?>
+                         </label>
+                         </div>
+               <?php echo $row_div; 
+               if($key == 0 or $key == 5 or $key == 8 or $key == 23){echo '<hr>';}
+               ?>
                                     
                                        <?php } ?>
 				</div>
@@ -139,6 +143,11 @@ window.onload = function(){
    for (var z = 0 ;  z < check_deal.length ; z++){
      if(check_deal[z].checked == false){
         select_deal.checked = false;
+     }
+   }
+   for (var z = 0 ;  z < check_settings.length ; z++){
+     if(check_settings[z].checked == false){
+        select_settings.checked = false;
      }
    }
 }

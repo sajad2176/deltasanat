@@ -104,3 +104,27 @@ for (var i = 0; i < check_deal.length; i++) {
 		}
 	});
 }
+
+//settings
+var select_settings = document.getElementById("select_settings");
+var check_settings = document.getElementsByClassName("check_settings");
+
+select_settings.addEventListener("change", function(e){
+	for (i = 0; i < check_settings.length; i++) { 
+		check_settings[i].checked = select_settings.checked;
+	}
+});
+
+
+for (var i = 0; i < check_settings.length; i++) {
+	check_settings[i].addEventListener('change', function(e){ 
+
+		if(this.checked == false){
+			select_settings.checked = false;
+		}
+
+		if(document.querySelectorAll('.check_settings:checked').length == check_settings.length){
+			select_settings.checked = true;
+		}
+	});
+}
