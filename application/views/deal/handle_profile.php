@@ -230,9 +230,9 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 <?php if($this->session->has_userdata('pay_slice') and $this->session->userdata('pay_slice') == TRUE){?><li title="پرداخت جزئی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i onclick="pay_slice(<?php echo $handles->id;?> , <?php echo $handles->deal_id;?>)" class="icon-stack-empty"></i></li><?php } ?>
 													<?php } ?>
 													
-<?php if($this->session->has_userdata('restore') and $this->session->userdata('restore') == TRUE){?><li title="بازگشت پرداخت " class="text-warning-800"><a data-toggle="modal" href="#modal_form_dminor"><i onclick="history(<?php echo $handles->id;?> , <?php echo $handles->deal_id; ?>)" class="icon-file-minus"></i></li><?php } ?>
+<?php if($this->session->has_userdata('restore') and $this->session->userdata('restore') == TRUE){?><li title="بازگشت پرداخت " data-toggle="tooltip" class="text-warning-800"><a data-toggle="modal" href="#modal_form_dminor"><i onclick="history(<?php echo $handles->id;?> , <?php echo $handles->deal_id; ?>)" class="icon-file-minus"></i></li><?php } ?>
 									
-<?php if($this->session->has_userdata('delete_deal') and $this->session->userdata('delete_deal') == TRUE){?><li title="حذف هماهنگی" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i onClick="deleteHandle(<?php echo $handles->id; ?>, <?php echo $handles->handle_pay; ?>)" class="icon-cross2"></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('delete_deal') and $this->session->userdata('delete_deal') == TRUE){?><li title="حذف هماهنگی" data-toggle="tooltip" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i onClick="deleteHandle(<?php echo $handles->id; ?>, <?php echo $handles->handle_pay; ?>)" class="icon-cross2"></i></a></li><?php } ?>
 											</ul>
 						</td>
 					</tr>
@@ -315,71 +315,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 			</div>
 		<!-- /success modal -->
 	</div>
-				<!-- add bank modal -->
 
-<!--
-				<div id="add_bank_modal" class="modal fade">
-				<div class="modal-dialog" style="width:750px;">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h5 class="modal-title text-center">افزودن بانک</h5>
-
-						</div>
-						<hr>
-						<form action="" id = "act_bank" method="post">
-							<div class="modal-body">
-								<div class="field_wrapper2">
-									<div>
-										<div class="row">
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>شماره شبا: </label>
-													<input onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="number_shaba" class="form-control">
-												</div>
-											</div>
-
-
-
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>بانک:</label>
-													<span class="text-primary" style="font-size:12px; display:none;">(طبق شماره شبا وارد شده بانکی پیدا نشد. نام بانک را وارد کنید)</span>
-													<input type="text" name="name_bank" placeholder="ملت،ملی،.." class="form-control">
-												</div>
-											</div>
-										</div>
-
-
-									</div>
-									<div class="row">
-										<div class="col-md-6">
-											<div class="form-group">
-												<label> تعیین حجم : </label>
-												<input type="hidden" value ='0'>
-												<input type="text" onKeyUp="ambank(this)" placeholder="100,000" class="form-control">
-												<input type="hidden" name="amount_bank">
-												<p class="text-danger" style="display:none;"></p>
-											</div>
-										</div>
-
-										<div class="col-md-6">
-											<div class="form-group input-group">
-												<label>توضیحات حساب:</label>
-												<input type="text" name="bank_explain" placeholder="توضیحات خود را وارد کنید" class="form-control">
-												<span class="input-group-btn "><button type="submit" name="sub" style="top: 13px;" class="btn btn btn-success">ذخیره</button></span>
-											</div>
-										</div>
-									</div>
-								</div>
-						</form>
-						</div>
-					</div>
-				</div>
--->
-
-				<!-- /add bank modal -->
-	<!-- edit bank modal -->
 		<div id="edit_bank_modal" class="modal fade">
 			<div class="modal-dialog" style="width:750px;">
 				<div class="modal-content">
@@ -481,6 +417,71 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 			</div>
 		<!-- /dminor form modal -->
 		<!-- /edit bank modal -->
+					<!-- add bank modal -->
+
+
+				<div id="add_bank_modal" class="modal fade">
+				<div class="modal-dialog" style="width:750px;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h5 class="modal-title text-center">افزودن بانک</h5>
+
+						</div>
+						<hr>
+						<form action="" id = "act_bank" method="post">
+							<div class="modal-body">
+								<div class="field_wrapper2">
+									<div>
+										<div class="row">
+											<div class="col-md-6">
+												<div class="form-group">
+													<label>شماره شبا: </label>
+													<input onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="number_shaba" class="form-control">
+												</div>
+											</div>
+
+
+
+											<div class="col-md-6">
+												<div class="form-group">
+													<label>بانک:</label>
+													<span class="text-primary" style="font-size:12px; display:none;">(طبق شماره شبا وارد شده بانکی پیدا نشد. نام بانک را وارد کنید)</span>
+													<input type="text" name="name_bank" placeholder="ملت،ملی،.." class="form-control">
+												</div>
+											</div>
+										</div>
+
+
+									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label> تعیین حجم : </label>
+												<input type="hidden" value ='0'>
+												<input type="text" onKeyUp="ambank(this)" placeholder="100,000" class="form-control">
+												<input type="hidden" name="amount_bank">
+												<p class="text-danger" style="display:none;"></p>
+											</div>
+										</div>
+
+										<div class="col-md-6">
+											<div class="form-group input-group">
+												<label>توضیحات حساب:</label>
+												<input type="text" name="bank_explain" placeholder="توضیحات خود را وارد کنید" class="form-control">
+												<span class="input-group-btn "><button type="submit" name="sub" style="top: 13px;" class="btn btn btn-success">ذخیره</button></span>
+											</div>
+										</div>
+									</div>
+								</div>
+						</form>
+						</div>
+					</div>
+				</div>
+
+	</div>
+				<!-- /add bank modal -->
+	<!-- edit bank modal -->
 		<?php
 		$str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");
 		$str2 = '';foreach($want_rial as $value){$str2 .= "\"$value\",";}$str2 = trim($str2 , ",");
