@@ -1,16 +1,56 @@
 <!-- Dashboard content -->
+		<div class="panel panel-flat">
+			<div class="panel-body">
+				<!-- Members online -->
+			<div  class="panel-heading">
+					<h4 class="panel-title">موجودی</h4>
+					
+				</div>
+					<div class="row">
+					<?php 
+					$array = array('bg-blue-1' , 'bg-blue-2' , 'bg-blue-3' , 'bg-blue-4');
+					$set_id = array('dollar' , 'euro' , 'yuan' , 'derham');
+					foreach($remain as $i => $remains){ ?>
+					<div class="col-md-3">
+						<div class="panel <?php echo $array[$i]; ?>">
+
+							<div class="panel-body">
+								<div class="heading-elements">
+									<span class="heading-text badge bg-success-800">+53,6%</span>
+								</div>
+								<h3 class="no-margin" id="<?php echo $set_id[$i];?>">
+									<?php echo number_format($remains->amount_unit);?>
+								</h3>
+								<h5 class="text-white text-size-larg">
+									<?php echo $remains->name;?>
+								</h5>
+							</div>
+						</div>
+					</div>
+					<!-- /members online -->
+					<?php } ?>
+
+				</div>
+			</div>
+		</div>
 <div  class="row">
 	<div class="col-md-8">
+		<div class="panel panel-flat">
+			<div class="panel-body">
+			<div  class="panel-heading">
+					<h4 class="panel-title">هماهنگ شده ها</h4>
+					
+				</div>
 		<div class="row">
 			<div class="col-md-4">
 				<!-- Members online -->
-				<div class="panel bg-teal-400">
+				<div class="panel bg-teal-400 p-5">
 					<div class="panel-body">
 						<div class="heading-elements">
-							<span class="heading-text badge bg-teal-800"> مجموع هماهنگ شده</span>
+							<span class="heading-text badge bg-teal-800"> مانده ریالی</span>
 						</div>
 						<h3 class="no-margin" id="sumHandle"><?php echo number_format($sum_handle->vh);?></h3> 
-						<div class="text-muted text-size-small">489 avg</div>
+						
 					</div>
 
 					<div class="container-fluid">
@@ -21,13 +61,13 @@
 			</div>
 			<div class="col-md-4">
 				<!-- Current server load -->
-				<div class="panel bg-pink-400">
+				<div class="panel bg-pink-400 p-5">
 					<div class="panel-body">
 						<div class="heading-elements">
-							<span class="heading-text badge bg-success-800">مجموع پرداخت شده </span>
+							<span class="heading-text badge bg-success-800">مانده همانگ نشده فروش </span>
 						</div>
 						<h3 class="no-margin" id="sumPay"><?php echo number_format($sum_pay->vp); ?></h3> 
-						<div class="text-muted text-size-small">34.6% avg</div>
+						
 					</div>
 					<div class="chart" id="server-load"></div>
 				</div>
@@ -37,30 +77,57 @@
 
 			<div class="col-md-4">
 				<!-- Today's revenue -->
-				<div class="panel bg-blue-400">
+				<div class="panel bg-blue-400 p-5">
 					<div class="panel-body">
 						<div class="heading-elements">
-							<span class="heading-text badge bg-blue-800">مجموع مانده هماهنگی </span>
+							<span class="heading-text badge bg-blue-800">مانده همانگ نشده خرید </span>
 						</div>
 						<h3 class="no-margin" id="restHandle"><?php echo number_format($sum_handle->hr); ?></h3> 
-						<div class="text-muted text-size-small">$37,578 avg</div>
+						
 					</div>
 					<div class="chart" id="today-revenue"></div>
 				</div>
 				<!-- /today's revenue -->
 			</div>
+			
+		</div>
+					</div>
 		</div>
 		<!-- Marketing campaigns -->
 		<div class="panel panel-flat">
 			<div class="panel-body">
 				<div class="panel-heading">
-					<h5 class="panel-title">مجموع معاملات</h5>
+					<h4 class="panel-title">میانگین دلاری</h4>
 				</div>
-				<img style="width: 100%" src="<?php echo base_url('files/');?>/assets/img/Annotation 2019-03-13 161608.jpg"/>
+							<div class="col-md-6">
+				<!-- Today's revenue -->
+				<div class="panel bg-dollar p-5">
+					<div class="panel-body">
+						<div class="heading-elements">
+							<span class="heading-text badge bg-teal-800">مانده همانگ نشده خرید </span>
+						</div>
+						<h3 class="no-margin" id="restHandle"><?php echo number_format($sum_handle->hr); ?></h3> 
+						
+					</div>
+					<div class="chart" id="today-revenue"></div>
+				</div>
+				<!-- /today's revenue -->
 			</div>
-			<!-- /marketing campaigns -->
-			<!-- Quick stats boxes -->
-			<!-- /quick stats boxes -->
+							<div class="col-md-6">
+				<!-- Today's revenue -->
+				<div class="panel bg-dollar2 p-5">
+					<div class="panel-body">
+						<div class="heading-elements">
+							<span class="heading-text badge bg-teal-400">مانده همانگ نشده خرید </span>
+						</div>
+						<h3 class="no-margin" id="restHandle"><?php echo number_format($sum_handle->hr); ?></h3> 
+						
+					</div>
+					<div class="chart" id="today-revenue"></div>
+				</div>
+				<!-- /today's revenue -->
+			</div>
+			</div>
 		</div>
 	</div>
 
@@ -172,100 +239,10 @@
 			</div>
 		</div>
 		<!-- /daily sales -->
-		<div class="panel panel-flat">
-			<div class="panel-body">
-				<!-- Members online -->
-			<div style="padding-bottom: 30px " class="panel-heading">
-					<h6 class="panel-title">موجودی</h6>
-					<div  class="heading-elements">
-						<a href="#add_arz_modal" data-toggle="modal" class="btn btn-success">ارز اولیه </a>
-					</div>
-				</div>
-					<div class="row">
-					<?php 
-					$array = array('bg-blue-1' , 'bg-blue-2' , 'bg-blue-3' , 'bg-blue-4');
-					$set_id = array('dollar' , 'euro' , 'yuan' , 'derham');
-					foreach($remain as $i => $remains){ ?>
-					<div class="col-lg-6">
-						<div class="panel <?php echo $array[$i]; ?>">
-
-							<div class="panel-body">
-								<div class="heading-elements">
-									<span class="heading-text badge bg-success-800">+53,6%</span>
-								</div>
-								<h3 class="no-margin" id="<?php echo $set_id[$i];?>">
-									<?php echo number_format($remains->amount_unit);?>
-								</h3>
-								<div class="text-white text-size-larg">
-									<?php echo $remains->name;?>
-								</div>
-							</div>
-
-							<div class="container-fluid">
-								<div class="chart" id="members-online"></div>
-							</div>
-						</div>
-					</div>
-					<!-- /members online -->
-					<?php } ?>
-
-				</div>
-			</div>
-		</div>
-
 	</div>
 </div>
 <!-- /dashboard content -->
-<!-- add arz modal -->
-			<div id="add_arz_modal" class="modal fade">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h5 class="modal-title text-center">ارز اولیه</h5>
 
-						</div>
-						<hr>
-						<form action="<?php ?>" method="post">
-							<div class="modal-body">
-								<div class="field_wrapper2">
-									<div>
-										<div class="row">
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>دلار : </label>
-													<input type="text" placeholder="999/999/999"  class="form-control" >
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>یورو :</label>
-													<input type="text" placeholder="999/999/999" class="form-control" >
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-6">
-											<div class="form-group">
-												<label>یوان : </label>
-												<input type="text" placeholder="999/999/999" class="form-control">
-											</div>
-										</div>
-										<div class="col-md-6">
-											<div class="form-group input-group">
-												<label>درهم :</label>
-												<input type="text"  placeholder="999/999/999" class="form-control">
-												<span class="input-group-btn "><button type="submit" name="sub" style="top: 13px;" class="btn btn btn-success">ذخیره</button></span>
-											</div>
-										</div>
-									</div>
-								</div>
-						</form>
-						</div>
-					</div>
-				</div>
-				<!-- /add arz modal -->
 				<script>
 				window.onload = function(){
 					setInterval(update , 15000);
