@@ -176,7 +176,7 @@ $msg = $this->session->userdata('msg');?>
 						<thead>
 							<tr>
 								<th width="50%">ارز</th>
-								<th class="text-success-800" width="50%">مانده</th>
+								<th width="50%">مانده</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -189,7 +189,7 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 								</td>
 								<td>
-									<h6 class="text-semibold text-success-800 no-margin " id="dollar">-</h6>
+									<h6 class="text-semibold no-margin " id="dollar">-</h6>
 								</td>
 							</tr>
 							<tr>
@@ -203,7 +203,7 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 								</td>
 								<td>
-									<h6 class=" text-semibold text-success-800 no-margin" id="euro">-</h6>
+									<h6 class=" text-semibold no-margin" id="euro">-</h6>
 								</td>
 							</tr>
 							<tr>
@@ -216,7 +216,7 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 								</td>
 								<td>
-									<h6 class=" text-semibold text-success-800 no-margin" id="yuan">-</h6>
+									<h6 class=" text-semibold no-margin" id="yuan">-</h6>
 								</td>
 							</tr>
 							<tr>
@@ -228,7 +228,7 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 								</td>
 								<td>
-									<h6 class="text-semibold text-success-800 no-margin" id="derham">-</h6>
+									<h6 class="text-semibold no-margin" id="derham">-</h6>
 								</td>
 							</tr>
 							<tr>
@@ -240,7 +240,7 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 								</td>
 								<td>
-									<h6 class="text-semibold text-success-800 no-margin" id="rial">-</h6>
+									<h6 class="text-semibold no-margin" id="rial">-</h6>
 								</td>
 							</tr>
 						</tbody>

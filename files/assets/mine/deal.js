@@ -75,8 +75,9 @@
 	var wage = document.getElementById( 'wage' );
 	var convert = document.getElementById( 'convert' );
 	var volume = document.getElementById( 'volume_deal' );
-	// var money_name = document.getElementById('money_id');
 
+
+	// var money_name = document.getElementById('money_id');
 	// money_name.onchange = function(){
 	// 	name = money_name.options[money_name.selectedIndex].innerHTML;
 	// 	value1 = numeral(count.value).value();
@@ -132,6 +133,9 @@
 	}
 	// bank
 	//search customer
+
+
+
 	function autocomplete( inp, arr ) {
 		var currentFocus;
 		inp.addEventListener( "input", function ( e ) {
@@ -228,6 +232,9 @@
 			closeAllLists( e.target );
 		} );
 	}
+
+
+
 var	nameCustomer = document.getElementById('name_customer');
 var dollar = document.getElementById('dollar');
 var euro = document.getElementById('euro');
@@ -241,6 +248,11 @@ var rial = document.getElementById('rial');
 		yuan.innerHTML = '-';
 		derham.innerHTML = '-';
 		rial.innerHTML = '-'
+		dollar.style.color = '#333333';
+		euro.style.color = '#333333';
+		yuan.style.color = '#333333';
+		derham.style.color = '#333333';
+		rial.style.color = '#333333';
 	}
 	function showCustResult(res , txt){
 		if(res == false){
@@ -252,5 +264,30 @@ var rial = document.getElementById('rial');
 			yuan.innerHTML = numeral(res.yuan).format('0,0');
 			derham.innerHTML = numeral(res.derham).format('0,0');
 			rial.innerHTML = numeral(res.rial).format('0,0');
+			if(res.dollar < 0){
+				dollar.style.color = '#f44336';
+			}else{
+				dollar.style.color = '#4caf50';
+			}
+			if(res.euro < 0){
+				euro.style.color = '#f44336';
+			}else{
+				euro.style.color = '#4caf50';
+			}
+			if(res.yuan < 0){
+				yuan.style.color = '#f44336';
+			}else{
+				yuan.style.color = '#4caf50';
+			}
+			if(res.derham < 0){
+				derham.style.color = '#f44336';
+			}else{
+				derham.style.color = '#4caf50';
+			}
+			if(res.rial < 0){
+				rial.style.color = '#f44336';
+			}else{
+				rial.style.color = '#4caf50';
+			}
 		}
 	}
