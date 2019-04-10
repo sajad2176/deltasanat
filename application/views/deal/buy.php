@@ -169,7 +169,7 @@ $msg = $this->session->userdata('msg');?>
 				<div style="padding-right: 0px" class="panel-heading">
 					<h6 class="panel-title"> آمار مشتری :  <span id="name_customer"></span></h6>
 				</div>
-				
+				<p><?php echo $date;?></p>
 
 				<div class="table-responsive">
 					<table class="table text-nowrap">

@@ -28,7 +28,11 @@
 						</div>
 					</div>
 					<!-- /members online -->
-					<?php } ?>
+					<?php
+				if($i == 3){
+					break;
+				}
+				} ?>
 
 				</div>
 			</div>

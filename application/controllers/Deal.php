@@ -388,17 +388,20 @@ if($res == TRUE){
         if(sizeof($cust_id) == 0){
             echo json_encode(false);
         }else{
+            $date = $this->convertdate->convert(time());
+            $today = $date['year']."-".$date['month_num']."-".$date['day'];
             $id = $cust_id->id;
-            $buy = $this->base_model->get_data('deal' , 'money_id , volume_rest , convert_money' , 'result' , array('type_deal'=> 1 , 'customer_id'=> $id));
-            $sell = $this->base_model->get_data('deal' , 'money_id , volume_rest , convert_money' , 'result' , array('type_deal'=> 2 , 'customer_id'=> $id));
+            $buy = $this->base_model->get_data('deal' , 'money_id , volume_rest , convert_money' , 'result' , array('type_deal'=> 1 , 'customer_id'=> $id , 'date_deal'=>$today));
+            $sell = $this->base_model->get_data('deal' , 'money_id , volume_rest , convert_money' , 'result' , array('type_deal'=> 2 , 'customer_id'=> $id, 'date_deal'=> $today));
+            $r = $this->base_model->get_data('currency_unit' , 'amount_unit , cash_unit' , 'row' , array('id'=>5));
+            $rial = $r->amount_unit - $r->cash_unit;
             if(sizeof($buy) == 0){
                 $buy_dollar = 0;
                 $buy_euro = 0;
                 $buy_yuan = 0;
                 $buy_derham = 0;
-                $give_rial = 0;
             }else{
-                $b_dollar = 0; $b_euro = 0 ; $b_yuan = 0 ; $b_derham = 0; $g_rial = 0;
+                $b_dollar = 0; $b_euro = 0 ; $b_yuan = 0 ; $b_derham = 0;
                 foreach($buy as $buys){
                     if($buys->money_id == 1){
                         $b_dollar += ($buys->volume_rest)/($buys->convert_money);
@@ -409,22 +412,19 @@ if($res == TRUE){
                     }else if($buys->money_id == 4){
                         $b_derham += ($buys->volume_rest)/($buys->convert_money);
                     }
-                    $g_rial += $buys->volume_rest;
             }
             $buy_dollar = $b_dollar;
             $buy_euro = $b_euro;
             $buy_yuan = $b_yuan;
             $buy_derham = $b_derham;
-            $give_rial = $g_rial;;
         }
             if(sizeof($sell) == 0){
                 $sell_dollar = 0;
                 $sell_euro = 0;
                 $sell_yuan = 0;
                 $sell_derham = 0;
-                $want_rial = 0;
             }else{
-                $s_dollar = 0; $s_euro = 0 ; $s_yuan = 0 ; $s_derham = 0; $w_rial = 0;
+                $s_dollar = 0; $s_euro = 0 ; $s_yuan = 0 ; $s_derham = 0;
                 foreach($sell as $sells){
                     if($sells->money_id == 1){
                         $s_dollar += ($sells->volume_rest)/($sells->convert_money);
@@ -435,19 +435,17 @@ if($res == TRUE){
                     }else if($sells->money_id == 4){
                         $s_derham += ($sells->volume_rest)/($sells->convert_money);
                     }
-                    $w_rial += $sells->volume_rest;
                 }
                 $sell_dollar = $s_dollar;
                 $sell_euro = $s_euro;
                 $sell_yuan = $s_yuan;
                 $sell_derham = $s_derham;
-                $want_rial = $w_rial;
             }
             $data['dollar'] = $buy_dollar - $sell_dollar;
             $data['euro'] = $buy_euro - $sell_euro;
             $data['yuan'] = $buy_yuan - $sell_yuan;
             $data['derham'] = $buy_derham - $sell_derham;
-            $data['rial'] = $give_rial - $want_rial;
+            $data['rial'] = $rial;
             // echo "<pre>";var_dump($data);echo "</pre>";
             echo json_encode($data);
         }
