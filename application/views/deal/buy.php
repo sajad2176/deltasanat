@@ -167,9 +167,9 @@ $msg = $this->session->userdata('msg');?>
 	<div class="panel panel-flat">
 			<div class="panel-body">
 				<div style="padding-right: 0px" class="panel-heading">
-					<h6 class="panel-title"> آمار مشتری :  <span id="name_customer"></span></h6>
+					<h6 class="panel-title rightbox display-inline-block mt-10"> آمار مشتری :  <span id="name_customer"></span></h6>
+					<h6 class="lefttbox " ><?php echo $date;?></h6>
 				</div>
-				<p><?php echo $date;?></p>
 
 				<div class="table-responsive">
 					<table class="table text-nowrap">
@@ -231,24 +231,75 @@ $msg = $this->session->userdata('msg');?>
 									<h6 class="text-semibold no-margin" id="derham">-</h6>
 								</td>
 							</tr>
-							<tr>
-								<td>
-									<div class="media-body">
-										<div class="media-heading">
-											<h5 class="letter-icon-title">ریال</h5>
-										</div>
-									</div>
-								</td>
-								<td>
-									<h6 class="text-semibold no-margin" id="rial">-</h6>
-								</td>
-							</tr>
+							
 						</tbody>
 					</table>
 				</div>
 			</div>
 		</div>
+			<div class="panel panel-flat">
+			<div class="panel-body">
+				<div style="padding-right: 0px" class="panel-heading">
+					<h6 class="panel-title rightbox display-inline-block mt-10"> مانده کلی :  <span id="name_customer"></span></h6>
+					
+				</div>
+
+				<div class="table-responsive">
+					<table class="table text-nowrap">
+						<thead>
+							<tr>
+								<th width="50%">ارز</th>
+								<th width="50%">مانده</th>
+							</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>
+								<div class="media-body">
+									<div class="media-heading">
+										<h5 class="letter-icon-title">ریال</h5>
+									</div>
+								</div>
+							</td>
+							<td>
+								<h6 class="text-semibold no-margin" id="rial">-</h6>
+							</td>
+						</tr>	
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+<!--
+<div class="col-md-12">
+	<div class="panel panel-flat">
+		<div class="panel-body">
+			<div style="padding-right: 0px" class="panel-heading">
+				<h6 class="panel-title rightbox display-inline-block mt-10"> آمار مشتری :  <span id="name_customer"></span></h6>
+			</div>
+			<div class="table-responsive">
+				<table class="table text-nowrap">
+					<thead>
+						<tr>
+							<td>
+								<div class="media-body">
+									<div class="media-heading">
+										<h5 class="letter-icon-title">ریال</h5>
+									</div>
+								</div>
+							</td>
+							<td>
+								<h6 class="text-semibold no-margin" id="rial">-</h6>
+							</td>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
 </div>
+-->
 <?php $str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");?>
 
 
