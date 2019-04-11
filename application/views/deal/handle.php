@@ -304,7 +304,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 						<td class="<?php if($row->handle_rest < 0){echo 'text-danger';}?>"><?php echo number_format($row->handle_rest); ?></td>
 						<td><?php echo $row->bank_id + 1000; ?></td>
 						<td><?php echo $row->date_handle."</br>".$row->time_handle; ?></td>
-						<td><?php if($row->date_modified == ''){echo 'ثبت نشده است';}else {echo $row->date_modified;} ?></td>
+						<td><?php echo $row->date_modified; ?></td>
 						</td>
 						<td class="text-center">
 								<ul class="icons-list">

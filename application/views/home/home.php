@@ -53,7 +53,7 @@
 						<div class="heading-elements">
 							<span class="heading-text badge bg-teal-800"> مانده ریالی</span>
 						</div>
-						<h3 class="no-margin" id="sumHandle"><?php echo number_format($sum_handle->vh);?></h3> 
+						<h3 class="no-margin" id="restRial"><?php echo number_format($rest_rial);?></h3> 
 						
 					</div>
 
@@ -108,9 +108,9 @@
 				<div class="panel bg-dollar p-5">
 					<div class="panel-body">
 						<div class="heading-elements">
-							<span class="heading-text badge bg-teal-800">مانده همانگ نشده خرید </span>
+							<span class="heading-text badge bg-teal-800">میانگین دلاری خرید </span>
 						</div>
-						<h3 class="no-margin" id="restHandle"><?php echo number_format($sum_handle->hr); ?></h3> 
+						<h3 class="no-margin" id="aveBuy"><?php echo number_format($ave_buy); ?></h3> 
 						
 					</div>
 					<div class="chart" id="today-revenue"></div>
@@ -122,9 +122,9 @@
 				<div class="panel bg-dollar2 p-5">
 					<div class="panel-body">
 						<div class="heading-elements">
-							<span class="heading-text badge bg-teal-400">مانده همانگ نشده خرید </span>
+							<span class="heading-text badge bg-teal-400">میانگین دلاری فروش </span>
 						</div>
-						<h3 class="no-margin" id="restHandle"><?php echo number_format($sum_handle->hr); ?></h3> 
+						<h3 class="no-margin" id="aveSell"><?php echo number_format($ave_sell); ?></h3> 
 						
 					</div>
 					<div class="chart" id="today-revenue"></div>
@@ -247,58 +247,21 @@
 </div>
 <!-- /dashboard content -->
 
-				<script>
-				window.onload = function(){
-					setInterval(update , 15000);
-				}
-		var buyDollar = document.getElementById('buyDollar');
-		var buyEuro = document.getElementById('buyEuro');
-		var buyYuan = document.getElementById('buyYuan');
-		var buyDerham = document.getElementById('buyDerham');
-		var sellDollar = document.getElementById('sellDollar');
-		var sellEuro = document.getElementById('sellEuro');
-		var sellYuan = document.getElementById('sellYuan');
-		var sellDerham = document.getElementById('sellDerham');	
-		var today = document.getElementById('today');
-		var sumHandle = document.getElementById('sumHandle');
-		var sumPay = document.getElementById('sumPay');
-		var restHandle = document.getElementById('restHandle');
-		var dollar = document.getElementById('dollar');			
-		var euro = document.getElementById('euro');			
-		var yuan = document.getElementById('yuan');			
-		var derham = document.getElementById('derham');			
-				function update(){
-		var xhr = new XMLHttpRequest();
-		xhr.onload = function(){
-			if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
-				var result = JSON.parse(xhr.responseText);
-				    showResult(result);
-				}else{
-					alert('request was unsuccessful : ' + xhr.status);
-					location.reload();
-				}
-		}
-		xhr.open('post' , "<?php echo base_url('home/update_dashbord')?>" , true);
-		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-		xhr.send("request="+true);
-				}
-					function showResult(res){
-						sumHandle.innerHTML = numeral(res.sum_handle.vh).format('0,0');
-						sumPay.innerHTML = numeral(res.sum_pay.vp).format('0,0');
-						restHandle.innerHTML = numeral(res.sum_handle.hr).format('0,0');
-						today.innerHTML = res.today;
-						buyDollar.innerHTML = numeral(res.buy_dollar).format('0,0');
-						buyEuro.innerHTML = numeral(res.buy_euro).format('0,0');
-						buyYuan.innerHTML = numeral(res.buy_yuan).format('0,0');
-						buyDerham.innerHTML = numeral(res.buy_derham).format('0,0');
-						sellDollar.innerHTML = numeral(res.sell_dollar).format('0,0');
-						sellEuro.innerHTML = numeral(res.sell_euro).format('0,0');
-						sellYuan.innerHTML = numeral(res.sell_yuan).format('0,0');
-						sellDerham.innerHTML = numeral(res.sell_derham).format('0,0');
-						dollar.innerHTML = numeral(res.remain[0].amount_unit).format('0,0');
-						euro.innerHTML = numeral(res.remain[1].amount_unit).format('0,0');
-						yuan.innerHTML = numeral(res.remain[2].amount_unit).format('0,0');
-						derham.innerHTML = numeral(res.remain[3].amount_unit).format('0,0');
-					}
-				
-				</script>
+<script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/home.js"></script>
+<script>
+function update(){
+var xhr = new XMLHttpRequest();
+xhr.onload = function(){
+if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
+var result = JSON.parse(xhr.responseText);
+    showResult(result);
+}else{
+    alert('request was unsuccessful : ' + xhr.status);
+    location.reload();
+}
+}
+xhr.open('post' , "<?php echo base_url('home/update_dashbord')?>" , true);
+xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+xhr.send("request="+true);
+}
+</script>

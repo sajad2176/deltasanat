@@ -1,3 +1,12 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+if($this->session->has_userdata('msg')){
+$msg = $this->session->userdata('msg');?>
+<div class="alert bg-<?php echo $msg[1];?> alert-styled-left">
+										<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
+										<?php echo $msg[0];?>
+								    </div>
+<?php }?>
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 	<ul class="breadcrumb">
 		<li><a href="<?php echo base_url('home');?>"><i class="icon-home2 position-left"></i> داشبورد</a>
@@ -20,7 +29,7 @@
 						<div class="col-md-3">
 							<div class="form-group">
 								<label>نام مشتری : </label>
-								<input name="fullname" onFocus="search_customer(this)" autocomplete="off" type="text" class="form-control" placeholder="نام مشتری خود را وارد کنید">
+								<input name="fullname" onFocus="search_customer(this)" autocomplete="off" type="text" class="form-control" placeholder="نام مشتری خود را وارد کنید" required>
 								<p class="text-primary" style="display:none;"></p>
 							</div>
 						</div>
@@ -28,14 +37,14 @@
 						<div class="col-md-3">
 							<div class="form-group">
 								<label>مقدار حساب : </label>
-								<input type="text" class="form-control" id="count" autocomplete="off" placeholder="100,000">
+								<input type="text" class="form-control" id="count" autocomplete="off" placeholder="100,000" required>
 								<input name="count" type="hidden" class="form-control">
 							</div>
 						</div>
                         <div class="col-md-3">
 								<div class="form-group">
 									<label for="j_created_date"> تاریخ ثبت :</label>
-									<input type="text" class="form-control" name="date_deal" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date;?>" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" name="date_deal" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date;?>" placeholder="Jalali Created Date" required>
 								</div>
 								</div>
                         <div class="col-md-3">
@@ -48,7 +57,7 @@
 										</label>
 
 										<label class="radio-inline">
-											<input type="radio" name="type_deal" value="1" class="styled">
+											<input type="radio" name="type_deal" value="1" class="styled" >
 											طلب کار
 										</label>
 									</div>

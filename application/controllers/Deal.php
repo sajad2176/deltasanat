@@ -106,6 +106,7 @@ $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$dat
        } 
         $id = $this->uri->segment(3);
         if(isset($id) and is_numeric($id)){
+            //check
          $deal = $this->base_model->get_data_join('deal' , 'customer' ,'deal.* , customer.fullname','deal.customer_id = customer.id', 'row' , array('deal.id' => $id));
          if($deal->volume_pay != 0 or sizeof($deal) == 0){
              show_404();
@@ -114,6 +115,8 @@ $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$dat
             $deal_bank = $this->base_model->get_data('deal_bank' , '*' , 'result' , array('deal_id' => $id));
             $deal_pic = $this->base_model->get_data('deal_pic' , '*' , 'result' , array('deal_id'=> $id));
             $amount_unit = $this->base_model->get_data('currency_unit' , 'amount_unit  , name' , 'row' , array('id'=> $deal->money_id));
+            $rial = $this->base_model->get_data('currency_unit' , 'amount_unit' , 'row' , array('id'=> 5));
+             
             $a = $id +100;
             $explain = ' شناسه معامله :  '. $a . " | نام مشتری : ".$deal->fullname . " | نام ارز : ".$amount_unit->name ." | تعداد ارز : ".number_format($deal->count_money).$deal->name." | کارمزد : " . number_format($deal->wage).$deal->name." | نرخ تبدیل : ".number_format($deal->convert_money)." | حجم معامله : ".number_format($deal->volume_deal)."</br>";
            if(sizeof($deal_handle) != 0){
@@ -139,15 +142,42 @@ $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$dat
          }
 
 $explain .= ' حذف شد ';
+//check
+
+//currency
 $am = $deal->count_money + $deal->wage;
+if($deal->money_id == 5){
+//rial
 if($deal->type_deal == 1){
-$unit['amount_unit'] = $amount_unit->amount_unit - $am;
-$text = " کاهش یافت ";
+    $unit_rial['amount_unit'] = $rial->amount_unit - $deal->volume_deal;
+    $text = 'کاهش یافت';
 }else{
-$unit['amount_unit'] = $amount_unit->amount_unit + $am;
-$text = ' افزایش یافت ';
+    $unit_rial['amount_unit'] = $rial->amount_unit + $deal->volume_deal;
+    $text = 'افزایش یافت';
 }
-$explain .= "</br>"." مقدار ارز ".$amount_unit->name." به اندازه ".number_format($am) . $text;
+$explain .= "</br>"."مقدار ریال به اندازه : ".number_format($deal->volume_deal)." ".$text;
+$this->base_model->update_data('currency_unit' , $unit_rial , array('id' => 5));
+//rial
+}else{
+    if($deal->type_deal == 1){
+//other
+        $unit['amount_unit'] = $amount_unit->amount_unit - $am;
+        $unit_rial['amount_unit'] = $rial->amount_unit + $deal->volume_deal; 
+        $text = " کاهش یافت ";
+        $text2 = 'افزایش یافت';
+        }else{
+        $unit['amount_unit'] = $amount_unit->amount_unit + $am;
+        $unit_rial['amount_unit'] = $rial->amount_unit - $deal->volume_deal;
+        $text = ' افزایش یافت ';
+        $text2 = 'کاهش یافت ';
+        }
+$explain .= "</br>"." مقدار ارز ".$amount_unit->name." به اندازه ".number_format($am) . $text ." | مقدار ریال به اندازه ".number_format($deal->volume_deal). " ".$text2;
+$this->base_model->update_data('currency_unit' , $unit , array('id' => $deal->money_id));
+$this->base_model->update_data('currency_unit' , $unit_rial , array('id' => 5));
+//other
+}
+//currency
+
 $date = $this->convertdate->convert(time());
 $log['user_id'] = $this->session->userdata('id');
 $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
@@ -157,7 +187,6 @@ $log['explain'] = $explain;
 $back['explain'] =  $explain;
 $back['date_backup'] = $log['date_log'];
 $back['time_backup'] = $log['time_log'];
-$this->base_model->update_data('currency_unit' , $unit , array('id' => $deal->money_id));
 $res = $this->base_model->delete_data('deal' , array('id' => $id));
 $this->base_model->insert_data('log' , $log);
 $this->base_model->insert_data('backup' , $back);
@@ -239,22 +268,27 @@ if($res == TRUE){
            $deal['explain'] = $this->input->post('explain');
            $deal['date_deal'] = $date_deal;
            $deal['time_deal'] = $time_deal;
-           $deal['date_modified'] = '';
+           $deal['date_modified'] = 'ثبت نشده است';
            $deal['type_deal'] = $this->input->post('deal_type');
            $deal['customer_id'] = $id;
            $deal['money_id'] = $this->input->post('money_id');
            // deal
 
            //currency
+           $rial = $this->base_model->get_data('currency_unit' , 'amount_unit' , 'row' , array('id'=> 5));
            $amount_unit = $this->base_model->get_data('currency_unit' , 'amount_unit' , 'row' , array('id'=> $deal['money_id']));
            if($deal['type_deal'] == 1){
+               $unit_rial['amount_unit'] = $rial->amount_unit - ($deal['volume_deal']);
                $unit['amount_unit'] = $amount_unit->amount_unit + ($deal['count_money'] + $deal['wage']);
                $act = 9;
                $text = " افزایش یافت ";
+               $text2 = ' کاهش یافت ';
            }else{
+               $unit_rial['amount_unit'] = $rial->amount_unit + ($deal['volume_deal']);
                $unit['amount_unit'] = $amount_unit->amount_unit - ($deal['count_money'] + $deal['wage']); 
                $act = 10;
                $text = " کاهش یافت ";
+               $text2 = 'افزایش یافت ';
            }
            //currency
 
@@ -266,7 +300,6 @@ if($res == TRUE){
             redirect("deal/$page");
         }
            //bank
-           if($data['type_deal'] == 1){
             $count = sizeof($_POST['number_shaba']);
             for($i = 0 ; $i < $count ; $i++){
                 if($_POST['bank_explain'][$i] != '' or $_POST['number_shaba'][$i] != '' or $_POST['name_bank'][$i] != '' or $_POST['amount_bank'][$i] != ''){
@@ -281,9 +314,8 @@ if($res == TRUE){
                     );
                 }
             }
-           }
             //bank
-
+        $this->base_model->update_data('currency_unit' , $unit_rial , array('id' => 5)); 
         $this->base_model->update_data('currency_unit' , $unit , array('id' => $deal['money_id']));  
 
         if(isset($bank) and sizeof($bank) != 0){
@@ -298,7 +330,7 @@ if($res == TRUE){
         $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
         $log['activity_id'] = $act;
         $am = $deal['count_money'] + $deal['wage'];
-        $log['explain'] = " نام مشتری :  ".$customer['fullname']." | شناسه معامله : ".$aa . " | ارز معامله : ". $money . " | تعداد ارز : ".number_format($deal['count_money']).$money ." | کارمزد : ".number_format($deal['wage']).$money . " | نرخ تبدیل : ".number_format($deal['convert_money'])." ریال "." حجم معامله :  ".number_format($deal['volume_deal'])." ریال "." | مقدار ارز  ".$money. " به اندازه ".number_format($am)." ".$text;
+        $log['explain'] = " نام مشتری :  ".$customer['fullname']." | شناسه معامله : ".$aa . " | ارز معامله : ". $money . " | تعداد ارز : ".number_format($deal['count_money']).$money ." | کارمزد : ".number_format($deal['wage']).$money . " | نرخ تبدیل : ".number_format($deal['convert_money'])." ریال "." حجم معامله :  ".number_format($deal['volume_deal'])." ریال "." | مقدار ارز  ".$money. " به اندازه ".number_format($am)." ".$text."| مقدار ریال به اندازه ".number_format($deal['volume_deal'])." ".$text2;
         $this->base_model->insert_data('log' , $log);
         //log
 
@@ -393,8 +425,8 @@ if($res == TRUE){
             $id = $cust_id->id;
             $buy = $this->base_model->get_data('deal' , 'money_id , volume_rest , convert_money' , 'result' , array('type_deal'=> 1 , 'customer_id'=> $id , 'date_deal'=>$today));
             $sell = $this->base_model->get_data('deal' , 'money_id , volume_rest , convert_money' , 'result' , array('type_deal'=> 2 , 'customer_id'=> $id, 'date_deal'=> $today));
-            $r = $this->base_model->get_data('currency_unit' , 'amount_unit , cash_unit' , 'row' , array('id'=>5));
-            $rial = $r->amount_unit - $r->cash_unit;
+            $give = $this->base_model->get_data('deal' , 'sum(volume_rest) as give' , 'row' , array('type_deal'=> 1 , 'customer_id'=> $id));
+            $want = $this->base_model->get_data('deal' , 'sum(volume_rest) as want' , 'row' , array('type_deal'=> 2 , 'customer_id'=> $id));
             if(sizeof($buy) == 0){
                 $buy_dollar = 0;
                 $buy_euro = 0;
@@ -445,8 +477,8 @@ if($res == TRUE){
             $data['euro'] = $buy_euro - $sell_euro;
             $data['yuan'] = $buy_yuan - $sell_yuan;
             $data['derham'] = $buy_derham - $sell_derham;
-            $data['rial'] = $rial;
-            // echo "<pre>";var_dump($data);echo "</pre>";
+            $data['rial'] = $want->want - $give->give;
+            // echo "<pre>";var_dump($data); echo $give->give." ".$want->want;echo "</pre>";
             echo json_encode($data);
         }
     }
@@ -460,6 +492,7 @@ if($res == TRUE){
         $id = $this->uri->segment(3);
         if(isset($id) and is_numeric($id)){
             if(isset($_POST['sub'])){  
+                //check customer
               $customer['fullname'] = $this->input->post('customer');
               $cust_id = $this->input->post('cust_id');
               $check = $this->base_model->get_data('customer' , 'id' , 'row' , array('fullname' =>  $customer['fullname']));
@@ -470,6 +503,9 @@ if($res == TRUE){
                 redirect("deal/edit/$id");
               }
               $this->base_model->update_data('customer' , $customer , array('id'=> $cust_id));
+               //check cutomer
+
+               // deal
               $persian_num = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
               $latin_num = range(0, 9);
               $slash = '/';
@@ -489,41 +525,12 @@ if($res == TRUE){
              $deal['time_deal'] = $time_deal;
              $deal['volume_rest'] = $deal['volume_deal'] - $this->input->post('volume_pay');
              $deal['money_id'] = $this->input->post('money_id');
+            //deal
+
+            //currency 
+
              $base = $this->base_model->get_data('deal' , 'count_money , wage , money_id , type_deal , volume_deal , convert_money' , 'row' , array('id' => $id));
-             $base_unit = $this->base_model->get_data('currency_unit' , 'amount_unit , name' , 'row' , array('id'=> $base->money_id));
-              
-             $base_count = $base->count_money + $base->wage;
-             $send_count = $deal['count_money'] + $deal['wage'];
-
-             $count_deal = " تعداد ارز معامله از : ".number_format($base->count_money)." به ".number_format($deal['count_money'])." تغییر یافت "."</br>";
-             $wage_deal = "  کارمزد معامله از : ".number_format($base->wage)." به ".number_format($deal['wage'])." تغییر یافت "."</br>";
-             $convert_deal = " نرخ تبدیل معامله از  ".number_format($base->convert_money)." به ".number_format($deal['convert_money'])." تغییر یافت "."</br>";
-             $volume_deal = " حجم  معامله از  ".number_format($base->volume_deal)." به ".number_format($deal['volume_deal'])." تغییر یافت "."</br>";
-
-             if($base->money_id != $deal['money_id']){
-                $new_unit = $this->base_model->get_data('currency_unit' , 'amount_unit , name' , 'row' , array('id'=> $deal['money_id']));
-
-                 if($base->type_deal == 1){
-                    $update_base['amount_unit'] = $base_unit->amount_unit - ($base_count);
-                    $update_send['amount_unit'] = $new_unit->amount_unit + ($send_count);
-                 }else{
-                    $update_base['amount_unit'] = $base_unit->amount_unit + ($base_count);
-                    $update_send['amount_unit'] = $new_unit->amount_unit - ($send_count);
-                 }
-                 $change_unit = "  ارز معامله از : ".$base_unit->name." به ".$new_unit->name." تغییر یافت "."</br>";
-                 $this->base_model->update_data('currency_unit' , $update_base , array('id' => $base->money_id));
-                 $this->base_model->update_data('currency_unit' , $update_send , array('id' => $deal['money_id']));
-             }else{
-                 if($base->type_deal == 1){
-                   $update_base['amount_unit'] = $base_unit->amount_unit + ($send_count - $base_count);
-                  }else{
-                    $update_base['amount_unit'] = $base_unit->amount_unit - ($send_count - $base_count);
-                 }
-                 $change_unit = '  ارز معامله :'.$base_unit->name."</br>";
-                 $this->base_model->update_data('currency_unit' , $update_base , array('id' => $base->money_id));
-             }
-
-
+             
              $res = $this->base_model->update_data('deal' , $deal , array('id'=> $id));
              if($res == FALSE){
                  $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است. لطفا دوباره سعی کنید';
@@ -531,6 +538,70 @@ if($res == TRUE){
                  $this->session->set_flashdata($message);
                  redirect("deal/edit/$id");
              } 
+
+             $base_count = $base->count_money + $base->wage;
+             $send_count = $deal['count_money'] + $deal['wage'];
+             $change_rial = $deal['volume_deal'] - $base->volume_deal ;
+             $unit_rial = $this->base_model->get_data('currency_unit' , 'amount_unit , name' , 'row' , array('id'=> 5));
+
+             if($base->money_id == 5){
+                 //rial
+                 if($base->type_deal == 1){
+                    $rial['amount_unit'] = $unit_rial->amount_unit + ($change_rial);
+                    $text3 = ' افزایش یافت';
+                 }else{
+                    $rial['amount_unit'] = $unit_rial->amount_unit - ($change_rial);
+                    $text3 = 'کاهش یافت';
+                 }
+                 $this->base_model->update_data('currency_unit' , $rial , array('id' => 5));
+                 $change_unit = ' مقدار ریال به اندازه  '.number_format($change_rial).$text3."</br>";
+                 //rial
+             }else{
+                 //other
+                $base_unit = $this->base_model->get_data('currency_unit' , 'amount_unit , name' , 'row' , array('id'=> $base->money_id));
+
+                if($base->money_id != $deal['money_id']){
+                    $new_unit = $this->base_model->get_data('currency_unit' , 'amount_unit , name' , 'row' , array('id'=> $deal['money_id']));
+                   
+                     if($base->type_deal == 1){
+                        $update_base['amount_unit'] = $base_unit->amount_unit - ($base_count);
+                        $update_send['amount_unit'] = $new_unit->amount_unit + ($send_count);
+                        $rial['amount_unit'] = $unit_rial->amount_unit - ($change_rial);
+                        $text3 = 'کاهش یافت';
+                     }else{
+                        $update_base['amount_unit'] = $base_unit->amount_unit + ($base_count);
+                        $update_send['amount_unit'] = $new_unit->amount_unit - ($send_count);
+                        $rial['amount_unit'] = $unit_rial->amount_unit + ($change_rial);
+                        $text3 = 'افزایش یافت';
+                     }
+                     $change_unit = "  ارز معامله از : ".$base_unit->name." به ".$new_unit->name." تغییر یافت "."</br>"." مقدار ریال به اندازه   ".number_format($change_rial). $text3."</br>";
+                     $this->base_model->update_data('currency_unit' , $update_base , array('id' => $base->money_id));
+                     $this->base_model->update_data('currency_unit' , $update_send , array('id' => $deal['money_id']));
+                     $this->base_model->update_data('currency_unit' , $rial , array('id' => 5));
+                 }else{
+                     if($base->type_deal == 1){
+                       $update_base['amount_unit'] = $base_unit->amount_unit + ($send_count - $base_count);
+                       $rial['amount_unit'] = $unit_rial->amount_unit - ($change_rial);
+                       $text3 = 'کاهش یافت';
+                      }else{
+                        $update_base['amount_unit'] = $base_unit->amount_unit - ($send_count - $base_count);
+                        $rial['amount_unit'] = $unit_rial->amount_unit + ($change_rial);
+                        $text3 = 'افزایش یافت';
+                     }
+                     $change_unit = '  ارز معامله :'.$base_unit->name."</br>"." مقدار ریال به اندازه ".number_format($change_rial).$text3."</br>";
+                     $this->base_model->update_data('currency_unit' , $update_base , array('id' => $base->money_id));
+                     $this->base_model->update_data('currency_unit' , $rial , array('id' => 5));
+                 }
+
+                //other
+
+             }
+
+             $count_deal = " تعداد ارز معامله از : ".number_format($base->count_money)." به ".number_format($deal['count_money'])." تغییر یافت "."</br>";
+             $wage_deal = "  کارمزد معامله از : ".number_format($base->wage)." به ".number_format($deal['wage'])." تغییر یافت "."</br>";
+             $convert_deal = " نرخ تبدیل معامله از  ".number_format($base->convert_money)." به ".number_format($deal['convert_money'])." تغییر یافت "."</br>";
+             $volume_deal = " حجم  معامله از  ".number_format($base->volume_deal)." به ".number_format($deal['volume_deal'])." تغییر یافت "."</br>";
+
             if(isset($_POST['number_shaba'][0])){
               for($i = 0 ; $i < sizeof($_POST['number_shaba']) ; $i++){
                   $bank[] = array(
@@ -542,6 +613,7 @@ if($res == TRUE){
                   );
               }
             }
+
             if(isset($_POST['send_shaba'][0])){
                 for($i = 0 ; $i < sizeof($_POST['send_shaba']) ; $i++){
                     if($_POST['send_shaba'][$i] != '' or $_POST['send_bank'][$i] != '' or $_POST['send_amount'][$i] != '' or $_POST['send_explain'][$i] != ''){
@@ -557,12 +629,14 @@ if($res == TRUE){
                     }
                 }
               }
+
               if(isset($new_bank) and sizeof($new_bank) != 0){
                 $this->base_model->insert_batch('deal_bank' , $new_bank);
               }
               if(isset($bank) and sizeof($bank) != 0){
                 $this->base_model->update_batch('deal_bank' , $bank , 'id');
               }
+              
             $log['user_id'] = $this->session->userdata('id');
             $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
             $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
@@ -626,7 +700,6 @@ if($res == TRUE){
                     $dash = '-';
                     $str = $data['deal']->date_deal;
                     $data['date_deal'] = str_replace($dash, $slash , $str);
-                    $date = $this->convertdate->convert(time());
                     $data['bank'] = $this->base_model->get_data('deal_bank' , '*' , 'result' , array('deal_id'=> $id));
                     $header['title'] = ' ویرایش معامله ';
                     $header['active'] = 'deal';
@@ -700,7 +773,7 @@ if($res == TRUE){
                       'handle_rest'=> htmlspecialchars($_POST['volume_handle'][$i]),
                       'date_handle' => $d , 
                       'time_handle' => $t , 
-                      'date_modified' => '',
+                      'date_modified' => 'ثبت نشده است',
                       'customer_id' => $customer_id,
                       'deal_id'=> $id,
                       'bank_id' => htmlspecialchars($_POST['bank_id'][$i])
@@ -737,7 +810,7 @@ if($res == TRUE){
                 $header['active'] = 'deal';
                 $header['active_sub'] = 'deal_archive';
                 $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname ,customer.id as cust_id, currency_unit.name , sum(deal_handle.volume_handle) as vh , sum(deal_handle.handle_rest) as vr' , 'deal.customer_id = customer.id' ,'row'  , array('deal.id'=>$id) , NULL , NULL , NULL , array('currency_unit','deal.money_id = currency_unit.id') , array('deal_handle','deal_handle.deal_id = deal.id'));
-                if(sizeof($data['deal']) == 0 or $data['deal']->type_deal != 1){
+                if(sizeof($data['deal']) == 0){
                 show_404();
                 }else{
                     $data['customer'] = $this->base_model->get_data('customer' , 'fullname , id' , 'result');
@@ -861,6 +934,7 @@ public function edit_bank(){
       $data['amount'] = $this->input->post('amount_bank');
       $data['explain'] = $this->input->post('bank_explain');
       $a = $bank->deal_id + 100;
+      $bb = $bank->id + 1000;
       $num_sh = " شماره شبا از ".$bank->number_shaba." به ".$data['number_shaba']." تغییر یافت "."</br>";
       $nam_ba = "  نام بانک از ".$bank->name_bank." به ".$data['name_bank']." تغییر یافت "."</br>";
       $amo = " مقدار تعیین شده از ".number_format($bank->amount)." به ".number_format($data['amount'])." تغییر یافت "."</br>";
@@ -870,7 +944,7 @@ public function edit_bank(){
       $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
       $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
       $log['activity_id'] = 18;
-      $log['explain'] = "اطلاعات حساب مربوط به شناسه معامله ".$a."</br>".$num_sh.$nam_ba.$amo.' توضحیات :'.$data['explain']."</br>"." ویرایش شد ";
+      $log['explain'] = "اطلاعات حساب مربوط به شناسه معامله ".$a." با مشخصات : </br> شناسه بانک :  ".$bb."</br>".$num_sh.$nam_ba.$amo.' توضحیات :'.$data['explain']."</br>"." ویرایش شد ";
       $this->base_model->insert_data('log' , $log);
       $message['msg'][0] = 'اطلاعات حساب بانکی با موفقیت ویرایش شد';
       $message['msg'][1] = 'success';
@@ -901,15 +975,16 @@ public function active(){
     if(isset($red_id) and isset($id) and is_numeric($red_id) and is_numeric($id)){
         $data['active'] = $this->uri->segment(5);
         $this->base_model->update_data('deal_bank' , $data , array('id' => $id));
-        $bank = $this->base_model->get_data('deal_bank' , 'name_bank , number_shaba , deal_id , amount' , 'row' , array('id'=> $id));
+        $bank = $this->base_model->get_data('deal_bank' , '*' , 'row' , array('id'=> $id));
         $a = $bank->deal_id + 100;
+        $bb = $bank->id +1000;
         if($data['active'] == 1){$txt = " را فعال کرد ";}else{$txt = ' را غیر فعال کرد ';}
         $date = $this->convertdate->convert(time());
         $log['user_id'] = $this->session->userdata('id');
         $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
         $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
         $log['activity_id'] = 19;
-        $log['explain'] = " حساب بانکی مربوط به شناسه معامله  ".$a." با مشخصات : "." </br> شماره شبا : ".$bank->number_shaba." </br> نام بانک :  ".$bank->name_bank."</br> مقدار تعیین شده : ".number_format($bank->amount)."</br>". $txt;
+        $log['explain'] = " حساب بانکی مربوط به شناسه معامله  ".$a." با مشخصات : "."</br> شناسه بانک : ".$bb." </br> شماره شبا : ".$bank->number_shaba." </br> نام بانک :  ".$bank->name_bank."</br> مقدار تعیین شده : ".number_format($bank->amount)."</br>". $txt;
         $this->base_model->insert_data('log' , $log);
         $seg = $this->uri->segment(6);
         if($seg == 'group'){
@@ -933,7 +1008,7 @@ public function pay_all(){
     $id = $this->uri->segment(4);
     if(isset($deal_id) and isset($id) and is_numeric($deal_id) and is_numeric($id)){
 
-        $handle = $this->base_model->get_data_join('deal_handle' , 'deal' , 'deal_handle.handle_pay , deal_handle.handle_rest , deal_handle.bank_id , deal.volume_pay , deal.volume_rest , deal_bank.pay , deal_bank.number_shaba , deal_bank.name_bank , deal_bank.amount , deal_bank.explain' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id'=> $id) , NULL , NULL , NULL , array('deal_bank','deal_bank.id = deal_handle.bank_id'));
+        $handle = $this->base_model->get_data_join('deal_handle' , 'deal' , 'deal_handle.handle_pay , deal_handle.handle_rest , deal_handle.bank_id , deal.volume_pay , deal.volume_rest , deal_bank.*' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id'=> $id) , NULL , NULL , NULL , array('deal_bank','deal_bank.id = deal_handle.bank_id'));
         if($handle->handle_rest < 0){
             show_404();
         }
@@ -952,7 +1027,8 @@ public function pay_all(){
         $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
         $log['activity_id'] = 13;
         $aa = $deal_id +100;
-        $log['explain'] = " مقدار ".number_format($handle->handle_rest)." به حساب بانکی با مشخصات : </br> شماره شبا : ".$handle->number_shaba." </br> نام بانک : ".$handle->name_bank." </br> مقدار تعیین شده :  ".number_format($handle->amount)."</br> توضحیات : ".$handle->explain."</br> مربوط به شناسه معامله  ".$aa. " به صورت کامل پرداخت شد ";
+        $bb = $handle->bank_id + 1000;
+        $log['explain'] = " مقدار ".number_format($handle->handle_rest)." به حساب بانکی با مشخصات : "."</br> شناسه بانک : ".$bb."</br> شماره شبا : ".$handle->number_shaba." </br> نام بانک : ".$handle->name_bank." </br> مقدار تعیین شده :  ".number_format($handle->amount)."</br> توضحیات : ".$handle->explain."</br> مربوط به شناسه معامله  ".$aa. " به صورت کامل پرداخت شد ";
         $deal_handle['date_modified'] =  $date['year']."-".$date['month_num']."-".$date['day']."</br>".$date['hour'].":".$date['minute'].":".$date['second'];
         $this->base_model->update_data('deal' , $deal , array('id'=>$deal_id));
         $this->base_model->update_data('deal_handle' , $deal_handle , array('id' => $id));
@@ -989,7 +1065,7 @@ public function pay_slice(){
     $id = $this->uri->segment(4);
     if(isset($deal_id) and isset($id) and is_numeric($deal_id) and is_numeric($id)){
         if(isset($_POST['sub'])){
-            $handle = $this->base_model->get_data_join('deal_handle','deal','deal_handle.handle_pay,deal_handle.handle_rest,deal_handle.bank_id,deal.volume_pay , deal.volume_rest ,  deal_bank.pay , deal_bank.number_shaba , deal_bank.name_bank , deal_bank.amount , deal_bank.explain' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id'=> $id) , NULL , NULL , NULL , array('deal_bank','deal_bank.id = deal_handle.bank_id'));
+            $handle = $this->base_model->get_data_join('deal_handle','deal','deal_handle.handle_pay,deal_handle.handle_rest,deal_handle.bank_id,deal.volume_pay , deal.volume_rest ,  deal_bank.*' , 'deal_handle.deal_id = deal.id' , 'row' , array('deal_handle.id'=> $id) , NULL , NULL , NULL , array('deal_bank','deal_bank.id = deal_handle.bank_id'));
             if($handle->handle_rest < 0){
                 show_404();
             }
@@ -1009,7 +1085,8 @@ public function pay_slice(){
             $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
             $log['activity_id'] = 14;
             $aa = $deal_id +100;
-            $log['explain'] = " مقدار ".number_format($slice)." به حساب بانکی با مشخصات : </br> شماره شبا : ".$handle->number_shaba." </br> نام بانک : ".$handle->name_bank." </br> مقدار تعیین شده :  ".number_format($handle->amount)."</br> توضحیات : ".$handle->explain."</br> مربوط به شناسه معامله  ".$aa. " به صورت جزئی پرداخت شد ";
+            $bb = $handle->bank_id + 1000;
+            $log['explain'] = " مقدار ".number_format($slice)." به حساب بانکی با مشخصات :"."</br> شناسه بانک : ".$bb." </br> شماره شبا : ".$handle->number_shaba." </br> نام بانک : ".$handle->name_bank." </br> مقدار تعیین شده :  ".number_format($handle->amount)."</br> توضحیات : ".$handle->explain."</br> مربوط به شناسه معامله  ".$aa. " به صورت جزئی پرداخت شد ";
             $deal_handle['date_modified'] = $log['date_log']."</br>".$log['time_log'];
             $this->base_model->update_data('deal' , $deal , array('id' => $deal_id));
             $this->base_model->update_data('deal_handle' , $deal_handle , array('id' => $id));
@@ -1167,7 +1244,7 @@ public function restore(){
         if(isset($_POST['deal_id']) and isset($_POST['customer_id']) and is_numeric($_POST['deal_id']) and is_numeric($_POST['customer_id'])){
             $deal_id = $this->input->post('deal_id');
             $customer_id = $this->input->post('customer_id');
-            $data = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname ,currency_unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('deal.customer_id'=> $customer_id , 'deal.id'=>$deal_id , 'deal.type_deal'=> 1), NULL , NULL , NULL , array('currency_unit','deal.money_id = currency_unit.id'));
+            $data = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname ,currency_unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('deal.customer_id'=> $customer_id , 'deal.id'=>$deal_id), NULL , NULL , NULL , array('currency_unit','deal.money_id = currency_unit.id'));
             echo json_encode($data);
         }else{
             show_404();
@@ -1192,9 +1269,9 @@ public function restore(){
                         redirect("deal/handle_profile/$id");
                      }else{
                         $a = $_POST['deal_id'][$i] - 100;
-                        $check_deal = $this->base_model->get_data('deal' , 'id' , 'row' , array('id' => $a , 'customer_id'=>$id , 'type_deal'=> 1));
+                        $check_deal = $this->base_model->get_data('deal' , 'id' , 'row' , array('id' => $a , 'customer_id'=>$id));
                         if(sizeof($check_deal) == 0){
-                            $message['msg'][0] = 'لطفا در انتخاب معامله دقت فرمایید که شناسه معامله باید مربوط به معاملات آن شخص و از نوع خرید باشد';
+                            $message['msg'][0] = 'لطفا در انتخاب معامله دقت فرمایید که شناسه معامله باید مربوط به معاملات آن شخص  باشد';
                             $message['msg'][1] = 'danger';
                             $this->session->set_flashdata($message);
                             redirect("deal/handle_profile/$id");
@@ -1217,7 +1294,7 @@ public function restore(){
                       'handle_rest'=> htmlspecialchars($_POST['volume_handle'][$i]),
                       'date_handle' => $d , 
                       'time_handle' => $t , 
-                      'date_modified' => '',
+                      'date_modified' => 'ثبت نشده است',
                       'customer_id' => $customer_id,
                       'deal_id'=> $a,
                       'bank_id' => htmlspecialchars($_POST['bank_id'][$i])

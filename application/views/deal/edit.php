@@ -27,7 +27,7 @@ $msg = $this->session->userdata('msg');?>
 					<div class="row">
 						<div class="">
 							<fieldset>
-                            <?php if($deal->type_deal == 1){$legend = 'اطلاعات خرید'; $icon = 'icon-cart5'; $txt = 'نام فروشنده : ';}else{$legend = 'اطلاعات فروش'; $icon = 'icon-coins'; $txt = 'نام خریدار : ';} $money = $deal->money_id;?>
+<?php if($deal->type_deal == 1){$legend = 'اطلاعات خرید'; $icon = 'icon-cart5'; $txt = 'نام فروشنده : '; $readonly = ''; $style = '';}else{$legend = 'اطلاعات فروش'; $icon = 'icon-coins'; $txt = 'نام خریدار : '; $readonly = 'readonly'; $style = 'style = "background-color :#e2e2e2;"';} $money = $deal->money_id;?>
 								<legend class="text-semibold"><i class="<?php echo $icon; ?> position-left"></i><?php echo $legend;?></legend>
 								<div class="form-group">
 									<label><?php echo $txt;?></label>
@@ -40,10 +40,14 @@ $msg = $this->session->userdata('msg');?>
 										<div class="form-group">
 											<label>نام ارز : </label>
 											<select class="form-control" name="money_id" required>
+											<?php if($money != 5){?>
 												<option value="1"<?php if($money == 1){echo 'selected';} ?>>دلار</option>
 												<option value="2"<?php if($money == 2){echo 'selected';} ?>>یورو</option>
 												<option value="3"<?php if($money == 3){echo 'selected';} ?>>یوان</option>
 												<option value="4"<?php if($money == 4){echo 'selected';} ?>>درهم</option>
+											<?php  } else {?>
+												<option value="5" selected>ریال</option>
+											<?php } ?>
 											</select>
 										</div>
 									</div>
@@ -62,7 +66,7 @@ $msg = $this->session->userdata('msg');?>
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>کارمزد :</label>
-											<input type="text"  value="<?php echo number_format($deal->wage); ?>" id="wage" placeholder="100" autocomplete="off" class="form-control" required>
+											<input type="text"  value="<?php echo number_format($deal->wage); ?>" id="wage" placeholder="100" autocomplete="off" class="form-control" <?php echo $readonly." ".$style;?> required>
 											<input type="hidden" value="<?php echo  $deal->wage; ?>" name="wage">
 										</div>
 									</div>
@@ -91,10 +95,9 @@ $msg = $this->session->userdata('msg');?>
 					<div class="row">
 						<div class="">
 							<fieldset>
-								<?php if($deal->type_deal == 1){ ?>
 								<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانکی</legend>
 								<div class="field_edit">
-                                  <?php if(sizeof($bank) == 0){ ?>
+              <?php if(sizeof($bank) == 0){ ?>
 									<div>
 										<div class="row">
 											<div class="col-md-6">
@@ -134,8 +137,7 @@ $msg = $this->session->userdata('msg');?>
 								</div>
 
 								  <?php }else{
-								  foreach($bank as $key => $rows){
-                                      ?>
+								  foreach($bank as $key => $rows){ ?>
 									<div>
 										<div class="row">
 											<div class="col-md-6">
@@ -177,7 +179,7 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 
 									</div>
-                                  <?php } } }?>
+                                  <?php } } ?>
 								</div>
 								<div class="row">
 								<div class="col-md-6">

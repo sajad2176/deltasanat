@@ -89,7 +89,7 @@ $msg = $this->session->userdata('msg');?>
 					<div class="row">
 						<div class="">
 							<fieldset>
-<!--
+
 								<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانکی</legend>
 								<div class="field_wrapper2">
 									<div>
@@ -128,7 +128,7 @@ $msg = $this->session->userdata('msg');?>
 										</div>
 									</div>
 								</div>
--->
+
 								<input type="hidden" name="deal_type" value="2">
 								<div class="row">
 								<div class="col-md-6">
@@ -169,16 +169,16 @@ $msg = $this->session->userdata('msg');?>
 	<div class="panel panel-flat">
 			<div class="panel-body">
 				<div style="padding-right: 0px" class="panel-heading">
-					<h6 class="panel-title"> آمار مشتری :  <span id="name_customer"></span></h6>
+					<h6 class="panel-title rightbox display-inline-block mt-10"> آمار مشتری :  <span id="name_customer"></span></h6>
+					<h6 class="lefttbox " ><?php echo substr($date , 0 , 10);?></h6>
 				</div>
-				
 
 				<div class="table-responsive">
 					<table class="table text-nowrap">
 						<thead>
 							<tr>
 								<th width="50%">ارز</th>
-								<th class="text-success-800" width="50%">مانده</th>
+								<th width="50%">مانده</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -191,7 +191,7 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 								</td>
 								<td>
-									<h6 class="text-semibold text-success-800 no-margin " id="dollar">-</h6>
+									<h6 class="text-semibold no-margin " id="dollar">-</h6>
 								</td>
 							</tr>
 							<tr>
@@ -205,7 +205,7 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 								</td>
 								<td>
-									<h6 class=" text-semibold text-success-800 no-margin" id="euro">-</h6>
+									<h6 class=" text-semibold no-margin" id="euro">-</h6>
 								</td>
 							</tr>
 							<tr>
@@ -218,7 +218,7 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 								</td>
 								<td>
-									<h6 class=" text-semibold text-success-800 no-margin" id="yuan">-</h6>
+									<h6 class=" text-semibold no-margin" id="yuan">-</h6>
 								</td>
 							</tr>
 							<tr>
@@ -230,27 +230,49 @@ $msg = $this->session->userdata('msg');?>
 									</div>
 								</td>
 								<td>
-									<h6 class="text-semibold text-success-800 no-margin" id="derham">-</h6>
+									<h6 class="text-semibold no-margin" id="derham">-</h6>
 								</td>
 							</tr>
-							<tr>
-								<td>
-									<div class="media-body">
-										<div class="media-heading">
-											<h5 class="letter-icon-title">ریال</h5>
-										</div>
-									</div>
-								</td>
-								<td>
-									<h6 class="text-semibold text-success-800 no-margin" id="rial">-</h6>
-								</td>
-							</tr>
+							
 						</tbody>
 					</table>
 				</div>
 			</div>
 		</div>
-</div>
+			<div class="panel panel-flat">
+			<div class="panel-body">
+				<div style="padding-right: 0px" class="panel-heading">
+					<h6 class="panel-title rightbox display-inline-block mt-10"> مانده کلی :  <span id="name_customer"></span></h6>
+					
+				</div>
+
+				<div class="table-responsive">
+					<table class="table text-nowrap">
+						<thead>
+							<tr>
+								<th width="50%">ارز</th>
+								<th width="50%">مانده</th>
+							</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>
+								<div class="media-body">
+									<div class="media-heading">
+										<h5 class="letter-icon-title">ریال</h5>
+									</div>
+								</div>
+							</td>
+							<td>
+								<h6 class="text-semibold no-margin" id="rial">-</h6>
+							</td>
+						</tr>	
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
 <?php $str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");?>
 
 

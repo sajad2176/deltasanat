@@ -109,7 +109,7 @@ function autocomplete( inp, arr, want , give) {
                 match = arr[ i ].slice( arr[ i ].indexOf( search ), -lastIndx );
             }
             if ( match.length == search.length ) {
-                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + " | طلب کار :  " + numeral(want[i]).format('0,0') + ' |  بده کار  :  ' + numeral(give[i]).format('0,0');
+                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + " | طلب کار :  " + numeral(want[i]).format('0,0') + ' |  بدهکار  :  ' + numeral(give[i]).format('0,0');
 
                 b = document.createElement( "DIV" );
                 b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";

@@ -57,13 +57,13 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<td class="text-center <?php if($deals->volume_deal < $deals->volume_pay){echo 'text-danger';}?>"><?php echo number_format($deals->volume_pay); ?> </td>
 				<td class="text-center <?php if($deals->volume_rest < 0){echo 'text-danger';}?>" ><?php echo number_format($deals->volume_rest); ?></td>
 				<td class="text-center"><?php echo $deals->date_deal."</br>".$deals->time_deal; ?> </td>
-				<td class="text-center"><?php if($deals->date_modified == ''){echo 'ثبت نشده است';}else{ echo $deals->date_modified;}?></td>
+				<td class="text-center"><?php echo $deals->date_modified; ?></td>
 				<td class="text-center">
 					<ul class="icons-list">
-<?php if($this->session->has_userdata('see_handle') and $this->session->userdata('see_handle') == TRUE and $deals->type_deal == 1){?><li title="هماهنگی ها" data-toggle="tooltip" class="text-success"><a href="<?php echo base_url('deal/handle/').$deals->id ;?>"><i class="icon-notebook"></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('see_handle') and $this->session->userdata('see_handle') == TRUE){?><li title="هماهنگی ها" data-toggle="tooltip" class="text-success"><a href="<?php echo base_url('deal/handle/').$deals->id ;?>"><i class="icon-notebook"></i></a></li><?php } ?>
 <?php if($this->session->has_userdata('edit_deal') and $this->session->userdata('edit_deal') == TRUE){?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$deals->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>
 <?php if($this->session->has_userdata('see_photo') and $this->session->userdata('see_photo') == TRUE){?><li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$deals->id;?>"><i class="icon-stack-picture"></i></a></li><?php }?>
-<?php if($this->session->has_userdata('add_bank') and $this->session->userdata('add_bank') == TRUE and $deals->type_deal == 1){?><li title="افزودن بانک" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#add_bank_modal"><i onclick = "add_bank(<?php echo $deals->id;?>)" class="icon-credit-card"></i></li><?php } ?>
+<?php if($this->session->has_userdata('add_bank') and $this->session->userdata('add_bank') == TRUE ){?><li title="افزودن بانک" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#add_bank_modal"><i onclick = "add_bank(<?php echo $deals->id;?>)" class="icon-credit-card"></i></li><?php } ?>
 <?php if($this->session->has_userdata('delete_deal') and $this->session->userdata('delete_deal') == TRUE){?><li class="text-danger" data-toggle="tooltip" title="حذف معامله"><a data-toggle="modal" href="#modal_theme_danger1"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $deals->id;?> , <?php echo $deals->volume_pay; ?>)" ></i></a></li><?php } ?>
 					</ul>
 				</td>
@@ -201,10 +201,10 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 					<tr>
 						<th width="8%">شناسه معامله</th>
 						<th width="10%">نام مشتری</th>
-						<th width="12%">حجم هماهنگ شده</th>
-						<th width="12%">حجم پرداخت شده</th>
-						<th width="12%">حجم باقی مانده </th>
-						<th width="16%">اطلاعات حساب</th>
+						<th width="14%">حجم هماهنگ شده</th>
+						<th width="14%">حجم پرداخت شده</th>
+						<th width="14%">حجم باقی مانده </th>
+						<th width="10%"> شناسه بانک</th>
 						<th width="10%">تاریخ ثبت</th>
 						<th width="10%"> آخرین تغییر</th>
 						<th width="12%" class="text-center"> ابزار</th>
@@ -218,11 +218,11 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 						<td><?php echo $handles->deal_id + 100;?></td>
 						<td><?php echo $handles->fullname;?></td>
 						<td><?php echo number_format($handles->volume_handle);?></td>
-						<td><?php echo number_format($handles->handle_pay);?></td>
-						<td><?php echo number_format($handles->handle_rest);?></td>
-						<td><?php echo $handles->number_shaba ."</br>".$handles->name_bank; ?></td>
+						<td class="<?php if($handles->handle_pay > $handles->volume_handle){echo 'text-danger';}?>"><?php echo number_format($handles->handle_pay);?></td>
+						<td class="<?php if($handles->handle_rest < 0){echo 'text-danger';}?>"><?php echo number_format($handles->handle_rest);?></td>
+						<td><?php echo $handles->bank_id + 1000; ?></td>
 						<td><?php echo $handles->date_handle."</br>".$handles->time_handle;?></td>
-						<td><?php if($handles->date_modified == ''){echo 'ثبت نشده است';}else{echo $handles->date_modified;}?></td>
+						<td><?php echo $handles->date_modified?></td>
 						<td class="text-center">
 											<ul class="icons-list">
 												<?php if($handles->handle_rest > 0){?>
@@ -761,9 +761,8 @@ function history(id , deal_id){
 						 
 						var a = span.appendChild(document.createElement('a'));
 						a.setAttribute('class' , 'btn btn-danger mt-25');
-			a.setAttribute('href' , "<?php echo base_url('deal/restore/') ?>"+res[i].id + '/' + deal_id + '/group/'+<?php echo $this->uri->segment(3);?> );
+			            a.setAttribute('href' , "<?php echo base_url('deal/restore/') ?>"+res[i].id + '/' + deal_id + '/group/'+<?php echo $this->uri->segment(3);?> );
 						a.innerHTML = 'حذف';
-						
 					}
 					modal.replaceChild(div , modal.firstChild);
 				}
