@@ -27,7 +27,7 @@ $msg = $this->session->userdata('msg');?>
 					<div class="row">
 						<div class="">
 							<fieldset>
-<?php if($deal->type_deal == 1){$legend = 'اطلاعات خرید'; $icon = 'icon-cart5'; $txt = 'نام فروشنده : '; $readonly = ''; $style = '';}else{$legend = 'اطلاعات فروش'; $icon = 'icon-coins'; $txt = 'نام خریدار : '; $readonly = 'readonly'; $style = 'style = "background-color :#e2e2e2;"';} $money = $deal->money_id;?>
+<?php if($deal->type == 1){$legend = 'اطلاعات خرید'; $icon = 'icon-cart5'; $txt = 'نام فروشنده : '; $readonly = 'readonly'; $style = 'style = "background-color :#e2e2e2;"';}else{$legend = 'اطلاعات فروش'; $icon = 'icon-coins'; $txt = 'نام خریدار : '; $readonly = ''; $style = '';} $money = $deal->money_id;?>
 								<legend class="text-semibold"><i class="<?php echo $icon; ?> position-left"></i><?php echo $legend;?></legend>
 								<div class="form-group">
 									<label><?php echo $txt;?></label>
@@ -40,13 +40,12 @@ $msg = $this->session->userdata('msg');?>
 										<div class="form-group">
 											<label>نام ارز : </label>
 											<select class="form-control" name="money_id" required>
-											<?php if($money != 5){?>
-												<option value="1"<?php if($money == 1){echo 'selected';} ?>>دلار</option>
-												<option value="2"<?php if($money == 2){echo 'selected';} ?>>یورو</option>
-												<option value="3"<?php if($money == 3){echo 'selected';} ?>>یوان</option>
-												<option value="4"<?php if($money == 4){echo 'selected';} ?>>درهم</option>
+											<?php if($money != 10){
+												foreach($unit as $units){ ?>
+												<option value="<?php echo $units->id; ?>"<?php if($units->id == $money){echo 'selected';} ?>><?php echo $units->name; ;?></option>
+												 <?php }?>
 											<?php  } else {?>
-												<option value="5" selected>ریال</option>
+												<option value="10" selected>ریال</option>
 											<?php } ?>
 											</select>
 										</div>
@@ -74,19 +73,19 @@ $msg = $this->session->userdata('msg');?>
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>نرخ تبدیل :</label>
-											<input type="text" value="<?php echo number_format($deal->convert_money);?>" id="convert" placeholder="100,000" autocomplete="off" class="form-control" required >
-											<input type="hidden" value="<?php echo $deal->convert_money;?>" name="convert_money">
+											<input type="text" value="<?php echo number_format($deal->convert);?>" id="convert" placeholder="100,000" autocomplete="off" class="form-control" required >
+											<input type="hidden" value="<?php echo $deal->convert;?>" name="convert">
 										</div>
 									</div>
 								</div>
 								<div class="">
 									<div class="form-group">
 										<label>مبلغ ریالی :</label>
-										<p class="form-control" id="volume_deal"><?php echo number_format($deal->volume_deal);?></p>
+										<p class="form-control" id="volume_deal"><?php echo number_format($deal->volume);?></p>
 										<p id="alert" class="text-danger"></p>
 									</div>
 								</div>
-								<input type="hidden" value = "<?php echo $deal->volume_pay?>" name="volume_pay" id="vpay">
+								<input type="hidden" value = "<?php echo $deal->pay?>" name="pay" id="vpay">
 
 						</div>
 						</fieldset>
@@ -95,9 +94,9 @@ $msg = $this->session->userdata('msg');?>
 					<div class="row">
 						<div class="">
 							<fieldset>
-								<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانکی</legend>
+								<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانک مشتری</legend>
 								<div class="field_edit">
-              <?php if(sizeof($bank) == 0){ ?>
+              <?php if(empty($bank)){ ?>
 									<div>
 										<div class="row">
 											<div class="col-md-6">
@@ -144,7 +143,7 @@ $msg = $this->session->userdata('msg');?>
 											
 												<div class="form-group">
 													<label>شماره شبا : </label>
-													<input onkeyup="show_bank(this)" value="<?php echo $rows->number_shaba;?>" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="number_shaba[]" class="form-control">
+													<input onkeyup="show_bank(this)" value="<?php echo $rows->shaba;?>" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="shaba[]" class="form-control">
 												</div>
 											</div>
 
@@ -154,18 +153,20 @@ $msg = $this->session->userdata('msg');?>
 												<div class="form-group">
 													<label>بانک :</label>
 													<span class="text-primary" style="font-size:12px; display:none;">(طبق شماره شبا وارد شده بانکی پیدا نشد. نام بانک را وارد کنید)</span>
-													<input type="text" name="name_bank[]" value="<?php echo $rows->name_bank; ?>" placeholder="ملت،ملی،.." class="form-control">
+													<input type="text" name="name[]" value="<?php echo $rows->name; ?>" placeholder="ملت،ملی،.." class="form-control">
 												</div>
 											</div>
 										</div>
 										<input type="hidden" name="bank_id[]" value="<?php echo $rows->id;?>" >
+										<input type="hidden" name="rest[]" value="<?php echo $rows->rest;?>" >
+										<input type="hidden" name="rest_handle[]" value="<?php echo $rows->rest_handle;?>" >
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
 												<label> تعیین حجم : </label>
 												<input type="hidden" value="<?php echo $rows->pay;?>">
 												<input type="text" onKeyUp="amount_bank(this)" value = "<?php echo number_format($rows->amount); ?>" placeholder="100,000" class="form-control">
-												<input type="hidden" name="amount_bank[]" value="<?php echo $rows->amount;?>">
+												<input type="hidden" name="amount[]" value="<?php echo $rows->amount;?>">
 												<p class="text-danger" style ="display: none;"></p>
 											</div>
 										</div>

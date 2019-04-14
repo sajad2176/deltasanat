@@ -13,7 +13,7 @@ $msg = $this->session->userdata('msg');?>
 		</li>
 		<li><a href="<?php echo base_url('deal/buy')?>">معاملات</a>
 		</li>
-		<li class="active"> خرید </li>
+		<li class="active"> افزودن خرید </li>
 	</ul>
 
 </div>
@@ -30,7 +30,7 @@ $msg = $this->session->userdata('msg');?>
 								<legend class="text-semibold"><i class="icon-cart5 position-left"></i> اطلاعات خرید</legend>
 								<div class="form-group">
 									<label>نام فروشنده : </label>
-									<input class="form-control" onFocus="search_customer(this)" name="customer" type="text" placeholder="نام فروشنده خود را وارد کنید" autocomplete="off" required>
+									<input class="form-control" onFocus="search_customer(this)" name="customer" type="text" placeholder="نام فروشنده خود را وارد کنید" autocomplete="off" required autofocus>
 									<p class="text-primary" style="display:none;"></p>
 								</div>
 							
@@ -40,10 +40,9 @@ $msg = $this->session->userdata('msg');?>
 										<div class="form-group">
 											<label>نام ارز : </label>
 											<select class="form-control" name="money_id" required>
-												<option value="1">دلار</option>
-												<option value="2">یورو</option>
-												<option value="3">یوان</option>
-												<option value="4">درهم</option>
+											<?php foreach($unit as $units){ ?>
+												<option value="<?php echo $units->id;?>"><?php echo $units->name;?></option>
+											<?php } ?>
 											</select>
 										</div>
 									</div>
@@ -62,7 +61,7 @@ $msg = $this->session->userdata('msg');?>
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>کارمزد :</label>
-											<input type="text" id="wage" placeholder="100" autocomplete="off" class="form-control" required>
+											<p id="wage" class="form-control" style="background-color:#e2e2e2;">0</p>
 											<input type="hidden" name="wage" value = "0">
 										</div>
 									</div>
@@ -71,7 +70,7 @@ $msg = $this->session->userdata('msg');?>
 										<div class="form-group">
 											<label>نرخ تبدیل :</label>
 											<input type="text" id="convert" placeholder="100,000" autocomplete="off" class="form-control" required >
-											<input type="hidden" name="convert_money" value ="0">
+											<input type="hidden" name="convert" value ="0">
 										</div>
 									</div>
 								</div>
@@ -89,21 +88,21 @@ $msg = $this->session->userdata('msg');?>
 					<div class="row">
 						<div class="">
 							<fieldset>
-								<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانکی</legend>
+								<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانک مشتری </legend>
 								<div class="field_wrapper2">
 									<div>
 										<div class="row">
 											<div class="col-md-6">
 												<div class="form-group">
 													<label>شماره شبا : </label>
-													<input onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="number_shaba[]" class="form-control">
+													<input onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="shaba[]" class="form-control">
 												</div>
 											</div>
 											<div class="col-md-6">
 												<div class="form-group">
 													<label>بانک :</label>
 													<span class="text-primary" style="font-size:12px; display:none;">(طبق شماره شبا وارد شده بانکی پیدا نشد. نام بانک را وارد کنید)</span>
-													<input type="text" name="name_bank[]" placeholder="ملت،ملی،.." class="form-control">
+													<input type="text" name="name[]" placeholder="ملت،ملی،.." class="form-control">
 												</div>
 											</div>
 										</div>
@@ -113,7 +112,7 @@ $msg = $this->session->userdata('msg');?>
 											<div class="form-group">
 												<label>تعیین حجم  : </label>
 												<input type="text" onKeyUp="amount_bank(this)" placeholder="100,000" class="form-control">
-												<input type="hidden" name="amount_bank[]">
+												<input type="hidden" name="amount[]">
 												<p class="text-danger" style ="display: none;">مبلغ وارد شده بیشتر از حجم معامله است</p>
 											</div>
 										</div>
@@ -127,7 +126,7 @@ $msg = $this->session->userdata('msg');?>
 										</div>
 									</div>
 								</div>
-								<input type="hidden" name="deal_type" value="1">
+								<input type="hidden" name="type" value="1">
 								<div class="row">
 								<div class="col-md-6">
 								<div class="form-group">

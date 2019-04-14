@@ -54,7 +54,7 @@ $msg = $this->session->userdata('msg');?>
 						<div class="col-md-2">
 							<div class="form-group">
 								<label>نوع معامله : </label>
-								<select class="form-control" name="deal_type" required>
+								<select class="form-control" name="type" required>
 									<option value="0" <?php if($t == 0){echo 'selected';}?> >همه</option>
 									<option value="1" <?php if($t == 1){echo 'selected';}?> >خرید</option>
 									<option value="2" <?php if($t == 2){echo 'selected';}?> >فروش</option>
@@ -67,10 +67,9 @@ $msg = $this->session->userdata('msg');?>
 								<label>ارز معامله : </label>
 								<select class="form-control" name="money_id" required>
 								    <option value="0" <?php if($m == 0){echo 'selected';}?>>همه</option>
-									<option  value="1" <?php if($m == 1){echo 'selected';}?> >دلار</option>
-									<option value="2" <?php if($m == 2){echo 'selected';}?> >یورو</option>
-									<option value="3"  <?php if($m == 3){echo 'selected';}?> >یوان</option>
-									<option value="4"  <?php if($m == 4){echo 'selected';}?> >درهم</option>
+										<?php foreach($unit as $units){ ?>
+											<option  value="<?php echo $units->id;?>" <?php if($units->id == $m){echo 'selected';}?> ><?php echo $units->name;?></option>
+										<?php } ?>	
 								</select>
 							</div>
 						</div>
@@ -106,7 +105,7 @@ $msg = $this->session->userdata('msg');?>
 		<tbody>
 
 			<?php 
-			if(sizeof($deal) == 0){ ?>
+			if(empty($deal)){ ?>
 			<tr><td colspan = '11' class='text-center p-20'>موردی یافت نشد</td></tr>
 			<?php }else{
 			$num = $this->uri->segment(3) + 1;
@@ -121,22 +120,22 @@ $msg = $this->session->userdata('msg');?>
 					</a>
 				</td>
 				<td>
-					<?php if($rows->type_deal == 1){echo 'خرید';}else{echo 'فروش';}?>
+					<?php if($rows->type == 1){echo 'خرید';}else{echo 'فروش';}?>
 				</td>
 				<td>
 					<?php echo number_format($rows->count_money)." ".$rows->name;?>
 				</td>
 				<td>
-					<?php echo number_format($rows->convert_money); ?>
+					<?php echo number_format($rows->convert); ?>
 				</td>
-				<td class="<?php if($rows->volume_deal < $rows->volume_pay){echo 'text-danger';}?>">
-					<?php echo number_format($rows->volume_deal);?>
+				<td class="<?php if($rows->volume < $rows->pay){echo 'text-danger';}?>">
+					<?php echo number_format($rows->volume);?>
 				</td>
-				<td class="<?php if($rows->volume_deal < $rows->volume_pay){echo 'text-danger';}?>">
-					<?php echo number_format($rows->volume_pay);?>
+				<td class="<?php if($rows->volume < $rows->pay){echo 'text-danger';}?>">
+					<?php echo number_format($rows->pay);?>
 				</td>
-				<td class="<?php if($rows->volume_rest < 0){echo 'text-danger';}?>">
-					<?php echo number_format($rows->volume_rest);?>
+				<td class="<?php if($rows->rest < 0){echo 'text-danger';}?>">
+					<?php echo number_format($rows->rest);?>
 				</td>
 				<td>
 					<?php echo $rows->date_deal."</br>".$rows->time_deal; ?>
@@ -149,7 +148,7 @@ $msg = $this->session->userdata('msg');?>
 <?php if($this->session->has_userdata('see_handle') and $this->session->userdata('see_handle') == TRUE ){?><li title="هماهنگی ها" data-toggle="tooltip" class="text-success"><a href="<?php echo base_url('deal/handle/').$rows->id;?>"><i class="icon-notebook"></i></a></li><?php } ?>
 <?php if($this->session->has_userdata('edit_deal') and $this->session->userdata('edit_deal') == TRUE){?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>
 <?php if($this->session->has_userdata('see_photo') and $this->session->userdata('see_photo') == TRUE){?><li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$rows->id;?>"><i class="icon-stack-picture"></i></a></li><?php } ?>
-<?php if($this->session->has_userdata('delete_deal') and $this->session->userdata('delete_deal') == TRUE){?><li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->volume_pay; ?>)" ></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('delete_deal') and $this->session->userdata('delete_deal') == TRUE){?><li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->pay; ?>)" ></i></a></li><?php } ?>
 					</ul>
 				</td>
 			</tr>
@@ -210,7 +209,7 @@ $msg = $this->session->userdata('msg');?>
 		  confirmDelete.style.display = 'none';
 		  return;
 	  }else{
-		  titleDelete.innerHTML = "با حذف معامله تمام اطلاعات مربوط به معامله ، هماهنگی ها ،اطلاعات بانکی حذف خواهد شد.</br> آیا می خواهید ادامه دهید؟";
+		  titleDelete.innerHTML = " آیا می خواهید ادامه دهید؟";
 		  closeDelete.style.display = 'inline-block';
 		  confirmDelete.style.display = 'inline-block';
 		  confirmDelete.setAttribute('href' , "<?php echo base_url('deal/delete_deal/')?>" + id);
@@ -259,23 +258,23 @@ $msg = $this->session->userdata('msg');?>
 			  a_customer.innerHTML = result[i].fullname;
 				
 				var td_type = tr.appendChild( document.createElement('td'));
-				if(result[i].type_deal == 1){var type = 'خرید';}else{var type = 'فروش';}
+				if(result[i].type == 1){var type = 'خرید';}else{var type = 'فروش';}
 				td_type.innerHTML = type;
 				
 				var td_count = tr.appendChild( document.createElement( 'td' ) );
 				td_count.innerHTML = numeral(result[i].count_money).format('0,0') + ' ' + result[i].name;
                 
 				var td_convert = tr.appendChild(document.createElement('td'));
-				td_convert.innerHTML = numeral(result[i].convert_money).format('0,0');
+				td_convert.innerHTML = numeral(result[i].convert).format('0,0');
 				
 				var td_volume = tr.appendChild(document.createElement('td'));
-				td_volume.innerHTML = numeral(result[i].volume_deal).format('0,0');
+				td_volume.innerHTML = numeral(result[i].volume).format('0,0');
 				
 				var td_pay = tr.appendChild(document.createElement('td'));
-				td_pay.innerHTML = numeral(result[i].volume_pay).format('0,0');
+				td_pay.innerHTML = numeral(result[i].pay).format('0,0');
 				
 				var td_rest = tr.appendChild(document.createElement('td'));
-				td_rest.innerHTML = numeral(result[i].volume_rest).format('0,0');
+				td_rest.innerHTML = numeral(result[i].rest).format('0,0');
 
 				var td_date = tr.appendChild(document.createElement('td'));
 				td_date.innerHTML = result[i].date_deal + '</br>' + result[i].time_deal;

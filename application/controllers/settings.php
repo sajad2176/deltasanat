@@ -105,25 +105,25 @@ class Settings extends CI_Controller {
        $date = $this->convertdate->convert(time());
        $deal['count_money'] = $this->input->post('count');
        $deal['wage'] = 0;
-       $deal['convert_money'] = 1;
-       $deal['volume_deal'] = $this->input->post('count');
-       $deal['volume_pay'] = 0;
-       $deal['volume_rest'] = $this->input->post('count');
+       $deal['convert'] = 1;
+       $deal['volume'] = $this->input->post('count');
+       $deal['pay'] = 0;
+       $deal['rest'] = $this->input->post('count');
        $deal['explain'] = '';
        $deal['date_deal'] = $date_deal;
        $deal['time_deal'] = $time_deal;
        $deal['date_modified'] = 'ثبت نشده است';
-       $deal['type_deal'] = $this->input->post('type_deal');
+       $deal['type'] = $this->input->post('type');
        $deal['customer_id'] = $id;
-       $deal['money_id'] = 5;
+       $deal['money_id'] = 10;
 
-       $amount_unit = $this->base_model->get_data('currency_unit' , 'amount_unit' , 'row' , array('id'=> 5));
-       if($deal['type_deal'] == 1){
-           $unit['amount_unit'] = $amount_unit->amount_unit + $deal['count_money'];
+       $rial = $this->base_model->get_data('unit' , 'amount' , 'row' , array('id'=> 10));
+       if($deal['type'] == 1){
+           $unit_rial['amount'] = $rial->amount + $deal['count_money'];
            $act = 9;
            $text = " افزیش یافت ";
        }else{
-           $unit['amount_unit'] = $amount_unit->amount_unit - $deal['count_money']; 
+           $unit_rial['amount'] = $rial->amount - $deal['count_money']; 
            $act = 10;
            $text = " کاهش یافت ";
        }
@@ -134,21 +134,21 @@ class Settings extends CI_Controller {
         $this->session->set_flashdata($message);
         redirect("settings/rest_unit");
     }
-    $this->base_model->update_data('currency_unit' , $unit , array('id' => 5)); 
+    $this->base_model->update_data('unit' , $unit_rial , array('id' => 10)); 
 
     $aa = $deal_id + 100;
     $log['user_id'] = $this->session->userdata('id');
     $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
     $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
     $log['activity_id'] = $act;
-    $log['explain'] = " نام مشتری :  ".$customer['fullname']." | شناسه معامله : ".$aa . " | ارز معامله : ریال | تعداد ارز : ".number_format($deal['count_money']) ." | کارمزد : 0 | نرخ تبدیل : 1"." حجم معامله :  ".number_format($deal['volume_deal'])." ریال "." | مقدار ارز ریال به اندازه  ".number_format($deal['count_money'])." ".$text;
+    $log['explain'] = " نام مشتری :  ".$customer['fullname']." | شناسه معامله : ".$aa . " | ارز معامله : ریال | تعداد ارز : ".number_format($deal['count_money']) ." | کارمزد : 0 | نرخ تبدیل : 1"." حجم معامله :  ".number_format($deal['volume'])." ریال "." | مقدار ارز ریال به اندازه  ".number_format($deal['count_money'])." ".$text;
     $this->base_model->insert_data('log' , $log);
     $message['msg'][0] = 'اطلاعات با موفقیت ثبت شد';
     $message['msg'][1] = 'success';
     $this->session->set_flashdata($message);
     redirect("settings/rest_unit");
     }else{
-        $total_rows = $this->base_model->get_count("deal" , array('money_id'=> 5));
+        $total_rows = $this->base_model->get_count("deal" , array('money_id'=> 10));
         $config['base_url'] = base_url('settings/rest');
         $config['total_rows'] = $total_rows;
         $config['per_page'] = '10';
@@ -175,7 +175,7 @@ class Settings extends CI_Controller {
         $config['suffix'] = "";
     $this->pagination->initialize($config);
     $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;      
-    $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , customer.id as cust_id ,currency_unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('money_id'=> 5) , $config['per_page'] , $page , array('deal.id' , 'DESC') , array('currency_unit','deal.money_id = currency_unit.id'));
+    $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , customer.id as cust_id ,unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('money_id'=> 10) , $config['per_page'] , $page , array('deal.id' , 'DESC') , array('unit','deal.money_id = unit.id'));
     $data['page'] = $this->pagination->create_links();
     $data['count'] = $config['total_rows'];
     $date = $this->convertdate->convert(time());

@@ -50,12 +50,12 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 			<tr>
                 <td class="text-center"><?php echo $deals->id + 100; ?></td>
                 <td class="text-center"><?php echo $deals->fullname; ?></td>
-				<td class="text-center"><?php if($deals->type_deal == 1 ){echo 'خرید';}else{echo 'فروش';} ?></td>
+				<td class="text-center"><?php if($deals->type == 1 ){echo 'خرید';}else{echo 'فروش';} ?></td>
 				<td class="text-center"><?php echo number_format($deals->count_money) . " " . $deals->name;?></td>
-				<td class="text-center"><?php echo number_format($deals->convert_money); ?></td>
-				<td class="text-center <?php if($deals->volume_deal < $deals->volume_pay){echo 'text-danger';}?>"><?php echo number_format($deals->volume_deal); ?> </td>
-				<td class="text-center <?php if($deals->volume_deal < $deals->volume_pay){echo 'text-danger';}?>"><?php echo number_format($deals->volume_pay); ?> </td>
-				<td class="text-center <?php if($deals->volume_rest < 0){echo 'text-danger';}?>" ><?php echo number_format($deals->volume_rest); ?></td>
+				<td class="text-center"><?php echo number_format($deals->convert); ?></td>
+				<td class="text-center <?php if($deals->volume < $deals->pay){echo 'text-danger';}?>"><?php echo number_format($deals->volume); ?> </td>
+				<td class="text-center <?php if($deals->volume < $deals->pay){echo 'text-danger';}?>"><?php echo number_format($deals->pay); ?> </td>
+				<td class="text-center <?php if($deals->rest < 0){echo 'text-danger';}?>" ><?php echo number_format($deals->rest); ?></td>
 				<td class="text-center"><?php echo $deals->date_deal."</br>".$deals->time_deal; ?> </td>
 				<td class="text-center"><?php echo $deals->date_modified; ?></td>
 				<td class="text-center">
@@ -64,7 +64,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 <?php if($this->session->has_userdata('edit_deal') and $this->session->userdata('edit_deal') == TRUE){?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$deals->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>
 <?php if($this->session->has_userdata('see_photo') and $this->session->userdata('see_photo') == TRUE){?><li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$deals->id;?>"><i class="icon-stack-picture"></i></a></li><?php }?>
 <?php if($this->session->has_userdata('add_bank') and $this->session->userdata('add_bank') == TRUE ){?><li title="افزودن بانک" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#add_bank_modal"><i onclick = "add_bank(<?php echo $deals->id;?>)" class="icon-credit-card"></i></li><?php } ?>
-<?php if($this->session->has_userdata('delete_deal') and $this->session->userdata('delete_deal') == TRUE){?><li class="text-danger" data-toggle="tooltip" title="حذف معامله"><a data-toggle="modal" href="#modal_theme_danger1"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $deals->id;?> , <?php echo $deals->volume_pay; ?>)" ></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('delete_deal') and $this->session->userdata('delete_deal') == TRUE){?><li class="text-danger" data-toggle="tooltip" title="حذف معامله"><a data-toggle="modal" href="#modal_theme_danger1"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $deals->id;?> , <?php echo $deals->pay; ?>)" ></i></a></li><?php } ?>
 					</ul>
 				</td>
 			
@@ -151,7 +151,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<thead>
 					<tr>
 						<th width="8%"  class="text-center">شناسه بانک</th>
-						<th width="8%" class="text-center">شناسه معامله</th>
+						<th width="8%" class="text-center"> معامله</th>
 						<th width="14%" class="text-center">نام بانک</th>
 						<th width="16%" class="text-center">شماره شبا</th>
 						<th width="18%" class="text-center">حجم تعیین شده</th>
@@ -483,9 +483,9 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<!-- /add bank modal -->
 	<!-- edit bank modal -->
 		<?php
-		$str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");
-		$str2 = '';foreach($want_rial as $value){$str2 .= "\"$value\",";}$str2 = trim($str2 , ",");
-		$str3 = '';foreach($give_rial as $value2){$str3 .= "\"$value2\",";}$str3 = trim($str3 , ",");
+		// $str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");
+		// $str2 = '';foreach($want_rial as $value){$str2 .= "\"$value\",";}$str2 = trim($str2 , ",");
+		// $str3 = '';foreach($give_rial as $value2){$str3 .= "\"$value2\",";}$str3 = trim($str3 , ",");
 		?>
 		<script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/handle_group.js"></script>
 		<script>
@@ -546,13 +546,13 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				input.nextElementSibling.value = numeral( input.value ).value();
 			}
 //pay slice----------------------
-var customer = [ <?php echo $str; ?> ];
-var want = [<?php echo $str2; ?>];
-var give = [<?php echo $str3;?>];
+// var customer = [ <?php// echo $str; ?> ];
+// var want = [<?php// echo $str2; ?>];
+// var give = [<?php// echo $str3;?>];
 
-			function search_customer( input ) {
-				autocomplete( input, customer , want , give );
-			}
+// 			function search_customer( input ) {
+// 				autocomplete( input, customer , want , give );
+// 			}
 //show deal----------------------			
 			var search = document.getElementById('search_deal');
 			var base = document.getElementById('deal_cust');

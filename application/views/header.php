@@ -150,6 +150,7 @@
 									<a href=""><i class="icon-share4 <?php if($active == 'deal'){echo 'active';} ?>"></i> <span>معاملات</span></a>
 									<ul>
 										<li class="<?php if($active_sub == 'deal_archive'){echo 'active';} ?>"><a href="<?php echo base_url('deal/archive/')?>" id="layout1">آرشیو معاملات</a></li>
+										<li class="<?php if($active_sub == 'deal_sheet'){echo 'active';} ?>"><a href="<?php echo base_url('deal/worksheet/')?>" id="layout1"> کاربرگ معاملات</a></li>
 <?php if($this->session->has_userdata('add_buy') and $this->session->userdata('add_buy') == TRUE){?><li class="<?php if($active_sub == 'deal_buy'){echo 'active';} ?>"><a href="<?php echo base_url('deal/buy/')?>" id="layout2">افزودن خرید</a></li><?php }?>
 <?php if($this->session->has_userdata('add_sell') and $this->session->userdata('add_sell') == TRUE){?><li class="<?php if($active_sub == 'deal_sell'){echo 'active';} ?>"><a href="<?php echo base_url('deal/sell/')?>" id="layout2">افزودن فروش</a></li><?php } ?>
 									</ul>

@@ -76,26 +76,7 @@
 	var convert = document.getElementById( 'convert' );
 	var volume = document.getElementById( 'volume_deal' );
 
-
-	// var money_name = document.getElementById('money_id');
-	// money_name.onchange = function(){
-	// 	name = money_name.options[money_name.selectedIndex].innerHTML;
-	// 	value1 = numeral(count.value).value();
-	// 	value2 = numeral(wage.value).value();
-	// 	if(value1 == null){
-	// 	  count.nextElementSibling.value = 0;
-	// 	}else{
-	// 	  count.nextElementSibling.value = value1;
-	// 	}
-	// 	if(value2 == null){
-    //       wage.nextElementSibling.value = 0;
-	// 	}else{
-	// 	  wage.nextElementSibling.value = value2;
-	// 	}
-	// 	count.value = numeral(value1).format('0,0') + ' '+ name;
-	// 	wage.value = numeral(value2).format('0,0') + ' ' + name;
-	// }
-	count.onkeyup = function (e) {
+	count.onkeyup = function () {
 		count.value = numeral( count.value ).format( '0,0' );
 		var x = numeral( count.value ).value();
 		var y = numeral( wage.value ).value();
@@ -103,7 +84,7 @@
 		volume.innerHTML = numeral( ( x + y ) * z ).format( '0 , 0' ) + ' ریـال  ';
 		count.nextElementSibling.value = x;
 	}
-	wage.onkeyup = function (e) {
+	wage.onkeyup = function () {
 		wage.value = numeral( wage.value ).format( '0,0' );
 		var x = numeral( count.value ).value();
 		var y = numeral( wage.value ).value();
@@ -111,7 +92,7 @@
 		volume.innerHTML = numeral( ( x + y ) * z ).format( '0 , 0' ) + ' ریـال  ';
 		wage.nextElementSibling.value = y;
 	}
-	convert.onkeyup = function (e) {
+	convert.onkeyup = function () {
 		convert.value = numeral( convert.value ).format( '0,0' );
 		var x = numeral( count.value ).value();
 		var y = numeral( wage.value ).value();
@@ -200,7 +181,7 @@
 			} else if ( e.keyCode == 13 ) {
 				e.preventDefault();
 				if ( currentFocus > -1 ) {
-					if ( x ){ x[ currentFocus ].click();}
+					if ( x ) x[ currentFocus ].click();
 				}
 			}
 		} );

@@ -52,12 +52,12 @@ $msg = $this->session->userdata('msg');?>
 						<div class="form-group mt-20">
 										
 										<label class="radio-inline">
-											<input type="radio" name="type_deal" value='2' class="styled" checked="checked">
+											<input type="radio" name="type" value='2' class="styled" checked="checked">
 											بدهکار
 										</label>
 
 										<label class="radio-inline">
-											<input type="radio" name="type_deal" value="1" class="styled" >
+											<input type="radio" name="type" value="1" class="styled" >
 											طلب کار
 										</label>
 									</div>
@@ -98,7 +98,7 @@ $msg = $this->session->userdata('msg');?>
 		<tbody>
 
 			<?php 
-			if(sizeof($deal) == 0){ ?>
+			if(empty($deal)){ ?>
 			<tr><td colspan = '11' class='text-center p-20'>موردی یافت نشد</td></tr>
 			<?php }else{
 			$num = $this->uri->segment(3) + 1;
@@ -113,22 +113,22 @@ $msg = $this->session->userdata('msg');?>
 					</a>
 				</td>
 				<td>
-					<?php if($rows->type_deal == 1){echo 'خرید';}else{echo 'فروش';}?>
+					<?php if($rows->type == 1){echo 'خرید';}else{echo 'فروش';}?>
 				</td>
 				<td>
 					<?php echo number_format($rows->count_money)." ".$rows->name;?>
 				</td>
 				<td>
-					<?php echo number_format($rows->convert_money); ?>
+					<?php echo number_format($rows->convert); ?>
 				</td>
-				<td class="<?php if($rows->volume_deal < $rows->volume_pay){echo 'text-danger';}?>">
-					<?php echo number_format($rows->volume_deal);?>
+				<td class="<?php if($rows->volume < $rows->pay){echo 'text-danger';}?>">
+					<?php echo number_format($rows->volume);?>
 				</td>
-				<td class="<?php if($rows->volume_deal < $rows->volume_pay){echo 'text-danger';}?>">
-					<?php echo number_format($rows->volume_pay);?>
+				<td class="<?php if($rows->volume < $rows->pay){echo 'text-danger';}?>">
+					<?php echo number_format($rows->pay);?>
 				</td>
-				<td class="<?php if($rows->volume_rest < 0){echo 'text-danger';}?>">
-					<?php echo number_format($rows->volume_rest);?>
+				<td class="<?php if($rows->rest < 0){echo 'text-danger';}?>">
+					<?php echo number_format($rows->rest);?>
 				</td>
 				<td>
 					<?php echo $rows->date_deal."</br>".$rows->time_deal; ?>
@@ -141,7 +141,7 @@ $msg = $this->session->userdata('msg');?>
 <?php if($this->session->has_userdata('see_handle') and $this->session->userdata('see_handle') == TRUE ){?><li title="هماهنگی ها" data-toggle="tooltip" class="text-success"><a href="<?php echo base_url('deal/handle/').$rows->id;?>"><i class="icon-notebook"></i></a></li><?php } ?>
 <?php if($this->session->has_userdata('edit_deal') and $this->session->userdata('edit_deal') == TRUE){?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>
 <?php if($this->session->has_userdata('see_photo') and $this->session->userdata('see_photo') == TRUE){?><li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$rows->id;?>"><i class="icon-stack-picture"></i></a></li><?php } ?>
-<?php if($this->session->has_userdata('delete_deal') and $this->session->userdata('delete_deal') == TRUE){?><li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->volume_pay; ?>)" ></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('delete_deal') and $this->session->userdata('delete_deal') == TRUE){?><li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->pay; ?>)" ></i></a></li><?php } ?>
 					</ul>
 				</td>
 			</tr>

@@ -39,7 +39,7 @@ class Customer extends CI_Controller{
         $config['suffix'] = "";
  $this->pagination->initialize($config);
 $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;      
-$data['customer'] = $this->base_model->get_data_left('customer','deal','customer.id , customer.fullname , count(deal.customer_id) as deal_count , sum(deal.volume_deal) as vd, sum(deal.volume_rest) as vr' , 'customer.id = deal.customer_id','left','result' , NULL, $config['per_page'] , $page , array('customer.id' , 'DESC') , 'fullname');
+$data['customer'] = $this->base_model->get_data_left('customer','deal','customer.id , customer.fullname , count(deal.customer_id) as deal_count , sum(deal.volume) as vd, sum(deal.rest) as vr' , 'customer.id = deal.customer_id','left','result' , NULL, $config['per_page'] , $page , array('customer.id' , 'DESC') , 'fullname');
 $data['page'] = $this->pagination->create_links();
 $data['count'] = $total_rows;
         $header['title'] = 'آرشیو مشتریان';
@@ -156,7 +156,7 @@ $data['count'] = $total_rows;
     public function search(){
 		  if(isset($_POST['text_search'])){
             $title = $this->db->escape_str($this->input->post('text_search'));
-            $result = $this->base_model->search_data('customer','deal' ,'customer.id , customer.fullname , count(deal.customer_id) as deal_count , sum(deal.volume_deal) as vd, sum(deal.volume_rest) as vr', 'customer.id = deal.customer_id' , 'left' , array('customer.fullname' => $title) , NULL , array('customer.id' , 'DESC') , 'customer.fullname');
+            $result = $this->base_model->search_data('customer','deal' ,'customer.id , customer.fullname , count(deal.customer_id) as deal_count , sum(deal.volume) as vd, sum(deal.rest) as vr', 'customer.id = deal.customer_id' , 'left' , array('customer.fullname' => $title) , NULL , array('customer.id' , 'DESC') , 'customer.fullname');
 			echo json_encode($result);
 		}else{
 			show_404();
