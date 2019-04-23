@@ -26,7 +26,7 @@ class Login extends CI_Controller{
 				$username = $this->db->escape_str($this->input->post('username'));
 				$password = $this->db->escape_str($this->input->post('password'));
 	            $res = $this->base_model->get_data('member','id,firstname,username,lastname,password,active , picname','row' , array('username'=>$username));
-				if(sizeof($res) == 0){
+				if(empty($res)){
 					$message['msg'][0] = 'نام کاربری یا رمز عبور اشتباه می باشد';
 					$message['msg'][1] = 0;
 					$this->session->set_flashdata($message);
@@ -56,7 +56,7 @@ class Login extends CI_Controller{
 			$id = $res->id;
 			$perm = $this->base_model->get_data('member_perm' , 'perm_id' , 'result' , array('user_id' => $id));
 			$sess = array();
-			if(sizeof($perm) != 0){
+			if(!empty($perm)){
 			foreach($perm as $rows){
 				if($rows->perm_id == 1){
 					$sess['see_dashbord'] = TRUE;
@@ -105,15 +105,19 @@ class Login extends CI_Controller{
 				}else if($rows->perm_id == 23){
 					$sess['restore'] = TRUE;
 				}else if($rows->perm_id == 24){
-					$sess['delete_handle'] = TRUE;
+					$sess['edit_handle'] = TRUE;
 				}else if($rows->perm_id == 25){
-					$sess['see_settings'] = TRUE;
+					$sess['delete_handle'] = TRUE;
 				}else if($rows->perm_id == 26){
-					$sess['set_unit'] = TRUE;
+					$sess['see_settings'] = TRUE;
 				}else if($rows->perm_id == 27){
-					$sess['set_primitive'] = TRUE;
+					$sess['set_unit'] = TRUE;
 				}else if($rows->perm_id == 28){
+					$sess['set_primitive'] = TRUE;
+				}else if($rows->perm_id == 29){
 					$sess['rest_unit'] = TRUE;
+				}else if($rows->perm_id == 30){
+					$sess['turnover'] = TRUE;
 				}
 			}
 		}

@@ -15,11 +15,11 @@
 						<div class="panel <?php echo $array[$i]; ?>">
 
 							<div class="panel-body">
-								<div class="heading-elements">
+								<!-- <div class="heading-elements">
 									<span class="heading-text badge bg-success-800">+53,6%</span>
-								</div>
+								</div> -->
 								<h3 class="no-margin" id="<?php echo $set_id[$i];?>">
-									<?php echo number_format($remains->amount_unit);?>
+									<?php echo number_format($remains->amount);?>
 								</h3>
 								<h5 class="text-white text-size-larg">
 									<?php echo $remains->name;?>
@@ -28,11 +28,7 @@
 						</div>
 					</div>
 					<!-- /members online -->
-					<?php
-				if($i == 3){
-					break;
-				}
-				} ?>
+					<?php } ?>
 
 				</div>
 			</div>
@@ -56,10 +52,6 @@
 						<h3 class="no-margin" id="restRial"><?php echo number_format($rest_rial);?></h3> 
 						
 					</div>
-
-					<div class="container-fluid">
-						<div class="chart" id="members-online"></div>
-					</div>
 				</div>
 				<!-- /members online -->
 			</div>
@@ -67,13 +59,12 @@
 				<!-- Current server load -->
 				<div class="panel bg-pink-400 p-5">
 					<div class="panel-body">
-						<div class="heading-elements">
+						<!-- <div class="heading-elements">
 							<span class="heading-text badge bg-success-800">مانده همانگ نشده فروش </span>
-						</div>
-						<h3 class="no-margin" id="sumPay"><?php echo number_format($sum_pay->vp); ?></h3> 
+						</div> -->
+						<h3 class="no-margin" id="sellNot"><?php echo number_format($sell_not);?></h3> 
 						
 					</div>
-					<div class="chart" id="server-load"></div>
 				</div>
 				<!-- /current server load -->
 
@@ -83,13 +74,11 @@
 				<!-- Today's revenue -->
 				<div class="panel bg-blue-400 p-5">
 					<div class="panel-body">
-						<div class="heading-elements">
+						<!-- <div class="heading-elements">
 							<span class="heading-text badge bg-blue-800">مانده همانگ نشده خرید </span>
-						</div>
-						<h3 class="no-margin" id="restHandle"><?php echo number_format($sum_handle->hr); ?></h3> 
-						
+						</div> -->
+						<h3 class="no-margin" id="buyNot"><?php echo number_format($buy_not); ?></h3> 
 					</div>
-					<div class="chart" id="today-revenue"></div>
 				</div>
 				<!-- /today's revenue -->
 			</div>

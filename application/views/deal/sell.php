@@ -30,7 +30,7 @@ $msg = $this->session->userdata('msg');?>
 								<legend class="text-semibold"><i class="icon-coins position-left"></i> اطلاعات فروش</legend>
 								<div class="form-group">
 									<label>نام خریدار : </label>
-									<input class="form-control" onFocus="search_customer(this)" name="customer" type="text" placeholder="نام خریدار خود را وارد کنید" autocomplete="off" required>
+									<input class="form-control" onFocus="search_customer(this)" name="customer" type="text" placeholder="نام خریدار خود را وارد کنید" autocomplete="off" required autofocus>
 									<p class="text-primary" style="display:none;"></p>
 								</div>
 								
@@ -274,7 +274,7 @@ $msg = $this->session->userdata('msg');?>
 	
 <?php $str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");?>
 
-
+<script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/deal.js"></script>
 <script>
 	var customer = [<?php echo $str; ?>];
 	function search_customer( input ) {
@@ -297,4 +297,3 @@ $msg = $this->session->userdata('msg');?>
 	}
 
 </script>
-<script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/deal.js"></script>

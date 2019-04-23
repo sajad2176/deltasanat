@@ -95,7 +95,7 @@ $msg = $this->session->userdata('msg');?>
 											<div class="col-md-6">
 												<div class="form-group">
 													<label>شماره شبا : </label>
-													<input onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="shaba[]" class="form-control">
+													<input type="text" name="shaba[]" onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999"  placeholder="06-017-0000000123014682799"  class="form-control">
 												</div>
 											</div>
 											<div class="col-md-6">
@@ -273,7 +273,7 @@ $msg = $this->session->userdata('msg');?>
 	
 <?php $str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");?>
 
-
+<script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/deal.js"></script>
 <script>
 	var customer = [<?php echo $str; ?>];
 	function search_customer( input ) {
@@ -296,4 +296,3 @@ $msg = $this->session->userdata('msg');?>
 	}
 
 </script>
-<script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/deal.js"></script>

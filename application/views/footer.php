@@ -18,22 +18,7 @@
 
 
 </div>
-<?php if(isset($select) and sizeof($select) != 0){ 
-  $str = '';
-foreach($select as $selects){
-  $a = $selects->id + 1000;
-$str .= "<option value = \" $selects->id \">". "شناسه بانک : ".$a ."</option>";
-}
-}
-if(isset($select2) and sizeof($select2) != 0){ 
-  $str2 = '';
-foreach($select2 as $selects){
-  $a = $selects->deal_id + 100;
-  $aa = $selects->id + 1000;
-$str2 .= "<option value = \" $selects->id \">". "شناسه بانک : ". $aa ." | شناسه معامله : " . $a ."</option>";
-$id = 0;
-}
-}
+
 ?>
 <script>
 var modal = document.getElementById('modal_logout');
@@ -53,50 +38,6 @@ window.onclick = function(event) {
   <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/loaders/pace.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/core/libraries/jquery.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/add_input.js"></script>
-  <script>
-
-
-$(document).ready(function(){
-    var maxField = 3;
-    var addButton = $('.add_button3');
-    var wrapper = $('.field_wrapper3');
-    var fieldHTML = '<div><div class="col-md-4"><div class="form-group"><label>نام مشتری:</label><input class="form-control" onFocus="search_customer(this)" name="customer[]" type="text" placeholder="نام مشتری خود را وارد کنید" autocomplete="off" required><p class="text-primary" style="display:none; position:absolute;font-size:12px;"></p></div></div><div class="col-md-4"><div class="form-group"><label>انتخاب حساب : </label>	<select class="form-control" name="bank_id[]" required><?php if(isset($str)){ echo $str;}else{echo '<option value = "0">شماره حسابی ثبت نشده است</option>';} ?></select></div></div><div class="col-md-4"><div class="form-group input-group"><label>مبلغ هماهنگی:</label><input type="text" onkeyup="volume_handle(this)" placeholder="111,000,000" class="form-control" required><input type="hidden" name="volume_handle[]"><p class="text-danger" style="position:absolute;top:65px;"></p><span class="input-group-btn remove_button3"><button type="button" class="btn btn-danger  mt-25"><span class="icon-minus2"></span></button></span></div></div></div>';
-		
-    var x = 1;
-    		
-    $(addButton).click(function(){
-        if(x < maxField){ 
-            x++;
-            $(wrapper).append(fieldHTML);
-        }
-    });
-    $(wrapper).on('click', '.remove_button3', function(e){
-        e.preventDefault();
-        $(this).parent('div').parent('div').parent('div').remove();
-        x--; 
-    });
-});
-$(document).ready(function(){
-    var maxField = 3;
-    var addButton = $('.add_button4');
-    var wrapper = $('.field_wrapper4');
-    var fieldHTML = '<div><div class="col-md-3"><div class="form-group"><label>نام مشتری:</label><input class="form-control" onFocus="search_customer(this)" name="customer[]" type="text" placeholder="نام مشتری خود را وارد کنید" autocomplete="off" required><p class="text-primary" style="display:none; position:absolute;font-size:12px;"></p></div></div><div class="col-md-3"><div class="form-group"><label>انتخاب معامله:</label><input type="text" placeholder="لطفا شناسه معامله را وارد کنید" onkeyup="select_deal(this)" name="deal_id[]" class="form-control" required></div></div><div class="col-md-3"><div class="form-group"><label>انتخاب حساب : </label><select class="form-control" name="bank_id[]" required><?php if(isset($str2)){ echo $str2;}else{echo '<option value = "0">شماره حسابی ثبت نشده است</option>';} ?></select></div></div><div class="col-md-3"><div class="form-group input-group"><label>مبلغ هماهنگی:</label><input type="text" onkeyup="amhandle(this)" placeholder="111,000,000" class="form-control" required><input type="hidden" name="volume_handle[]" required><span class="input-group-btn remove_button4"><button type="button" class="btn btn-danger  mt-25"><span class="icon-minus2"></span></button></span></div></div></div>';
-		
-    var x = 1;
-    		
-    $(addButton).click(function(){
-        if(x < maxField){ 
-            x++;
-            $(wrapper).append(fieldHTML);
-        }
-    });
-    $(wrapper).on('click', '.remove_button4', function(e){
-        e.preventDefault();
-        $(this).parent('div').parent('div').parent('div').remove();
-        x--; 
-    });
-});
-</script>
 	<!-- /page container -->
 
 <!-- Core JS files -->

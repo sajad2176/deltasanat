@@ -56,12 +56,12 @@ $msg = $this->session->userdata('msg');?>
 											
 										<label >دسترسی ها:</label>
                                        <?php foreach($perm as $key => $rows ){ 
-                                          if($key == 0 or $key == 1 or $key == 6 or $key == 9 or $key == 14 or $key == 19 or $key == 24){
+                                          if($key == 0 or $key == 1 or $key == 6 or $key == 9 or $key == 14 or $key == 19 or $key == 24 or $key == 25){
                                              $row = '<div class="row">';
                                           }else{
                                              $row = '';
                                           }
-                                          if($key == 0 or $key == 5 or $key == 8 or $key == 13 or $key == 18 or $key == 23 or $key == 27){
+                                          if($key == 0 or $key == 5 or $key == 8 or $key == 13 or $key == 18 or $key == 23 or $key == 24 or $key == 29){
                                              $row_div = '</div>';
                                           }else{
                                              $row_div = '';
@@ -72,7 +72,7 @@ $msg = $this->session->userdata('msg');?>
                                              $select_all = '<div class="row"><div class="col-md-12"><label><input type="checkbox" class="option-input" id="select_customer" checked/> مشتریان</label></div></div>';
                                           }else if($key == 9){
                                              $select_all = '<div class="row"><div class="col-md-12"><label><input type="checkbox" class="option-input" id="select_deal" checked/> معاملات</label></div></div>';
-														}else if($key == 24){
+														}else if($key == 25){
 															$select_all = '<div class="row"><div class="col-md-12"><label><input type="checkbox" class="option-input" id="select_settings" checked/> تظیمات</label></div></div>';
 														}else{
                                              $select_all = '';
@@ -80,9 +80,9 @@ $msg = $this->session->userdata('msg');?>
                                               $select_class = 'check_users';
                                           }else if($key >= 6 and $key <= 8){
                                              $select_class = 'check_customer';
-                                          }else if($key >= 9 and $key <= 23){
+                                          }else if($key >= 9 and $key <= 24){
                                              $select_class = 'check_deal';
-                                          }else if($key >= 24 and $key <= 27){
+                                          }else if($key >= 25 and $key <= 29){
 															$select_class = 'check_settings';
 														}else{
                                              $select_class = '';
@@ -100,7 +100,7 @@ $msg = $this->session->userdata('msg');?>
                                                  </label>
                                                  </div>
                                        <?php echo $row_div; 
-                                       if($key == 0 or $key == 5 or $key == 8 or $key == 23){echo '<hr>';}
+                                       if($key == 0 or $key == 5 or $key == 8 or $key == 24){echo '<hr>';}
                                        ?>
                                     
                                        <?php } ?>							

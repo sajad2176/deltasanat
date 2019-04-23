@@ -42,6 +42,7 @@
 									<option value="1">کاربران</option>
 									<option value="2">مشتریان</option>
 									<option value="3">معاملات</option>
+									<option value="4">تنظیمات</option>
 									
 								</select>
 							</div>
@@ -111,7 +112,7 @@
 					<?php echo $count;?>
 				</td>
 				<td colspan="3" class="text-left pt-20 pb-20">
-					<?php echo $page; ?>
+					<?php if(isset($page)){echo $page; } ?>
 				</td>
 			</tr>
 			<?php }?>
@@ -136,7 +137,9 @@ select_cat.onchange = function(){
 	}else if(value == 2){
 		select_act.innerHTML = '<option value="6">افزودن مشتری</option><option value="7">ویرایش مشتری</option>';
 	}else if(value == 3){
-		select_act.innerHTML = '<option value="9">افزودن خرید</option><option value="10">افزودن فروش</option><option value="11">ویرایش معامله</option><option value="20">حذف معامله </option><option value="12">افزودن هماهنگی</option><option value="13"> پرداخت کامل</option><option value="14">پرداخت جزیی</option><option value="15">بازگشت پرداخت</option><option value="16"> حذف هماهنگی </option><option value="17">افزودن اطلاعات حساب </option><option value="18">ویرایش اطلاعات حساب</option><option value="19"> تغییر وضعیت اطلاعات حساب</option>';
+		select_act.innerHTML = '<option value="9">افزودن خرید</option><option value="10">افزودن فروش</option><option value="11">ویرایش معامله</option><option value="20">حذف معامله </option><option value="12">افزودن هماهنگی</option><option value="13"> پرداخت کامل</option><option value="14">پرداخت جزیی</option><option value="15">بازگشت پرداخت</option><option value="21"> ویرایش هماهنگی </option><option value="16"> حذف هماهنگی </option><option value="17">افزودن اطلاعات حساب </option><option value="18">ویرایش اطلاعات حساب</option><option value="19"> تغییر وضعیت اطلاعات حساب</option>';
+	}else if(value == 4){
+		select_act.innerHTML = '<option value="22"> تبدیل ارز</option><option value="23"> ارز اولیه</option><option value="24">  مانده حساب ریالی</option>';
 	}
 }
 

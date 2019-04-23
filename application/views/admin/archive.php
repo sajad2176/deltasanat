@@ -31,7 +31,7 @@ $msg = $this->session->userdata('msg');?>
 				</tr>
 			</thead>
 			<tbody>
-			<?php if(sizeof($user) == 0){?>
+			<?php if(empty($user)){?>
 			<tr><td colspan="6" class="text-center p-20">موردی یافت نشد</td></tr>
 			<?php }else{
 				$row = $this->uri->segment(3) + 1;

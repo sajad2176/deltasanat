@@ -3,7 +3,7 @@ date_default_timezone_set('Asia/Tehran');
 class Convertdate{
 	function convert($time){
     $weekdays = array("شنبه" , "یکشنبه" , "دوشنبه" , "سه شنبه" , "چهارشنبه" , "پنج شنبه" , "جمعه");
-    $months = array("فروردین" , "اردیبهست" , "خرداد" , "تیر" , "مرداد" , "شهریور" ,
+    $months = array("فروردین" , "اردیبهشت" , "خرداد" , "تیر" , "مرداد" , "شهریور" ,
         "مهر" , "آبان" , "آذر" , "دی" , "بهمن" , "اسفند" );
     $dayNumber = date("d" , $time);
     $day2 = $dayNumber;

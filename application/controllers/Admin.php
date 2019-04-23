@@ -106,9 +106,10 @@ $data['count'] = $config['total_rows'];
         }
         $user['firstname'] = $this->input->post('firstname'); 
         $user['lastname'] = $this->input->post('lastname');
-        $user['username'] = $this->db->escape_str($this->input->post('username'));
+        $name = trim($this->input->post('username') , ' ');
+        $user['username'] = $name;
         $check = $this->base_model->get_data('member' , 'username' , 'row' , array('username'=>$user['username']));
-        if(sizeof($check) != 0){
+        if(!empty($check)){
             $message['msg'][0] = "این نام کاربری قبلا استفاده شده است . لطفا نام کاربری دیگری انتخاب کنید";
             $message['msg'][1] = 'danger';
             $this->session->set_flashdata($message);
@@ -205,9 +206,10 @@ if($this->input->post('password') != '' or $this->input->post('repeat') != ''){
 }
 $user['firstname'] = $this->input->post('firstname');
 $user['lastname'] = $this->input->post('lastname');
-$user['username']  = $this->db->escape_str($this->input->post('username'));
+$name = trim($this->input->post('username') , ' ');
+$user['username']  = $name;
 $check = $this->base_model->get_data('member' , 'id ,username' , 'row' , array('username'=>$user['username']));
-if($check != NULL and $check->id != $id){
+if(!empty($check) and $check->id != $id){
     $message['msg'][0] = "این نام کاربری قبلا استفاده شده است . لطفا نام کاربری دیگری انتخاب کنید";
     $message['msg'][1] = 'danger';
     $this->session->set_flashdata($message);
@@ -309,8 +311,13 @@ redirect("admin/edit/$id");
                $where = array('log.user_id'=> $id , 'log.activity_id' => $_POST['select_act']);
                $total_rows = $this->base_model->get_count_between("log" , array('user_id'=> $id , 'log.activity_id'=> $_POST['select_act']) , $between);
             }
+            $limit = NULL;
+            $offset = NULL;
         }
         else{
+            $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
+            $limit = 10;
+            $offset = $page;
             $between = NULL;
             $where = array('log.user_id' => $id);
             $total_rows = $this->base_model->get_count("log" , array('user_id'=> $id));
@@ -343,11 +350,13 @@ redirect("admin/edit/$id");
             $config['prev_tag_close'] = '</li>';
             $config['suffix'] = "";
             $this->pagination->initialize($config);
-            $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;           
-            $data['logs'] = $this->base_model->get_data_join('log','activity' , 'log.* , activity.name' , 'log.activity_id = activity.id','result' , $where , $config['per_page'] , $page , array('log.id' , 'DESC') , NULL , NULL , $between);
+                       
+            $data['logs'] = $this->base_model->get_data_join('log','activity' , 'log.* , activity.name' , 'log.activity_id = activity.id','result' , $where , $limit , $offset , array('log.id' , 'DESC') , NULL , NULL , $between);
             $date = $this->convertdate->convert(time());
             $data['date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
-            $data['page'] = $this->pagination->create_links();
+            if(!isset($_POST['sub'])){
+                $data['page'] = $this->pagination->create_links();
+            }
             $data['count'] = $config['total_rows'];
                 $this->load->view('header' , $header);
                 $this->load->view('admin/log', $data);

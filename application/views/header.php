@@ -27,7 +27,7 @@
 
 	<div class="navbar navbar-default header-highlight navbar-fixed-top">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="index.html"><img src="<?php echo base_url('files/');?>assets/images/logo_light.png" alt=""></a>
+			<a class="navbar-brand" href="https://novin-network.com" target="_blank"><img src="<?php echo base_url('files/');?>assets/images/logo_light.png" alt=""></a>
 
 			<ul class="nav navbar-nav visible-xs-block">
 				<li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a>

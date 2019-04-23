@@ -35,7 +35,7 @@
 					<th width= "15%" class="text-center">ابزار</th>
 				</tr>
 			</thead>
-			<tbody id="search_cust" style="display: none;">
+			<tbody id="search" style="display: none;">
 				<tr></tr>
 			</tbody>
 			<tbody>
@@ -87,18 +87,18 @@
 </div>
 <script>
 function search_cust( input ) {
-	var search_cust = document.getElementById( 'search_cust' );
+	var search = document.getElementById( 'search' );
 	var text = input.value;
 		if ( text == '' ) {
-			search_cust.style.display = 'none';
-			search_cust.nextElementSibling.style.display = 'contents';
+			search.style.display = 'none';
+			search.nextElementSibling.style.display = 'contents';
 			return;
 		}else{
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
 		var result = JSON.parse( xhttp.responseText );
-	    showCustResult( result, input, search_cust );
+	    showCustResult( result, input, search );
     }
   };
   xhttp.open("POST", "<?php echo base_url('customer/search/')?>" , true);

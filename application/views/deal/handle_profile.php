@@ -23,7 +23,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 	<div class="panel-body">
 		<legend class="text-semibold"><i class="icon-archive position-left"></i>آرشیو معاملات</legend>
 
-	<table class="table datatable-selection-single table-hover table-responsive-lg ">
+	<table class="table datatable-selection-single table-responsive-lg ">
 		<thead>
 			<tr>
 				<th class="text-center">شناسه معامله</th>
@@ -39,15 +39,13 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<th class="text-center">ابزار</th>
 			</tr>
 		</thead>
-		<tbody id="search_deal" tyle="display: none;">
-		</tbody>
-		<tbody id="deal_cust">
+		<tbody>
 		<?php 
-		if(sizeof($deal) == 0){ ?>
+		if(empty($deal)){ ?>
             <tr><td colspan="11" class="text-center p-20">موردی یافت نشد</td></tr>
 		<?php }else{
 			foreach($deal as  $deals){?>
-			<tr>
+			<tr class="<?php if($deals->state == 0){echo 'state_bg';}?>">
                 <td class="text-center"><?php echo $deals->id + 100; ?></td>
                 <td class="text-center"><?php echo $deals->fullname; ?></td>
 				<td class="text-center"><?php if($deals->type == 1 ){echo 'خرید';}else{echo 'فروش';} ?></td>
@@ -60,10 +58,8 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<td class="text-center"><?php echo $deals->date_modified; ?></td>
 				<td class="text-center">
 					<ul class="icons-list">
-<?php if($this->session->has_userdata('see_handle') and $this->session->userdata('see_handle') == TRUE){?><li title="هماهنگی ها" data-toggle="tooltip" class="text-success"><a href="<?php echo base_url('deal/handle/').$deals->id ;?>"><i class="icon-notebook"></i></a></li><?php } ?>
 <?php if($this->session->has_userdata('edit_deal') and $this->session->userdata('edit_deal') == TRUE){?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$deals->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>
 <?php if($this->session->has_userdata('see_photo') and $this->session->userdata('see_photo') == TRUE){?><li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$deals->id;?>"><i class="icon-stack-picture"></i></a></li><?php }?>
-<?php if($this->session->has_userdata('add_bank') and $this->session->userdata('add_bank') == TRUE ){?><li title="افزودن بانک" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#add_bank_modal"><i onclick = "add_bank(<?php echo $deals->id;?>)" class="icon-credit-card"></i></li><?php } ?>
 <?php if($this->session->has_userdata('delete_deal') and $this->session->userdata('delete_deal') == TRUE){?><li class="text-danger" data-toggle="tooltip" title="حذف معامله"><a data-toggle="modal" href="#modal_theme_danger1"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $deals->id;?> , <?php echo $deals->pay; ?>)" ></i></a></li><?php } ?>
 					</ul>
 				</td>
@@ -84,54 +80,47 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 
 </div>
 </div>
-<p style="display: none;" id="cid"><?php echo $this->uri->segment(3)?></p>
 <?php if($this->session->has_userdata('add_handle') and $this->session->userdata('add_handle') == TRUE){?>
 	<div class="panel panel-flat">
 		<div class="panel-body">
 		<form action="<?php echo base_url('deal/handle_profile/').$this->uri->segment(3);?>" method="post">
 			<legend class="text-semibold"><i class="icon-address-book position-left"></i> افزودن هماهنگی</legend>
-			<div class="row field_wrapper4">
+			<div class="row">
 				<div>
 					<div class="col-md-3">
 						<div class="form-group">
-							<label>نام مشتری :</label>
-							<input type="text" name="customer[]" onFocus ="search_customer(this)" placeholder="نام مشتری خود را وارد کنید"  autocomplete="off" class="form-control" required>
-							<p class="text-primary" style="display:none; position:absolute;font-size:12px;"></p>
+							<label> مشتری خرید :</label>
+							<input type="text" name="customer_buy" onFocus ="search_customer(this)" value="<?php if(!empty($deal)){echo $deal[0]->fullname; }?>" placeholder=" لطفا نام مشتری خرید را وارد کنید "  autocomplete="off" class="form-control" required>
+							<p class="text-danger" style="display:none; position:absolute;font-size:12px;"></p>
 						</div>
 					</div>
 						<div class="col-md-3">
 						<div class="form-group">
-							<label>انتخاب معامله:</label>
-							<input type="text" name="deal_id[]" onkeyup="select_deal(this)" autocomplete="off" placeholder="لطفا شناسه معامله را وارد کنید" class="form-control" required>
+							<label> مشتری فروش :</label>
+							<input type="text" name="customer_sell" onFocus ="search_customer(this)" autocomplete="off" placeholder="لطفا نام مشتری فروش را وارد کنید" class="form-control" required autofocus>
+							<p class="text-danger" style="display:none; position:absolute;font-size:12px;"></p>
 						</div>
 					</div>
 					<div class="col-md-3">
 						<div class="form-group">
 							<label>انتخاب حساب :</label>
-                            <select class="form-control" name="bank_id[]" required>
-                         <?php if(sizeof($select2) == 0){ ?>
-							<option value="0">شماره حسابی ثبت نشده است</option>
-						 <?php } else { foreach($select2 as $selects){
-							 $a = $selects->deal_id + 100;
+                            <select class="form-control" name="bank_id" required>
+                         <?php if(empty($select)){ ?>
+							<option value="0">شماره حسابی برای مشتری خرید ثبت نشده است</option>
+						 <?php } else { foreach($select as $selects){
 							 $aa = $selects->id + 1000;
 							 ?>
-						
-							<option value="<?php echo $selects->id;?>"><?php echo ' شناسه بانک  : '. $aa .' | شناسه معامله  :'.$a; ?></option>
+							<option value="<?php echo $selects->id;?>"><?php echo $selects->explain." |  هماهنگ نشده :".number_format($selects->rest_handle)." | باقیمانده :  ".number_format($selects->rest)." | شناسه : ".$aa; ?></option>
 						 <?php } }?>
 											</select>
 						</div>
 					</div>
 					
 					<div class="col-md-3">
-						<div class="form-group input-group">
+						<div class="form-group">
 							<label>مبلغ هماهنگی :</label>
 							<input type="text" placeholder="111,000,000"  onkeyup="amhandle(this)" autocomplete="off" class="form-control" required>
-							<input type = "hidden" name='volume_handle[]'>
-							<span class="input-group-btn">
-							<button type="button" class="btn btn-success add_button4 mt-25">
-								<span class="icon-plus3"></span>
-							</button>
-							</span>
+							<input type = "hidden" name='volume_handle' value="0">
 						</div>
 					</div>
 				</div>
@@ -146,37 +135,42 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 <div>
 	<div class="panel panel-flat">
 		<div class="panel-body">
+		<?php if($this->session->has_userdata('add_bank') and $this->session->userdata('add_bank') == TRUE){ ?><a class="btn btn-success float-btn-left" href="#add_bank_modal" data-toggle="modal">افزودن بانک</a><?php }?>
 			<legend class="text-semibold"><i class="icon-credit-card position-left"></i> اطلاعات بانکی </legend>
 			<table class="table datatable-basic">
 				<thead>
 					<tr>
-						<th width="8%"  class="text-center">شناسه بانک</th>
-						<th width="8%" class="text-center"> معامله</th>
-						<th width="14%" class="text-center">نام بانک</th>
-						<th width="16%" class="text-center">شماره شبا</th>
-						<th width="18%" class="text-center">حجم تعیین شده</th>
-						<th width="18%" class="text-center">حجم واریز شده</th>
-						<th width="10%" class="text-center">وضعیت</th>
-						<th width="8%" class="text-center">ابزار</th>
+						<th width="6%" >شناسه بانک</th>
+						<th width="6%">نام بانک</th>
+						<th width="12%">شماره شبا</th>
+						<th width="13%">حجم تعیین شده</th>
+						<th width="13%"> پرداخت شده</th>
+						<th width="13%"> باقی مانده</th>
+						<th width="13%"> هماهنگ نشده</th>
+						<th width="14%">توضیحات</th>
+						<th width="5%" class="text-center">وضعیت</th>
+						<th width="5%" class="text-center">ابزار</th>
 					</tr>
 				</thead>
 				<tbody>
 				
 				<?php
-				if(sizeof($bank) == 0){ ?>
-                  <tr><td colspan="8" class="text-center p-20">موردی یافت نشد</td></tr>
+				if(empty($bank)){ ?>
+                  <tr><td colspan="10" class="text-center p-20">موردی یافت نشد</td></tr>
 				<?php }
 				foreach($bank as $key => $banks){
 					?>
 					<tr>
-						<td  class="text-center"><?php echo $banks->id + 1000 ;?></td>
-						<td  class="text-center"><?php echo $banks->deal_id + 100;?></td>
-						<td  class="text-center"><?php echo $banks->name_bank; ?></td>
-						<td  class="text-center"><?php echo $banks->number_shaba; ?></td>
-						<td  class="text-center"><?php echo number_format($banks->amount); ?></td>
-						<td  class="text-center <?php if($banks->pay > $banks->amount){echo 'text-danger';}?>"><?php echo number_format($banks->pay); ?></td>
+						<td><?php echo $banks->id + 1000 ;?></td>
+						<td><?php echo $banks->name; ?></td>
+						<td><?php echo $banks->shaba; ?></td>
+						<td><?php echo number_format($banks->amount); ?></td>
+						<td  class="<?php if($banks->pay > $banks->amount){echo 'text-danger';}?>"><?php echo number_format($banks->pay); ?></td>
+						<td  class="<?php if($banks->rest < 0){echo 'text-danger';}?>"><?php echo number_format($banks->rest); ?></td>
+						<td  class="<?php if($banks->rest_handle < 0){echo 'text-danger';}?>"><?php echo number_format($banks->rest_handle); ?></td>
+						<td><?php echo $banks->explain; ?></td>
 						<?php if($banks->active == 1){$class="success";$txt = 'فعال'; $act = 0;}else{$class = "danger"; $txt = 'غیرفعال'; $act = 1;} ?>
-				<td class="text-center"><?php if($this->session->has_userdata('active_bank') and $this->session->userdata('edit_bank') == TRUE){ ?><a href="<?php echo base_url('deal/active/').$this->uri->segment(3)."/".$banks->id."/".$act."/group"; ?>"><span class="label label-<?php echo $class; ?>"><?php echo $txt;?></span></a><?php } ?></td>
+				<td class="text-center"><?php if($this->session->has_userdata('active_bank') and $this->session->userdata('active_bank') == TRUE){ ?><a href="<?php echo base_url('deal/active/').$this->uri->segment(3)."/".$banks->id."/".$act; ?>"><span class="label label-<?php echo $class; ?>"><?php echo $txt;?></span></a><?php } ?></td>
 						</td>
 						<td class="text-center">
 									<ul class="icons-list">
@@ -195,42 +189,45 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 <div>
 	<div class="panel panel-flat">
 		<div class="panel-body">
+		
 			<legend class="text-semibold"><i class="icon-notebook position-left"></i> اطلاعات هماهنگی</legend>
 			<table class="table datatable-basic">
 				<thead>
 					<tr>
-						<th width="8%">شناسه معامله</th>
-						<th width="10%">نام مشتری</th>
-						<th width="14%">حجم هماهنگ شده</th>
-						<th width="14%">حجم پرداخت شده</th>
-						<th width="14%">حجم باقی مانده </th>
-						<th width="10%"> شناسه بانک</th>
-						<th width="10%">تاریخ ثبت</th>
-						<th width="10%"> آخرین تغییر</th>
-						<th width="12%" class="text-center"> ابزار</th>
+						<th width="5%">ردیف </th>
+						<th width="10%">نام مشتری فروش</th>
+						<th width="12%">حجم هماهنگ شده</th>
+						<th width="12%">حجم پرداخت شده</th>
+						<th width="12%">حجم باقی مانده </th>
+						<th width="7%"> شناسه بانک</th>
+						<th width="12%">توضیحات بانک</th>
+						<th width="8%">تاریخ ثبت</th>
+						<th width="8%"> آخرین تغییر</th>
+						<th width="10%" class="text-center"> ابزار</th>
 					</tr>
 				</thead>
 				<tbody>
-				<?php if(sizeof($handle) == 0){ ?>
-                        <tr><td colspan="9" class="text-center p-20">موردی یافت نشد</td></tr>
-				<?php }else{ foreach($handle as $handles){ ?>
+				<?php if(empty($handle)){ ?>
+                        <tr><td colspan="10" class="text-center p-20">موردی یافت نشد</td></tr>
+				<?php }else{ foreach($handle as $key =>  $handles){ ?>
 					<tr>
-						<td><?php echo $handles->deal_id + 100;?></td>
+						<td><?php echo $key + 1;?></td>
 						<td><?php echo $handles->fullname;?></td>
 						<td><?php echo number_format($handles->volume_handle);?></td>
 						<td class="<?php if($handles->handle_pay > $handles->volume_handle){echo 'text-danger';}?>"><?php echo number_format($handles->handle_pay);?></td>
 						<td class="<?php if($handles->handle_rest < 0){echo 'text-danger';}?>"><?php echo number_format($handles->handle_rest);?></td>
 						<td><?php echo $handles->bank_id + 1000; ?></td>
+						<td><?php echo $handles->explain; ?></td>
 						<td><?php echo $handles->date_handle."</br>".$handles->time_handle;?></td>
 						<td><?php echo $handles->date_modified?></td>
 						<td class="text-center">
 											<ul class="icons-list">
 												<?php if($handles->handle_rest > 0){?>
-<?php if($this->session->has_userdata('pay_all') and $this->session->userdata('pay_all') == TRUE){?><li title="پرداخت کامل" data-toggle="tooltip" class="text-success"><a data-toggle="modal" href="#modal_theme_success"><i onclick="pay_all(<?php echo $handles->id;?> , <?php echo $handles->handle_rest;?> , <?php echo $handles->deal_id?>)" class="icon-checkmark4"></i></a></li><?php } ?>
-<?php if($this->session->has_userdata('pay_slice') and $this->session->userdata('pay_slice') == TRUE){?><li title="پرداخت جزئی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i onclick="pay_slice(<?php echo $handles->id;?> , <?php echo $handles->deal_id;?>)" class="icon-stack-empty"></i></li><?php } ?>
+<?php if($this->session->has_userdata('pay_all') and $this->session->userdata('pay_all') == TRUE){?><li title="پرداخت کامل" data-toggle="tooltip" class="text-success"><a data-toggle="modal" href="#modal_theme_success"><i onclick="pay_all(<?php echo $handles->id;?> , <?php echo $handles->handle_rest;?>)" class="icon-checkmark4"></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('pay_slice') and $this->session->userdata('pay_slice') == TRUE){?><li title="پرداخت جزئی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i onclick="pay_slice(<?php echo $handles->id;?> , <?php echo $handles->handle_rest;?>)" class="icon-stack-empty"></i></li><?php } ?>
 													<?php } ?>
 													
-<?php if($this->session->has_userdata('restore') and $this->session->userdata('restore') == TRUE){?><li title="بازگشت پرداخت " data-toggle="tooltip" class="text-warning-800"><a data-toggle="modal" href="#modal_form_dminor"><i onclick="history(<?php echo $handles->id;?> , <?php echo $handles->deal_id; ?>)" class="icon-file-minus"></i></li><?php } ?>
+<?php if($this->session->has_userdata('restore') and $this->session->userdata('restore') == TRUE){?><li title="بازگشت پرداخت " data-toggle="tooltip" class="text-warning-800"><a data-toggle="modal" href="#modal_form_dminor"><i onclick="history(<?php echo $handles->id;?>)" class="icon-file-minus"></i></li><?php } ?>
 									
 <?php if($this->session->has_userdata('delete_deal') and $this->session->userdata('delete_deal') == TRUE){?><li title="حذف هماهنگی" data-toggle="tooltip" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i onClick="deleteHandle(<?php echo $handles->id; ?>, <?php echo $handles->handle_pay; ?>)" class="icon-cross2"></i></a></li><?php } ?>
 											</ul>
@@ -251,11 +248,13 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 							<form method="post" id="form_slice">
 								<div class="modal-body">
 									<div class="form-group input-group">
-										<label>مبلغ هماهنگی:</label>
-										<input type="text" placeholder="111,000,000" onkeyup='slice_input(this)' class="form-control">
+										<label>مبلغ پرداختی:</label>
+										<p id = "rest_slice" class="d-none"></p>
+										<input type="text" placeholder="111,000,000" onkeyup='slice_input(this)' class="form-control" required>
 										<input type="hidden" name="slice">
+										<p class="text-danger d-none" style="position:absolute;top:65px;"></p>
 										<span class="input-group-btn">
-							<button type="submit" name="sub" class="btn btn-success mt-25">ذخیره</button>
+							<button type="submit" name="sub" class="btn btn-success mt-25">پرداخت</button>
 											</span>
 									</div>
 							</form>
@@ -333,7 +332,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 										<div class="col-md-6">
 											<div class="form-group">
 												<label>شماره شبا : </label>
-												<input onkeyup="show_bank(this)" id="num_shaba" value="" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="number_shaba" class="form-control">
+												<input onkeyup="show_bank(this)" id="num_shaba" value="" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="shaba" class="form-control">
 											</div>
 										</div>
 
@@ -343,7 +342,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 											<div class="form-group">
 												<label>بانک :</label>
 												<span class="text-primary" style="font-size:12px; display:none;">(طبق شماره شبا وارد شده بانکی پیدا نشد. نام بانک را وارد کنید)</span>
-												<input type="text" name="name_bank" id="nam_bank" value="" placeholder="ملت،ملی،.." class="form-control" readonly>
+												<input type="text" name="name" id="nam_bank" value="" placeholder="ملت،ملی،.." class="form-control">
 											</div>
 										</div>
 									</div>
@@ -355,8 +354,8 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 										<div class="form-group">
 											<label>مبلغ معامله : </label>
 											<input type="hidden" id="amo_pay" value =''>
-											<input type="text" onkeyup="ambank(this)" placeholder="100000" value="" class="form-control">
-											<input type="hidden" value='' id="amo_bank" name="amount_bank">
+											<input type="text" onkeyup="ambank(this)" placeholder="100,000" value="" class="form-control">
+											<input type="hidden" value='' id="amo_bank" name="amount">
 											<p class="text-danger" style="display:none;"></p>
 										</div>
 									</div>
@@ -429,15 +428,15 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 
 						</div>
 						<hr>
-						<form action="" id = "act_bank" method="post">
+						<form action="<?php echo base_url('deal/add_bank/').$this->uri->segment(3);?>" method="post">
 							<div class="modal-body">
 								<div class="field_wrapper2">
 									<div>
 										<div class="row">
 											<div class="col-md-6">
 												<div class="form-group">
-													<label>شماره شبا: </label>
-													<input onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="number_shaba" class="form-control">
+													<label>شماره شبا : </label>
+													<input onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="shaba" class="form-control">
 												</div>
 											</div>
 
@@ -445,9 +444,9 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 
 											<div class="col-md-6">
 												<div class="form-group">
-													<label>بانک:</label>
+													<label>بانک :</label>
 													<span class="text-primary" style="font-size:12px; display:none;">(طبق شماره شبا وارد شده بانکی پیدا نشد. نام بانک را وارد کنید)</span>
-													<input type="text" name="name_bank" placeholder="ملت،ملی،.." class="form-control">
+													<input type="text" name="name" placeholder="ملت،ملی،.." class="form-control">
 												</div>
 											</div>
 										</div>
@@ -460,7 +459,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 												<label> تعیین حجم : </label>
 												<input type="hidden" value ='0'>
 												<input type="text" onKeyUp="ambank(this)" placeholder="100,000" class="form-control">
-												<input type="hidden" name="amount_bank">
+												<input type="hidden" name="amount" value="0">
 												<p class="text-danger" style="display:none;"></p>
 											</div>
 										</div>
@@ -483,18 +482,19 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<!-- /add bank modal -->
 	<!-- edit bank modal -->
 		<?php
-		// $str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");
-		// $str2 = '';foreach($want_rial as $value){$str2 .= "\"$value\",";}$str2 = trim($str2 , ",");
-		// $str3 = '';foreach($give_rial as $value2){$str3 .= "\"$value2\",";}$str3 = trim($str3 , ",");
+		$str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");
+		$str2 = '';foreach($want_rial as $value){$str2 .= "\"$value\",";}$str2 = trim($str2 , ",");
+		$str3 = '';foreach($give_rial as $value2){$str3 .= "\"$value2\",";}$str3 = trim($str3 , ",");
 		?>
 		<script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/handle_group.js"></script>
-		<script>
-//add bank --------------------
-	var act_bank = document.getElementById('act_bank');
-	function add_bank(id){
-		act_bank.action = "<?php echo base_url('deal/add_bank/')?>" + id +"/<?php echo $this->uri->segment(3); ?>" + "/group"
-	}
-//add bank --------------------	
+		<script>	
+var customer = [ <?php echo $str; ?> ];
+var want = [<?php echo $str2; ?>];
+var give = [<?php echo $str3;?>];
+
+function search_customer( input ) {
+				autocomplete( input, customer , want , give );
+}	
 //delete deal -----------------
 	var titleDelete = document.getElementById('titleDelete');
 	var closeDelete = document.getElementById('closeDelete');
@@ -506,7 +506,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 		  confirmDelete.style.display = 'none';
 		  return;
 	  }else{
-		  titleDelete.innerHTML = "با حذف معامله تمام اطلاعات مربوط به معامله ، هماهنگی ها ،اطلاعات بانکی حذف خواهد شد.</br> آیا می خواهید ادامه دهید؟";
+		  titleDelete.innerHTML = " آیا می خواهید ادامه دهید؟";
 		  closeDelete.style.display = 'inline-block';
 		  confirmDelete.style.display = 'inline-block';
 		  confirmDelete.setAttribute('href' , "<?php echo base_url('deal/delete_deal/')?>" + id + "<?php echo "/".$this->uri->segment(3)."/group";?>");
@@ -532,160 +532,39 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 			}			
 //delete handle -----------------	
 //pay all -----------------------		
-			function pay_all( link, rest , deal_id ) {
-	document.getElementById( 'button_all' ).setAttribute( 'href', "<?php echo base_url("deal/pay_all/")?>"+ deal_id +'/'+link + '/group/'+<?php echo $this->uri->segment(3);?> );
-				document.getElementById( 'p_all' ).innerHTML = " آیا می خواهید تمام مبلغ " + numeral( rest ).format( '0,0' ) + " پرداخت شود ؟";
+			function pay_all( link, rest) {
+	            document.getElementById( 'button_all' ).setAttribute( 'href', "<?php echo base_url("deal/pay_all/").$this->uri->segment(3)."/";?>" + link );
+				document.getElementById( 'p_all' ).innerHTML = " آیا می خواهید تمام مبلغ " + numeral( rest ).format( '0,0' ) + "  به صورت کامل پرداخت شود ؟ ";
 			}
 //pay all -----------------------
 //pay slice----------------------				
-			function pay_slice( link , deal_id ) {
-				document.getElementById( 'form_slice' ).setAttribute( 'action', "<?php echo base_url("deal/pay_slice/")?>"+deal_id+'/' + link + "/group/"+<?php echo $this->uri->segment(3);?> );
+			function pay_slice( id , rest ) {
+				document.getElementById( 'form_slice' ).setAttribute( 'action', "<?php echo base_url("deal/pay_slice/").$this->uri->segment(3)."/";?>"+ id );
+				document.getElementById( 'rest_slice' ).innerHTML = rest;
 			}
 			function slice_input( input ) {
 				input.value = numeral( input.value ).format( '0,0' );
 				input.nextElementSibling.value = numeral( input.value ).value();
+				if(numeral( input.value ).value() > document.getElementById( 'rest_slice' ).innerHTML ){
+					input.nextElementSibling.nextElementSibling.style.display = "block";
+					input.nextElementSibling.nextElementSibling.innerHTML = ' مبلغ وارد شده از حجم باقی مانده برای این هماهنگی بیشتر است ';
+				}else{
+					input.nextElementSibling.nextElementSibling.style.display = "none";
+				}
+
 			}
 //pay slice----------------------
-// var customer = [ <?php// echo $str; ?> ];
-// var want = [<?php// echo $str2; ?>];
-// var give = [<?php// echo $str3;?>];
+	
 
-// 			function search_customer( input ) {
-// 				autocomplete( input, customer , want , give );
-// 			}
-//show deal----------------------			
-			var search = document.getElementById('search_deal');
-			var base = document.getElementById('deal_cust');
-			var cid = document.getElementById('cid').innerHTML;
-			function select_deal(input){
-				var text = input.value;
-				if(text == '' || isNaN(text) || text.length < 3){
-			search.style.display = 'none';
-			base.style.display = 'contents';
-					return;
-				}
-		var xhr = new XMLHttpRequest();
-		xhr.onload = function () {
-			if ( ( xhr.status >= 200 && xhr.status < 300 ) || xhr.status == 304 ) {
-				var result = JSON.parse( xhr.responseText );
-				 showDeal( result, input, search );
-			} else {
-				alert( 'request was unsuccessful : ' + xhr.status );
-			}
-		}
-		text = text - 100;
-		xhr.open( 'post', "<?php echo base_url('deal/search_deal/')?>", true );
-		xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
-		xhr.send( 'deal_id=' + text + "&customer_id=" + cid );
-				
-			}
-			function showDeal(res , input , search){
-			var len = res.length;
-			base.style.display = 'none';
-		 	search.style.display = 'contents';
-		    if(len == 0){
-		 	search.innerHTML = '<tr><td colspan="11" class="text-center p-20">موردی یافت نشد</td></tr>';
-		 	return;
-		    }else{
-			var div = document.createElement( 'tbody' );
-			for ( var i = 0; i < len ; i++ ) {
-				var tr = div.appendChild( document.createElement( 'tr' ) );
-				tr.style.backgroundColor = '#eafaf9';
-				var td_row = tr.appendChild( document.createElement('td'));
-				td_row.innerHTML = Number(res[i].id) + Number(100);
-				td_row.setAttribute('class' , 'text-center');
-				
-				var td_fullname = tr.appendChild( document.createElement( 'td' ) );
-			    td_fullname.innerHTML = res[i].fullname;
-				td_fullname.setAttribute('class' , 'text-center');
-				
-				var td_type = tr.appendChild( document.createElement('td'));
-				if(res[i].type_deal == 1){var type = 'خرید';}
-				else{var type = 'فروش';}
-				td_type.innerHTML = type;
-				td_type.setAttribute('class' , 'text-center');
-				
-				var td_count = tr.appendChild( document.createElement( 'td' ) );
-				td_count.innerHTML = numeral(res[i].count_money).format('0,0') + ' ' + res[i].name;
-                td_count.setAttribute('class' , 'text-center');
-				
-				var td_convert = tr.appendChild(document.createElement('td'));
-				td_convert.innerHTML = numeral(res[i].convert_money).format('0,0');
-				td_convert.setAttribute('class' , 'text-center');
-				
-				var td_volume = tr.appendChild(document.createElement('td'));
-				td_volume.innerHTML = numeral(res[i].volume_deal).format('0,0');
-				td_volume.setAttribute('class' , 'text-center');
-				
-				var td_pay = tr.appendChild(document.createElement('td'));
-				td_pay.innerHTML = numeral(res[i].volume_pay).format('0,0');
-				td_pay.setAttribute('class' , 'text-center');
-				
-				var td_rest = tr.appendChild(document.createElement('td'));
-				td_rest.innerHTML = numeral(res[i].volume_rest).format('0,0');
-				td_rest.setAttribute('class' , 'text-center');
-				
-				var td_date = tr.appendChild(document.createElement('td'));
-				td_date.innerHTML = res[i].date_deal + '</br>' + res[i].time_deal;
-                 td_date.setAttribute('class' , 'text-center');
-				
-				var td_modify = tr.appendChild(document.createElement('td'));
-				td_modify.innerHTML = res[i].date_modified;
-                 td_modify.setAttribute('class' , 'text-center');
-				
-				var td_tool = tr.appendChild( document.createElement( 'td' ) );
-				td_tool.setAttribute( 'class', 'text-center' );
-
-				var ul_tool = td_tool.appendChild( document.createElement( 'ul' ) );
-				ul_tool.setAttribute( 'class', 'icons-list' );
-
-				var li_handle = ul_tool.appendChild( document.createElement( 'li' ) );
-				li_handle.setAttribute( 'class', "text-success" );
-				var a_handle = li_handle.appendChild( document.createElement( 'a' ) )
-				a_handle.setAttribute( 'href', "<?php echo base_url('deal/handle/')?>" + res[ i ].id );
-				var i_handle = a_handle.appendChild( document.createElement( 'i' ) );
-				i_handle.setAttribute( 'class', 'icon-notebook' );
-
-				var li_detail = ul_tool.appendChild( document.createElement( 'li' ) );
-				li_detail.setAttribute( 'class', "text-primary" );
-				var a_detail = li_detail.appendChild( document.createElement( 'a' ) )
-				a_detail.setAttribute( 'href', "<?php echo base_url('deal/edit/')?>" + res[ i ].id );
-				var i_detail = a_detail.appendChild( document.createElement( 'i' ) );
-				i_detail.setAttribute( 'class', 'icon-pencil6' );
-				
-				var li_photo = ul_tool.appendChild( document.createElement( 'li' ) );
-				li_photo.setAttribute( 'class', "text-indigo-600" );
-				var a_photo = li_photo.appendChild( document.createElement( 'a' ) )
-				a_photo.setAttribute( 'href', "<?php echo base_url('deal/photo/')?>" + res[ i ].id );
-				var i_photo = a_photo.appendChild( document.createElement( 'i' ) );
-				i_photo.setAttribute( 'class', 'icon-stack-picture' );
-
-				var li_delete = ul_tool.appendChild( document.createElement( 'li' ) );
-				li_delete.setAttribute( 'class', "text-danger-600" );
-				var a_delete = li_delete.appendChild( document.createElement( 'a' ) )
-				a_delete.setAttribute( 'href', "<?php echo base_url('deal/delete/')?>" + res[ i ].id );
-				var i_delete = a_delete.appendChild( document.createElement( 'i' ) );
-				i_delete.setAttribute( 'class', 'icon-trash' );
-			}
-			search.replaceChild( div, search.firstChild );
-				
-			}
-			}
 //show deal----------------------
 //show bank---------------------
-			var num_shaba = document.getElementById( 'num_shaba' );
-			var nam_bank = document.getElementById( 'nam_bank' );
-			var act_edit = document.getElementById( 'act_edit' );
-			var amo_pay = document.getElementById( 'amo_pay' );
-			var amo_bank = document.getElementById( 'amo_bank' );
-			var exp_bank = document.getElementById( 'exp_bank' );
-			function edit_bank(id){
+function edit_bank(id){
 				var xhr = new XMLHttpRequest();
 		xhr.onload = function(){
 			if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
-				
+				    var url = "<?php echo base_url('deal/edit_bank/').$this->uri->segment(3);?>";
 					var result = JSON.parse(xhr.responseText);
-				    showBank(result);
+				    showBank(result , url);
 				}else{
 					alert('request was unsuccessful : ' + xhr.status);
 				}
@@ -693,24 +572,16 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 		xhr.open('post' , "<?php echo base_url('deal/show_bank/')?>" , true);
 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		xhr.send('bank_id=' + id);
-			}
-			function showBank(result){
-				act_edit.action = "<?php echo base_url('deal/edit_bank/').$this->uri->segment(3);?>" + "/" + result.id + '/group';
-				num_shaba.value = result.number_shaba;
-				nam_bank.value = result.name_bank;
-				amo_pay.value = result.pay;
-				amo_bank.value = result.amount;
-                amo_bank.previousElementSibling.value = numeral(result.amount).format('0,0') ;
+}
 
-			}
 //show bank---------------------
-function history(id , deal_id){
+function history(id){
 		var xhr = new XMLHttpRequest();
 		xhr.onload = function(){
 			if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
 				
 					var result = JSON.parse(xhr.responseText);
-				    showHistory(result , deal_id);
+				    showHistory(result);
 				}else{
 					alert('request was unsuccessful : ' + xhr.status);
 				}
@@ -719,7 +590,7 @@ function history(id , deal_id){
 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		xhr.send('handle_id=' + id);
 			}
-			function showHistory(res , deal_id){
+			function showHistory(res){
 				var modal = document.getElementById('showhistory');
 				var len = res.length ;
 				if(len == 0){
@@ -761,8 +632,8 @@ function history(id , deal_id){
 						 
 						var a = span.appendChild(document.createElement('a'));
 						a.setAttribute('class' , 'btn btn-danger mt-25');
-			            a.setAttribute('href' , "<?php echo base_url('deal/restore/') ?>"+res[i].id + '/' + deal_id + '/group/'+<?php echo $this->uri->segment(3);?> );
-						a.innerHTML = 'حذف';
+			            a.setAttribute('href' , "<?php echo base_url('deal/restore/').$this->uri->segment(3)."/";?>"+res[i].id  );
+						a.innerHTML = 'بازگشت';
 					}
 					modal.replaceChild(div , modal.firstChild);
 				}

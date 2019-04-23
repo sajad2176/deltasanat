@@ -5,8 +5,9 @@ class Check{
 		$CI->load->library('session');
 		$class_name = $CI->uri->segment("1");
 		if ($class_name != 'login') {
-			if($CI->session->userdata('login') != TRUE)
-			redirect('login');
+			if($CI->session->userdata('login') != TRUE){
+				redirect('login');
+			}
 		}
 	}
 }

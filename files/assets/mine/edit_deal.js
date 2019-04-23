@@ -91,7 +91,7 @@ count.onkeyup = function () {
     }
     count.value = numeral( count.value ).format( '0,0' );
 }
-wage.onkeyup = function (e) {
+wage.onkeyup = function () {
     var x = numeral( count.value ).value();
     var y = numeral( wage.value ).value();
     var z = numeral( convert.value ).value();

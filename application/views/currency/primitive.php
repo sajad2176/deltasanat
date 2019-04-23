@@ -1,52 +1,48 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+if($this->session->has_userdata('msg')){
+$msg = $this->session->userdata('msg');?>
+<div class="alert bg-<?php echo $msg[1];?> alert-styled-left">
+										<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
+										<?php echo $msg[0];?>
+								    </div>
+<?php }?>
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 	<ul class="breadcrumb">
-		<li><a href="index.html"><i class="icon-home2 position-left"></i> Home</a>
+		<li><a href="<?php echo base_url('home')?>"><i class="icon-home2 position-left"></i> داشبورد</a>
 		</li>
-		<li><a href="alpaca_basic.html">Alpaca</a>
+		<li><a href="<?php echo base_url('settings/primitive_unit')?>">تنظیمات </a>
 		</li>
-		<li class="active">Basic examples</li>
+		<li class="active">ارز اولیه </li>
 	</ul>
 </div>
 <!-- form arz -->
 <div class="panel panel-flat">
 	<div class="panel-body">
-		<form action="#">
+		<form action="<?php echo base_url('settings/primitive_unit');?>" method="post">
 			<div class="row">
 				<div class="col-md-12">
 					<legend class="text-semibold"><i class="icon-coin-dollar position-left"></i> ارز اولیه:</legend>
 				</div>
-				<div class="col-md-6">
+				<div class="col-md-12">
 					<fieldset>
+					
+					<?php
+					$nam = array('dollar' , 'euro' , 'yuan' , 'derham');
+					foreach($unit as $key => $row){?>
 						<div class="col-md-3">
 							<div class="form-group">
-								<label>دلار: </label>
-								<input type="text" class="form-control" placeholder="3.4">
+								<label><?php echo $row->name;?></label>
+								<input type="text" value="<?php echo number_format($row->amount); ?>" onkeyup = "amount(this)" class="form-control">
+								<input type="hidden" name="<?php echo $nam[$key];?>" value="<?php echo $row->amount;?>">
 							</div>
 						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label>یورو: </label>
-								<input type="text" class="form-control" placeholder="1.2">
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label>یوان: </label>
-								<input type="text" class="form-control" placeholder="0.5">
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label>درهم: </label>
-								<input type="text" class="form-control" placeholder="3.4">
-							</div>
-						</div>
-
+					<?php } ?>
 					</fieldset>
 				</div>
 			</div>
 			<div class="text-right">
-				<button type="submit" class="btn btn-primary">ثبت نرخ ارز <i class="icon-arrow-left13 position-right"></i></button>
+				<button type="submit" name="sub" class="btn btn-primary">ثبت نرخ ارز <i class="icon-arrow-left13 position-right"></i></button>
 			</div>
 		</form>
 	</div>
@@ -59,19 +55,37 @@
 		<table class="table datatable-selection-single table-hover table-responsive-lg ">
 			<thead>
 				<tr>
-					<th>ردیف</th>
-					<th>نام مشتری</th>
-					<th>نوع معامله</th>
+					<th width="10%">ردیف</th>
+					<th width="15%">تاریخ</th>
+					<th width="15%">زمان</th>
+					<th width="15%">توسط</th>
+					<th width="45%">توضیحات</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr class="base_cust">
-					<td>علی شیرازی</td>
-					<td>علی شیرازی</td>
-					<td>علی شیرازی</td>
+			<?php if(empty($change)){?>
+              <tr><td colspan="5" class="text-center p-20"  >موردی یافت نشد</td></tr>
+			<?php }else{
+				$key = $this->uri->segment(3);
+				foreach($change as $rows){?>
+				<tr>
+					<td><?php echo $key + 1;?></td>
+					<td><?php echo $rows->date_log;?></td>
+					<td><?php echo $rows->time_log;?></td>
+					<td><?php echo $rows->name;?></td>
+					<td><?php echo $rows->explain;?></td>
 				</tr>
+			<?php } ?>
+			<tr><td><?php echo $page;?></td></tr>
+			<?php } ?>
 			</tbody>
 		</table>
 	</div>
 </div>
 <!--/table arz-->
+<script>
+function amount(input){
+    input.value = numeral( input.value ).format( '0,0' );
+    input.nextElementSibling.value = numeral( input.value ).value();
+}
+</script>

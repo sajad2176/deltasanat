@@ -121,6 +121,7 @@
 		var currentFocus;
 		inp.addEventListener( "input", function ( e ) {
 			var a, b, i, val = this.value;
+			val = val.trim();
 			closeAllLists();
 			if ( !val ) {
 				inp.nextElementSibling.style.display = 'none';

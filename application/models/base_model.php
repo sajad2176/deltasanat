@@ -16,7 +16,7 @@ function get_data($table,$select, $ret = 'result', $where=NULL,$limit=NULL , $of
         $this->db->where($between);
     }
     if($group_by !=NULL){
-        $this -> db -> group_by($group_by);
+        $this->db->group_by($group_by);
     }
     if($order_by !=NULL){
         $this->db->order_by($order_by[0] , $order_by[1]);
@@ -30,7 +30,7 @@ function get_data($table,$select, $ret = 'result', $where=NULL,$limit=NULL , $of
     }
 }
 
-function get_data_join($from , $join , $select ,$join_where ,$ret = 'result' , $where = NULL, $limit = NULL , $offset = NULL , $order_by = NULL , $join2 = NULL , $join3 = NULL , $between = NULL ){
+function get_data_join($from , $join , $select ,$join_where ,$ret = 'result' , $where = NULL, $limit = NULL , $offset = NULL , $order_by = NULL , $join2 = NULL , $join3 = NULL , $between = NULL , $group = NULL ){
     $this->db->select($select);
     $this->db->from($from);
     $this->db->join($join , $join_where);
@@ -52,6 +52,9 @@ function get_data_join($from , $join , $select ,$join_where ,$ret = 'result' , $
    if($limit != NULL){
         $this->db->limit($limit , $offset);
     }
+    if($group != NULL){
+        $this->db->group_by($group);
+    }
     $query = $this->db->get();
     if($ret != 'result'){
         return $query->row();
@@ -59,7 +62,7 @@ function get_data_join($from , $join , $select ,$join_where ,$ret = 'result' , $
         return $query->result();
     }
 }
-function get_data_left($from , $join , $select ,$join_where, $side ,$ret = 'result' , $where = NULL, $limit = NULL , $offset = NULL , $order_by = NULL , $group = NULL){
+function get_data_left($from , $join , $select ,$join_where, $side ,$ret = 'result' , $where = NULL, $limit = NULL , $offset = NULL , $order_by = NULL , $group = NULL , $join2 = NULL){
     $this->db->select($select);
     $this->db->from($from);
     $this->db->join($join , $join_where , $side);
@@ -75,6 +78,9 @@ function get_data_left($from , $join , $select ,$join_where, $side ,$ret = 'resu
     if($group != NULL){
         $this->db->group_by($group);
     }
+    if($join2 != NULL){
+		$this->db->join($join2[0] , $join2[1]);
+	}
     $query = $this->db->get();
     if($ret != 'result'){
         return $query->row();
@@ -165,8 +171,12 @@ function delete_data($table , $where){
         return FALSE;
     }
 }
-function run_query($query) {
-    return $this->db->query($query)->result() ;
+function run_query($query , $ret = 'result') {
+    if($ret == 'result'){
+        return $this->db->query($query)->result() ;
+    }else{
+        return $this->db->query($query)->row() ;
+    }
 }
 
 // --select--update--insert--delete--  //

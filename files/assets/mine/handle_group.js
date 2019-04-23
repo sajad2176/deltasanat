@@ -75,6 +75,7 @@ function autocomplete( inp, arr ) {
     var currentFocus;
     inp.addEventListener( "input", function ( e ) {
         var a, b, i, val = this.value;
+        val = val.trim();
         closeAllLists();
         if ( !val ) {
             inp.nextElementSibling.style.display = 'none';            
@@ -95,7 +96,7 @@ function autocomplete( inp, arr ) {
                 match = arr[ i ].slice( arr[ i ].indexOf( search ), -lastIndx );
             }
             if ( match.length == search.length ) {
-                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + " | طلب کار :  " + numeral(want[i]).format('0,0') + ' |  بده کار  :  ' + numeral(give[i]).format('0,0');
+                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + " | طلبکار :  " + numeral(want[i]).format('0,0') + ' |  بدهکار  :  ' + numeral(give[i]).format('0,0');
 
                 b = document.createElement( "DIV" );
                 b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";
@@ -108,7 +109,7 @@ function autocomplete( inp, arr ) {
         }
         if(a.childElementCount == 0){
             inp.nextElementSibling.style.display = 'block';
-            inp.nextElementSibling.innerHTML = 'بعد از ثبت هماهنگی ' + val + ' به لیست مشتریان اضافه  میشود ';
+            inp.nextElementSibling.innerHTML = '<span class="icon-alert"></span>' + ' شخص ' + val + ' به عنوان مشتری ثبت نشده است ';
         }else{
             inp.nextElementSibling.style.display = 'none';
         }
@@ -160,14 +161,13 @@ function autocomplete( inp, arr ) {
 //search customer
 //
 function slice_input( input ) {
-    input.nextElementSibling.value = numeral( input.value ).value();
     input.value = numeral( input.value ).format( '0,0' );
+    input.nextElementSibling.value = numeral( input.value ).value();
 }
 
 function ambank( input ) {
-
-	input.nextElementSibling.value = numeral( input.value ).value();
     input.value = numeral( input.value ).format( '0,0' );
+    input.nextElementSibling.value = numeral( input.value ).value();
     if(input.previousElementSibling.value > numeral(input.value).value()){
         input.nextElementSibling.nextElementSibling.style.display = 'block';
         input.nextElementSibling.nextElementSibling.innerHTML = ' مبلغ تعیین شده از مبلغی که به این حساب واریز شده  کمتر است  ';
@@ -176,6 +176,26 @@ function ambank( input ) {
         }
 }
 function amhandle(input){
-    input.nextElementSibling.value = numeral( input.value ).value();
     input.value = numeral( input.value ).format( '0,0' );
+    input.nextElementSibling.value = numeral( input.value ).value();
 }
+var num_shaba = document.getElementById( 'num_shaba' );
+var nam_bank = document.getElementById( 'nam_bank' );
+var act_edit = document.getElementById( 'act_edit' );
+var amo_pay = document.getElementById( 'amo_pay' );
+var amo_bank = document.getElementById( 'amo_bank' );
+var exp_bank = document.getElementById( 'exp_bank' );
+
+function showBank(result , url){
+    act_edit.action = url + "/" + result.id;
+    num_shaba.value = result.shaba;
+    nam_bank.value = result.name;
+    amo_pay.value = result.pay;
+	amo_bank.value = result.amount;
+	exp_bank.value = result.explain;
+    amo_bank.previousElementSibling.value = numeral(result.amount).format('0,0') ;
+
+}
+//edit bank
+
+

@@ -160,11 +160,12 @@ $msg = $this->session->userdata('msg');?>
 										<input type="hidden" name="bank_id[]" value="<?php echo $rows->id;?>" >
 										<input type="hidden" name="rest[]" value="<?php echo $rows->rest;?>" >
 										<input type="hidden" name="rest_handle[]" value="<?php echo $rows->rest_handle;?>" >
+										<input type="hidden" name="real_amount[]" value="<?php echo $rows->amount;?>" >
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
 												<label> تعیین حجم : </label>
-												<input type="hidden" value="<?php echo $rows->pay;?>">
+												<input type="hidden" name="pay_bank[]" value="<?php echo $rows->pay;?>">
 												<input type="text" onKeyUp="amount_bank(this)" value = "<?php echo number_format($rows->amount); ?>" placeholder="100,000" class="form-control">
 												<input type="hidden" name="amount[]" value="<?php echo $rows->amount;?>">
 												<p class="text-danger" style ="display: none;"></p>
