@@ -1,3 +1,12 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+if($this->session->has_userdata('msg')){
+$msg = $this->session->userdata('msg');?>
+<div class="alert bg-<?php echo $msg[1];?> alert-styled-left">
+										<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
+										<?php echo $msg[0];?>
+								    </div>
+<?php }?>
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 	<ul class="breadcrumb">
 		<li><a href="<?php echo base_url('home');?>"><i class="icon-home2 position-left"></i> داشبورد</a>
@@ -20,13 +29,13 @@
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>یورو : </label>
-								<input type="text" name = 'euro' value = '1' class="form-control" placeholder="1.2" required autofocus>
+								<input type="text" name = 'euro' value = '1' class="form-control" placeholder="0.8" required autofocus>
 							</div>
 						</div>
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>یوان : </label>
-								<input type="text" name = 'yuan' value = '1' class="form-control" placeholder="0.5" required>
+								<input type="text" name = 'yuan' value = '1' class="form-control" placeholder="7" required>
 							</div>
 						</div>
 						<div class="col-md-4">

@@ -18,8 +18,6 @@
 
 
 </div>
-
-?>
 <script>
 var modal = document.getElementById('modal_logout');
 window.onclick = function(event) {
@@ -74,6 +72,13 @@ window.onclick = function(event) {
             $('[data-toggle="tooltip"]').tooltip();
         })
     </script>
+  <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/tables/datatables/datatables.min.js"></script>
+
+	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/tables/datatables/extensions/jszip/jszip.min.js"></script>
+	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/tables/datatables/extensions/pdfmake/pdfmake.min.js"></script>
+	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/tables/datatables/extensions/pdfmake/vfs_fonts.min.js"></script>
+  <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/tables/datatables/extensions/buttons.min.js"></script>
+  <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/pages/datatables_extension_buttons_html5.js"></script>
     <!-- <script type="text/javascript" src="<?php //echo base_url('files/');?>assets/mine/close_modal.js"></script> -->
 </body>
 </html>

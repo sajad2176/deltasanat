@@ -7003,8 +7003,14 @@ border-top: 1px solid #ddd;
   display: none;
 }
 .tr_rest{
-  background-color: #dcefdc !important;
+  background-color: #d5e8c9 !important;
 }
 .state_bg{
-  background-color: #d5f6f2;
+  background-color: #dad3f8;
 }
+/* CHANGE TABLE DISPLAY NONE */
+.datatable-footer , .dataTables_filter , .dataTables_length{
+  display: none !important;
+}
+
+/* CHANGE TABLE DISPLAY NONE */

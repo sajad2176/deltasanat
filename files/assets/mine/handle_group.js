@@ -160,10 +160,6 @@ function autocomplete( inp, arr ) {
 }
 //search customer
 //
-function slice_input( input ) {
-    input.value = numeral( input.value ).format( '0,0' );
-    input.nextElementSibling.value = numeral( input.value ).value();
-}
 
 function ambank( input ) {
     input.value = numeral( input.value ).format( '0,0' );

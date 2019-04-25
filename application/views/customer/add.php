@@ -26,7 +26,7 @@ $msg = $this->session->userdata('msg');?>
 
 											<div class="form-group">
 												<label>نام و نام خانوادگی : </label>
-												<input type="text" name="fullname" class="form-control" placeholder="Full Name" required>
+												<input type="text" name="fullname" class="form-control" placeholder="Full Name" required autofocus>
 											</div>
 
 											<div class="form-group">

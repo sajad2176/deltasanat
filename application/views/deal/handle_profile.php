@@ -228,7 +228,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 													<?php } ?>
 													
 <?php if($this->session->has_userdata('restore') and $this->session->userdata('restore') == TRUE){?><li title="بازگشت پرداخت " data-toggle="tooltip" class="text-warning-800"><a data-toggle="modal" href="#modal_form_dminor"><i onclick="history(<?php echo $handles->id;?>)" class="icon-file-minus"></i></li><?php } ?>
-									
+<?php if($this->session->has_userdata('edit_handle') and $this->session->userdata('edit_handle') == TRUE){?><li title="ویرایش هماهنگی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_form_sminor"><i class="icon-pencil6" onclick="edit_handle(<?php echo $handles->id;?> , <?php echo $handles->volume_handle;?>)" ></i></a></li><?php } ?>									
 <?php if($this->session->has_userdata('delete_deal') and $this->session->userdata('delete_deal') == TRUE){?><li title="حذف هماهنگی" data-toggle="tooltip" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i onClick="deleteHandle(<?php echo $handles->id; ?>, <?php echo $handles->handle_pay; ?>)" class="icon-cross2"></i></a></li><?php } ?>
 											</ul>
 						</td>
@@ -255,6 +255,33 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 										<p class="text-danger d-none" style="position:absolute;top:65px;"></p>
 										<span class="input-group-btn">
 							<button type="submit" name="sub" class="btn btn-success mt-25">پرداخت</button>
+											</span>
+									</div>
+							</form>
+							</div>
+						</div>
+					</div>
+				<!-- /minor form modal -->
+
+			</div>
+			<div id="modal_form_sminor" class="modal fade">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h5 class="modal-title text-center">مبلغ هماهنگی را ویرایش کنید </h5>
+
+							</div>
+							<hr>
+							<form method="post" id="form_edit">
+								<div class="modal-body">
+									<div class="form-group input-group">
+										<label>مبلغ هماهنگی :</label>
+										<input type="text" id="ihandle" placeholder="111,000,000" onkeyup='amhandle(this)' class="form-control" required>
+										<input type="hidden" name="edit">
+										<p class="text-danger d-none" style="position:absolute;top:65px;"></p>
+										<span class="input-group-btn">
+							<button type="submit" name="sub" class="btn btn-success mt-25">ذخیره</button>
 											</span>
 									</div>
 							</form>
@@ -487,7 +514,15 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 		$str3 = '';foreach($give_rial as $value2){$str3 .= "\"$value2\",";}$str3 = trim($str3 , ",");
 		?>
 		<script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/handle_group.js"></script>
-		<script>	
+		<script>
+var formEdit = document.getElementById('form_edit');
+var ihandle = document.getElementById('ihandle');
+function edit_handle(id , volume){
+ihandle.value = numeral(volume).format('0,0');
+ihandle.nextElementSibling.value = volume;
+formEdit.action = "<?php echo base_url('deal/edit_handle/').$this->uri->segment(3)."/";?>" + id;
+}
+
 var customer = [ <?php echo $str; ?> ];
 var want = [<?php echo $str2; ?>];
 var give = [<?php echo $str3;?>];
@@ -527,7 +562,7 @@ function search_customer( input ) {
 				   titleHandle.innerHTML = 'آیا مایل به حذف هماهنگی می باشید ؟';
 				   closeHandle.style.display = 'inline-block';
 				   confirmHandle.style.display = 'inline-block';
-				   confirmHandle.setAttribute('href' , "<?php echo base_url('deal/delete_handle/');?>" + id + "<?php echo "/".$this->uri->segment(3)."/group"; ?>");
+				   confirmHandle.setAttribute('href' , "<?php echo base_url('deal/delete_handle/').$this->uri->segment(3)."/";?>" + id);
 			   }
 			}			
 //delete handle -----------------	

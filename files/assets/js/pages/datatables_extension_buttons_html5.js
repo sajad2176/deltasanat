@@ -88,7 +88,7 @@ $(function() {
                     extend: 'pdfHtml5',
                     className: 'btn btn-default',
                     exportOptions: {
-                        columns: [0, 1, 2, 5]
+                        columns: ':visible'
                     }
                 },
                 {

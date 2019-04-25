@@ -40,7 +40,7 @@
 			</tbody>
 			<tbody>
 				<?php 
-						if(sizeof($customer) == 0){ ?>
+						if(empty($customer)){ ?>
 							<tr><td colspan="6" class="text-center p-20">موردی یافت نشد</td></tr>
 						<?php }else{
 							$num = $this->uri->segment(3) + 1;
@@ -50,7 +50,7 @@
 						<?php echo $num;?>
 					</td>
 					<td>
-						<a href="<?php echo base_url('deal/handle_profile/').$rows->id;?>"><?php echo $rows->fullname; ?></a>
+						<a href="<?php echo base_url('deal/handle_profile/').$rows->id;?>" target="_blank"><?php echo $rows->fullname; ?></a>
 					</td>
 					<td><?php echo $rows->deal_count;?></td>
 					<td><?php echo number_format($rows->vd); ?></td>
@@ -89,6 +89,7 @@
 function search_cust( input ) {
 	var search = document.getElementById( 'search' );
 	var text = input.value;
+	text = text.trim();
 		if ( text == '' ) {
 			search.style.display = 'none';
 			search.nextElementSibling.style.display = 'contents';

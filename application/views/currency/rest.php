@@ -108,7 +108,7 @@ $msg = $this->session->userdata('msg');?>
 					<?php echo $rows->id + 100;?>
 				</td>
 				<td>
-					<a href="<?php echo base_url('deal/handle_profile/').$rows->cust_id ?>">
+					<a href="<?php echo base_url('deal/handle_profile/').$rows->cust_id ?>" target="_blank">
 						<?php echo $rows->fullname; ?>
 					</a>
 				</td>
@@ -138,7 +138,6 @@ $msg = $this->session->userdata('msg');?>
 				</td>
 				<td class="text-center">
 					<ul class="icons-list">
-<?php if($this->session->has_userdata('see_handle') and $this->session->userdata('see_handle') == TRUE ){?><li title="هماهنگی ها" data-toggle="tooltip" class="text-success"><a href="<?php echo base_url('deal/handle/').$rows->id;?>"><i class="icon-notebook"></i></a></li><?php } ?>
 <?php if($this->session->has_userdata('edit_deal') and $this->session->userdata('edit_deal') == TRUE){?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>
 <?php if($this->session->has_userdata('see_photo') and $this->session->userdata('see_photo') == TRUE){?><li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$rows->id;?>"><i class="icon-stack-picture"></i></a></li><?php } ?>
 <?php if($this->session->has_userdata('delete_deal') and $this->session->userdata('delete_deal') == TRUE){?><li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->pay; ?>)" ></i></a></li><?php } ?>
@@ -201,7 +200,7 @@ $msg = $this->session->userdata('msg');?>
 		  confirmDelete.style.display = 'none';
 		  return;
 	  }else{
-		  titleDelete.innerHTML = "با حذف معامله تمام اطلاعات مربوط به معامله ، هماهنگی ها ،اطلاعات بانکی حذف خواهد شد.</br> آیا می خواهید ادامه دهید؟";
+		  titleDelete.innerHTML = " آیا می خواهید ادامه دهید؟";
 		  closeDelete.style.display = 'inline-block';
 		  confirmDelete.style.display = 'inline-block';
 		  confirmDelete.setAttribute('href' , "<?php echo base_url('deal/delete_deal/')?>" + id);

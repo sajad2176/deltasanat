@@ -20,6 +20,12 @@ class Settings extends CI_Controller {
             $data['rate_euro'] = $this->input->post('euro');
             $data['rate_yuan'] = $this->input->post('yuan');
             $data['rate_derham'] = $this->input->post('derham');
+            $log['user_id'] = $this->session->userdata('id');
+            $log['date_log'] = $data['date_rate'];
+            $log['time_log'] =  $data['time_rate'];
+            $log['activity_id'] = 22;
+            $log['explain'] = ' نرخ تبدیل دلار به یورو '.$data['rate_euro']." </br> نرخ تبدیل دلار به یوان : ".$data['rate_yuan']." </br> نرخ تبدیل دلار به درهم : ".$data['rate_derham'];
+            $this->base_model->insert_data('log' , $log);
             $this->base_model->insert_data('rate' , $data);
             $message['msg'][0] = 'اطلاعات با موفقیت ثبت شد';
             $message['msg'][1] = 'success';
@@ -72,7 +78,7 @@ class Settings extends CI_Controller {
                 show_404();
         }
         if(isset($_POST['sub'])){
-            $unit = $this->base_model->get_data('unit' , '*' , 'result' , array('id !=' => 10) , NULL , NULL ,array('id' , 'ASC'));
+            $unit = $this->base_model->get_data('unit' , '*' , 'result' , array('id < ' => 10) , NULL , NULL ,array('id' , 'ASC'));
             $update = array(
                 array('id'=>1 , 'amount'=> $_POST['dollar']) ,
                 array('id'=>2, 'amount'=>$_POST['euro']) , 
@@ -87,7 +93,7 @@ class Settings extends CI_Controller {
            $log['user_id'] = $this->session->userdata('id');
            $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
            $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
-           $log['activity_id'] = 22;
+           $log['activity_id'] = 23;
            $log['explain'] = $exp;
            $this->base_model->update_batch('unit' , $update , 'id');
            $this->base_model->insert_data('log' , $log);
@@ -123,8 +129,8 @@ class Settings extends CI_Controller {
             $config['suffix'] = "";
         $this->pagination->initialize($config);
         $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;      
-        $data['change'] = $this->base_model->get_data_join('log' , 'member', 'log.* , member.username as name' ,'log.user_id = member.id' ,  'result'  , array('log.activity_id' => 22) , $config['per_page'] , $page , array('log.id' , 'DESC'));
-        $data['unit'] = $this->base_model->get_data('unit' , '*' , 'result' , array('id !=' => 10) , NULL , NULL ,array('id' , 'ASC'));
+        $data['change'] = $this->base_model->get_data_join('log' , 'member', 'log.* , member.username as name' ,'log.user_id = member.id' ,  'result'  , array('log.activity_id' => 23) , $config['per_page'] , $page , array('log.id' , 'DESC'));
+        $data['unit'] = $this->base_model->get_data('unit' , '*' , 'result' , array('id < ' => 10) , NULL , NULL ,array('id' , 'ASC'));
         $data['page'] = $this->pagination->create_links();
         $data['count'] = $config['total_rows'];
             $header['title'] = 'ارز اولیه';
@@ -142,7 +148,7 @@ class Settings extends CI_Controller {
     if(isset($_POST['sub'])){
         $customer['fullname'] = $this->input->post('fullname');
         $check = $this->base_model->get_data('customer' , 'id' , 'row' , array('fullname'=>$customer['fullname']));
-        if(sizeof($check) == 0){
+        if(empty($check)){
             $cust['fullname'] = $customer['fullname'];
             $cust['address'] = '';
             $cust['email'] = '';
@@ -173,7 +179,7 @@ class Settings extends CI_Controller {
        $deal['type'] = $this->input->post('type');
        $deal['customer_id'] = $id;
        $deal['money_id'] = 10;
-
+       $deal['state'] = 1;
        $rial = $this->base_model->get_data('unit' , 'amount' , 'row' , array('id'=> 10));
        if($deal['type'] == 1){
            $unit_rial['amount'] = $rial->amount + $deal['count_money'];
@@ -232,7 +238,7 @@ class Settings extends CI_Controller {
         $config['suffix'] = "";
     $this->pagination->initialize($config);
     $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;      
-    $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , customer.id as cust_id ,unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('money_id'=> 10) , $config['per_page'] , $page , array('deal.id' , 'DESC') , array('unit','deal.money_id = unit.id'));
+    $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , customer.id as cust_id ,unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('deal.money_id'=> 10, 'deal.state !=' => 0) , $config['per_page'] , $page , array('deal.id' , 'DESC') , array('unit','deal.money_id = unit.id'));
     $data['page'] = $this->pagination->create_links();
     $data['count'] = $config['total_rows'];
     $date = $this->convertdate->convert(time());
@@ -246,5 +252,49 @@ class Settings extends CI_Controller {
         $this->load->view('footer');
     }
     }
-	 }
+    public function turnover(){
+        if(!$this->session->has_userdata('turnover') or $this->session->userdata('turnover') != TRUE){
+        show_404();
+        }
+        if(isset($_POST['sub'])){
+
+        }else{
+            $total_rows = $this->base_model->get_count("turnover" , 'ALL');
+            $config['base_url'] = base_url('settings/turnover');
+            $config['total_rows'] = $total_rows;
+            $config['per_page'] = '10';
+            $config["uri_segment"] = '3';
+            $config['num_links'] = '5';
+            $config['next_link'] = '<i class="icon-arrow-left5"></i>';
+            $config['last_link'] = '<i class="icon-backward2"></i>';
+            $config['prev_link'] = '<i class="icon-arrow-right5"></i>';
+            $config['first_link'] = '<i class="icon-forward3"></i>';
+            $config['full_tag_open'] = '<nav><ul class="pagination pagination-sm">';
+            $config['full_tag_close'] = '</ul></nav>';
+            $config['cur_tag_open'] = '<li class="active"><a href="javascript:void(0)">';
+            $config['cur_tag_close'] = '</a></li>';
+            $config['num_tag_open'] = '<li>';
+            $config['num_tag_close'] = '</li>';
+            $config['next_tag_open'] = '<li>';
+            $config['next_tag_close'] = '</li>';
+            $config['last_tag_open'] = '<li>';
+            $config['last_tag_close'] = '</li>';
+            $config['first_tag_open'] = '<li>';
+            $config['first_tag_close'] = '</li>';
+            $config['prev_tag_open'] = '<li>';
+            $config['prev_tag_close'] = '</li>';
+            $config['suffix'] = "";
+        $this->pagination->initialize($config);
+        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;      
+        $data['turnover'] = $this->base_model->get_data_join('turnover' ,'bank', 'turnover.* , customer.fullname , bank.shaba , bank.name' , 'turnover.bank_id = bank.id' ,'result'  , NULL , $config['per_page'] , $page , array('turnover.id' , 'DESC') , array('customer','turnover.cust_id = customer.id'));
+        $data['page'] = $this->pagination->create_links();
+        $header['title'] = ' گردش حساب ';
+        $header['active'] = 'settings';
+        $header['active_sub'] = 'turnover';
+        $this->load->view('header' , $header);
+        $this->load->view('currency/turnover' , $data);
+        $this->load->view('footer');
+        }
+    }
+}
 ?>

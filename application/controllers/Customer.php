@@ -54,9 +54,9 @@ $data['count'] = $total_rows;
             show_404();
         }
         if(isset($_POST['sub'])){
-            $customer['fullname'] = $this->input->post('fullname');
+            $customer['fullname'] = trim($this->input->post('fullname') , ' ');
             $check = $this->base_model->get_data('customer' , 'id' , 'row' , array('fullname' => $customer['fullname']));
-            if(sizeof($check) != 0){
+            if(!empty($check)){
                 $message['msg'][0] = 'این نام '.$customer['fullname'] . " قبلا استفاده شده است . لطفا جهت تمایز در نام مشتری ها از نام دیگری استفاده کنید ";
                 $message['msg'][1] = 'danger';
                 $this->session->set_flashdata($message);
@@ -104,7 +104,7 @@ $data['count'] = $total_rows;
             if(isset($_POST['sub'])){
                 $customer['fullname'] = $this->input->post('fullname');
                 $check = $this->base_model->get_data('customer' , 'id' , 'row' , array('fullname'=> $customer['fullname']));
-                if(sizeof($check) != 0 and $check->id != $id){
+                if(!empty($check) and $check->id != $id){
                     $message['msg'][0] = 'این نام '.$customer['fullname'] . " قبلا استفاده شده است . لطفا جهت تمایز در نام مشتری ها از نام دیگری استفاده کنید ";
                     $message['msg'][1] = 'danger';
                     $this->session->set_flashdata($message);

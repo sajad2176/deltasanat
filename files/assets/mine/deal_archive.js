@@ -11,7 +11,7 @@ function showCustResult( result, url ) {
         for ( var i = 0; i < len ; i++ ) {
             var tr = div.appendChild( document.createElement( 'tr' ) );
             if(result[i].state == 0){
-                tr.style.backgroundColor = '#d5f6f2';
+                tr.style.backgroundColor = '#a392ed';
             }
             var td_row = tr.appendChild( document.createElement( 'td' ) );
             td_row.innerHTML = Number(result[i].id) + Number(100);
