@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 if($this->session->has_userdata('msg')){
@@ -281,3 +282,5 @@ function show(val , type){
 
 }
 </script>
+=======
+>>>>>>> parent of 8a1d6d2... sheet

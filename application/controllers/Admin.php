@@ -61,10 +61,10 @@ $data['count'] = $config['total_rows'];
         }
         $user_id = $this->uri->segment(3);
         $active = $this->uri->segment(4);
+        $name = $this->uri->segment(5);
         if(isset($user_id) and isset($active) and is_numeric($user_id) and is_numeric($active)){
         $data['active'] = $active;
         $this->base_model->update_data('member' , $data , array('id'=>$user_id));
-        $name = $this->base_model->get_data('member'  , 'username' , 'row' , array('id'=>$user_id));
         $date = $this->convertdate->convert(time());
         $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
         $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
@@ -206,8 +206,7 @@ if($this->input->post('password') != '' or $this->input->post('repeat') != ''){
 }
 $user['firstname'] = $this->input->post('firstname');
 $user['lastname'] = $this->input->post('lastname');
-$name = trim($this->input->post('username') , ' ');
-$user['username']  = $name;
+$user['username']  = trim($this->input->post('username') , ' ');;
 $check = $this->base_model->get_data('member' , 'id ,username' , 'row' , array('username'=>$user['username']));
 if(!empty($check) and $check->id != $id){
     $message['msg'][0] = "این نام کاربری قبلا استفاده شده است . لطفا نام کاربری دیگری انتخاب کنید";

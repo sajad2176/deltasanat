@@ -18,13 +18,13 @@
 
 		<div class="datatable-header">
 			<div class="row">
-				<div class="col-md-7 text-right">
-					<div class="dataTables_filter"><label><span>جستجو : </span> <input type="search" onkeyup="search_cust(this)" placeholder="نام مشتری خود را جتسجو کنید"></label>
+				<div class="col-md-12 text-right">
+					<div class="form-group"><label><span>جستجو : </span> <input class="form-control"  type="search" onkeyup="search_cust(this)" placeholder="نام مشتری خود را جتسجو کنید"></label>
 					</div>
 				</div>
 			</div>
 		</div>
-		<table class="table datatable-selection-single table-hover ">
+		<table class="table datatable-selection-single table-hover table-responsive-lg">
 			<thead>
 				<tr>
 					<th width="10%">ردیف</th>
@@ -57,7 +57,7 @@
 					<td><?php echo number_format($rows->vr); ?></td>
 					<td class="text-center">
 						<ul class="icons-list">
-						<?php if($this->session->has_userdata('edit_customer') and $this->session->userdata('edit_customer') == TRUE){?>
+						<?php if($this->session->has_userdata('edit_customer')){?>
 							<li class="text-primary-600"><a href="<?php echo base_url('customer/edit/').$rows->id;?>" title="ویرایش" data-toggle="tooltip"><i class="icon-pencil7"></i></a></li>
 						<?php } ?>
 						</ul>

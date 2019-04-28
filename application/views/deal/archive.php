@@ -128,13 +128,13 @@ $msg = $this->session->userdata('msg');?>
 				<td>
 					<?php echo number_format($rows->convert); ?>
 				</td>
-				<td class="<?php if($rows->volume < $rows->pay){echo 'text-danger';}?>">
+				<td class="lright <?php if($rows->volume < $rows->pay){echo 'text-danger';}?>">
 					<?php echo number_format($rows->volume);?>
 				</td>
-				<td class="<?php if($rows->volume < $rows->pay){echo 'text-danger';}?>">
+				<td class="lright <?php if($rows->volume < $rows->pay){echo 'text-danger';}?>">
 					<?php echo number_format($rows->pay);?>
 				</td>
-				<td class="<?php if($rows->rest < 0){echo 'text-danger';}?>">
+				<td class="lright <?php if($rows->rest < 0){echo 'text-danger';}?>">
 					<?php echo number_format($rows->rest);?>
 				</td>
 				<td>
@@ -145,9 +145,9 @@ $msg = $this->session->userdata('msg');?>
 				</td>
 				<td class="text-center">
 					<ul class="icons-list">
-<?php if($this->session->has_userdata('edit_deal') and $this->session->userdata('edit_deal') == TRUE){?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>
-<?php if($this->session->has_userdata('see_photo') and $this->session->userdata('see_photo') == TRUE){?><li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$rows->id;?>"><i class="icon-stack-picture"></i></a></li><?php } ?>
-<?php if($this->session->has_userdata('delete_deal') and $this->session->userdata('delete_deal') == TRUE){?><li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->pay; ?>)" ></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('edit_deal')){?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('see_photo')){?><li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$rows->id;?>"><i class="icon-stack-picture"></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('delete_deal')){?><li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->pay; ?>)" ></i></a></li><?php } ?>
 					</ul>
 				</td>
 			</tr>

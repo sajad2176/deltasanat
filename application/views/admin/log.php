@@ -77,7 +77,7 @@
 		</thead>
 		<tbody>
                  
-	<?php if(sizeof($logs) == 0){ ?>  <tr><td colspan = '5' class='text-center p-20'>موردی یافت نشد</td></tr> <?php }
+	<?php if(empty($logs)){ ?>  <tr><td colspan = '5' class='text-center p-20'>موردی یافت نشد</td></tr> <?php }
 			 
 			 else{
 		$num = $this->uri->segment(4) + 1;
@@ -139,7 +139,7 @@ select_cat.onchange = function(){
 	}else if(value == 3){
 		select_act.innerHTML = '<option value="9">افزودن خرید</option><option value="10">افزودن فروش</option><option value="11">ویرایش معامله</option><option value="20">حذف معامله </option><option value="12">افزودن هماهنگی</option><option value="13"> پرداخت کامل</option><option value="14">پرداخت جزیی</option><option value="15">بازگشت پرداخت</option><option value="21"> ویرایش هماهنگی </option><option value="16"> حذف هماهنگی </option><option value="17">افزودن اطلاعات حساب </option><option value="18">ویرایش اطلاعات حساب</option><option value="19"> تغییر وضعیت اطلاعات حساب</option>';
 	}else if(value == 4){
-		select_act.innerHTML = '<option value="22"> تبدیل ارز</option><option value="23"> ارز اولیه</option><option value="24">  مانده حساب ریالی</option>';
+		select_act.innerHTML = '<option value="22"> تبدیل ارز</option><option value="23"> ارز اولیه</option>';
 	}
 }
 

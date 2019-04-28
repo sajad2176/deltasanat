@@ -129,7 +129,7 @@ function get_count_between($table , $where = NULL , $between = NULL){
     return $this->db->count_all_results();	
 
 }
-function search_data($from , $join , $select ,$join_where , $side  , $like , $where = NULL , $order_by = NULL , $group_by = NULL , $join2 = NULL){
+function search_data($from , $join , $select ,$join_where , $side  , $like , $where = NULL , $order_by = NULL , $group_by = NULL , $join2 = NULL , $between = NULL){
     $this->db->select($select);
     $this->db->from($from);
     $this->db->join($join , $join_where , $side);
@@ -144,6 +144,9 @@ function search_data($from , $join , $select ,$join_where , $side  , $like , $wh
     }
     if($group_by != NULL){
         $this->db->group_by($group_by);
+    }
+    if($between != NULL){
+        $this->db->where($between);
     }
 	$this->db->like($like);
 	$query = $this->db->get();

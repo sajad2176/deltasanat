@@ -64,7 +64,7 @@
 
 
 					<ul class="dropdown-menu dropdown-menu-right">
-					<?php if($this->session->has_userdata('edit_user') and $this->session->userdata('edit_user') == TRUE){?>
+					<?php if($this->session->has_userdata('edit_user')){?>
 						<li><a href="<?php echo base_url('admin/edit/').$this->session->userdata('id');?>"><i class="icon-user-plus"></i> ویرایش حساب کاربری</a>
 						</li>
 					<?php } ?>
@@ -115,55 +115,46 @@
 						<div class="category-content no-padding">
 							<ul class="navigation navigation-main navigation-accordion">
 	
-							<?php if($this->session->has_userdata('see_dashbord') and  $this->session->userdata('see_dashbord') == TRUE){ ?>
-								<li class="<?php if($active == 'dashbord'){echo 'active';}?>"><a href="<?php echo base_url('home'); ?>"><i class="icon-home4"></i> <span>داشبورد</span></a></li>
-							<?php }?>
-                           <?php if($this->session->has_userdata('see_users') and $this->session->userdata('see_users') == TRUE){?>
-	
+<?php if($this->session->has_userdata('see_dashbord')){ ?><li class="<?php if($active == 'dashbord'){echo 'active';}?>"><a href="<?php echo base_url('home'); ?>"><i class="icon-home4"></i> <span>داشبورد</span></a></li> <?php }?>
+                           
+						   <?php if($this->session->has_userdata('see_users')){?>
 							<li>
 									<a href=""><i class="icon-users4 <?php if($active == 'admin'){echo 'active';} ?>"></i> <span>کاربران</span></a>
 									<ul>
-										<li class="<?php if($active_sub == 'admin_archive'){echo 'active';} ?>"><a href="<?php echo base_url('admin/archive') ?>">آرشیو کاربران</a>
-										</li>
+										<li class="<?php if($active_sub == 'admin_archive'){echo 'active';} ?>"><a href="<?php echo base_url('admin/archive') ?>">آرشیو کاربران</a></li>
 					
-										<?php if($this->session->has_userdata('add_user') and $this->session->userdata('add_user') == TRUE){?>
-										<li class="<?php if($active_sub == 'admin_add'){echo 'active';} ?>"><a href="<?php echo base_url('admin/add') ?>">افزودن کاربر</a>
-										</li>
-										<?php }?>
+<?php if($this->session->has_userdata('add_user')){?><li class="<?php if($active_sub == 'admin_add'){echo 'active';} ?>"><a href="<?php echo base_url('admin/add') ?>">افزودن کاربر</a></li><?php }?>
 									</ul>
 								</li>
 							<?php } ?>
-                              <?php if($this->session->has_userdata('see_customer') and $this->session->userdata('see_customer') == TRUE){?>
+                              <?php if($this->session->has_userdata('see_customer')){?>
 								<li>
 									<a href=""><i class="icon-user-tie"></i> <span>مشتریان</span></a>
 									<ul class="<?php if($active == 'customer'){echo 'active';} ?>">
-										<li class="<?php if($active_sub == 'customer_archive'){echo 'active';} ?>"><a href="<?php echo base_url('customer/archive/')?>">آرشیو مشتریان</a>
-										</li>
-										<?php if($this->session->has_userdata('add_customer') and $this->session->userdata('add_customer') == TRUE){?>
-										<li class="<?php if($active_sub == 'customer_add'){echo 'active';} ?>"><a href="<?php echo base_url('customer/add') ?>">افزودن مشتری </a></li>
-										<?php } ?>
+										<li class="<?php if($active_sub == 'customer_archive'){echo 'active';} ?>"><a href="<?php echo base_url('customer/archive/')?>">آرشیو مشتریان</a></li>
+<?php if($this->session->has_userdata('add_customer')){?><li class="<?php if($active_sub == 'customer_add'){echo 'active';} ?>"><a href="<?php echo base_url('customer/add') ?>">افزودن مشتری </a></li><?php } ?>
 									</ul>
 								</li>
 							  <?php } ?>
-							  <?php if($this->session->has_userdata('see_deal') and $this->session->userdata('see_deal') == TRUE){?>
+							  <?php if($this->session->has_userdata('see_deal')){?>
 								<li>
 									<a href=""><i class="icon-share4 <?php if($active == 'deal'){echo 'active';} ?>"></i> <span>معاملات</span></a>
 									<ul>
 										<li class="<?php if($active_sub == 'deal_archive'){echo 'active';} ?>"><a href="<?php echo base_url('deal/archive/')?>" id="layout1">آرشیو معاملات</a></li>
 										<li class="<?php if($active_sub == 'deal_sheet'){echo 'active';} ?>"><a href="<?php echo base_url('deal/worksheet/')?>" id="layout1"> کاربرگ معاملات</a></li>
-<?php if($this->session->has_userdata('add_buy') and $this->session->userdata('add_buy') == TRUE){?><li class="<?php if($active_sub == 'deal_buy'){echo 'active';} ?>"><a href="<?php echo base_url('deal/buy/')?>" id="layout2">افزودن خرید</a></li><?php }?>
-<?php if($this->session->has_userdata('add_sell') and $this->session->userdata('add_sell') == TRUE){?><li class="<?php if($active_sub == 'deal_sell'){echo 'active';} ?>"><a href="<?php echo base_url('deal/sell/')?>" id="layout2">افزودن فروش</a></li><?php } ?>
+<?php if($this->session->has_userdata('add_buy')){?><li class="<?php if($active_sub == 'deal_buy'){echo 'active';} ?>"><a href="<?php echo base_url('deal/buy/')?>" id="layout2">افزودن خرید</a></li><?php }?>
+<?php if($this->session->has_userdata('add_sell')){?><li class="<?php if($active_sub == 'deal_sell'){echo 'active';} ?>"><a href="<?php echo base_url('deal/sell/')?>" id="layout2">افزودن فروش</a></li><?php } ?>
 									</ul>
 								</li>
 							  <?php } ?>
-							  <?php if($this->session->has_userdata('see_settings') and $this->session->userdata('see_settings') == TRUE){?>
+							  <?php if($this->session->has_userdata('see_settings')){?>
 							    <li>
 									<a href=""><i class="icon-transmission <?php if($active == 'settings'){echo 'active';} ?>"></i> <span>تنظیمات</span></a>
 									<ul>
-							  <?php if($this->session->has_userdata('set_unit') and $this->session->userdata('set_unit') == TRUE){?><li class="<?php if($active_sub == 'set_unit'){echo 'active';} ?>"><a href="<?php echo base_url('settings/set_unit')?>">تبدیل ارز</a></li><?php } ?>
-							  <?php if($this->session->has_userdata('set_primitive') and $this->session->userdata('set_primitive') == TRUE){?><li class="<?php if($active_sub == 'primitive_unit'){echo 'active';} ?>"><a href="<?php echo base_url('settings/primitive_unit')?>">ارز اولیه</a></li><?php } ?>
-							  <?php if($this->session->has_userdata('rest_unit') and $this->session->userdata('rest_unit') == TRUE){?><li class="<?php if($active_sub == 'rest_unit'){echo 'active';} ?>"><a href="<?php echo base_url('settings/rest_unit')?>"> مانده حساب ریالی </a></li><?php } ?>
-							  <?php if($this->session->has_userdata('turnover') and $this->session->userdata('turnover') == TRUE){?><li class="<?php if($active_sub == 'turnover'){echo 'active';} ?>"><a href="<?php echo base_url('settings/turnover')?>"> گردش حساب </a></li><?php } ?>
+<?php if($this->session->has_userdata('set_unit')){?><li class="<?php if($active_sub == 'set_unit'){echo 'active';} ?>"><a href="<?php echo base_url('settings/set_unit')?>">تبدیل ارز</a></li><?php } ?>
+<?php if($this->session->has_userdata('set_primitive')){?><li class="<?php if($active_sub == 'primitive_unit'){echo 'active';} ?>"><a href="<?php echo base_url('settings/primitive_unit')?>">ارز اولیه</a></li><?php } ?>
+<?php if($this->session->has_userdata('rest_unit')){?><li class="<?php if($active_sub == 'rest_unit'){echo 'active';} ?>"><a href="<?php echo base_url('settings/rest_unit')?>"> مانده حساب ریالی </a></li><?php } ?>
+<?php if($this->session->has_userdata('turnover')){?><li class="<?php if($active_sub == 'turnover'){echo 'active';} ?>"><a href="<?php echo base_url('settings/turnover')?>"> گردش حساب </a></li><?php } ?>
 										
 									</ul>
 								</li>

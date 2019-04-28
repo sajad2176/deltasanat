@@ -9,6 +9,7 @@ class Settings extends CI_Controller {
         $this->load->library('pagination');
         $this->load->library('Convertdate');
     }
+    //set unit
     public function set_unit(){
         if(!$this->session->has_userdata('set_unit') or $this->session->userdata('set_unit') != TRUE){
             show_404();
@@ -73,6 +74,8 @@ class Settings extends CI_Controller {
             $this->load->view('footer');
         }
     }
+    //set unit
+    //primitive_unit
 	    public function primitive_unit(){
         if(!$this->session->has_userdata('set_primitive') or $this->session->userdata('set_primitive') != TRUE){
                 show_404();
@@ -141,19 +144,20 @@ class Settings extends CI_Controller {
             $this->load->view('footer');
         }
     }
+    //primitive_unit
+    //rest unit
     public function rest_unit(){
         if(!$this->session->has_userdata('rest_unit') or $this->session->userdata('rest_unit') != TRUE){
             show_404();
     }
     if(isset($_POST['sub'])){
-        $customer['fullname'] = $this->input->post('fullname');
+        $customer['fullname'] = trim($this->input->post('fullname'), ' ');
         $check = $this->base_model->get_data('customer' , 'id' , 'row' , array('fullname'=>$customer['fullname']));
         if(empty($check)){
-            $cust['fullname'] = $customer['fullname'];
-            $cust['address'] = '';
-            $cust['email'] = '';
-            $cust['customer_tel'] = '';
-            $id = $this->base_model->insert_data('customer' , $cust);
+            $customer['address'] = '';
+            $customer['email'] = '';
+            $customer['customer_tel'] = '';
+            $id = $this->base_model->insert_data('customer' , $customer);
         }else{
             $id = $check->id;
         }
@@ -210,6 +214,7 @@ class Settings extends CI_Controller {
     $message['msg'][1] = 'success';
     $this->session->set_flashdata($message);
     redirect("settings/rest_unit");
+
     }else{
         $total_rows = $this->base_model->get_count("deal" , array('money_id'=> 10));
         $config['base_url'] = base_url('settings/rest');
@@ -238,7 +243,7 @@ class Settings extends CI_Controller {
         $config['suffix'] = "";
     $this->pagination->initialize($config);
     $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;      
-    $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , customer.id as cust_id ,unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('deal.money_id'=> 10, 'deal.state !=' => 0) , $config['per_page'] , $page , array('deal.id' , 'DESC') , array('unit','deal.money_id = unit.id'));
+    $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , customer.id as cust_id ,unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('deal.money_id'=> 10, 'deal.state' => 1) , $config['per_page'] , $page , array('deal.id' , 'DESC') , array('unit','deal.money_id = unit.id'));
     $data['page'] = $this->pagination->create_links();
     $data['count'] = $config['total_rows'];
     $date = $this->convertdate->convert(time());
@@ -252,12 +257,35 @@ class Settings extends CI_Controller {
         $this->load->view('footer');
     }
     }
+    //rest unit
+    //turnover
     public function turnover(){
         if(!$this->session->has_userdata('turnover') or $this->session->userdata('turnover') != TRUE){
         show_404();
         }
+        $date = $this->convertdate->convert(time());
         if(isset($_POST['sub'])){
+$owner = $this->input->post('owner');
 
+$persian_num = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
+$latin_num = range(0, 9);
+$slash = '/';
+$dash = '-';
+$start = str_replace($persian_num, $latin_num, $_POST['start_date']);
+$start = str_replace($slash, $dash, $start);
+$end = str_replace($persian_num, $latin_num, $_POST['end_date']);
+$end = str_replace($slash, $dash, $end); 
+$date_start = substr($start , 0 , 10);
+$date_end = substr($end , 0 , 10);
+$between = "turnover.date BETWEEN '$date_start' AND '$date_end'";
+$data['turnover'] = $this->base_model->search_data('turnover' , 'bank' , 'turnover.* , bank.shaba , bank.name , customer.fullname' , 'turnover.bank_id = bank.id' ,'inner' , array('turnover.owner' => $owner) , NULL , NULL , NULL , array('customer' , 'customer.id = turnover.cust_id') , $between);
+$data['date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
+$header['title'] = ' گردش حساب '.$owner;
+$header['active'] = 'settings';
+$header['active_sub'] = 'turnover';
+$this->load->view('header' , $header);
+$this->load->view('currency/turnover' , $data);
+$this->load->view('footer');
         }else{
             $total_rows = $this->base_model->get_count("turnover" , 'ALL');
             $config['base_url'] = base_url('settings/turnover');
@@ -288,6 +316,7 @@ class Settings extends CI_Controller {
         $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;      
         $data['turnover'] = $this->base_model->get_data_join('turnover' ,'bank', 'turnover.* , customer.fullname , bank.shaba , bank.name' , 'turnover.bank_id = bank.id' ,'result'  , NULL , $config['per_page'] , $page , array('turnover.id' , 'DESC') , array('customer','turnover.cust_id = customer.id'));
         $data['page'] = $this->pagination->create_links();
+        $data['date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
         $header['title'] = ' گردش حساب ';
         $header['active'] = 'settings';
         $header['active_sub'] = 'turnover';

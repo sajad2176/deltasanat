@@ -12,21 +12,21 @@ class Home extends CI_Controller{
             $this->load->view('header' , $header);
             $this->load->view('footer');
         }else{
-        $rate = $this->base_model->get_data('rate', '*' , 'row'  , NULL , 1 , 0 , array('id' , 'DESC'));    
         $header['title'] = 'داشبورد';
         $header['active'] = 'dashbord';
         $header['active_sub'] = '';
+        $rate = $this->base_model->get_data('rate', '*' , 'row'  , NULL , 1 , 0 , array('id' , 'DESC')); 
         $date = $this->convertdate->convert(time());
         $start_date =  $date['year']."-".$date['month_num']."-".$date['day'];
         $data['today'] = $date['day']." ".$date['month_name']." ".$date['year'];
         $data['remain'] = $this->base_model->get_data('unit' , '*' , 'result' , array('id < ' => 10));
-        $buy_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deltasanat.deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM deltasanat.handle GROUP BY buy_id) h ON h.buy_id = d.customer_id where d.type = 1  and d.state = 1 GROUP BY d.type" , 'row');
+        $buy_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id where d.type = 1  and d.state = 1 GROUP BY d.type" , 'row');
         if(empty($buy_not)){
             $data['buy_not'] = 0;
         }else{
             $data['buy_not'] = $buy_not->volume - $buy_not->handle;
         }
-        $sell_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deltasanat.deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM deltasanat.handle GROUP BY sell_id) h ON h.sell_id = d.customer_id where d.type = 2 and d.state = 1 GROUP BY d.type" , 'row');
+        $sell_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id where d.type = 2 and d.state = 1 GROUP BY d.type" , 'row');
         if(empty($sell_not)){
             $data['sell_not'] = 0;
         }else{
@@ -63,7 +63,7 @@ class Home extends CI_Controller{
         $data['buy_euro'] = $buy_euro;
         $data['buy_yuan'] = $buy_yuan;
         $data['buy_derham'] = $buy_derham;
-        if(empty($rate)){
+        if(!empty($rate)){
             $dollar_r = $buy_dollar;
             $dollar_e = $buy_euro / $rate->rate_euro;
             $dollar_y = $buy_yuan / $rate->rate_yuan;
@@ -85,7 +85,7 @@ class Home extends CI_Controller{
             $data['ave_sell'] = 0;
             $sell_rial = 0;
         }else{
-            $sell_dollar = 0; $sell_euro = 0 ; $sell_yuan = 0 ; $sell_derham = 0;  $volume_dollar = 0; $volume_euro = 0; $volume_yuan = 0; $volume_derham = 0;$sell_rial = 0;
+            $sell_dollar = 0; $sell_euro = 0 ; $sell_yuan = 0 ; $sell_derham = 0;  $volume_dollar = 0; $volume_euro = 0; $volume_yuan = 0; $volume_derham = 0; $sell_rial = 0;
             foreach($sell as $sells){
                 if($sells->money_id == 1){
                     $sell_dollar += $sells->count_money + $sells->wage;
@@ -106,7 +106,7 @@ class Home extends CI_Controller{
             $data['sell_euro'] = $sell_euro;
             $data['sell_yuan'] = $sell_yuan;
             $data['sell_derham'] = $sell_derham;
-            if(empty($rate)){
+            if(!empty($rate)){
                 $dollar_r = $sell_dollar;
                 $dollar_e = $sell_euro / $rate->rate_euro;
                 $dollar_y = $sell_yuan / $rate->rate_yuan;
@@ -115,8 +115,7 @@ class Home extends CI_Controller{
                     $data['ave_sell'] = 0;
                 }else{
                     $data['ave_sell'] = ($volume_dollar + $volume_euro + $volume_yuan + $volume_derham) / ($dollar_r + $dollar_e + $dollar_y + $dollar_d);
-                }
-                
+                }    
             }else{
                 $data['ave_sell'] = 0;
             }
@@ -129,18 +128,18 @@ class Home extends CI_Controller{
     }
     public function update_dashbord(){
       if(isset($_POST['request']) and $_POST['request'] == true and $this->session->has_userdata('see_dashbord')){
-        $rate = $this->base_model->get_data('rate', '*' , 'row'  , NULL , 1 , 0 , array('id' , 'DESC'));    
+        $rate = $this->base_model->get_data('rate', '*' , 'row'  , NULL , 1 , 0 , array('id' , 'DESC')); 
         $date = $this->convertdate->convert(time());
         $start_date =  $date['year']."-".$date['month_num']."-".$date['day'];
         $data['today'] = $date['day']." ".$date['month_name']." ".$date['year'];
         $data['remain'] = $this->base_model->get_data('unit' , '*' , 'result' , array('id < ' => 10));
-        $buy_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deltasanat.deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM deltasanat.handle GROUP BY buy_id) h ON h.buy_id = d.customer_id where d.type = 1  and d.state = 1 GROUP BY d.type" , 'row');
+        $buy_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id where d.type = 1  and d.state = 1 GROUP BY d.type" , 'row');
         if(empty($buy_not)){
             $data['buy_not'] = 0;
         }else{
             $data['buy_not'] = $buy_not->volume - $buy_not->handle;
         }
-        $sell_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deltasanat.deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM deltasanat.handle GROUP BY sell_id) h ON h.sell_id = d.customer_id where d.type = 2 and d.state = 1 GROUP BY d.type" , 'row');
+        $sell_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id where d.type = 2 and d.state = 1 GROUP BY d.type" , 'row');
         if(empty($sell_not)){
             $data['sell_not'] = 0;
         }else{
@@ -177,7 +176,7 @@ class Home extends CI_Controller{
         $data['buy_euro'] = $buy_euro;
         $data['buy_yuan'] = $buy_yuan;
         $data['buy_derham'] = $buy_derham;
-        if(empty($rate)){
+        if(!empty($rate)){
             $dollar_r = $buy_dollar;
             $dollar_e = $buy_euro / $rate->rate_euro;
             $dollar_y = $buy_yuan / $rate->rate_yuan;
@@ -199,7 +198,7 @@ class Home extends CI_Controller{
             $data['ave_sell'] = 0;
             $sell_rial = 0;
         }else{
-            $sell_dollar = 0; $sell_euro = 0 ; $sell_yuan = 0 ; $sell_derham = 0;  $volume_dollar = 0; $volume_euro = 0; $volume_yuan = 0; $volume_derham = 0;$sell_rial = 0;
+            $sell_dollar = 0; $sell_euro = 0 ; $sell_yuan = 0 ; $sell_derham = 0;  $volume_dollar = 0; $volume_euro = 0; $volume_yuan = 0; $volume_derham = 0; $sell_rial = 0;
             foreach($sell as $sells){
                 if($sells->money_id == 1){
                     $sell_dollar += $sells->count_money + $sells->wage;
@@ -220,7 +219,7 @@ class Home extends CI_Controller{
             $data['sell_euro'] = $sell_euro;
             $data['sell_yuan'] = $sell_yuan;
             $data['sell_derham'] = $sell_derham;
-            if(empty($rate)){
+            if(!empty($rate)){
                 $dollar_r = $sell_dollar;
                 $dollar_e = $sell_euro / $rate->rate_euro;
                 $dollar_y = $sell_yuan / $rate->rate_yuan;
@@ -229,13 +228,12 @@ class Home extends CI_Controller{
                     $data['ave_sell'] = 0;
                 }else{
                     $data['ave_sell'] = ($volume_dollar + $volume_euro + $volume_yuan + $volume_derham) / ($dollar_r + $dollar_e + $dollar_y + $dollar_d);
-                }
-                
+                }    
             }else{
                 $data['ave_sell'] = 0;
             }
         }
-        $data['rest_rial'] = $buy_rial - $sell_rial;
+        $data['rest_rial'] = $buy_rial - $sell_rial; 
         echo json_encode($data);
       }else{
           show_404();
