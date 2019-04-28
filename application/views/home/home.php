@@ -1,5 +1,5 @@
 <!-- Dashboard content -->
-		<div class="panel panel-flat">
+<div class="panel panel-flat">
 			<div class="panel-body">
 				<!-- Members online -->
 			<div  class="panel-heading">
@@ -18,7 +18,7 @@
 								<!-- <div class="heading-elements">
 									<span class="heading-text badge bg-success-800">+53,6%</span>
 								</div> -->
-								<h3 class="no-margin" id="<?php echo $set_id[$i];?>">
+								<h3 class="no-margin lright" id="<?php echo $set_id[$i];?>">
 									<?php echo number_format($remains->amount);?>
 								</h3>
 								<h5 class="text-white text-size-larg">
@@ -45,11 +45,11 @@
 			<div class="col-md-4">
 				<!-- Members online -->
 				<div class="panel bg-teal-400 p-5">
-					<div class="pb-10 pl-10">
-
-					<h5 class=""> مانده ریالی</h5>
-
-						<h3 class="no-margin" id="restRial"><?php echo number_format($rest_rial);?></h3> 
+					<div class="panel-body">
+						<div class="heading-elements">
+							<span class="heading-text badge bg-teal-800"> مانده ریالی</span>
+						</div>
+						<h3 class="no-margin lright" id="restRial"><?php echo number_format($rest_rial);?></h3> 
 						
 					</div>
 				</div>
@@ -58,11 +58,11 @@
 			<div class="col-md-4">
 				<!-- Current server load -->
 				<div class="panel bg-pink-400 p-5">
-					<div class="pb-10 pl-10">
-
-							<h5 class="">مانده همانگ نشده فروش </h5>
-
-						<h3 class="no-margin" id="sellNot"><?php echo number_format($sell_not);?></h3> 
+					<div class="panel-body">
+						<div class="heading-elements">
+							<span class="heading-text badge bg-success-800">مانده همانگ نشده فروش </span>
+						</div>
+						<h3 class="no-margin lright" id="sellNot"><?php echo number_format($sell_not);?></h3> 
 						
 					</div>
 				</div>
@@ -73,11 +73,11 @@
 			<div class="col-md-4">
 				<!-- Today's revenue -->
 				<div class="panel bg-blue-400 p-5">
-					<div class="pb-10 pl-10">
-					
-							<h5 class="">مانده همانگ نشده خرید </h5>
-				
-						<h3 class="no-margin" id="buyNot"><?php echo number_format($buy_not); ?></h3> 
+					<div class="panel-body">
+						<div class="heading-elements">
+							<span class="heading-text badge bg-blue-800">مانده همانگ نشده خرید </span>
+						</div>
+						<h3 class="no-margin lright" id="buyNot"><?php echo number_format($buy_not); ?></h3> 
 					</div>
 				</div>
 				<!-- /today's revenue -->
@@ -99,7 +99,7 @@
 						<div class="heading-elements">
 							<span class="heading-text badge bg-teal-800">میانگین دلاری خرید </span>
 						</div>
-						<h3 class="no-margin" id="aveBuy"><?php echo number_format($ave_buy); ?></h3> 
+						<h3 class="no-margin lright" id="aveBuy"><?php echo number_format($ave_buy); ?></h3> 
 						
 					</div>
 					<div class="chart" id="today-revenue"></div>
@@ -113,7 +113,7 @@
 						<div class="heading-elements">
 							<span class="heading-text badge bg-teal-400">میانگین دلاری فروش </span>
 						</div>
-						<h3 class="no-margin" id="aveSell"><?php echo number_format($ave_sell); ?></h3> 
+						<h3 class="no-margin lright" id="aveSell"><?php echo number_format($ave_sell); ?></h3> 
 						
 					</div>
 					<div class="chart" id="today-revenue"></div>
@@ -131,7 +131,7 @@
 				<div style="padding-right: 0px" class="panel-heading">
 					<h6 class="panel-title">خرید و فروش ارز ها</h6>
 					<div  class="heading-elements">
-						<h6 class="  heading-text">تاریخ: <span class="text-bold text-black position-right" id="today"><?php echo $today;?></span></h6>
+						<h6 class="heading-text">تاریخ: <span class="text-bold text-black position-right" id="today"><?php echo $today;?></span></h6>
 
 					</div>
 				</div>

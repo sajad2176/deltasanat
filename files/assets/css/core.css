@@ -7014,3 +7014,12 @@ border-top: 1px solid #ddd;
 }
 
 /* CHANGE TABLE DISPLAY NONE */
+.lright{
+  direction: ltr !important;
+  text-align: right !important;
+}
+@media print{
+  .navbar-header , .navbar , .sidebar  , .panel-heading , .datatable-header{
+    display: none !important;
+  } 
+}
