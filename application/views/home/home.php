@@ -45,10 +45,10 @@
 			<div class="col-md-4">
 				<!-- Members online -->
 				<div class="panel bg-teal-400 p-5">
-					<div class="panel-body">
-						<div class="heading-elements">
-							<span class="heading-text badge bg-teal-800"> مانده ریالی</span>
-						</div>
+					<div class="pb-10 pl-10">
+
+					<h5 class=""> مانده ریالی</h5>
+
 						<h3 class="no-margin" id="restRial"><?php echo number_format($rest_rial);?></h3> 
 						
 					</div>
@@ -58,10 +58,10 @@
 			<div class="col-md-4">
 				<!-- Current server load -->
 				<div class="panel bg-pink-400 p-5">
-					<div class="panel-body">
-						<!-- <div class="heading-elements">
-							<span class="heading-text badge bg-success-800">مانده همانگ نشده فروش </span>
-						</div> -->
+					<div class="pb-10 pl-10">
+
+							<h5 class="">مانده همانگ نشده فروش </h5>
+
 						<h3 class="no-margin" id="sellNot"><?php echo number_format($sell_not);?></h3> 
 						
 					</div>
@@ -73,10 +73,10 @@
 			<div class="col-md-4">
 				<!-- Today's revenue -->
 				<div class="panel bg-blue-400 p-5">
-					<div class="panel-body">
-						<!-- <div class="heading-elements">
-							<span class="heading-text badge bg-blue-800">مانده همانگ نشده خرید </span>
-						</div> -->
+					<div class="pb-10 pl-10">
+					
+							<h5 class="">مانده همانگ نشده خرید </h5>
+				
 						<h3 class="no-margin" id="buyNot"><?php echo number_format($buy_not); ?></h3> 
 					</div>
 				</div>
