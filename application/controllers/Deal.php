@@ -1021,6 +1021,7 @@ $turn['bank_id'] = $handle_info->bank_id;
 $turn['date'] = $date['year']."-".$date['month_num']."-".$date['day'];
 $turn['time'] = $date['hour'].":".$date['minute'].":".$date['second'];
 $turn['amount'] = $handle_info->handle_rest;
+$turn['rest'] = $bank['rest'];
 $this->base_model->insert_data('turnover' , $turn);
 $this->base_model->insert_data('history' , $history);
 $this->base_model->update_data('bank' , $bank , array('id'=>$handle_info->bank_id));
@@ -1202,6 +1203,7 @@ if($push > 0){
         $turn['date'] = $date['year']."-".$date['month_num']."-".$date['day'];
         $turn['time'] = $date['hour'].":".$date['minute'].":".$date['second'];
         $turn['amount'] = $this->input->post('slice');
+        $turn['rest'] = $bank['rest'];
         $this->base_model->insert_data('turnover' , $turn);
         $this->base_model->insert_data('history' , $history);
         $this->base_model->update_data('bank' , $bank , array('id'=>$handle_info->bank_id));
@@ -1250,10 +1252,32 @@ public function restore(){
          show_404();
      }
     $handle_info = $this->base_model->get_data('handle' , '*' , 'row' , array('id'=>$history->handle_id));
-    $buy = $this->base_model->get_data('deal' , 'id  , pay , rest' , 'result' ,array('customer_id'=> $handle_info->buy_id , 'type'=> 1 , 'pay !=' => 0) , NULL , NULL , array('id' , 'DESC'));
-    $bank_info = $this->base_model->get_data_join('bank' , 'customer' , 'bank.pay , bank.rest , customer.fullname as owner' ,'bank.customer_id = customer.id','row' , array('bank.id'=>$handle_info->bank_id));
-
+    $sum_buy = $this->base_model->get_data('deal' , 'sum(volume) as buy' , 'row' , array('customer_id'=>$handle_info->buy_id , 'type'=> 1 , 'pay !=' => 0) , NULL , NULL , NULL , 'customer_id');
+    $sum_sell = $this->base_model->get_data('deal' , 'sum(volume) as sell' , 'row' , array('customer_id'=>$handle_info->sell_id , 'type'=> 2 , 'pay !=' => 0) , NULL , NULL , NULL , 'customer_id');
+    $check = $history->volume;
+    if($sum_buy->buy < $check){
+        $s_buy = $this->base_model->get_data('deal' , 'pay' , 'row' , array('customer_id'=>$handle_info->buy_id , 'type'=> 2 , 'state'=>0));
+        if(!empty($s_buy)){
+            if($s_buy->pay != 0 ){
+                $message['msg'][0] = ' جهت جلوگیری از ناسازگاری در سیستم ابتدا معاملات دیگر مشتری خرید را بازگردانید ';
+                $message['msg'][1] = 'danger';
+                $this->session->set_flashdata($message);
+                redirect('deal/handle_profile/'.$cust_id);
+             }
+        }
+    }else if($sum_sell->sell < $check){
+        $s_sell = $this->base_model->get_data('deal' , 'pay' , 'row' , array('customer_id'=>$handle_info->sell_id , 'type'=> 1 , 'state'=>0));
+        if(!empty($s_sell)){
+            if($s_sell->pay != 0){
+                $message['msg'][0] = ' جهت جلوگیری از ناسازگاری در سیستم ابتدا معاملات دیگر مشتری فروش را بازگردانید ';
+                $message['msg'][1] = 'danger';
+                $this->session->set_flashdata($message);
+                redirect('deal/handle_profile/'.$cust_id);
+            }
+        }
+    }
     $date = $this->convertdate->convert(time());
+    $buy = $this->base_model->get_data('deal' , 'id  , pay , rest' , 'result' ,array('customer_id'=> $handle_info->buy_id , 'type'=> 1 , 'pay !=' => 0) , NULL , NULL , array('id' , 'DESC'));
     $push = $history->volume;
     $deal = array();
     if(!empty($buy)){
@@ -1339,7 +1363,7 @@ public function restore(){
             $this->base_model->update_data('unit' , $rial , array('id'=>10));
         } 
     }
-   
+    $bank_info = $this->base_model->get_data_join('bank' , 'customer' , 'bank.pay , bank.rest , customer.fullname as owner' ,'bank.customer_id = customer.id','row' , array('bank.id'=>$handle_info->bank_id));
     $handle['handle_pay'] = $handle_info->handle_pay - $history->volume;
     $handle['handle_rest'] = $handle_info->handle_rest + $history->volume;
     $handle['date_modified'] = $date['year']."-".$date['month_num']."-".$date['day']."</br>".$date['hour'].":".$date['minute'].":".$date['second'];
@@ -1351,6 +1375,7 @@ public function restore(){
     $turn['date'] = $date['year']."-".$date['month_num']."-".$date['day'];
     $turn['time'] = $date['hour'].":".$date['minute'].":".$date['second'];
     $turn['amount'] = 0 - $history->volume;
+    $turn['rest'] = $bank['rest'];
     $log['user_id'] = $this->session->userdata('id');
     $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
     $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
@@ -1382,9 +1407,11 @@ public function edit_handle(){
     $red_id = $this->uri->segment(3);
     $id = $this->uri->segment(4);
     if(isset($_POST['sub']) and isset($id) and isset($red_id) and is_numeric($id) and is_numeric($red_id)){
+      
+      $handle_info = $this->base_model->get_data_join('handle' , 'bank' ,'handle.volume_handle , handle.handle_rest, handle.bank_id ,bank.rest_handle , customer.fullname' , 'bank.id = handle.bank_id' ,'row' , array('handle.id'=>$id) , NULL , NULL , NULL , array('customer' , 'handle.buy_id = customer.id'));
       $handle['volume_handle'] = $this->input->post('edit');
-      $handle_info = $this->base_model->get_data_join('handle' , 'bank' ,'handle.volume_handle , handle.bank_id ,bank.rest_handle , customer.fullname' , 'bank.id = handle.bank_id' ,'row' , array('handle.id'=>$id) , NULL , NULL , NULL , array('customer' , 'handle.buy_id = customer.id'));
       $change = $this->input->post('edit') - $handle_info->volume_handle;
+      $handle['handle_rest'] = $handle_info->handle_rest + $change;
       $bank['rest_handle'] = $handle_info->rest_handle - $change;
       $str = ' حجم هماهنگی مشتری خرید  '.$handle_info->fullname . " از مقدار ".number_format($handle_info->volume_handle) . " به مقدار ". number_format($handle['volume_handle']) . " تغییر یافت ";
       $date = $this->convertdate->convert(time());
@@ -1635,8 +1662,8 @@ $this->base_model->update_data('bank' , $bank , array('id'=> $data['bank_id']));
         }else{
             $rows_buy = $this->base_model->get_data('deal' , 'count(id) as cust_id' , 'result' , array('type'=>1) , NULL , NULL , NULL , 'customer_id');
             $rows_sell = $this->base_model->get_data('deal' , 'count(id) as cust_id' , 'result' , array('type'=>2) , NULL , NULL , NULL , 'customer_id');
-            $data['buy'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deltasanat.deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM deltasanat.handle GROUP BY buy_id) h ON h.buy_id = d.customer_id inner join deltasanat.customer c on c.id = d.customer_id where d.type = 1 GROUP BY d.customer_id ORDER BY d.id DESC LIMIT 0 , 10");
-            $data['sell'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deltasanat.deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM deltasanat.handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join deltasanat.customer c on c.id = d.customer_id where d.type = 2 GROUP BY d.customer_id ORDER BY d.id DESC LIMIT 0 , 10");
+            $data['buy'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 1 GROUP BY d.customer_id ORDER BY d.id DESC LIMIT 0 , 10");
+            $data['sell'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 2 GROUP BY d.customer_id ORDER BY d.id DESC LIMIT 0 , 10");
                         $data['rows_buy'] = sizeof($rows_buy);
                         $data['rows_sell'] = sizeof($rows_sell);
                         $data['cust_buy'] = $this->base_model->get_data_join('customer' , 'deal' , 'fullname' , 'deal.customer_id = customer.id', 'result' , array('deal.type'=>1) , NULL , NULL , NULL , NULL, NULL , NULL , 'customer.id');
@@ -1652,7 +1679,7 @@ $this->base_model->update_data('bank' , $bank , array('id'=> $data['bank_id']));
     public function page_buy(){
         if(isset($_POST['offset'])){
             $offset = $this->input->post('offset');
-            $buy = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deltasanat.deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM deltasanat.handle GROUP BY buy_id) h ON h.buy_id = d.customer_id inner join deltasanat.customer c on c.id = d.customer_id where d.type = 1 GROUP BY d.customer_id ORDER BY d.id DESC LIMIT $offset , 10");
+            $buy = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 1 GROUP BY d.customer_id ORDER BY d.id DESC LIMIT $offset , 10");
             echo json_encode($buy);
         }else{
             show_404();
@@ -1661,7 +1688,7 @@ $this->base_model->update_data('bank' , $bank , array('id'=> $data['bank_id']));
     public function page_sell(){
         if(isset($_POST['offset'])){
             $offset = $this->input->post('offset');
-            $sell =  $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deltasanat.deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM deltasanat.handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join deltasanat.customer c on c.id = d.customer_id where d.type = 2 GROUP BY d.customer_id ORDER BY d.id DESC LIMIT $offset , 10");
+            $sell =  $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 2 GROUP BY d.customer_id ORDER BY d.id DESC LIMIT $offset , 10");
             echo json_encode($sell);
         }else{
             show_404();
@@ -1672,11 +1699,11 @@ $this->base_model->update_data('bank' , $bank , array('id'=> $data['bank_id']));
         $name = trim($name);
         $type = $this->input->post('type');
         if($type == 'buy'){
-           $data['cust'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deltasanat.deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM deltasanat.handle GROUP BY buy_id) h ON h.buy_id = d.customer_id inner join deltasanat.customer c on c.id = d.customer_id where d.type = 1 AND c.fullname = '$name' GROUP BY d.customer_id");
+           $data['cust'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 1 AND c.fullname = '$name' GROUP BY d.customer_id");
            $cust_id = $data['cust'][0]->customer_id;
            $data['bank'] = $this->base_model->get_data('bank' , 'id , rest_handle , rest , explain' , 'result' , array('customer_id'=>$cust_id)); 
         }else{
-           $data['cust'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deltasanat.deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM deltasanat.handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join deltasanat.customer c on c.id = d.customer_id where d.type = 2 AND c.fullname = '$name' GROUP BY d.customer_id");
+           $data['cust'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 2 AND c.fullname = '$name' GROUP BY d.customer_id");
         }
         // echo "<pre>";
         // var_dump($data);

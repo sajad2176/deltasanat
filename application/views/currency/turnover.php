@@ -44,6 +44,7 @@
 									<th>نام صاحب حساب</th>
 									<th>نام واریز کننده</th>
 									<th>مشخصات حساب</th>
+									<th>مانده حساب</th>
                                     <th>تاریخ</th>
                                     <th>زمان</th>
 									<th>مبلغ </th>
@@ -58,9 +59,10 @@
 									<td><?php echo $rows->owner;?></td>
 									<td><?php echo $rows->fullname;?></td>
                                     <td><?php echo $rows->shaba."</br>".$rows->name; ?></td>
+									<td><?php echo number_format($rows->rest);?></td>
                                     <td><?php echo $rows->date;?></td>
 									<td><?php echo $rows->time;?></td>
-									<td><?php echo number_format($rows->amount);?></td>
+									<td class="lright <?php if($rows->amount < 0 ){echo 'text-danger';}?>" ><?php echo number_format($rows->amount);?></td>
 								</tr>
 								<?php } }?>
 							</tbody>

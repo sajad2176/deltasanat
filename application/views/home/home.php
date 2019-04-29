@@ -44,27 +44,23 @@
 		<div class="row">
 			<div class="col-md-4">
 				<!-- Members online -->
-				<div class="panel bg-teal-400 p-5">
-					<div class="panel-body">
-						<div class="heading-elements">
-							<span class="heading-text badge bg-teal-800"> مانده ریالی</span>
-						</div>
+				<div class="panel bg-teal-400 p-5 pb-10 pr-10">
+					
+							<h6 class=""> مانده ریالی</h6>
 						<h3 class="no-margin lright" id="restRial"><?php echo number_format($rest_rial);?></h3> 
 						
-					</div>
+					
 				</div>
 				<!-- /members online -->
 			</div>
 			<div class="col-md-4">
 				<!-- Current server load -->
-				<div class="panel bg-pink-400 p-5">
-					<div class="panel-body">
-						<div class="heading-elements">
-							<span class="heading-text badge bg-success-800">مانده همانگ نشده فروش </span>
-						</div>
+				<div class="panel bg-pink-400 p-5 pb-10 pr-10">
+					
+					<h6 class="">مانده هماهنگ نشده فروش</h6>
 						<h3 class="no-margin lright" id="sellNot"><?php echo number_format($sell_not);?></h3> 
 						
-					</div>
+					
 				</div>
 				<!-- /current server load -->
 
@@ -72,13 +68,11 @@
 
 			<div class="col-md-4">
 				<!-- Today's revenue -->
-				<div class="panel bg-blue-400 p-5">
-					<div class="panel-body">
-						<div class="heading-elements">
-							<span class="heading-text badge bg-blue-800">مانده همانگ نشده خرید </span>
-						</div>
+				<div class="panel bg-blue-400 p-5 pb-10 pr-10">
+				
+					<h6 class=""> مانده هماهنگ نشده خرید</h6>
 						<h3 class="no-margin lright" id="buyNot"><?php echo number_format($buy_not); ?></h3> 
-					</div>
+				
 				</div>
 				<!-- /today's revenue -->
 			</div>
