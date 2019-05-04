@@ -105,6 +105,15 @@ function update_data($table , $data , $where){
         return FALSE;
     }
 }
+function set($set_name , $set_value , $where , $table){
+    $this->db->set($set_name , $set_value , FALSE);
+    $this->db->where($where);
+    if($this->db->update($table)){
+        return TRUE;
+    }else{
+        return FALSE;
+    }
+}
 
 function get_count($table , $where){
 			if($where == 'ALL'){

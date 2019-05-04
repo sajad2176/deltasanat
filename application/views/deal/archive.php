@@ -27,13 +27,13 @@ $msg = $this->session->userdata('msg');?>
 
 		<div class="datatable-header">
 			<div class="row">
-				<form action="<?php echo base_url('deal/archive'); ?>" method="post">
+				<form action="<?php echo base_url('deal/archive'); ?>" method="get">
 
 					<div class="col-md-12">
 						<div class="col-md-3">
 							<div class="form-group">
 								<label>جستجو : </label>
-								<input class="form-control" type="search" onkeyup="search_cust(this)" placeholder="نام مشتری خود را جستجو کنید">
+								<input class="form-control" name="fullname" value="<?php echo $this->input->get('fullname');?>" type="search" onkeyup="search_cust(this)" placeholder="نام مشتری خود را جستجو کنید">
 
 							</div>
 						</div>
