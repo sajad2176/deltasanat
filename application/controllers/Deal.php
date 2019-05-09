@@ -1618,6 +1618,26 @@ $this->base_model->insert_data('handle' , $data);
             $data['customer'] = $this->base_model->get_data('customer' , 'fullname , id' , 'result');
             $data['buy'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 1 GROUP BY d.customer_id ORDER BY d.id DESC");
             $data['sell'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 2 GROUP BY d.customer_id ORDER BY d.id DESC");
+            $deal_buy = 0;
+            foreach($data['buy'] as $row){
+                if($row->customer_id == $id){
+                    $deal_buy = $row->volume - $row->handle;
+                    break;
+                }else{
+                    $deal_buy = -1;
+                }
+            }
+            $deal_sell = 0;
+            foreach($data['sell'] as $rows){
+                if($rows->customer_id == $id){
+                    $deal_sell = $rows->volume - $rows->handle;
+                    break;
+                }else{
+                    $deal_sell = -1;
+                }
+            }
+            $data['deal_buy'] = $deal_buy;
+            $data['deal_sell'] = $deal_sell;
             $this->load->view('header' , $header);
             $this->load->view('deal/handle_profile' , $data);
             $this->load->view('footer');

@@ -460,7 +460,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 											<div class="col-md-6">
 												<div class="form-group">
 													<label>هماهنگ نشده خرید : </label>
-													<p  class="form-control"></p>
+													<p  class="form-control"><?php if($deal_buy == -1){echo ' معامله خرید ثبت نشده است ';}else{ echo number_format($deal_buy); } ?></p>
 												</div>
 											</div>
 
@@ -470,7 +470,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 												<div class="form-group">
 													<label>هماهنگ نشده فروش :</label>
 												
-													<p class="form-control"></p>
+													<p class="form-control"><?php if($deal_sell == -1){echo ' معامله فروش ثبت نشده است ';}else{ echo number_format($deal_sell); }?></p>
 												</div>
 											</div>
 										</div>
