@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 if($this->session->has_userdata('msg')){
@@ -79,7 +78,7 @@ $msg = $this->session->userdata('msg');?>
 							<th width="25%">نام مشتری</th>
 								<th width="25%"> مبلغ ریالی</th>
 								<th width="25%"> هماهنگ شده</th>
-								<th width="25%">مانده قابل پرداخت</th>
+								<th width="25%">هماهنگ نشده</th>
 								
 							</tr>
 						</thead>
@@ -99,10 +98,10 @@ if(empty($buy)){ ?>
 		}
 		?>
 							<tr class="<?php echo $rest_class;?>">
-								<td><a href="<?php echo base_url('deal/handle_profile/').$buys->customer_id;?>"><?php echo $buys->fullname;?></a></td>
+								<td><a href="<?php echo base_url('deal/handle_profile/').$buys->customer_id;?>" target="_blank"><?php echo $buys->fullname;?></a></td>
 								<td><?php echo number_format($buys->volume);?></td>
 								<td><?php echo number_format($buys->handle);?></td>
-                <td><?php echo number_format($buys->rest);?></td>                            
+                <td><?php echo number_format($buys->volume - $buys->handle);?></td>                            
 							</tr>
 <?php }} ?>
 						</tbody>
@@ -138,7 +137,7 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ if($i == 0){$active = 'active';}e
 								<th width="25%">نام مشتری</th>
 								<th width="25%"> مبلغ ریالی</th>
 								<th width="25%"> هماهنگ شده</th>
-								<th width="25%">مانده قابل پرداخت</th>
+								<th width="25%">هماهنگ  نشده</th>
 							</tr>
 						</thead>
 						<tbody id="tbody_sell">
@@ -157,10 +156,10 @@ if(empty($sell)){ ?>
 		}
 		?>
 							<tr class="<?php echo $rest_class;?>">
-								<td><a href="<?php echo base_url('deal/handle_profile/').$sells->customer_id;?>"><?php echo $sells->fullname;?></a></td>
+								<td><a href="<?php echo base_url('deal/handle_profile/').$sells->customer_id;?>" target="_blank"><?php echo $sells->fullname;?></a></td>
 								<td><?php echo number_format($sells->volume);?></td>
 								<td><?php echo number_format($sells->handle);?></td>
-                <td><?php echo number_format($sells->rest);?></td>                            
+                <td><?php echo number_format($sells->volume - $sells->handle);?></td>                            
 							</tr>
 <?php } } ?>
 						</tbody>
@@ -269,7 +268,7 @@ function show(val , type){
 		xhr.onload = function () {
 			if ( ( xhr.status >= 200 && xhr.status < 300 ) || xhr.status == 304 ) {
       // alert(xhr.responseText);
-				var result = JSON.parse( xhr.responseText );
+				var result = JSON.parse(xhr.responseText);
 				var url = "<?php echo base_url();?>";
 				showTable( result , type , url);
 			} else {
@@ -282,5 +281,3 @@ function show(val , type){
 
 }
 </script>
-=======
->>>>>>> parent of 8a1d6d2... sheet

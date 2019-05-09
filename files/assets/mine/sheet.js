@@ -5,8 +5,9 @@ function buyTable(res , url){
     count = res.length;
     var str = '';
     for(i = 0 ; i < count ; i++){
+        var amm = res[i].volume - res[i].handle;
         if(res[i].rest == 0){name = 'tr_rest';}else{name = '';}
-        str += '<tr class='+name+'><td><a href='+url+'deal/handle_profile/'+res[i].customer_id+'>'+res[i].fullname+'</a></td><td>'+numeral(res[i].volume).format('0,0')+'</td><td>'+numeral(res[i].handle).format('0,0')+'</td><td>'+numeral(res[i].rest).format('0,0')+'</td></tr>';
+        str += '<tr class='+name+'><td><a href='+url+'deal/handle_profile/'+res[i].customer_id+'>'+res[i].fullname+'</a></td><td>'+numeral(res[i].volume).format('0,0')+'</td><td>'+numeral(res[i].handle).format('0,0')+'</td><td>'+numeral(amm).format('0,0')+'</td></tr>';
     }
     Btable.innerHTML = str;
 }
@@ -17,8 +18,9 @@ function sellTable(res , url){
     count = res.length;
     var str = '';
     for(i = 0 ; i < count ; i++){
+        var amm = res[i].volume - res[i].handle;
         if(res[i].rest == 0){name = 'tr_rest';}else{name = '';}
-        str += '<tr class='+name+'><td><a href='+url+'deal/handle_profile/'+res[i].customer_id+'>'+res[i].fullname+'</a></td><td>'+numeral(res[i].volume).format('0,0')+'</td><td>'+numeral(res[i].handle).format('0,0')+'</td><td>'+numeral(res[i].rest).format('0,0')+'</td></tr>';
+        str += '<tr class='+name+'><td><a href='+url+'deal/handle_profile/'+res[i].customer_id+'>'+res[i].fullname+'</a></td><td>'+numeral(res[i].volume).format('0,0')+'</td><td>'+numeral(res[i].handle).format('0,0')+'</td><td>'+numeral(amm).format('0,0')+'</td></tr>';
     }
     stable.innerHTML = str;
 }
@@ -175,8 +177,9 @@ function showTable(res , type , url){
             var td_handle = tr.appendChild(document.createElement('td'));
             td_handle.innerHTML = numeral(res.cust[i].handle).format('0,0');
             
+            var amm = res.cust[i].volume - res.cust[i].handle;
             var td_rest = tr.appendChild(document.createElement('td'));
-            td_rest.innerHTML = numeral(res.cust[i].rest).format('0,0');
+            td_rest.innerHTML = numeral(amm).format('0,0');
         }
         searchTable.replaceChild( div, searchTable.firstChild );
     }

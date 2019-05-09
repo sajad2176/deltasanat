@@ -80,5 +80,10 @@ window.onclick = function(event) {
   <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/tables/datatables/extensions/buttons.min.js"></script>
   <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/pages/datatables_extension_buttons_html5.js"></script>
     <!-- <script type="text/javascript" src="<?php //echo base_url('files/');?>assets/mine/close_modal.js"></script> -->
+    <script>
+$('#modal_form_minor').on('shown.bs.modal', function () {
+    $('#autofocuss').focus();
+})  
+    </script>
 </body>
 </html>

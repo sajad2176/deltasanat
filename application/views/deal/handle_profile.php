@@ -250,7 +250,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 									<div class="form-group input-group">
 										<label>مبلغ پرداختی:</label>
 										<p id = "rest_slice" class="d-none"></p>
-										<input type="text" placeholder="111,000,000" onkeyup='slice_input(this)' class="form-control" required>
+										<input type="text" placeholder="111,000,000" id="autofocuss" onkeyup='slice_input(this)' class="form-control" required>
 										<input type="hidden" name="slice">
 										<p class="text-danger d-none" style="position:absolute;top:65px;"></p>
 										<span class="input-group-btn">
