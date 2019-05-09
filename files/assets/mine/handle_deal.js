@@ -85,7 +85,7 @@ input.nextElementSibling.nextElementSibling.style.display = 'none';
 input.value = numeral( input.value ).format( '0,0' );
 }
 //search customer
-function autocomplete( inp, arr, want , give) {
+function autocomplete( inp, arr, arr_rest) {
     var currentFocus;
     inp.addEventListener( "input", function ( e ) {
         var a, b, i, val = this.value;
@@ -109,7 +109,7 @@ function autocomplete( inp, arr, want , give) {
                 match = arr[ i ].slice( arr[ i ].indexOf( search ), -lastIndx );
             }
             if ( match.length == search.length ) {
-                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + " | طلب کار :  " + numeral(want[i]).format('0,0') + ' |  بدهکار  :  ' + numeral(give[i]).format('0,0');
+                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + " | ه.ن خرید :  " + numeral(arr_rest[i]).format('0,0');
 
                 b = document.createElement( "DIV" );
                 b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";

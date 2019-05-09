@@ -28,7 +28,7 @@ $msg = $this->session->userdata('msg');?>
 					<div class="col-md-3">
 						<div class="form-group">
 							<label> مشتری خرید :</label>
-							<input type="text" name="customer_buy" onFocus ="search_buy(this);"  placeholder=" لطفا نام مشتری خرید را وارد کنید "  autocomplete="off" class="form-control" required>
+							<input type="text" name="customer_buy" onFocus ="search_buy(this);"  placeholder=" لطفا نام مشتری خرید را وارد کنید "  autocomplete="off" class="form-control" required autofocus>
 							<p class="text-danger" style="display:none; position:absolute;font-size:12px;"></p>
 						</div>
 					</div>
@@ -191,24 +191,28 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ if($i == 0){$active = 'active';}e
 <!-- /sheet -->
 
 <?php
- $str = '';foreach($cust_buy as $rows){$str .= "\"$rows->fullname\",";}$str = trim($str , ",");
- $str2 = '';foreach($cust_sell as $row){$str2 .= "\"$row->fullname\",";}$str2 = trim($str2 , ",");
+		$b_str = ''; $b_str2 = '';
+		foreach($buy as $row){ $am = $row->volume - $row->handle; $b_str .= "\"$row->fullname\","; $b_str2 .= "\"$am\",";} $b_str = trim($b_str , ','); $b_str2 = trim($b_str2 , ',');
+		$s_str = ''; $s_str2 = '';
+		foreach($sell as $row){ $am = $row->volume - $row->handle; $s_str .= "\"$row->fullname\","; $s_str2 .= "\"$am\",";} $s_str = trim($s_str , ','); $s_str2 = trim($s_str2 , ',');
 ?>
 
 <script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/sheet.js"></script>
 <script>
-	var cust_buy = [<?php echo $str; ?>];
-	var cust_sell = [<?php echo $str2; ?>];
+var b_array = [ <?php echo $b_str; ?> ];
+var b_array2 = [<?php echo $b_str2; ?>];
+var s_array = [ <?php echo $s_str; ?> ];
+var s_array2 = [<?php echo $s_str2; ?>];
 	
 	function search_buy( input) {
 		input.style.boxShadow = '0px 0px 5px #59d9cc';
-		autocomplete( input, cust_buy , 'buy');
+		autocomplete( input, b_array , b_array2 ,  'buy');
 	}
 
 
 	function search_sell( input) {
 		input.style.boxShadow = '0px 0px 5px #d9595f';
-		autocomplete( input, cust_sell , 'sell');
+		autocomplete( input, s_array , s_array2 , 'sell');
 	}
 
 

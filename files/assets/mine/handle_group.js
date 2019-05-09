@@ -71,7 +71,7 @@ function show_bank( input ) {
 }
 
 //search customer
-function autocomplete( inp, arr ) {
+function autocomplete( inp, arr , arr_rest , typed ) {
     var currentFocus;
     inp.addEventListener( "input", function ( e ) {
         var a, b, i, val = this.value;
@@ -86,6 +86,13 @@ function autocomplete( inp, arr ) {
         a.setAttribute( "id", this.id + "autocomplete-list" );
         a.setAttribute( "class", "autocomplete-items" );
         this.parentNode.appendChild( a );
+        if(typed == 1){
+            textd = ' ه.ن خرید : ';
+            textdd = ' خرید ';
+        }else{
+            textd = ' ه.ن فروش : ';
+            textdd = ' فروش '
+        }
         for ( i = 0; i < arr.length; i++ ) {
             let match;
             let search = val;
@@ -96,7 +103,7 @@ function autocomplete( inp, arr ) {
                 match = arr[ i ].slice( arr[ i ].indexOf( search ), -lastIndx );
             }
             if ( match.length == search.length ) {
-                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + " | طلبکار :  " + numeral(want[i]).format('0,0') + ' |  بدهکار  :  ' + numeral(give[i]).format('0,0');
+                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + " | "+ textd + numeral(arr_rest[i]).format('0,0');
 
                 b = document.createElement( "DIV" );
                 b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";
@@ -109,7 +116,7 @@ function autocomplete( inp, arr ) {
         }
         if(a.childElementCount == 0){
             inp.nextElementSibling.style.display = 'block';
-            inp.nextElementSibling.innerHTML = '<span class="icon-alert"></span>' + ' شخص ' + val + ' به عنوان مشتری ثبت نشده است ';
+            inp.nextElementSibling.innerHTML = '<span class="icon-alert"></span>' + ' با مشتری  ' + val + " معامله  " + textdd + ' ثبت نشده است ' ;
         }else{
             inp.nextElementSibling.style.display = 'none';
         }

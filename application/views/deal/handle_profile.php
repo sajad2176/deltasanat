@@ -90,14 +90,14 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 					<div class="col-md-3">
 						<div class="form-group">
 							<label> مشتری خرید :</label>
-							<input type="text" name="customer_buy" onFocus ="search_customer(this)" value="<?php if(!empty($deal)){echo $deal[0]->fullname; }?>" placeholder=" لطفا نام مشتری خرید را وارد کنید "  autocomplete="off" class="form-control" required>
+							<input type="text" name="customer_buy" onFocus ="search_buy(this)" value="<?php if(!empty($deal)){echo $deal[0]->fullname; }?>" placeholder=" لطفا نام مشتری خرید را وارد کنید "  autocomplete="off" class="form-control" required>
 							<p class="text-danger" style="display:none; position:absolute;font-size:12px;"></p>
 						</div>
 					</div>
 						<div class="col-md-3">
 						<div class="form-group">
 							<label> مشتری فروش :</label>
-							<input type="text" name="customer_sell" onFocus ="search_customer(this)" autocomplete="off" placeholder="لطفا نام مشتری فروش را وارد کنید" class="form-control" required autofocus>
+							<input type="text" name="customer_sell" onFocus ="search_sell(this)" autocomplete="off" placeholder="لطفا نام مشتری فروش را وارد کنید" class="form-control" required autofocus>
 							<p class="text-danger" style="display:none; position:absolute;font-size:12px;"></p>
 						</div>
 					</div>
@@ -509,9 +509,10 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<!-- /add bank modal -->
 	<!-- edit bank modal -->
 		<?php
-		$str = '';foreach($customer as $row){$str .= "\"$row->fullname\",";}$str = trim($str , ",");
-		$str2 = '';foreach($want_rial as $value){$str2 .= "\"$value\",";}$str2 = trim($str2 , ",");
-		$str3 = '';foreach($give_rial as $value2){$str3 .= "\"$value2\",";}$str3 = trim($str3 , ",");
+		$b_str = ''; $b_str2 = '';
+		foreach($buy as $row){ $am = $row->volume - $row->handle; $b_str .= "\"$row->fullname\","; $b_str2 .= "\"$am\",";} $b_str = trim($b_str , ','); $b_str2 = trim($b_str2 , ',');
+		$s_str = ''; $s_str2 = '';
+		foreach($sell as $row){ $am = $row->volume - $row->handle; $s_str .= "\"$row->fullname\","; $s_str2 .= "\"$am\",";} $s_str = trim($s_str , ','); $s_str2 = trim($s_str2 , ',');
 		?>
 		<script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/handle_group.js"></script>
 		<script>
@@ -523,13 +524,16 @@ ihandle.nextElementSibling.value = volume;
 formEdit.action = "<?php echo base_url('deal/edit_handle/').$this->uri->segment(3)."/";?>" + id;
 }
 
-var customer = [ <?php echo $str; ?> ];
-var want = [<?php echo $str2; ?>];
-var give = [<?php echo $str3;?>];
-
-function search_customer( input ) {
-				autocomplete( input, customer , want , give );
-}	
+var b_array = [ <?php echo $b_str; ?> ];
+var b_array2 = [<?php echo $b_str2; ?>];
+var s_array = [ <?php echo $s_str; ?> ];
+var s_array2 = [<?php echo $s_str2; ?>];
+function search_buy( input ) {
+				autocomplete( input, b_array , b_array2 , 1);
+}
+function search_sell( input ) {
+				autocomplete( input, s_array , s_array2 , 2 );
+}		
 //delete deal -----------------
 	var titleDelete = document.getElementById('titleDelete');
 	var closeDelete = document.getElementById('closeDelete');

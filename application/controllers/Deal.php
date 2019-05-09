@@ -1616,32 +1616,8 @@ $this->base_model->insert_data('handle' , $data);
             $data['select'] = $this->base_model->get_data('bank' , 'id , explain , rest , rest_handle' , 'result' , array('customer_id' => $id , 'active'=> 1));
             $data['handle'] = $this->base_model->get_data_join('handle' , 'bank' , 'handle.* , customer.fullname , bank.explain' , 'handle.bank_id = bank.id' , 'result' , array('handle.buy_id'=>$id) , NULL , NULL , array('handle.id' , 'DESC'),array('customer' , 'handle.sell_id = customer.id'));  
             $data['customer'] = $this->base_model->get_data('customer' , 'fullname , id' , 'result');
-            $want = $this->base_model->get_data('deal','customer_id , sum(deal.rest) as want' , 'result' , array('type'=> 1), NULL , NULL , NULL , 'customer_id');
-            $give = $this->base_model->get_data('deal','customer_id , sum(deal.rest) as give' , 'result' , array('type'=> 2), NULL , NULL , NULL , 'customer_id');
-            $want_rial = array();
-            $give_rial = array();
-            foreach($data['customer'] as $key => $customers){
-                foreach($want as $wants ){
-                    if($customers->id  == $wants->customer_id){
-                        $want_rial[$key] = $wants->want;
-                        break;
-                    }else{
-                        $want_rial[$key] = 0;
-                    }
-                }
-            }
-            foreach($data['customer'] as $key => $customers){
-                foreach($give as $sells ){
-                    if($customers->id  == $sells->customer_id){
-                        $give_rial[$key] = $sells->give;
-                        break;
-                    }else{
-                        $give_rial[$key] = 0;
-                    }
-                }
-            }
-            $data['want_rial'] = $want_rial;
-            $data['give_rial'] = $give_rial;
+            $data['buy'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 1 GROUP BY d.customer_id ORDER BY d.id DESC");
+            $data['sell'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 2 GROUP BY d.customer_id ORDER BY d.id DESC");
             $this->load->view('header' , $header);
             $this->load->view('deal/handle_profile' , $data);
             $this->load->view('footer');
@@ -1711,8 +1687,6 @@ $this->base_model->insert_data('handle' , $data);
             $data['sell'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 2 GROUP BY d.customer_id ORDER BY d.id DESC LIMIT 0 , 10");
                         $data['rows_buy'] = sizeof($rows_buy);
                         $data['rows_sell'] = sizeof($rows_sell);
-                        $data['cust_buy'] = $this->base_model->get_data_join('customer' , 'deal' , 'fullname' , 'deal.customer_id = customer.id', 'result' , array('deal.type'=>1) , NULL , NULL , NULL , NULL, NULL , NULL , 'customer.id');
-                        $data['cust_sell'] = $this->base_model->get_data_join('customer' , 'deal' , 'fullname' , 'deal.customer_id = customer.id', 'result' , array('deal.type'=>2), NULL , NULL , NULL , NULL, NULL , NULL , 'customer.id');
                         $header['title'] = 'کاربرگ معاملات';
                         $header['active'] = 'deal';
                         $header['active_sub'] = 'deal_sheet';
