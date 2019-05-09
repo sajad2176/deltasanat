@@ -449,15 +449,39 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<div id="add_bank_modal" class="modal fade">
 				<div class="modal-dialog" style="width:750px;">
 					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h5 class="modal-title text-center">افزودن بانک</h5>
-
-						</div>
-						<hr>
+						
 						<form action="<?php echo base_url('deal/add_bank/').$this->uri->segment(3);?>" method="post">
 							<div class="modal-body">
 								<div class="field_wrapper2">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<legend class="text-semibold"><i class="icon-calculator3 position-left"></i>حساب مشتری</legend>
+								<div>
+										<div class="row">
+											<div class="col-md-6">
+												<div class="form-group">
+													<label>هماهنگ نشده خرید : </label>
+													<p  class="form-control"></p>
+												</div>
+											</div>
+
+
+
+											<div class="col-md-6">
+												<div class="form-group">
+													<label>هماهنگ نشده فروش :</label>
+												
+													<p class="form-control"></p>
+												</div>
+											</div>
+										</div>
+
+
+									</div>
+								
+						
+						<legend class="text-semibold"><i class=" icon-credit-card position-left"></i>افزودن بانک</legend>
+
+					
 									<div>
 										<div class="row">
 											<div class="col-md-6">
