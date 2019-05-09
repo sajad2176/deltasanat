@@ -89,8 +89,10 @@ $msg = $this->session->userdata('msg');?>
 					<div class="row">
 						<div class="">
 							<fieldset>
-								<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانکی مشتری</legend>
-								<div class="field_wrapper2">
+								<a data-toggle="collapse"  href="#collapse1">
+								<legend class="text-semibold"><i class="icon-plus3 position-left"></i> افزودن اطلاعات بانکی</legend>
+								</a>
+								<div class="field_wrapper2 collapse" id="collapse1">
 									<div>
 										<div class="row">
 											<div class="col-md-6">
