@@ -45,12 +45,12 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 		if(empty($deal)){ ?>
             <tr><td colspan="11" class="text-center p-20">موردی یافت نشد</td></tr>
 		<?php }else{
-			$sum_volume = 0; $sum_pay = 0; $sum_rest = 0;
+			$sum_volume = 0; $sum_pay = 0; $sum_rest = 0; $forbank = 0;
 			foreach($deal as  $deals){?>
 			<tr class="<?php if($deals->state == 0){echo 'state_bg';}?>">
                 <td class="text-center"><?php echo $deals->id + 100; ?></td>
                 <td class="text-center"><?php echo $deals->fullname; ?></td>
-				<td class="text-center"><?php if($deals->type == 1 ){echo 'خرید'; $sum_rest -= $deals->rest;}else{echo 'فروش'; $sum_rest += $deals->rest;} ?></td>
+				<td class="text-center"><?php if($deals->type == 1 ){echo 'خرید'; $sum_pay -= $deals->pay; $sum_volume -= $deals->volume; $sum_rest -= $deals->rest; $forbank += $deals->volume; }else{echo 'فروش'; $sum_pay += $deals->pay; $sum_volume += $deals->volume; $sum_rest += $deals->rest; $forbank -= $deals->volume;} ?></td>
 				<td class="text-center"><?php echo number_format($deals->count_money) . " " . $deals->name;?></td>
 				<td class="text-center"><?php echo number_format($deals->convert); ?></td>
 				<td class="text-center <?php if($deals->volume < $deals->pay){echo 'text-danger';}?>"><?php echo number_format($deals->volume); ?> </td>
@@ -67,12 +67,9 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				</td>
 			
 			</tr>
-		<?php 
-		$sum_volume += $deals->volume;
-		$sum_pay += $deals->pay; 
-		} ?>
+		<?php } ?>
 			<tr>
-				<td><b> مجموع : </b></td>
+				<td class="text-center"><b> مجموع : </b></td>
 				<td></td>
 				<td></td>
 				<td></td>
@@ -84,7 +81,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<td></td>
 				<td></td>
 			</tr>
-			<?php }?>
+			<?php } ?>
 		</tbody>
 
 	</table>
@@ -92,7 +89,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 
 </div>
 </div>
-<?php if($this->session->has_userdata('add_handle')){?>
+<?php if($this->session->has_userdata('add_handle')){ ?>
 	<div class="panel panel-flat" id="div_handle">
 		<div class="panel-body">
 		<form action="<?php echo base_url('deal/handle_profile/').$this->uri->segment(3);?>" method="post">
@@ -152,14 +149,14 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 			<table class="table datatable-basic">
 				<thead>
 					<tr>
-						<th width="6%" >شناسه بانک</th>
+						<th width="5%" >شناسه بانک</th>
 						<th width="6%">نام بانک</th>
-						<th width="12%">شماره شبا</th>
-						<th width="13%">حجم تعیین شده</th>
-						<th width="13%"> پرداخت شده</th>
-						<th width="13%"> باقی مانده</th>
-						<th width="13%"> هماهنگ نشده</th>
-						<th width="14%">توضیحات</th>
+						<th width="14%">شماره شبا</th>
+						<th class="text-center" width="13%">حجم تعیین شده</th>
+						<th class="text-center" width="13%"> پرداخت شده</th>
+						<th class="text-center" width="13%"> باقی مانده</th>
+						<th class="text-center" width="13%"> هماهنگ نشده</th>
+						<th width="13%">توضیحات</th>
 						<th width="5%" class="text-center">وضعیت</th>
 						<th width="5%" class="text-center">ابزار</th>
 					</tr>
@@ -169,30 +166,43 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<?php
 				if(empty($bank)){ ?>
                   <tr><td colspan="10" class="text-center p-20">موردی یافت نشد</td></tr>
-				<?php }
-				foreach($bank as $key => $banks){
+				<?php }else{
+				$amount = 0; $pay = 0; $rest = 0;	
+				foreach($bank as $key => $banks){ $amount += $banks->amount; $pay += $banks->pay; $rest += $banks->rest; 
 					?>
 					<tr>
 						<td><?php echo $banks->id + 1000 ;?></td>
 						<td><?php echo $banks->name; ?></td>
 						<td><?php echo $banks->shaba; ?></td>
-						<td><?php echo number_format($banks->amount); ?></td>
-						<td  class="<?php if($banks->pay > $banks->amount){echo 'text-danger';}?>"><?php echo number_format($banks->pay); ?></td>
-						<td  class="<?php if($banks->rest < 0){echo 'text-danger';}?>"><?php echo number_format($banks->rest); ?></td>
-						<td  class="<?php if($banks->rest_handle < 0){echo 'text-danger';}?>"><?php echo number_format($banks->rest_handle); ?></td>
+						<td  class="text-center"><?php echo number_format($banks->amount); ?></td>
+						<td  class="text-center <?php if($banks->pay > $banks->amount){echo 'text-danger';}?>"><?php echo number_format($banks->pay); ?></td>
+						<td  class="text-center <?php if($banks->rest < 0){echo 'text-danger';}?>"><?php echo number_format($banks->rest); ?></td>
+						<td  class="text-center <?php if($banks->rest_handle < 0){echo 'text-danger';}?>"><?php echo number_format($banks->rest_handle); ?></td>
 						<td><?php echo $banks->explain; ?></td>
 						<?php if($banks->active == 1){$class="success";$txt = 'فعال'; $act = 0;}else{$class = "danger"; $txt = 'غیرفعال'; $act = 1;} ?>
 				<td class="text-center"><?php if($this->session->has_userdata('active_bank')){ ?><a href="<?php echo base_url('deal/active/').$this->uri->segment(3)."/".$banks->id."/".$act; ?>"><span class="label label-<?php echo $class; ?>"><?php echo $txt;?></span></a><?php } ?></td>
 						</td>
 						<td class="text-center">
 									<ul class="icons-list">
-
 				<?php if($this->session->has_userdata('edit_bank')){?><li title="ویرایش بانک" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#edit_bank_modal"><i onclick = "edit_bank(<?php echo $banks->id;?>)" class="icon-credit-card"></i></li><?php } ?>
+				<li title="گردش حساب" data-toggle="tooltip" class="text-pink"><a href="<?php echo base_url('settings/bank/').$banks->id;?>" target="_blank"><i class="icon-spinner10"></i></li>
 									</ul>
 						</td>
 					</tr>
+					<?php } ?>
 					<tr>
-				<?php } ?>
+				<td class="text-center"><b> مجموع : </b></td>
+				<td></td>
+				<td></td>
+				<td class="lright" style="text-align:center !important; "><b><?php echo number_format($amount);?></b></td>
+				<td class="lright" style="text-align:center !important; "><b><?php echo number_format($pay);?></b></td>
+				<td class="lright" style="text-align:center !important; "><b><?php echo number_format($rest);?></b></td>
+				<td class="lright" style="text-align:center !important; " ><b><?php echo number_format($forbank - $amount);?></b></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+				<?php  }  ?>
 			</table>
 			</div>
 		</div>
@@ -202,7 +212,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 	<div class="panel panel-flat" id='archive_handle'>
 		<div class="panel-body">
 		
-			<legend class="text-semibold"><i class="icon-notebook position-left"></i> اطلاعات هماهنگی</legend>
+			<legend class="text-semibold"><i class="icon-notebook position-left"></i> اطلاعات هماهنگی معاملات خرید</legend>
 			<table class="table datatable-basic">
 				<thead>
 					<tr>
@@ -224,7 +234,54 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<?php }else{ foreach($handle as $key =>  $handles){ ?>
 					<tr>
 						<td><?php echo $key + 1;?></td>
-						<td><?php echo $handles->fullname;?></td>
+						<td><a href="<?php echo base_url('deal/handle_profile/').$handles->cust_id;?>" target="_blank"><?php echo $handles->fullname;?></a></td>
+						<td><?php echo number_format($handles->volume_handle);?></td>
+						<td class="<?php if($handles->handle_pay > $handles->volume_handle){echo 'text-danger';}?>"><?php echo number_format($handles->handle_pay);?></td>
+						<td class="<?php if($handles->handle_rest < 0){echo 'text-danger';}?>"><?php echo number_format($handles->handle_rest);?></td>
+						<td><?php echo $handles->bank_id + 1000; ?></td>
+						<td><?php echo $handles->explain; ?></td>
+						<td><?php echo $handles->date_handle."</br>".$handles->time_handle;?></td>
+						<td><?php echo $handles->date_modified?></td>
+						<td class="text-center">
+											<ul class="icons-list">
+												<?php if($handles->handle_rest > 0){?>
+<?php if($this->session->has_userdata('pay_all')){?><li title="پرداخت کامل" data-toggle="tooltip" class="text-success"><a data-toggle="modal" href="#modal_theme_success"><i onclick="pay_all(<?php echo $handles->id;?> , <?php echo $handles->handle_rest;?>)" class="icon-checkmark4"></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('pay_slice')){?><li title="پرداخت جزئی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i onclick="pay_slice(<?php echo $handles->id;?> , <?php echo $handles->handle_rest;?>)" class="icon-stack-empty"></i></li><?php } ?>
+													<?php } ?>
+													
+<?php if($this->session->has_userdata('restore')){?><li title="بازگشت پرداخت " data-toggle="tooltip" class="text-warning-800"><a data-toggle="modal" href="#modal_form_dminor"><i onclick="history(<?php echo $handles->id;?>)" class="icon-file-minus"></i></li><?php } ?>
+<?php if($this->session->has_userdata('edit_handle')){?><li title="ویرایش هماهنگی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_form_sminor"><i class="icon-pencil6" onclick="edit_handle(<?php echo $handles->id;?> , <?php echo $handles->volume_handle;?>)" ></i></a></li><?php } ?>									
+<?php if($this->session->has_userdata('delete_deal')){?><li title="حذف هماهنگی" data-toggle="tooltip" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i onClick="deleteHandle(<?php echo $handles->id; ?>, <?php echo $handles->handle_pay; ?>)" class="icon-cross2"></i></a></li><?php } ?>
+											</ul>
+						</td>
+					</tr>
+					<?php } }?>
+			</table>
+			<br>
+			<br>
+			<legend class="text-semibold"><i class="icon-notebook position-left"></i> اطلاعات هماهنگی معاملات فروش</legend>
+			<table class="table datatable-basic">
+				<thead>
+					<tr>
+						<th width="5%">ردیف </th>
+						<th width="10%">نام مشتری خرید</th>
+						<th width="12%">حجم هماهنگ شده</th>
+						<th width="12%">حجم پرداخت شده</th>
+						<th width="12%">حجم باقی مانده </th>
+						<th width="7%"> شناسه بانک</th>
+						<th width="12%">توضیحات بانک</th>
+						<th width="8%">تاریخ ثبت</th>
+						<th width="8%"> آخرین تغییر</th>
+						<th width="10%" class="text-center"> ابزار</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php if(empty($handle2)){ ?>
+                        <tr><td colspan="10" class="text-center p-20">موردی یافت نشد</td></tr>
+				<?php }else{ foreach($handle2 as $key =>  $handles){ ?>
+					<tr>
+						<td><?php echo $key + 1;?></td>
+						<td><a href="<?php echo base_url('deal/handle_profile/').$handles->cust_id;?>" target="_blank"><?php echo $handles->fullname;?></a></td>
 						<td><?php echo number_format($handles->volume_handle);?></td>
 						<td class="<?php if($handles->handle_pay > $handles->volume_handle){echo 'text-danger';}?>"><?php echo number_format($handles->handle_pay);?></td>
 						<td class="<?php if($handles->handle_rest < 0){echo 'text-danger';}?>"><?php echo number_format($handles->handle_rest);?></td>

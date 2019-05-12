@@ -292,6 +292,9 @@ $data['provider'] = $provider;
 $data['start_date'] = $_POST['start_date'];
 $data['end_date'] = $_POST['end_date'];
 $data['check'] = 1;
+// echo "<pre>";
+// var_dump($data);
+// echo "</pre>";
 $this->load->view('header' , $header);
 $this->load->view('currency/turnover' , $data);
 $this->load->view('footer');
@@ -337,6 +340,49 @@ $this->load->view('footer');
         $this->load->view('currency/turnover' , $data);
         $this->load->view('footer');
         }
+    }
+    public function bank(){
+        $id = $this->uri->segment(3);
+        if(isset($id) and is_numeric($id)){
+            $date = $this->convertdate->convert(time());
+            $data['turnover'] = $this->base_model->get_data_join('turnover' ,'bank', 'turnover.* , customer.fullname , bank.shaba , bank.name , bank.explain' , 'turnover.bank_id = bank.id' ,'result'  , array('turnover.bank_id'=>$id) , NULL , NULL , array('turnover.id' , 'DESC') , array('customer','turnover.cust_id = customer.id'));
+            $header['active'] = 'settings';
+            $header['active_sub'] = 'turnover';
+            if(!empty($data['turnover'])){
+                $data['owner'] = $data['turnover'][0]->owner;
+                $header['title'] = ' گردش حساب '.$data['turnover'][0]->owner;
+            }else{
+                $data['owner'] = '';
+                $header['title'] = 'گردش حساب';
+            }
+            
+            $data['provider'] = '';
+            $data['start_date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
+            $data['end_date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
+            $data['check'] = 1;
+            $this->load->view('header' , $header);
+            $this->load->view('currency/turnover' , $data);
+            $this->load->view('footer');
+        }else{
+            show_404();
+        }
+    }
+    public function change(){
+$persian_num = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
+$latin_num = range(0, 9);
+$slash = '/';
+$dash = '-';
+$date = str_replace($persian_num, $latin_num, $_POST['date']);
+$date = str_replace($slash, $dash, $date);
+$update['date'] = substr($date , 0 , 10);
+$update['time'] = substr($date , 10 , 20);
+$res = $this->base_model->update_data('turnover' , $update ,array('id'=>$this->input->post('id')));
+if($res){
+    echo $update['date'].' '.$update['time'];
+}else{
+    echo 0; 
+}
+
     }
 }
 ?>

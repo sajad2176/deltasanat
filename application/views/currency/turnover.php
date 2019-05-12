@@ -1,5 +1,5 @@
 					<!-- Column selectors -->
-					<p style = "display=none;" id="check"><?php echo $check;?></p>
+					<p style = "display:none;" id="check"><?php echo $check;?></p>
 					<div class="panel panel-flat">
 					<div class="panel-body">
 						<div class="panel-heading">
@@ -12,14 +12,14 @@
 						<div class="col-md-3">
 							<div class="form-group">
 								<label>نام صاحب حساب : </label>
-								<input class="form-control" name= 'owner' type="search" value="<?php echo $owner; ?>" placeholder=" نام صاحب حساب را وارد کنید">
+								<input class="form-control" name='owner' type="search" value="<?php echo $owner; ?>" placeholder=" نام صاحب حساب را وارد کنید">
 
 							</div>
 						</div>
 						<div class="col-md-3">
 							<div class="form-group">
 								<label>نام واریز کننده : </label>
-								<input class="form-control" name= 'provider' type="search" value="<?php echo $provider; ?>" placeholder="نام واریز کننده را وارد کنید">
+								<input class="form-control" name='provider' type="search" value="<?php echo $provider; ?>" placeholder="نام واریز کننده را وارد کنید">
 
 							</div>
 						</div>
@@ -33,7 +33,7 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">تا تاریخ :</label>
-									<input type="text" class="form-control" name="end_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $end_date;?>" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" name="end_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $end_date; ?>" placeholder="Jalali Created Date">
 								</div>
 							</div>
 						</div>
@@ -57,29 +57,57 @@
                                     <th>تاریخ</th>
                                     <th>زمان</th>
 									<th>مبلغ </th>
-									<th>ویرایش </th>
+									<th>ابزار</th>
 								</tr>
 							</thead>
 							<tbody>
 								<?php if(empty($turnover)){?>
 									<tr><td class="text-center p-20" colspan="8">موردی یافت نشد</td></tr>
 								<?php }else{?>
-								<?php foreach($turnover as $rows){ ?>
+								<?php foreach($turnover as $key => $rows){ ?>
 								<tr>
 									<td><?php echo $rows->owner;?></td>
 									<td><?php echo $rows->fullname;?></td>
                                     <td><?php echo $rows->shaba."</br>".$rows->name; ?></td>
 									<td><?php echo $rows->explain;?></td>
 									<td><?php echo number_format($rows->rest);?></td>
-                                    <td><?php echo $rows->date;?></td>
-									<td><?php echo $rows->time;?></td>
+                                    <td id="date<?php echo $key;?>"><?php echo $rows->date;?></td>
+									<td id="time<?php echo $key;?>"><?php echo $rows->time;?></td>
 									<td class="lright <?php if($rows->amount < 0 ){echo 'text-danger';}?>" ><?php echo number_format($rows->amount);?></td>
-									<td>s</td>
+									<td><ul class="icons-list"><li class="text-primary"><a data-toggle="modal" href="#edit_bank_modal"><i onclick = 'edit_bank(<?php echo $rows->id; ?>, <?php echo $key; ?>)' class="icon-credit-card"></i></li></ul></td>
 								</tr>
 								<?php } }?>
 							</tbody>
 						</table>
 						<div class="p-20"><?php if(isset($page)){ echo $page;}?></div>
+						<div id="edit_bank_modal" class="modal fade">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h5 class="modal-title text-center">تاریخ واریزی را ویرایش کنید</h5>
+
+							</div>
+							<hr>
+							<form method="post">
+								<div class="modal-body">
+									<div class="form-group input-group">
+										<label> انتخاب تاریخ :</label>
+										<input type="text" class="form-control" name="start_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $start_date; ?>" placeholder="Jalali Created Date">
+										<p id="id_bank" style="display:none;"></p>
+										<p id="id_key" style="display:none;"></p>
+										<p style="position: absolute; top: 65px;"></p>
+										<span class="input-group-btn">
+							<a class="btn btn-success mt-25" onclick='change_date()'>ذخیره</a>
+											</span>
+									</div>
+							</form>
+							</div>
+						</div>
+					</div>
+				<!-- /minor form modal -->
+
+			</div>
 						</div>
 					</div>
 					<!-- /column selectors -->
@@ -101,4 +129,40 @@
         c[0].setAttribute( 'style', 'display: none !important' );
         }				
 					}
+	var id_bank = document.getElementById('id_bank');
+	var dateBank = id_bank.previousElementSibling;
+	var id_key = document.getElementById('id_key');
+	function edit_bank(id , key){
+		var date = document.getElementById('date'+key).innerHTML;
+		var time = document.getElementById('time'+key).innerHTML;
+		dateBank.value = date.replace(/-/g , '/')+' '+ time;
+		id_bank.innerHTML = id;
+		id_key.innerHTML = key; 
+	}
+	function change_date(){
+		id = id_bank.innerHTML;
+		date = dateBank.value;
+		var xhr = new XMLHttpRequest();
+		xhr.onload = function () {
+			if ( ( xhr.status >= 200 && xhr.status < 300 ) || xhr.status == 304 ) {
+				res = xhr.responseText;
+                 if( res != 0){
+					 key = id_key.innerHTML;
+					document.getElementById('date'+key).innerHTML = res.substr(0 , 10);
+					document.getElementById('time'+key).innerHTML = res.substr(11 , 20);
+					dateBank.value = res.substr(0 , 10)+" "+res.substr(11 , 20);
+					id_key.nextElementSibling.innerHTML = 'تاریخ با موفقیت ویرایش شد'; 
+					id_key.nextElementSibling.classList.add("text-success");
+				 }else{
+					id_key.nextElementSibling.innerHTML = 'مشکلی در ثبت اطلاعات رخ داده است'; 
+					id_key.nextElementSibling.classList.add("text-danger");
+				 }
+			} else {
+				alert( 'request was unsuccessful : ' + xhr.status );
+			}
+		}
+		xhr.open( 'post', "<?php echo base_url('settings/change/')?>", true );
+		xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
+		xhr.send( 'id=' + id+"&date="+date );
+	}
 					</script>
