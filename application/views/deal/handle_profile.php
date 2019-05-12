@@ -8,6 +8,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 		<?php echo $msg[0];?>
 	</div>
 	<?php }?>
+<p style="display:none" id="alert_status"><?php if($this->session->has_userdata('status')){echo $this->session->userdata('status');}else{echo 0;}?></p>	
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 	<ul class="breadcrumb">
 		<li><a href="<?php echo base_url('home'); ?>"><i class="icon-home2 position-left"></i> داشبورد</a>
@@ -44,11 +45,12 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 		if(empty($deal)){ ?>
             <tr><td colspan="11" class="text-center p-20">موردی یافت نشد</td></tr>
 		<?php }else{
+			$sum_volume = 0; $sum_pay = 0; $sum_rest = 0;
 			foreach($deal as  $deals){?>
 			<tr class="<?php if($deals->state == 0){echo 'state_bg';}?>">
                 <td class="text-center"><?php echo $deals->id + 100; ?></td>
                 <td class="text-center"><?php echo $deals->fullname; ?></td>
-				<td class="text-center"><?php if($deals->type == 1 ){echo 'خرید';}else{echo 'فروش';} ?></td>
+				<td class="text-center"><?php if($deals->type == 1 ){echo 'خرید'; $sum_rest -= $deals->rest;}else{echo 'فروش'; $sum_rest += $deals->rest;} ?></td>
 				<td class="text-center"><?php echo number_format($deals->count_money) . " " . $deals->name;?></td>
 				<td class="text-center"><?php echo number_format($deals->convert); ?></td>
 				<td class="text-center <?php if($deals->volume < $deals->pay){echo 'text-danger';}?>"><?php echo number_format($deals->volume); ?> </td>
@@ -65,12 +67,22 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				</td>
 			
 			</tr>
-			<?php } ?>
+		<?php 
+		$sum_volume += $deals->volume;
+		$sum_pay += $deals->pay; 
+		} ?>
 			<tr>
-				<td colspan="6" class="pt-20 pb-20"></td>
-				<td colspan="5" class="text-left pt-20 pb-20">
-					<?php echo $page; ?>
-				</td>
+				<td><b> مجموع : </b></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="lright" style="text-align:center !important; " ><b><?php echo number_format($sum_volume);?></b></td>
+				<td class="lright" style="text-align:center !important; " ><b><?php echo number_format($sum_pay);?></b></td>
+				<td class="lright" style="text-align:center !important; " ><b><?php echo number_format($sum_rest);?></b></td>
+				<td></td>
+				<td></td>
+				<td></td>
 			</tr>
 			<?php }?>
 		</tbody>
@@ -81,7 +93,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 </div>
 </div>
 <?php if($this->session->has_userdata('add_handle')){?>
-	<div class="panel panel-flat">
+	<div class="panel panel-flat" id="div_handle">
 		<div class="panel-body">
 		<form action="<?php echo base_url('deal/handle_profile/').$this->uri->segment(3);?>" method="post">
 			<legend class="text-semibold"><i class="icon-address-book position-left"></i> افزودن هماهنگی</legend>
@@ -133,7 +145,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 	</div>
 <?php } ?>
 <div>
-	<div class="panel panel-flat">
+	<div class="panel panel-flat" id="div_bank">
 		<div class="panel-body">
 		<?php if($this->session->has_userdata('add_bank')){ ?><a class="btn btn-success float-btn-left" href="#add_bank_modal" data-toggle="modal">افزودن بانک</a><?php }?>
 			<legend class="text-semibold"><i class="icon-credit-card position-left"></i> اطلاعات بانکی </legend>
@@ -187,7 +199,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 
 		</div>
 <div>
-	<div class="panel panel-flat">
+	<div class="panel panel-flat" id='archive_handle'>
 		<div class="panel-body">
 		
 			<legend class="text-semibold"><i class="icon-notebook position-left"></i> اطلاعات هماهنگی</legend>
@@ -701,4 +713,5 @@ function history(id){
 					modal.replaceChild(div , modal.firstChild);
 				}
 			}
+
 		</script>

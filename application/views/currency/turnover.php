@@ -1,4 +1,5 @@
 					<!-- Column selectors -->
+					<p style = "display=none;" id="check"><?php echo $check;?></p>
 					<div class="panel panel-flat">
 					<div class="panel-body">
 						<div class="panel-heading">
@@ -11,21 +12,28 @@
 						<div class="col-md-3">
 							<div class="form-group">
 								<label>نام صاحب حساب : </label>
-								<input class="form-control" name= 'owner' type="search" placeholder="جستجو کنید">
+								<input class="form-control" name= 'owner' type="search" value="<?php echo $owner; ?>" placeholder=" نام صاحب حساب را وارد کنید">
 
 							</div>
 						</div>
-						<div class="col-md-6">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>نام واریز کننده : </label>
+								<input class="form-control" name= 'provider' type="search" value="<?php echo $provider; ?>" placeholder="نام واریز کننده را وارد کنید">
+
+							</div>
+						</div>
+						<div class="col-md-4">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">از تاریخ :</label>
-									<input type="text" class="form-control" name="start_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date; ?>" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" name="start_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $start_date; ?>" placeholder="Jalali Created Date">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">تا تاریخ :</label>
-									<input type="text" class="form-control" name="end_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date;?>" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" name="end_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $end_date;?>" placeholder="Jalali Created Date">
 								</div>
 							</div>
 						</div>
@@ -44,25 +52,29 @@
 									<th>نام صاحب حساب</th>
 									<th>نام واریز کننده</th>
 									<th>مشخصات حساب</th>
+									<th>توضیحات حساب</th>
 									<th>مانده حساب</th>
                                     <th>تاریخ</th>
                                     <th>زمان</th>
 									<th>مبلغ </th>
+									<th>ویرایش </th>
 								</tr>
 							</thead>
 							<tbody>
 								<?php if(empty($turnover)){?>
-									<tr><td class="text-center p-20" colspan="6">موردی یافت نشد</td></tr>
+									<tr><td class="text-center p-20" colspan="8">موردی یافت نشد</td></tr>
 								<?php }else{?>
-								<?php foreach($turnover as $rows){?>
+								<?php foreach($turnover as $rows){ ?>
 								<tr>
 									<td><?php echo $rows->owner;?></td>
 									<td><?php echo $rows->fullname;?></td>
                                     <td><?php echo $rows->shaba."</br>".$rows->name; ?></td>
+									<td><?php echo $rows->explain;?></td>
 									<td><?php echo number_format($rows->rest);?></td>
                                     <td><?php echo $rows->date;?></td>
 									<td><?php echo $rows->time;?></td>
 									<td class="lright <?php if($rows->amount < 0 ){echo 'text-danger';}?>" ><?php echo number_format($rows->amount);?></td>
+									<td>s</td>
 								</tr>
 								<?php } }?>
 							</tbody>
@@ -71,3 +83,22 @@
 						</div>
 					</div>
 					<!-- /column selectors -->
+					<script>
+					window.onload = function(){
+		var remove_class = document.getElementById('DataTables_Table_0');
+        remove_class.classList.remove('dataTable');				
+		var a = document.getElementsByClassName('datatable-footer');
+        var b = document.getElementsByClassName('dataTables_filter');
+		var c = document.getElementsByClassName('dataTables_length');
+	    var check = document.getElementById('check');
+        if(check.innerHTML == 1){	
+        a[0].setAttribute( 'style', 'display: block !important' );
+        b[0].setAttribute( 'style', 'display: block !important' );
+        c[0].setAttribute( 'style', 'display: block !important' );
+        }else{
+		a[0].setAttribute( 'style', 'display: none !important' );
+        b[0].setAttribute( 'style', 'display: none !important' );
+        c[0].setAttribute( 'style', 'display: none !important' );
+        }				
+					}
+					</script>

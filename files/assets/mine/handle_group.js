@@ -200,5 +200,26 @@ function showBank(result , url){
 
 }
 //edit bank
+//scroll 
+var a = document.getElementById('div_handle');
+var b = document.getElementById('div_bank');
+var c = document.getElementById('archive_handle');
+var p = document.getElementById('alert_status').innerHTML;
+window.onload = function(){
+    if(p == 0){
 
+    }else if(p == 1){
+        window.setTimeout(function() {
+            window.scrollTo(0 , a.offsetTop);
+        } , 1500 )     
+    }else if(p == 2){
+        window.setTimeout(function() {
+            window.scrollTo(0 , b.offsetTop);
+        } , 1500 )
+    }else if(p == 3){
+        window.setTimeout(function() {
+            window.scrollTo(0 , c.offsetTop);
+        } , 1500 )
+    }
+}
 

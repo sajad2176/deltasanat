@@ -785,6 +785,7 @@ $this->base_model->insert_data('backup' , $back);
                 $this->base_model->insert_data('log' , $log);
                   $message['msg'][0] = 'اطلاعات حساب بانکی با موفقیت ثبت شد';
                   $message['msg'][1] = 'success';
+                  $message['status'] = 2;
                   $this->session->set_flashdata($message);
                   redirect("deal/handle_profile/$id");
              
@@ -841,6 +842,7 @@ public function edit_bank(){
       $this->base_model->insert_data('log' , $log);
       $message['msg'][0] = 'اطلاعات حساب بانکی با موفقیت ویرایش شد';
       $message['msg'][1] = 'success';
+      $message['status'] = 2;
       $this->session->set_flashdata($message);
       redirect("deal/handle_profile/$red_id");
         }else{
@@ -1066,6 +1068,7 @@ if(!empty($deal)){
         $this->base_model->insert_data('log' , $log);
           $message['msg'][0] = 'پرداخت به صورت کامل انجام شد';
           $message['msg'][1] = 'success';
+          $message['status'] = 3;
           $this->session->set_flashdata($message);
           redirect("deal/handle_profile/$cust_id");
     }else{
@@ -1258,6 +1261,7 @@ if($push > 0){
         $this->base_model->insert_data('log' , $log);
           $message['msg'][0] = 'پرداخت به صورت جزیی انجام شد';
           $message['msg'][1] = 'success';
+          $message['status'] = 3;
           $this->session->set_flashdata($message);
           redirect("deal/handle_profile/$cust_id");
     }else{
@@ -1441,6 +1445,7 @@ public function restore(){
     $this->base_model->insert_data('log' , $log);
       $message['msg'][0] = 'بازگشت پرداخت به صورت کامل انجام شد ';
       $message['msg'][1] = 'success';
+      $message['status'] = 3;
       $this->session->set_flashdata($message);
       redirect("deal/handle_profile/$cust_id"); 
     }else{
@@ -1474,6 +1479,7 @@ public function edit_handle(){
       $this->base_model->insert_data('log' , $log);
       $message['msg'][0] = 'هماهنگی با موفقیت ویرایش شد';
       $message['msg'][1] = 'success';
+      $message['status'] = 3;
       $this->session->set_flashdata($message);
       redirect("deal/handle_profile/$red_id");       
     }else{
@@ -1514,6 +1520,7 @@ public function edit_handle(){
             }else{
                 $message['msg'][0] = 'هماهنگی با موفقیت حذف شد';
                 $message['msg'][1] = 'success';
+                $message['status'] = 3;
                 $this->session->set_flashdata($message);
                 redirect("deal/handle_profile/$red_id");
             }
@@ -1571,9 +1578,10 @@ $str = ' هماهنگی با مشخصات : </br> نام مشتری خرید :'.
                 $log['explain'] = $str;
 $this->base_model->insert_data('log' , $log);
 $this->base_model->insert_data('handle' , $data);
-
+                    
                     $message['msg'][0] = 'اطلاعات هماهنگی با موفقیت ثبت شد';
                     $message['msg'][1] = 'success';
+                    $message['status'] = 1;
                     $this->session->set_flashdata($message);
                     redirect("deal/handle_profile/$id");
             }else{
@@ -1582,43 +1590,16 @@ $this->base_model->insert_data('handle' , $data);
                 }
                 $header['title'] = 'هماهنگی';
                 $header['active'] = 'deal';
-                $header['active_sub'] = 'deal_archive';
-                $total_rows = $this->base_model->get_count("deal" , array('customer_id' => $id));
-                $config['base_url'] = base_url("deal/handle_profile/$id");
-                $config['total_rows'] = $total_rows;
-                $config['per_page'] = '5';
-                $config["uri_segment"] = '4';
-                $config['num_links'] = '5';
-                $config['next_link'] = '<i class="icon-arrow-left5"></i>';
-                $config['last_link'] = '<i class="icon-backward2"></i>';
-                $config['prev_link'] = '<i class="icon-arrow-right5"></i>';
-                $config['first_link'] = '<i class="icon-forward3"></i>';
-                $config['full_tag_open'] = '<nav><ul class="pagination pagination-sm">';
-                $config['full_tag_close'] = '</ul></nav>';
-                $config['cur_tag_open'] = '<li class="active"><a href="javascript:void(0)">';
-                $config['cur_tag_close'] = '</a></li>';
-                $config['num_tag_open'] = '<li>';
-                $config['num_tag_close'] = '</li>';
-                $config['next_tag_open'] = '<li>';
-                $config['next_tag_close'] = '</li>';
-                $config['last_tag_open'] = '<li>';
-                $config['last_tag_close'] = '</li>';
-                $config['first_tag_open'] = '<li>';
-                $config['first_tag_close'] = '</li>';
-                $config['prev_tag_open'] = '<li>';
-                $config['prev_tag_close'] = '</li>';
-                $config['suffix'] = "";
-            $this->pagination->initialize($config);
-            $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;      
-            $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname ,unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('deal.customer_id'=> $id), $config['per_page'] , $page , array('deal.id' , 'DESC') , array('unit','deal.money_id = unit.id'));
-            $data['page'] = $this->pagination->create_links();
-            $data['bank'] = $this->base_model->get_data('bank' ,'*' ,'result' ,array('customer_id' => $id));
-            $data['select'] = $this->base_model->get_data('bank' , 'id , explain , rest , rest_handle' , 'result' , array('customer_id' => $id , 'active'=> 1));
-            $data['handle'] = $this->base_model->get_data_join('handle' , 'bank' , 'handle.* , customer.fullname , bank.explain' , 'handle.bank_id = bank.id' , 'result' , array('handle.buy_id'=>$id) , NULL , NULL , array('handle.id' , 'DESC'),array('customer' , 'handle.sell_id = customer.id'));  
-            $data['customer'] = $this->base_model->get_data('customer' , 'fullname , id' , 'result');
-            $data['buy'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 1 GROUP BY d.customer_id ORDER BY d.id DESC");
-            $data['sell'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 2 GROUP BY d.customer_id ORDER BY d.id DESC");
-            $deal_buy = 0;
+                $header['active_sub'] = 'deal_archive';      
+                $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname ,unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('deal.customer_id'=> $id), NULL , NULL , array('deal.id' , 'DESC') , array('unit','deal.money_id = unit.id'));
+                $data['page'] = $this->pagination->create_links();
+                $data['bank'] = $this->base_model->get_data('bank' ,'*' ,'result' ,array('customer_id' => $id));
+                $data['select'] = $this->base_model->get_data('bank' , 'id , explain , rest , rest_handle' , 'result' , array('customer_id' => $id , 'active'=> 1));
+                $data['handle'] = $this->base_model->get_data_join('handle' , 'bank' , 'handle.* , customer.fullname , bank.explain' , 'handle.bank_id = bank.id' , 'result' , array('handle.buy_id'=>$id) , NULL , NULL , array('handle.id' , 'DESC'),array('customer' , 'handle.sell_id = customer.id'));  
+                $data['customer'] = $this->base_model->get_data('customer' , 'fullname , id' , 'result');
+                $data['buy'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 1 GROUP BY d.customer_id ORDER BY d.id DESC");
+                $data['sell'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 2 GROUP BY d.customer_id ORDER BY d.id DESC");
+                $deal_buy = 0;
             foreach($data['buy'] as $row){
                 if($row->customer_id == $id){
                     $deal_buy = $row->volume - $row->handle;

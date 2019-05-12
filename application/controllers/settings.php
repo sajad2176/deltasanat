@@ -265,8 +265,8 @@ class Settings extends CI_Controller {
         }
         $date = $this->convertdate->convert(time());
         if(isset($_POST['sub'])){
-$owner = $this->input->post('owner');
-
+$owner = trim($this->input->post('owner') , ' ');
+$provider = trim($this->input->post('provider') , ' ');
 $persian_num = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
 $latin_num = range(0, 9);
 $slash = '/';
@@ -278,11 +278,20 @@ $end = str_replace($slash, $dash, $end);
 $date_start = substr($start , 0 , 10);
 $date_end = substr($end , 0 , 10);
 $between = "turnover.date BETWEEN '$date_start' AND '$date_end'";
-$data['turnover'] = $this->base_model->search_data('turnover' , 'bank' , 'turnover.* , bank.shaba , bank.name , customer.fullname' , 'turnover.bank_id = bank.id' ,'inner' , array('turnover.owner' => $owner) , NULL , NULL , NULL , array('customer' , 'customer.id = turnover.cust_id') , $between);
-$data['date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
-$header['title'] = ' گردش حساب '.$owner;
+$data['turnover'] = $this->base_model->search_data('turnover' , 'bank' , 'turnover.* , bank.shaba , bank.name ,bank.explain , customer.fullname' , 'turnover.bank_id = bank.id' ,'inner' , array('turnover.owner' => $owner , 'customer.fullname'=> $provider) , NULL , NULL , NULL , array('customer' , 'customer.id = turnover.cust_id') , $between);
+if($owner != ''){
+    $header['title'] = ' گردش حساب '.$owner;
+}else{
+    $header['title'] = ' گردش حساب '.$provider;
+}
+
 $header['active'] = 'settings';
 $header['active_sub'] = 'turnover';
+$data['owner'] = $owner;
+$data['provider'] = $provider;
+$data['start_date'] = $_POST['start_date'];
+$data['end_date'] = $_POST['end_date'];
+$data['check'] = 1;
 $this->load->view('header' , $header);
 $this->load->view('currency/turnover' , $data);
 $this->load->view('footer');
@@ -294,9 +303,9 @@ $this->load->view('footer');
             $config["uri_segment"] = '3';
             $config['num_links'] = '5';
             $config['next_link'] = '<i class="icon-arrow-left5"></i>';
-            $config['last_link'] = '<i class="icon-backward2"></i>';
+            $config['last_link'] = 'صفحه آخر';
             $config['prev_link'] = '<i class="icon-arrow-right5"></i>';
-            $config['first_link'] = '<i class="icon-forward3"></i>';
+            $config['first_link'] = 'صفحه اول';
             $config['full_tag_open'] = '<nav><ul class="pagination pagination-sm">';
             $config['full_tag_close'] = '</ul></nav>';
             $config['cur_tag_open'] = '<li class="active"><a href="javascript:void(0)">';
@@ -314,12 +323,16 @@ $this->load->view('footer');
             $config['suffix'] = "";
         $this->pagination->initialize($config);
         $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;      
-        $data['turnover'] = $this->base_model->get_data_join('turnover' ,'bank', 'turnover.* , customer.fullname , bank.shaba , bank.name' , 'turnover.bank_id = bank.id' ,'result'  , NULL , $config['per_page'] , $page , array('turnover.id' , 'DESC') , array('customer','turnover.cust_id = customer.id'));
+        $data['turnover'] = $this->base_model->get_data_join('turnover' ,'bank', 'turnover.* , customer.fullname , bank.shaba , bank.name , bank.explain' , 'turnover.bank_id = bank.id' ,'result'  , NULL , $config['per_page'] , $page , array('turnover.id' , 'DESC') , array('customer','turnover.cust_id = customer.id'));
         $data['page'] = $this->pagination->create_links();
-        $data['date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
         $header['title'] = ' گردش حساب ';
         $header['active'] = 'settings';
         $header['active_sub'] = 'turnover';
+        $data['owner'] = '';
+        $data['provider'] = '';
+        $data['start_date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
+        $data['end_date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
+        $data['check'] = 0;
         $this->load->view('header' , $header);
         $this->load->view('currency/turnover' , $data);
         $this->load->view('footer');
