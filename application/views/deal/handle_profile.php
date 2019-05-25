@@ -523,29 +523,6 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 							<div class="modal-body">
 								<div class="field_wrapper2">
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<legend class="text-semibold"><i class="icon-calculator3 position-left"></i>حساب مشتری</legend>
-								<div>
-										<div class="row">
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>هماهنگ نشده خرید : </label>
-													<p  class="form-control"><?php if($deal_buy == -1){echo ' معامله خرید ثبت نشده است ';}else{ echo number_format($deal_buy); } ?></p>
-												</div>
-											</div>
-
-
-
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>هماهنگ نشده فروش :</label>
-												
-													<p class="form-control"><?php if($deal_sell == -1){echo ' معامله فروش ثبت نشده است ';}else{ echo number_format($deal_sell); }?></p>
-												</div>
-											</div>
-										</div>
-
-
-									</div>
 								
 						
 						<legend class="text-semibold"><i class=" icon-credit-card position-left"></i>افزودن بانک</legend>

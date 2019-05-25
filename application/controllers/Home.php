@@ -20,13 +20,13 @@ class Home extends CI_Controller{
         $start_date =  $date['year']."-".$date['month_num']."-".$date['day'];
         $data['today'] = $date['day']." ".$date['month_name']." ".$date['year'];
         $data['remain'] = $this->base_model->get_data('unit' , '*' , 'result' , array('id < ' => 10));
-        $buy_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id where d.type = 1  and d.state = 1 GROUP BY d.type" , 'row');
+        $buy_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle) h ON h.buy_id = d.customer_id where d.type = 1  and d.state = 1 GROUP BY d.type" , 'row');
         if(empty($buy_not)){
             $data['buy_not'] = 0;
         }else{
             $data['buy_not'] = $buy_not->volume - $buy_not->handle;
         }
-        $sell_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id where d.type = 2 and d.state = 1 GROUP BY d.type" , 'row');
+        $sell_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle) h ON h.sell_id = d.customer_id where d.type = 2 and d.state = 1 GROUP BY d.type" , 'row');
         if(empty($sell_not)){
             $data['sell_not'] = 0;
         }else{
@@ -133,13 +133,13 @@ class Home extends CI_Controller{
         $start_date =  $date['year']."-".$date['month_num']."-".$date['day'];
         $data['today'] = $date['day']." ".$date['month_name']." ".$date['year'];
         $data['remain'] = $this->base_model->get_data('unit' , '*' , 'result' , array('id < ' => 10));
-        $buy_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id where d.type = 1  and d.state = 1 GROUP BY d.type" , 'row');
+        $buy_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle) h ON h.buy_id = d.customer_id where d.type = 1  and d.state = 1 GROUP BY d.type" , 'row');
         if(empty($buy_not)){
             $data['buy_not'] = 0;
         }else{
             $data['buy_not'] = $buy_not->volume - $buy_not->handle;
         }
-        $sell_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id where d.type = 2 and d.state = 1 GROUP BY d.type" , 'row');
+        $sell_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle) h ON h.sell_id = d.customer_id where d.type = 2 and d.state = 1 GROUP BY d.type" , 'row');
         if(empty($sell_not)){
             $data['sell_not'] = 0;
         }else{
