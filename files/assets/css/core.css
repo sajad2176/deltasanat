@@ -7024,3 +7024,15 @@ border-top: 1px solid #ddd;
     display: none !important;
   } 
 }
+#deletePhoto , #editPhoto{
+display: inline-block;
+width: 46%;
+margin-bottom: 15px;
+border: 1px solid aliceblue;
+cursor: pointer;
+}
+#deletePhoto a, #editPhoto a{
+display: inline-block;
+width: 100%;
+padding: 10px;
+}

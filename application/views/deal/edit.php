@@ -184,16 +184,10 @@ $msg = $this->session->userdata('msg');?>
                                   <?php } } ?>
 								</div>
 								<div class="row">
-								<div class="col-md-6">
+								<div class="col-md-12">
 								<div class="form-group">
 									<label for="j_created_date"> تاریخ ثبت :</label>
 									<input type="text" class="form-control" name="date_deal" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date_deal." ".$deal->time_deal;?>" placeholder="Jalali Created Date">
-								</div>
-								</div>
-								<div class="col-md-6">
-								<div class="form-group">
-									<label>ارسال عکس (برای انتخاب چند عکس لطفا دکمه ctrl را نگه دارید)</label>
-									<input type="file" class="file-styled" name="deal_pic[]" multiple="multiple">
 								</div>
 								</div>
 								</div>

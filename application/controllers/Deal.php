@@ -310,7 +310,7 @@ $this->base_model->insert_data('backup' , $back);
         if(isset($bank) and !empty($bank)){
             $res_bank = $this->base_model->insert_batch('bank' , $bank);
             if($res_bank == FALSE){
-                $message['msg'][0] = 'معامله با موفقیت ثبت شد ولی متاسفانه در ثبت اطلاعات بانکی و ارسال عکس ها مشکلی پیش آمده است .';
+                $message['msg'][0] = 'معامله با موفقیت ثبت شد ولی متاسفانه در ثبت اطلاعات بانکی مشکلی پیش آمده است .';
                 $message['msg'][1] = 'danger';
                 $this->session->set_flashdata($message);
                 redirect("deal/$page");
@@ -329,49 +329,6 @@ $this->base_model->insert_data('backup' , $back);
         $log['explain'] = " نام مشتری :  ".$customer['fullname']." | شناسه معامله : ".$aa . " | ارز معامله : ". $money . " | تعداد ارز : ".number_format($deal['count_money']).$money ." | کارمزد : ".number_format($deal['wage']).$money . " | نرخ تبدیل : ".number_format($deal['convert'])." ریال "." | حجم معامله  :  ".number_format($deal['volume'])." ریال "." | مقدار ارز  ".$money. " به اندازه ".number_format($am)." ".$text."| مقدار ریال به اندازه ".number_format($deal['volume'])." ".$text2;
         $this->base_model->insert_data('log' , $log);
         //log
-
-        //photo
-        $img = array();
-        if($_FILES['deal_pic']['name'][0] != ''){
-         $count = count($_FILES['deal_pic']['name']);
-         $files['name'] = $_FILES['deal_pic']['name'];
-         $files['type'] = $_FILES['deal_pic']['type'];
-         $files['tmp_name'] = $_FILES['deal_pic']['tmp_name'];
-         $files['error'] = $_FILES['deal_pic']['error'];
-         $files['size'] = $_FILES['deal_pic']['size'];
-
-         for($j = 0 ; $j < $count ; $j++){
-         
-             $_FILES['deal_pic']['name'] = $files['name'][$j];
-             $_FILES['deal_pic']['type'] = $files['type'][$j];
-             $_FILES['deal_pic']['tmp_name'] = $files['tmp_name'][$j];
-             $_FILES['deal_pic']['error'] = $files['error'][$j];
-             $_FILES['deal_pic']['size'] = $files['size'][$j];
- 
-             $config['upload_path'] = './uploads/deal';
-             $config['allowed_types']        = 'gif|jpg|png|jpeg';
-             $config['max_size']             = 1000000000;
- 
-             $this->load->library('upload', $config);  
-             $this->upload->initialize($config);
- 
-             if($this->upload->do_upload('deal_pic')){
-                 $img[] = array(
-                     'deal_id'=> $deal_id,
-                     'pic_name' => $files['name'][$j],
-                     'date_upload'=> $deal['date_deal']."</br>".$deal['time_deal']
-                 );
-             }else{
-                 $message['msg'][0] = 'معامله با موفقیت ثبت شد . در ارسال عکس توجه داشته باشید که فرمت فایل باید معتبر باشد و نام عکس حاوی کلمه index نباشد . در بخش ویرایش معامله می توانید دوباره عکس های خود را اضافه کنید';
-                 $message['msg'][1] = 'danger';
-                 $this->session->set_flashdata($message);
-                 redirect("deal/$page");
-             }
-            }
-        $this->base_model->insert_batch('deal_pic' , $img);
-        }
-         //photo
-
          $message['msg'][0] = 'اطلاعات معامله با موفقیت ثبت شد';
          $message['msg'][1] = 'success';
          $this->session->set_flashdata($message);
@@ -579,7 +536,6 @@ $this->base_model->insert_data('backup' , $back);
                  }
 
                 //other
-
              }
              $res = $this->base_model->update_data('deal' , $deal , array('id'=> $id));
              if($this->db->trans_status() === FALSE or $res == FALSE or $c_rial == FALSE or $c_base == FALSE or $c_send == FALSE){
@@ -641,13 +597,7 @@ $this->base_model->insert_data('backup' , $back);
                }
               }
               if(isset($bank) and !empty($bank)){
-                $res_bank = $this->base_model->update_batch('bank' , $bank , 'id');
-                if($res_bank == FALSE){
-                    $message['msg'][0] = 'معامله با موفقیت ویرایش شد ولی در ویرایش بانک ها متاسفانه مشکلی رخ داده است';
-                    $message['msg'][1] = 'danger';
-                    $this->session->set_flashdata($message);
-                    redirect("deal/edit/$id");
-                   }
+                $this->base_model->update_batch('bank' , $bank , 'id');
               }
               
             $log['user_id'] = $this->session->userdata('id');
@@ -657,48 +607,6 @@ $this->base_model->insert_data('backup' , $back);
             $aa = $id + 100;
             $log['explain'] = " شناسه معامله : ".$aa." | نام مشتری :  ".$customer['fullname'] ."</br>". $change_unit . $count_deal . $wage_deal  . $convert_deal . $volume_deal;
             $this->base_model->insert_data('log' , $log);
-
-            $img = array();
-  
-            if($_FILES['deal_pic']['name'][0] != ''){
-             $count = count($_FILES['deal_pic']['name']);
-             $files['name'] = $_FILES['deal_pic']['name'];
-             $files['type'] = $_FILES['deal_pic']['type'];
-             $files['tmp_name'] = $_FILES['deal_pic']['tmp_name'];
-             $files['error'] = $_FILES['deal_pic']['error'];
-             $files['size'] = $_FILES['deal_pic']['size'];
- 
-             for($j = 0 ; $j < $count ; $j++){
-             
-                 $_FILES['deal_pic']['name'] = $files['name'][$j];
-                 $_FILES['deal_pic']['type'] = $files['type'][$j];
-                 $_FILES['deal_pic']['tmp_name'] = $files['tmp_name'][$j];
-                 $_FILES['deal_pic']['error'] = $files['error'][$j];
-                 $_FILES['deal_pic']['size'] = $files['size'][$j];
-                 $config['upload_path'] = './uploads/deal';
-                 $config['allowed_types']        = 'gif|jpg|png|jpeg';
-                 $config['max_size']             = 1000000000;
-     
-                 $this->load->library('upload', $config);  
-                 $this->upload->initialize($config);
-     
-                 if($this->upload->do_upload('deal_pic')){
-                     $img[] = array(
-                         'deal_id'=> $id,
-                         'pic_name' => $files['name'][$j],
-                         'date_upload'=>$deal['date_modified']
-                     );
-                 }else{
-                     $message['msg'][0] = 'معامله با موفقیت ویرایش شد . در ارسال عکس توجه داشته باشید که عکس باید یکی از فرمت های gif|jpg|png|jpeg باشد و حاوی کلمه index نباشد ';
-                     $message['msg'][1] = 'danger';
-                     $this->session->set_flashdata($message);
-                     redirect("deal/edit/$id");
-                 }
-                }
-            $this->base_model->insert_batch('deal_pic' , $img);
-            }
-
-
            $message['msg'][0] = 'اطلاعات معامله با موفقیت ثبت شد';
            $message['msg'][1] = 'success';
            $this->session->set_flashdata($message);
@@ -736,18 +644,128 @@ $this->base_model->insert_data('backup' , $back);
               show_404();
           }
           $id = $this->uri->segment(3);
-          if(isset($id) and is_numeric($id)){
-            $header['title'] = 'عکس ها';
-            $header['active'] = 'deal';
-            $header['active_sub'] = 'deal_archive';
-            $data['photo'] = $this->base_model->get_data('deal_pic' , '*' , 'result' , array('deal_id' => $id));
-            $this->load->view('header' , $header);
-            $this->load->view('deal/photo' , $data);
-            $this->load->view('footer');
+    if(isset($id) and is_numeric($id)){
+        $date = $this->convertdate->convert(time());
+        if(isset($_POST['sub'])){
+    //photo
+        $img = array();
+        if($_FILES['deal_pic']['name'][0] != ''){
+         $count = count($_FILES['deal_pic']['name']);
+         $files['name'] = $_FILES['deal_pic']['name'];
+         $files['type'] = $_FILES['deal_pic']['type'];
+         $files['tmp_name'] = $_FILES['deal_pic']['tmp_name'];
+         $files['error'] = $_FILES['deal_pic']['error'];
+         $files['size'] = $_FILES['deal_pic']['size'];
+
+         for($j = 0 ; $j < $count ; $j++){
+         
+             $_FILES['deal_pic']['name'] = $files['name'][$j];
+             $_FILES['deal_pic']['type'] = $files['type'][$j];
+             $_FILES['deal_pic']['tmp_name'] = $files['tmp_name'][$j];
+             $_FILES['deal_pic']['error'] = $files['error'][$j];
+             $_FILES['deal_pic']['size'] = $files['size'][$j];
+ 
+             $config['upload_path'] = './uploads/deal';
+             $config['allowed_types']        = 'gif|jpg|png|jpeg';
+             $config['max_size']             = 1000000000;
+ 
+             $this->load->library('upload', $config);  
+             $this->upload->initialize($config);
+ 
+             if($this->upload->do_upload('deal_pic')){
+                 $img[] = array(
+                     'deal_id'=> $id,
+                     'pic_name' => $files['name'][$j],
+                     'date_upload'=> $_POST['date'],
+                     'explain'=>$_POST['explain']
+                 );
+             }else{
+                 $message['msg'][0] = 'در ارسال عکس توجه داشته باشید که باید یکی از فرمت های PNG|JPEG|GIF باشد';
+                 $message['msg'][1] = 'danger';
+                 $this->session->set_flashdata($message);
+                 redirect("deal/photo/".$id);
+             }
+            }
+}
+if(!empty($img)){
+    $this->base_model->insert_batch('deal_pic' , $img);
+    $log['user_id'] = $this->session->userdata('id');
+    $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
+    $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+    $log['activity_id'] = 24;
+    $log['explain'] = ' ارسال قبض';
+    $this->base_model->insert_data('log' , $log);
+    $message['msg'][0] = 'اطلاعات با موفقیت ثبت شد';
+    $message['msg'][1] = 'success';
+    $this->session->set_flashdata($message);
+    redirect('deal/photo/'.$id);
+}else{
+    $message['msg'][0] = 'عکسی انتخاب نشده است';
+    $message['msg'][1] = 'danger';
+    $this->session->set_flashdata($message);
+    redirect('deal/photo/'.$id);
+}
+    //photo
+              }else{
+                $header['title'] = 'عکس ها';
+                $header['active'] = 'deal';
+                $header['active_sub'] = 'deal_archive';
+                $data['photo'] = $this->base_model->get_data('deal_pic' , '*' , 'result' , array('deal_id' => $id));
+                $date = $this->convertdate->convert(time());
+                $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$date['hour'].":".$date['minute'].":".$date['second'];
+                $this->load->view('header' , $header);
+                $this->load->view('deal/photo' , $data);
+                $this->load->view('footer');
+              }
           }else{
               show_404();
           }
 
+     }
+     public function delete_photo(){
+         $red_id = $this->uri->segment(3);
+         $id = $this->uri->segment(4);
+         $name = $this->uri->segment(5);
+         if(is_numeric($red_id) and is_numeric($id)){
+        $date = $this->convertdate->convert(time());
+        $this->base_model->delete_data('deal_pic' , array('id'=>$id));
+        $log['user_id'] = $this->session->userdata('id');
+        $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
+        $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+        $log['activity_id'] = 25;
+        $log['explain'] = ' حذف قبض | نام قبض : '.$name;
+        $this->base_model->insert_data('log' , $log);
+        $message['msg'][0] = 'قبض با موفقیت حذف شد';
+        $message['msg'][1] = 'success';
+        $this->session->set_flashdata($message);
+        redirect('deal/photo/'.$red_id);
+         }else{
+             show_404();
+         }
+     }
+     public function get_photo(){
+         $id = $this->input->post('id');
+         if(is_numeric($id)){
+         $data = $this->base_model->get_data('deal_pic' , '*' , 'row' , array('id'=>$id));
+         echo json_encode($data);
+         }else{
+             show_404();
+         }
+     }
+     public function edit_photo(){
+         if(isset($_POST['sub'])){
+          $red_id = $this->uri->segment(3);
+          $id = $this->uri->segment(4);
+          $data['date_upload'] = $this->input->post('date');
+          $data['explain'] = $this->input->post('explain');
+          $this->base_model->update_data('deal_pic' , $data , array('id'=>$id));
+          $message['msg'][0] = 'قبض با موفقیت ویرایش شد';
+          $message['msg'][1] = 'success';
+          $this->session->set_flashdata($message);
+          redirect("deal/photo/".$red_id);
+         }else{
+             show_404();
+         }
      }
      //----- photo -----//
 
@@ -1049,7 +1067,7 @@ $status = $this->base_model->insert_data('history' , $history);
 $status = $this->base_model->update_data('bank' , $bank , array('id'=>$handle_info->bank_id));
 $status = $this->base_model->update_data('handle' , $handle , array('id'=> $id));
 if(!empty($deal)){
-    $status = $this->base_model->update_batch('deal' , $deal , 'id');
+     $this->base_model->update_batch('deal' , $deal , 'id');
 }
         $log['user_id'] = $this->session->userdata('id');
         $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
@@ -1242,7 +1260,7 @@ if($push > 0){
         $status = $this->base_model->update_data('bank' , $bank , array('id'=>$handle_info->bank_id));
         $status =  $this->base_model->update_data('handle' , $handle , array('id'=> $id));
         if(!empty($deal)){
-            $status = $this->base_model->update_batch('deal' , $deal , 'id');
+             $this->base_model->update_batch('deal' , $deal , 'id');
         }
         $log['user_id'] = $this->session->userdata('id');
         $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
@@ -1430,7 +1448,7 @@ public function restore(){
     $status = $this->base_model->update_data('bank' , $bank , array('id'=>$handle_info->bank_id));
     $status = $this->base_model->update_data('handle' , $handle , array('id'=> $history->handle_id));
     if(!empty($deal)){
-        $status = $this->base_model->update_batch('deal' , $deal , 'id');
+         $this->base_model->update_batch('deal' , $deal , 'id');
     }
     $status = $this->base_model->update_data('history' , $his , array('id'=> $id)); 
     if($this->db->trans_status() === FALSE or $status == FALSE){
@@ -1666,7 +1684,9 @@ $this->base_model->insert_data('handle' , $data);
             $rows_sell = $this->base_model->get_data('deal' , 'count(id) as cust_id' , 'result' , array('type'=>2) , NULL , NULL , NULL , 'customer_id');
             $data['buy'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 1 GROUP BY d.customer_id ORDER BY d.id DESC LIMIT 0 , 10");
             $data['sell'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 2 GROUP BY d.customer_id ORDER BY d.id DESC LIMIT 0 , 10");
-                        $data['rows_buy'] = sizeof($rows_buy);
+            $data['buy_cust'] = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 1 GROUP BY d.customer_id ORDER BY d.id DESC");
+            $data['sell_cust'] = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 2 GROUP BY d.customer_id ORDER BY d.id DESC");           
+            $data['rows_buy'] = sizeof($rows_buy);
                         $data['rows_sell'] = sizeof($rows_sell);
                         $header['title'] = 'کاربرگ معاملات';
                         $header['active'] = 'deal';

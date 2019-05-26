@@ -192,9 +192,9 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ if($i == 0){$active = 'active';}e
 
 <?php
 		$b_str = ''; $b_str2 = '';
-		foreach($buy as $row){ $am = $row->volume - $row->handle; $b_str .= "\"$row->fullname\","; $b_str2 .= "\"$am\",";} $b_str = trim($b_str , ','); $b_str2 = trim($b_str2 , ',');
+		foreach($buy_cust as $row){ $am = $row->volume - $row->handle; $b_str .= "\"$row->fullname\","; $b_str2 .= "\"$am\",";} $b_str = trim($b_str , ','); $b_str2 = trim($b_str2 , ',');
 		$s_str = ''; $s_str2 = '';
-		foreach($sell as $row){ $am = $row->volume - $row->handle; $s_str .= "\"$row->fullname\","; $s_str2 .= "\"$am\",";} $s_str = trim($s_str , ','); $s_str2 = trim($s_str2 , ',');
+		foreach($sell_cust as $row){ $am = $row->volume - $row->handle; $s_str .= "\"$row->fullname\","; $s_str2 .= "\"$am\",";} $s_str = trim($s_str , ','); $s_str2 = trim($s_str2 , ',');
 ?>
 
 <script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/sheet.js"></script>
