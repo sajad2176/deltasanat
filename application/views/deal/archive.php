@@ -41,13 +41,13 @@ $msg = $this->session->userdata('msg');?>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">از تاریخ :</label>
-									<input type="text" class="form-control" name="start_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date; ?>" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" name="start_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php if($this->input->get('start_date')){echo $this->input->get('start_date');}else{echo $date;} ?>" placeholder="Jalali Created Date">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">تا تاریخ :</label>
-									<input type="text" class="form-control" name="end_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date;?>" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" name="end_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php if($this->input->get('end_date')){echo $this->input->get('end_date');}else{echo $date;} ?>" placeholder="Jalali Created Date">
 								</div>
 							</div>
 						</div>
@@ -55,9 +55,9 @@ $msg = $this->session->userdata('msg');?>
 							<div class="form-group">
 								<label>نوع معامله : </label>
 								<select class="form-control" name="type" required>
-									<option value="0" <?php if($t == 0){echo 'selected';}?> >همه</option>
-									<option value="1" <?php if($t == 1){echo 'selected';}?> >خرید</option>
-									<option value="2" <?php if($t == 2){echo 'selected';}?> >فروش</option>
+									<option value="0" <?php if($this->input->get('type') == 0){echo 'selected';}?> >همه</option>
+									<option value="1" <?php if($this->input->get('type') == 1){echo 'selected';}?> >خرید</option>
+									<option value="2" <?php if($this->input->get('type') == 2){echo 'selected';}?> >فروش</option>
 									
 								</select>
 							</div>
@@ -66,15 +66,15 @@ $msg = $this->session->userdata('msg');?>
 							<div class="form-group">
 								<label>ارز معامله : </label>
 								<select class="form-control" name="money_id" required>
-								    <option value="0" <?php if($m == 0){echo 'selected';}?>>همه</option>
+								    <option value="0" <?php if($this->input->get('money_id') == 0){echo 'selected';}?>>همه</option>
 										<?php foreach($unit as $units){ ?>
-											<option  value="<?php echo $units->id;?>" <?php if($units->id == $m){echo 'selected';}?> ><?php echo $units->name;?></option>
+											<option  value="<?php echo $units->id;?>" <?php if($units->id == $this->input->get('money_id')){echo 'selected';}?> ><?php echo $units->name;?></option>
 										<?php } ?>	
 								</select>
 							</div>
 						</div>
 						<div class="col-md-1">
-							<button class="btn btn-success mt-25" name="sub" type="submit" >اعمال فیلتر</button>
+							<button class="btn btn-success mt-25" type="submit" >اعمال فیلتر</button>
 						</div>
 						
 					</div>
@@ -86,7 +86,7 @@ $msg = $this->session->userdata('msg');?>
 	<table class="table datatable-selection-single table-responsive-lg ">
 		<thead>
 			<tr>
-				<th>شناسه معامله</th>
+				<th width="5%">شناسه معامله</th>
 				<th>نام مشتری</th>
 				<th>نوع معامله</th>
 				<th>تعداد ارز</th>
@@ -109,7 +109,7 @@ $msg = $this->session->userdata('msg');?>
 			<tr><td colspan = '11' class='text-center p-20'>موردی یافت نشد</td></tr>
 			<?php }else{
 			$num = $this->uri->segment(3) + 1;
-			foreach($deal as $rows){ ?>
+			foreach($deal as $key => $rows){ ?>
 			<tr class="<?php if($rows->state == 0){echo 'state_bg';}else{echo '';} ?>" >
 				<td>
 					<?php echo $rows->id + 100;?>
@@ -158,8 +158,8 @@ $msg = $this->session->userdata('msg');?>
 			<tr>
 				<td colspan="6" class="pt-20 pb-20">
 					نمایش
-					<?php echo  $this->uri->segment(3) + 1;?> تا
-					<?php echo $num - 1; ?> از
+					<?php echo  $this->input->get('per_page') + 1;?> تا
+					<?php echo $this->input->get('per_page') + $key + 1; ?> از
 					<?php echo $count;?>
 				</td>
 				<td colspan="5" class="text-left pt-20 pb-20">

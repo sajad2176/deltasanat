@@ -92,9 +92,6 @@ $msg = $this->session->userdata('msg');?>
 				<th class="text-center">ابزار</th>
 			</tr>
 		</thead>
-		<tbody id="search_cust" tyle="display: none;">
-			<tr></tr>
-		</tbody>
 		<tbody>
 
 			<?php 
@@ -159,7 +156,7 @@ $msg = $this->session->userdata('msg');?>
 					<?php echo $page; ?>
 				</td>
 			</tr>
-			<?php }?>
+			<?php } ?>
 		</tbody>
 		</table>
 	</div>

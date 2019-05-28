@@ -40,13 +40,6 @@ function showCustResult( result, url ) {
             
             var td_rest = tr.appendChild(document.createElement('td'));
             td_rest.innerHTML = numeral(result[i].rest).format('0,0');
-            if(result[i].pay > result[i].volume){
-                td_pay.setAttribute('class' , 'text-danger');
-                td_volume.setAttribute('class' , 'text-danger');
-            }
-            if(result[i].rest < 0){
-                td_rest.setAttribute('class' , 'text-danger');
-            }
             var td_date = tr.appendChild(document.createElement('td'));
             td_date.innerHTML = result[i].date_deal + '</br>' + result[i].time_deal;
 

@@ -1,45 +1,47 @@
 					<!-- Column selectors -->
-					<p style = "display:none;" id="check"><?php echo $check;?></p>
+					<p style = "display:none;" id="check"><?php if($status == 1){echo 1;}else{echo $this->input->get('check');}?></p>
 					<div class="panel panel-flat">
 					<div class="panel-body">
 						<div class="panel-heading">
 							<h5 class="panel-title">گردش حساب</h5>
 							<br>
 							<div class="row">
-				<form action="<?php echo base_url('settings/turnover'); ?>" method="post">
+				<form action="<?php echo base_url('settings/turnover'); ?>" method="get">
 
 					<div class="col-md-12">
 						<div class="col-md-3">
 							<div class="form-group">
 								<label>نام صاحب حساب : </label>
-								<input class="form-control" name='owner' type="search" value="<?php echo $owner; ?>" placeholder=" نام صاحب حساب را وارد کنید">
+								<input class="form-control" name='owner' type="search" value="<?php if($status == 1){echo $owner;}else{echo $this->input->get('owner');}?>" placeholder=" نام صاحب حساب را وارد کنید">
 
 							</div>
 						</div>
 						<div class="col-md-3">
 							<div class="form-group">
 								<label>نام واریز کننده : </label>
-								<input class="form-control" name='provider' type="search" value="<?php echo $provider; ?>" placeholder="نام واریز کننده را وارد کنید">
+								<input class="form-control" name='provider' type="search" value="<?php echo $this->input->get('provider'); ?>" placeholder="نام واریز کننده را وارد کنید">
 
 							</div>
 						</div>
 						<div class="col-md-4">
-							<div class="col-md-6">
+						<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">از تاریخ :</label>
-									<input type="text" class="form-control" name="start_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $start_date; ?>" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" name="start_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php if($this->input->get('start_date')){echo $this->input->get('start_date');}else{echo $date;} ?>" placeholder="Jalali Created Date">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">تا تاریخ :</label>
-									<input type="text" class="form-control" name="end_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $end_date; ?>" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" name="end_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php if($this->input->get('end_date')){echo $this->input->get('end_date');}else{echo $date;} ?>" placeholder="Jalali Created Date">
 								</div>
 							</div>
 						</div>
+						<input type="hidden" name="check" value='1'>
 						<div class="col-md-1">
-							<button class="btn btn-success mt-25" name="sub" type="submit" >اعمال فیلتر</button>
+							<button class="btn btn-success mt-25" type="submit" >اعمال فیلتر</button>
 						</div>
+						</form>
 						<div class="col-md-1">
 							<button class="btn btn-primary mt-25" onclick="window.print();" type="button"> Print </button>
 						</div>
@@ -79,7 +81,12 @@
 								<?php } }?>
 							</tbody>
 						</table>
-						<div class="p-20"><?php if(isset($page)){ echo $page;}?></div>
+						<div class="row">
+						<div class="col-md-12 p-20">
+						<div class="col-md-5"><?php if(isset($page)){ ?> نمایش <?php echo $this->input->get('per_page') + 1 ?> تا <?php echo $this->input->get('per_page') + $key + 1;?> از <?php echo $total;?> <?php }?></div>
+						<div class="col-md-7"><?php if(isset($page)){ echo $page;}?></div>
+						</div>
+						</div>
 						<div id="edit_bank_modal" class="modal fade">
 					<div class="modal-dialog">
 						<div class="modal-content">
@@ -93,7 +100,7 @@
 								<div class="modal-body">
 									<div class="form-group input-group">
 										<label> انتخاب تاریخ :</label>
-										<input type="text" class="form-control" name="start_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $start_date; ?>" placeholder="Jalali Created Date">
+										<input type="text" class="form-control" name="start_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date; ?>" placeholder="Jalali Created Date">
 										<p id="id_bank" style="display:none;"></p>
 										<p id="id_key" style="display:none;"></p>
 										<p style="position: absolute; top: 65px;"></p>

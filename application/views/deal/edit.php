@@ -40,12 +40,12 @@ $msg = $this->session->userdata('msg');?>
 										<div class="form-group">
 											<label>نام ارز : </label>
 											<select class="form-control" name="money_id" required>
-											<?php if($money != 10){
+											<?php if($money != 5){
 												foreach($unit as $units){ ?>
 												<option value="<?php echo $units->id; ?>"<?php if($units->id == $money){echo 'selected';} ?>><?php echo $units->name; ;?></option>
 												 <?php }?>
 											<?php  } else {?>
-												<option value="10" selected>ریال</option>
+												<option value="5" selected>ریال</option>
 											<?php } ?>
 											</select>
 										</div>
@@ -92,97 +92,8 @@ $msg = $this->session->userdata('msg');?>
 					</div>
 
 					<div class="row">
-						<div class="">
 							<fieldset>
-								<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانک مشتری</legend>
-								<div class="field_edit">
-              <?php if(empty($bank)){ ?>
-									<div>
-										<div class="row">
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>شماره شبا : </label>
-													<input onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="send_shaba[]" class="form-control">
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>بانک :</label>
-													<span class="text-primary" style="font-size:12px; display:none;">(طبق شماره شبا وارد شده بانکی پیدا نشد. نام بانک را وارد کنید)</span>
-													<input type="text" name="send_bank[]" placeholder="ملت،ملی،.." class="form-control">
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-6">
-											<div class="form-group">
-												<label> تعیین حجم : </label>
-												<input type="hidden" value="0">
-												<input type="text" onKeyUp="amount_bank(this)" placeholder="100,000" class="form-control">
-												<input type="hidden" name="send_amount[]">
-												<p class="text-danger" style ="display: none;">مبلغ وارد شده بیشتر از حجم معامله است</p>
-											</div>
-										</div>
 
-										<div class="col-md-6">
-											<div class="form-group input-group">
-												<label>توضیحات حساب :</label>
-												<input type="text" name="send_explain[]" placeholder="توضیحات خود را وارد کنید" class="form-control">
-												<span class="input-group-btn "><button type="button" style="top: 13px;" class="btn btn btn-success icon-plus3 add_edit"></button></span>
-											</div>
-										</div>
-									</div>
-								</div>
-
-								  <?php }else{
-								  foreach($bank as $key => $rows){ ?>
-									<div>
-										<div class="row">
-											<div class="col-md-6">
-											
-												<div class="form-group">
-													<label>شماره شبا : </label>
-													<input onkeyup="show_bank(this)" value="<?php echo $rows->shaba;?>" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="shaba[]" class="form-control">
-												</div>
-											</div>
-
-
-                                                  
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>بانک :</label>
-													<span class="text-primary" style="font-size:12px; display:none;">(طبق شماره شبا وارد شده بانکی پیدا نشد. نام بانک را وارد کنید)</span>
-													<input type="text" name="name[]" value="<?php echo $rows->name; ?>" placeholder="ملت،ملی،.." class="form-control">
-												</div>
-											</div>
-										</div>
-										<input type="hidden" name="bank_id[]" value="<?php echo $rows->id;?>" >
-										<input type="hidden" name="rest[]" value="<?php echo $rows->rest;?>" >
-										<input type="hidden" name="rest_handle[]" value="<?php echo $rows->rest_handle;?>" >
-										<input type="hidden" name="real_amount[]" value="<?php echo $rows->amount;?>" >
-									<div class="row">
-										<div class="col-md-6">
-											<div class="form-group">
-												<label> تعیین حجم : </label>
-												<input type="hidden" name="pay_bank[]" value="<?php echo $rows->pay;?>">
-												<input type="text" onKeyUp="amount_bank(this)" value = "<?php echo number_format($rows->amount); ?>" placeholder="100,000" class="form-control">
-												<input type="hidden" name="amount[]" value="<?php echo $rows->amount;?>">
-												<p class="text-danger" style ="display: none;"></p>
-											</div>
-										</div>
-
-										<div class="col-md-6">
-											<div class="form-group">
-												<label>توضیحات حساب :</label>
-												<input type="text" name="bank_explain[]" value="<?php echo $rows->explain;?>" placeholder="توضیحات خود را وارد کنید" class="form-control">
-											</div>
-										</div>
-									</div>
-
-									</div>
-                                  <?php } } ?>
-								</div>
 								<div class="row">
 								<div class="col-md-12">
 								<div class="form-group">

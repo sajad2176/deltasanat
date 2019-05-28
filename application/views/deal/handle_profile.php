@@ -316,12 +316,17 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 							<hr>
 							<form method="post" id="form_slice">
 								<div class="modal-body">
-									<div class="form-group input-group">
-										<label>مبلغ پرداختی:</label>
+								<div class="form-group">
+								<label>مبلغ پرداختی:</label>
 										<p id = "rest_slice" class="d-none"></p>
 										<input type="text" placeholder="111,000,000" id="autofocuss" onkeyup='slice_input(this)' class="form-control" required>
 										<input type="hidden" name="slice">
 										<p class="text-danger d-none" style="position:absolute;top:65px;"></p>
+								</div>
+								</br>
+									<div class="form-group input-group">
+									<label>انتخاب تاریخ:</label>
+										<input type="text"  class="form-control" name="date_slice" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date; ?>" placeholder="Jalali Created Date">
 										<span class="input-group-btn">
 							<button type="submit" name="sub" class="btn btn-success mt-25">پرداخت</button>
 											</span>
@@ -368,17 +373,18 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 								<h4 class="modal-title">پرداخت کامل</h4>
 							</div>
-
+                          <form method="post" id="form_all">
 							<div class="modal-body">
 
-								<h5 class="text-center" id="p_all"></h5>
+								<h5 class="text-center"> آیا می خواهید تمام مبلغ <span id="p_all"></span> در تاریخ <input type="text" style="width: 27%;display: inline-block;" class="form-control" name="date_all" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date; ?>" placeholder="Jalali Created Date"> پرداخت شود؟</h5>
 
 
 							</div>
 
 							<div class="modal-footer text-center">
 								<button type="button" class="btn btn-danger" data-dismiss="modal">خیر</button>
-								<a id="button_all" class="btn btn-success">بله </a>
+								<button type="submit" class="btn btn-success">بله </button>
+								</form>
 							</div>
 						</div>
 					</div>
@@ -642,8 +648,8 @@ function search_sell( input ) {
 //delete handle -----------------	
 //pay all -----------------------		
 			function pay_all( link, rest) {
-	            document.getElementById( 'button_all' ).setAttribute( 'href', "<?php echo base_url("deal/pay_all/").$this->uri->segment(3)."/";?>" + link );
-				document.getElementById( 'p_all' ).innerHTML = " آیا می خواهید تمام مبلغ " + numeral( rest ).format( '0,0' ) + "  به صورت کامل پرداخت شود ؟ ";
+	            document.getElementById( 'form_all' ).setAttribute( 'action', "<?php echo base_url("deal/pay_all/").$this->uri->segment(3)."/";?>" + link );
+				document.getElementById( 'p_all' ).innerHTML =  numeral( rest ).format( '0,0' );
 			}
 //pay all -----------------------
 //pay slice----------------------				

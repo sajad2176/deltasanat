@@ -28,13 +28,15 @@ $msg = $this->session->userdata('msg');?>
 					<fieldset>
 					
 					<?php
-					$nam = array('dollar' , 'euro' , 'yuan' , 'derham');
-					foreach($unit as $key => $row){?>
-						<div class="col-md-3">
+					foreach($unit as  $row){ ?>
+						<div class="col-md-2">
 							<div class="form-group">
-								<label><?php echo $row->name;?></label>
-								<input type="text" value="<?php echo number_format($row->amount); ?>" onkeyup = "amount(this)" class="form-control">
-								<input type="hidden" name="<?php echo $nam[$key];?>" value="<?php echo $row->amount;?>">
+								<label><?php echo $row->name;?> : </label>
+								<input type="text" value="<?php echo number_format($row->amount); ?>" onkeyup = "amount(this)" class="form-control" required>
+								<input type="hidden" name="amount[]" value="<?php echo $row->amount;?>">
+								<input type="hidden" name="id[]" value='<?php echo $row->id;?>'>
+								<input type="hidden" name="name[]" value="<?php echo $row->name; ?>" >
+								<input type="hidden" name="base[]" value="<?php echo $row->amount;?>">
 							</div>
 						</div>
 					<?php } ?>

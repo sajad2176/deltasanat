@@ -9,16 +9,16 @@
 					<div class="row">
 					<?php 
 					$array = array('bg-blue-1' , 'bg-blue-2' , 'bg-blue-3' , 'bg-blue-4');
-					$set_id = array('dollar' , 'euro' , 'yuan' , 'derham');
-					foreach($remain as $i => $remains){ ?>
+					$i = 0;
+					foreach($remain as $remains){ ?>
 					<div class="col-md-3">
-						<div class="panel <?php echo $array[$i]; ?>">
+						<div class="panel <?php echo $array[$i]; if($i%3 == 0){$i = 0;}?>">
 
 							<div class="panel-body">
 								<!-- <div class="heading-elements">
 									<span class="heading-text badge bg-success-800">+53,6%</span>
 								</div> -->
-								<h3 class="no-margin lright" id="<?php echo $set_id[$i];?>">
+								<h3 class="no-margin lright">
 									<?php echo number_format($remains->amount);?>
 								</h3>
 								<h5 class="text-white text-size-larg">
@@ -28,12 +28,63 @@
 						</div>
 					</div>
 					<!-- /members online -->
-					<?php } ?>
+					<?php  $i++;  } ?>
 
 				</div>
 			</div>
 		</div>
 <div  class="row">
+<div class="col-md-4">
+		<!-- Daily sales -->
+		<div class="panel panel-flat">
+			<div class="panel-body">
+				<div style="padding-right: 0px" class="panel-heading">
+					<h6 class="panel-title">خرید و فروش ارز ها</h6>
+					<div  class="heading-elements">
+						<h6 class="heading-text">تاریخ: <span class="text-bold text-black position-right" id="today"><?php echo $today;?></span></h6>
+
+					</div>
+				</div>
+				
+
+				<div class="table-responsive">
+					<table class="table text-nowrap">
+						<thead>
+							<tr>
+								<th style="width: 85px">ارز</th>
+								<th class="text-success-800" style="padding-right: 80px">خرید</th>
+								<th class="text-primary">فروش</th>
+							</tr>
+						</thead>
+						<tbody>
+						<?php $rest_rial = 0; foreach($deal as $deals){ $rest_rial += $deals->sell_v - $deals->buy_v;?>
+							<tr>
+								<td>
+									<div class="media-body">
+										<div class="media-heading">
+											<h5 class="letter-icon-title"><?php echo $deals->name?></h5>
+										</div>
+									</div>
+								</td>
+								<td>
+									<h6 class="text-semibold text-success-800 pr-34 no-margin ">
+										<?php echo number_format($deals->buy);?>
+									</h6>
+								</td>
+								<td>
+									<h6 class="text-semibold text-primary pr-8 no-margin">
+										<?php echo number_format($deals->sell); ?>
+									</h6>
+								</td>
+							</tr>
+						<?php } ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- /daily sales -->
+	</div>
 	<div class="col-md-8">
 		<div class="panel panel-flat">
 			<div class="panel-body">
@@ -116,116 +167,6 @@
 			</div>
 			</div>
 		</div>
-	</div>
-
-	<div class="col-md-4">
-		<!-- Daily sales -->
-		<div class="panel panel-flat">
-			<div class="panel-body">
-				<div style="padding-right: 0px" class="panel-heading">
-					<h6 class="panel-title">خرید و فروش ارز ها</h6>
-					<div  class="heading-elements">
-						<h6 class="heading-text">تاریخ: <span class="text-bold text-black position-right" id="today"><?php echo $today;?></span></h6>
-
-					</div>
-				</div>
-				
-
-				<div class="table-responsive">
-					<table class="table text-nowrap">
-						<thead>
-							<tr>
-								<th style="width: 85px">ارز</th>
-								<th class="text-success-800" style="padding-right: 80px">خرید</th>
-								<th class="text-primary">فروش</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>
-									<div class="media-body">
-										<div class="media-heading">
-											<h5 class="letter-icon-title">دلار</h5>
-										</div>
-									</div>
-								</td>
-								<td>
-									<h6 class="text-semibold text-success-800 pr-34 no-margin " id="buyDollar">
-										<?php echo number_format($buy_dollar);?>
-									</h6>
-								</td>
-								<td>
-									<h6 class="text-semibold text-primary pr-8 no-margin" id="sellDollar">
-										<?php echo number_format($sell_dollar); ?>
-									</h6>
-								</td>
-							</tr>
-							<tr>
-							</tr>
-							<tr>
-								<td>
-								
-									<div class="media-body">
-										<div class="media-heading">
-											<h5  class="letter-icon-title">یوان</h5>
-										</div>
-									</div>
-								</td>
-								<td>
-									<h6 class=" text-semibold text-success-800 pr-34 no-margin" id="buyYuan">
-										<?php echo number_format($buy_yuan); ?>
-									</h6>
-								</td>
-								<td>
-									<h6 class="text-semibold text-primary  pr-8 no-margin" id="sellYuan">
-										<?php echo number_format($sell_yuan); ?>
-									</h6>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<div class="media-body">
-										<div class="media-heading">
-											<h5 class="letter-icon-title">یورو</h5>
-										</div>	
-									</div>
-								</td>
-								<td>
-									<h6 class=" text-semibold text-success-800 pr-34 no-margin" id="buyEuro">
-										<?php echo number_format($buy_euro); ?>
-									</h6>
-								</td>
-								<td>
-									<h6 class="text-semibold text-primary pr-8 no-margin" id="sellEuro">
-										<?php echo number_format($sell_euro); ?>
-									</h6>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<div class="media-body">
-										<div class="media-heading">
-											<h5 class="letter-icon-title">درهم</h5>
-										</div>
-									</div>
-								</td>
-								<td>
-									<h6 class="text-semibold text-success-800 pr-34 no-margin" id="buyDerham">
-										<?php echo number_format($buy_derham); ?>
-									</h6>
-								</td>
-								<td>
-									<h6 class="text-semibold text-primary pr-8 no-margin" id="sellDerham">
-										<?php echo number_format($sell_derham); ?>
-									</h6>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-		<!-- /daily sales -->
 	</div>
 </div>
 <!-- /dashboard content -->

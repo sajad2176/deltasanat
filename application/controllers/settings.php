@@ -15,28 +15,32 @@ class Settings extends CI_Controller {
             show_404();
         }
         if(isset($_POST['sub'])){
-            $date = $this->convertdate->convert(time());
-            $data['date_rate'] = $date['year']."-".$date['month_num']."-".$date['day'];
-            $data['time_rate'] = $date['hour'].":".$date['minute'].":".$date['second'];
-            $data['rate_euro'] = $this->input->post('euro');
-            $data['rate_yuan'] = $this->input->post('yuan');
-            $data['rate_derham'] = $this->input->post('derham');
+            $date = $this->convertdate->convert(time()); 
+            $count = sizeof($_POST['rate']);
+            $rate = array();
+            $exp = '';
+            for($i = 0 ; $i < $count ; $i++){
+              $rate[] = array(
+                  'unit_id'=>$_POST['unit_id'][$i],
+                  'rate'=>$_POST['rate'][$i],
+                  'pub'=>1
+              );
+              $exp .= 'نرخ تبدیل دلار به '.$_POST['name'][$i]. " برابر است با :  ".$_POST['rate'][$i]."</br>";
+            }
+            $this->base_model->update_data('rate' , array('pub'=> 0) , NULL);
+            $this->base_model->insert_batch('rate' , $rate);
             $log['user_id'] = $this->session->userdata('id');
-            $log['date_log'] = $data['date_rate'];
-            $log['time_log'] =  $data['time_rate'];
+            $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
+            $log['time_log'] =  $date['hour'].":".$date['minute'].":".$date['second'];
             $log['activity_id'] = 22;
-            $log['explain'] = ' نرخ تبدیل دلار به یورو '.$data['rate_euro']." </br> نرخ تبدیل دلار به یوان : ".$data['rate_yuan']." </br> نرخ تبدیل دلار به درهم : ".$data['rate_derham'];
+            $log['explain'] = $exp;
             $this->base_model->insert_data('log' , $log);
-            $this->base_model->insert_data('rate' , $data);
             $message['msg'][0] = 'اطلاعات با موفقیت ثبت شد';
             $message['msg'][1] = 'success';
             $this->session->set_flashdata($message);
-            
             redirect('settings/set_unit');
-            
-            
         }else{
-            $total_rows = $this->base_model->get_count("rate" , 'ALL');
+            $total_rows = $this->base_model->get_count("log" , array('activity_id'=>22));
             $config['base_url'] = base_url('settings/set_unit');
             $config['total_rows'] = $total_rows;
             $config['per_page'] = '10';
@@ -63,9 +67,10 @@ class Settings extends CI_Controller {
             $config['suffix'] = "";
         $this->pagination->initialize($config);
         $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;      
-        $data['rate'] = $this->base_model->get_data('rate', '*' , 'result'  , NULL , $config['per_page'] , $page , array('id' , 'DESC'));
+        $data['rate'] = $this->base_model->get_data('log', '*' , 'result'  , array('activity_id'=> 22) , $config['per_page'] , $page , array('id' , 'DESC'));
         $data['page'] = $this->pagination->create_links();
         $data['count'] = $config['total_rows'];
+            $data['unit'] = $this->base_model->get_data('unit' , 'id , name' , 'result' , array('id != ' => 5));
             $header['title'] = 'تنظیم ارز ها';
             $header['active'] = 'settings';
             $header['active_sub'] = 'set_unit';
@@ -81,31 +86,30 @@ class Settings extends CI_Controller {
                 show_404();
         }
         if(isset($_POST['sub'])){
-            $unit = $this->base_model->get_data('unit' , '*' , 'result' , array('id < ' => 10) , NULL , NULL ,array('id' , 'ASC'));
-            $update = array(
-                array('id'=>1 , 'amount'=> $_POST['dollar']) ,
-                array('id'=>2, 'amount'=>$_POST['euro']) , 
-                array('id'=>3, 'amount'=>$_POST['yuan']),
-                array('id'=>4,'amount'=> $_POST['derham']) 
-            );
-           $exp = '';
-           foreach($unit as $key => $row){
-               $exp .= " موجودی ارز  ".$row->name . " از مقدار ".number_format($row->amount) . " به مقدار  ".number_format($update[$key]['amount'])." تغییر یافت "."</br>";
-           }
+            $unit = array();
+            $exp = '';
+            $count = sizeof($_POST['id']);
+            for($i = 0 ; $i < $count ; $i++){
+                $unit[] = array(
+                  'id'=> htmlspecialchars($_POST['id'][$i]),
+                  'amount'=>htmlspecialchars($_POST['amount'][$i])
+                );
+                $exp .= ' موجودی ارز '.$_POST['name'][$i]. ' از مقدار '.number_format($_POST['base'][$i])."  به مقدار ".number_format($_POST['amount'][$i])." تغییر یافت "."</br>";
+            }
            $date = $this->convertdate->convert(time());
            $log['user_id'] = $this->session->userdata('id');
            $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
            $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
            $log['activity_id'] = 23;
            $log['explain'] = $exp;
-           $this->base_model->update_batch('unit' , $update , 'id');
+           $this->base_model->update_batch('unit' , $unit , 'id');
            $this->base_model->insert_data('log' , $log);
            $message['msg'][0] = 'اطلاعات با موفقیت ثبت شد';
            $message['msg'][1] = 'success';
            $this->session->set_flashdata($message);
            redirect("settings/primitive_unit");
         }else{
-            $total_rows = $this->base_model->get_count("rate" , 'ALL');
+            $total_rows = $this->base_model->get_count("log" , array('activity_id' => 23));
             $config['base_url'] = base_url('settings/primitive_unit');
             $config['total_rows'] = $total_rows;
             $config['per_page'] = '10';
@@ -133,7 +137,7 @@ class Settings extends CI_Controller {
         $this->pagination->initialize($config);
         $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;      
         $data['change'] = $this->base_model->get_data_join('log' , 'member', 'log.* , member.username as name' ,'log.user_id = member.id' ,  'result'  , array('log.activity_id' => 23) , $config['per_page'] , $page , array('log.id' , 'DESC'));
-        $data['unit'] = $this->base_model->get_data('unit' , '*' , 'result' , array('id < ' => 10) , NULL , NULL ,array('id' , 'ASC'));
+        $data['unit'] = $this->base_model->get_data('unit' , '*' , 'result' , array('id != ' => 5) , NULL , NULL ,array('id' , 'ASC'));
         $data['page'] = $this->pagination->create_links();
         $data['count'] = $config['total_rows'];
             $header['title'] = 'ارز اولیه';
@@ -182,9 +186,9 @@ class Settings extends CI_Controller {
        $deal['date_modified'] = 'ثبت نشده است';
        $deal['type'] = $this->input->post('type');
        $deal['customer_id'] = $id;
-       $deal['money_id'] = 10;
+       $deal['money_id'] = 5;
        $deal['state'] = 1;
-       $rial = $this->base_model->get_data('unit' , 'amount' , 'row' , array('id'=> 10));
+       $rial = $this->base_model->get_data('unit' , 'amount' , 'row' , array('id'=> 5));
        if($deal['type'] == 1){
            $unit_rial['amount'] = $rial->amount + $deal['count_money'];
            $act = 9;
@@ -201,7 +205,7 @@ class Settings extends CI_Controller {
         $this->session->set_flashdata($message);
         redirect("settings/rest_unit");
     }
-    $this->base_model->update_data('unit' , $unit_rial , array('id' => 10)); 
+    $this->base_model->update_data('unit' , $unit_rial , array('id' => 5)); 
 
     $aa = $deal_id + 100;
     $log['user_id'] = $this->session->userdata('id');
@@ -216,8 +220,8 @@ class Settings extends CI_Controller {
     redirect("settings/rest_unit");
 
     }else{
-        $total_rows = $this->base_model->get_count("deal" , array('money_id'=> 10));
-        $config['base_url'] = base_url('settings/rest');
+        $total_rows = $this->base_model->get_count("deal" , array('money_id'=> 5 , 'state'=>1));
+        $config['base_url'] = base_url('settings/rest_unit');
         $config['total_rows'] = $total_rows;
         $config['per_page'] = '10';
         $config["uri_segment"] = '3';
@@ -243,7 +247,7 @@ class Settings extends CI_Controller {
         $config['suffix'] = "";
     $this->pagination->initialize($config);
     $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;      
-    $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , customer.id as cust_id ,unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('deal.money_id'=> 10, 'deal.state' => 1) , $config['per_page'] , $page , array('deal.id' , 'DESC') , array('unit','deal.money_id = unit.id'));
+    $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname , customer.id as cust_id ,unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('deal.money_id'=> 5, 'deal.state' => 1) , $config['per_page'] , $page , array('deal.id' , 'DESC') , array('unit','deal.money_id = unit.id'));
     $data['page'] = $this->pagination->create_links();
     $data['count'] = $config['total_rows'];
     $date = $this->convertdate->convert(time());
@@ -263,47 +267,45 @@ class Settings extends CI_Controller {
         if(!$this->session->has_userdata('turnover') or $this->session->userdata('turnover') != TRUE){
         show_404();
         }
-        $date = $this->convertdate->convert(time());
-        if(isset($_POST['sub'])){
-$owner = trim($this->input->post('owner') , ' ');
-$provider = trim($this->input->post('provider') , ' ');
-$persian_num = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
-$latin_num = range(0, 9);
-$slash = '/';
-$dash = '-';
-$start = str_replace($persian_num, $latin_num, $_POST['start_date']);
-$start = str_replace($slash, $dash, $start);
-$end = str_replace($persian_num, $latin_num, $_POST['end_date']);
-$end = str_replace($slash, $dash, $end); 
-$date_start = substr($start , 0 , 10);
-$date_end = substr($end , 0 , 10);
-$between = "turnover.date BETWEEN '$date_start' AND '$date_end'";
-$data['turnover'] = $this->base_model->search_data('turnover' , 'bank' , 'turnover.* , bank.shaba , bank.name ,bank.explain , customer.fullname' , 'turnover.bank_id = bank.id' ,'inner' , array('turnover.owner' => $owner , 'customer.fullname'=> $provider) , NULL , NULL , NULL , array('customer' , 'customer.id = turnover.cust_id') , $between);
-if($owner != ''){
-    $header['title'] = ' گردش حساب '.$owner;
-}else{
-    $header['title'] = ' گردش حساب '.$provider;
-}
+            $owner = $this->input->get('owner');
+            $provider = $this->input->get('provider');
+            $start_date = $this->input->get('start_date');
+            $end_date = $this->input->get('end_date');
+            if($this->input->get('check')){$check = $this->input->get('check');}else{$check = 0;}
+            $o_where = NULL; $p_where = NULL; $between = NULL;
+            if($owner != ''){
+                $owner = trim($owner , ' ');
+                $o_where = array('turnover.owner'=>$owner);
+            }
+            if($provider != ''){
+                $provider = trim($provider  , ' ');
+                $p_where = array('customer.fullname'=>$provider);
+            }
+            if($start_date != '' and $end_date != ''){
+                $persian_num = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
+                $latin_num = range(0, 9);
+                $slash = '/';
+                $dash = '-';
+                $start = str_replace($persian_num, $latin_num, $start_date);
+                $start = str_replace($slash, $dash, $start);
+                $end = str_replace($persian_num, $latin_num, $end_date);
+                $end = str_replace($slash, $dash, $end); 
+                $date_start = substr($start , 0 , 10);
+                $date_end = substr($end , 0 , 10);
+                $between = "turnover.date BETWEEN '$date_start' AND '$date_end'";
+            }
+            if($this->input->get('per_page')){
+              $offset = $this->input->get('per_page');
+            }else{
+                $offset = 0;
+            }
 
-$header['active'] = 'settings';
-$header['active_sub'] = 'turnover';
-$data['owner'] = $owner;
-$data['provider'] = $provider;
-$data['start_date'] = $_POST['start_date'];
-$data['end_date'] = $_POST['end_date'];
-$data['check'] = 1;
-// echo "<pre>";
-// var_dump($data);
-// echo "</pre>";
-$this->load->view('header' , $header);
-$this->load->view('currency/turnover' , $data);
-$this->load->view('footer');
-        }else{
-            $total_rows = $this->base_model->get_count("turnover" , 'ALL');
-            $config['base_url'] = base_url('settings/turnover');
+            $total_rows = $this->base_model->total_turnover($o_where , $p_where , $between);
+            $config['base_url'] = base_url('settings/turnover?owner='.$owner.'&provider='.$provider.'&start_date='.$start_date.'&end_date='.$end_date."&check=".$check);
             $config['total_rows'] = $total_rows;
             $config['per_page'] = '10';
             $config["uri_segment"] = '3';
+            $config['page_query_string'] = TRUE;
             $config['num_links'] = '5';
             $config['next_link'] = '<i class="icon-arrow-left5"></i>';
             $config['last_link'] = 'صفحه آخر';
@@ -324,23 +326,24 @@ $this->load->view('footer');
             $config['prev_tag_open'] = '<li>';
             $config['prev_tag_close'] = '</li>';
             $config['suffix'] = "";
-        $this->pagination->initialize($config);
-        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;      
-        $data['turnover'] = $this->base_model->get_data_join('turnover' ,'bank', 'turnover.* , customer.fullname , bank.shaba , bank.name , bank.explain' , 'turnover.bank_id = bank.id' ,'result'  , NULL , $config['per_page'] , $page , array('turnover.id' , 'DESC') , array('customer','turnover.cust_id = customer.id'));
-        $data['page'] = $this->pagination->create_links();
+        $this->pagination->initialize($config);   
+        $data['turnover'] = $this->base_model->get_turnover($offset , $check , $o_where , $p_where , $between);
+        if($check == 0){
+            $data['page'] = $this->pagination->create_links();
+        }
         $header['title'] = ' گردش حساب ';
         $header['active'] = 'settings';
         $header['active_sub'] = 'turnover';
-        $data['owner'] = '';
-        $data['provider'] = '';
-        $data['start_date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
-        $data['end_date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
-        $data['check'] = 0;
+        $date = $this->convertdate->convert(time());
+        $data['date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
+        $data['total'] = $config['total_rows'];
+        $data['status'] = 0;
         $this->load->view('header' , $header);
         $this->load->view('currency/turnover' , $data);
         $this->load->view('footer');
-        }
     }
+
+
     public function bank(){
         $id = $this->uri->segment(3);
         if(isset($id) and is_numeric($id)){
@@ -355,11 +358,8 @@ $this->load->view('footer');
                 $data['owner'] = '';
                 $header['title'] = 'گردش حساب';
             }
-            
-            $data['provider'] = '';
-            $data['start_date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
-            $data['end_date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
-            $data['check'] = 1;
+            $data['date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
+            $data['status'] = 1;
             $this->load->view('header' , $header);
             $this->load->view('currency/turnover' , $data);
             $this->load->view('footer');
@@ -384,5 +384,80 @@ if($res){
 }
 
     }
+
+ public function add_unit(){
+     if(isset($_POST['sub'])){
+         $name = trim( $this->input->post('unit') , ' ');
+         $check = $this->base_model->get_data('unit' , 'id' , 'row' , array('name' => $name));
+         if(!empty($check)){
+             $message['msg'][0] = ' ارز '.$name.' قبلا استفاده شده است .  از نام دیگری استفاده کنید ';
+             $message['msg'][1] = 'danger';
+             $this->session->set_flashdata($message);
+             redirect('settings/add_unit');
+         }else{
+             $date = $this->convertdate->convert(time());
+             $unit['name'] = $name;
+             $unit['amount'] = 0;
+             $log['user_id'] = $this->session->userdata('id');
+             $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
+             $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+             $log['activity_id'] = 26;
+             $log['explain'] = ' ارز '.$name." به لیست ارز ها افزوده شد ";
+             $this->base_model->insert_data('unit' , $unit);
+             $this->base_model->insert_data('log' , $log);
+             $message['msg'][0] = ' ارز جدید با موفقیت ثبت شد';
+             $message['msg'][1] = 'success';
+             $this->session->set_flashdata($message);
+             redirect('settings/add_unit');
+         }
+
+     }else{
+         $header['title'] = 'افزودن ارز';
+         $header['active'] = 'settings';
+         $header['active_sub'] = 'add_unit';
+         $data['unit'] = $this->base_model->get_data('unit' , 'id , name');
+         $this->load->view('header' , $header);
+         $this->load->view('currency/add_unit' , $data);
+         $this->load->view('footer');
+     }
+ }
+ public function get_unit(){
+    $id = $this->input->post('id');
+     if(isset($id) and is_numeric($id)){
+        $data = $this->base_model->get_data('unit' , 'id , name' , 'row' , array('id'=>$id));
+        echo json_encode($data);
+     }else{
+         show_404();
+     }
+ }   
+ public function edit_unit(){
+     $id = $this->uri->segment(3);
+     if(isset($id) and is_numeric($id)){
+       $name = trim($this->input->post('unit') , ' ');
+       $check = $this->base_model->get_data('unit' , 'id' , 'row' , array('name'=> $name));
+       if(!empty($check) and $check->id != $id){
+           $message['msg'][0] = 'از نام '.$name." قبلا استفاده شده است . لطفا نام دیگری را انتخاب کنید ";
+           $message['msg'][1] = 'danger';
+           $this->session->set_flashdata($message);
+           redirect('settings/add_unit');
+       }else{
+        $date = $this->convertdate->convert(time());
+        $log['user_id'] = $this->session->userdata('id');
+        $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
+        $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+        $log['activity_id'] = 27;
+        $log['explain'] = ' ارز '.$name." ویرایش شد";
+        $unit['name'] = $name;
+        $this->base_model->update_data('unit' , $unit , array('id'=>$id));
+        $this->base_model->insert_data('log' , $log);
+        $message['msg'][0] = 'ارز مورد نظر با موفقیت ویرایش شد';
+        $message['msg'][1] = 'success';
+        $this->session->set_flashdata($message);
+        redirect('settings/add_unit');
+       }
+     }else{
+         show_404();
+     }
+ }
 }
 ?>

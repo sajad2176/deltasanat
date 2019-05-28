@@ -21,7 +21,7 @@ $msg = $this->session->userdata('msg');?>
 <!-- 2 columns form -->
 <div class="row">
 	<div class="col-md-8">
-		<form action="<?php echo base_url('deal/buy')?>" method="post" enctype="multipart/form-data">
+		<form action="<?php echo base_url('deal/buy')?>" method="post">
 			<div class="panel panel-flat">
 				<div class="panel-body">
 					<div class="row">
@@ -88,44 +88,6 @@ $msg = $this->session->userdata('msg');?>
 					<div class="row">
 						<div class="">
 							<fieldset>
-								<legend class="text-semibold"><i class="icon-cash4 position-left"></i> اطلاعات بانک مشتری </legend>
-								<div class="field_wrapper2">
-									<div>
-										<div class="row">
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>شماره شبا : </label>
-													<input type="text" name="shaba[]" onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999"  placeholder="06-017-0000000123014682799"  class="form-control">
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label>بانک :</label>
-													<span class="text-primary" style="font-size:12px; display:none;">(طبق شماره شبا وارد شده بانکی پیدا نشد. نام بانک را وارد کنید)</span>
-													<input type="text" name="name[]" placeholder="ملت،ملی،.." class="form-control">
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-6">
-											<div class="form-group">
-												<label>تعیین حجم  : </label>
-												<input type="text" onKeyUp="amount_bank(this)" placeholder="100,000" class="form-control">
-												<input type="hidden" name="amount[]">
-												<p class="text-danger" style ="display: none;">مبلغ وارد شده بیشتر از حجم معامله است</p>
-											</div>
-										</div>
-
-										<div class="col-md-6">
-											<div class="form-group input-group">
-												<label>توضیحات حساب :</label>
-												<input type="text" name="bank_explain[]" placeholder="توضیحات خود را وارد کنید" class="form-control">
-												<span class="input-group-btn "><button type="button" style="top: 13px;" class="btn btn btn-success icon-plus3 add_button2"></button></span>
-											</div>
-										</div>
-									</div>
-								</div>
 								<input type="hidden" name="type" value="1">
 								<div class="row">
 								<div class="col-md-12">

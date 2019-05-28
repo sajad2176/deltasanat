@@ -1,6 +1,6 @@
-window.onload = function(){
-    setInterval(update , 20000);
-}
+// window.onload = function(){
+//     setInterval(update , 20000);
+// }
 var buyDollar = document.getElementById('buyDollar');
 var buyEuro = document.getElementById('buyEuro');
 var buyYuan = document.getElementById('buyYuan');

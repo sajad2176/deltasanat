@@ -24,26 +24,18 @@ $msg = $this->session->userdata('msg');?>
 				<div class="col-md-12">
 					<legend class="text-semibold"><i class="icon-coin-dollar position-left"></i> نرخ تبدیل دلار به :</legend>
 				</div>
-				<div class="col-md-6">
+				<div class="col-md-12">
 					<fieldset>
-						<div class="col-md-4">
+					<?php foreach($unit as $row){  ?>
+						<div class="col-md-2 <?php if($row->id == 1){echo 'd-none';} ?>">
 							<div class="form-group">
-								<label>یورو : </label>
-								<input type="text" name = 'euro' value = '1' class="form-control" placeholder="0.8" required autofocus>
+								<label><?php echo $row->name;?> : </label>
+								<input type="text" name = 'rate[]' value = '1' class="form-control" placeholder="0.8" required autofocus>
+								<input type="hidden" name="unit_id[]" value="<?php echo $row->id;?>">
+								<input type="hidden" name="name[]" value="<?php echo $row->name;?>">
 							</div>
 						</div>
-						<div class="col-md-4">
-							<div class="form-group">
-								<label>یوان : </label>
-								<input type="text" name = 'yuan' value = '1' class="form-control" placeholder="7" required>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="form-group">
-								<label>درهم : </label>
-								<input type="text" name = 'derham' value = '1' class="form-control" placeholder="3.4" required>
-							</div>
-						</div>
+					<?php } ?>
 					</fieldset>
 				</div>
 			</div>
@@ -63,16 +55,15 @@ $msg = $this->session->userdata('msg');?>
 			<tr>
 				<th>ردیف</th>
 				<th>تاریخ ثبت</th>
-				<th>ریت یورو</th>
-				<th>ریت یوان</th>
-				<th>ریت درهم</th>
+				<th> زمان ثبت</th>
+				<th width="50%"> توضیحات</th>
 			</tr>
 		</thead>
 		<tbody>
 
 			<?php 
 			if(sizeof($rate) == 0){ ?>
-			<tr><td colspan = '5' class='text-center p-20'>موردی یافت نشد</td></tr>
+			<tr><td colspan = '4' class='text-center p-20'>موردی یافت نشد</td></tr>
 			<?php }else{
 			$num = $this->uri->segment(3) + 1;
 			foreach($rate as $rows){ ?>
@@ -81,16 +72,13 @@ $msg = $this->session->userdata('msg');?>
 					<?php echo $num;?>
 				</td>
 				<td>
-				<?php echo $rows->date_rate."</br>".$rows->time_rate; ?>
+				<?php echo $rows->date_log ?>
 				</td>
 				<td>
-					<?php echo $rows->rate_euro;?>
+					<?php echo $rows->time_log;?>
 				</td>
 				<td>
-					<?php echo $rows->rate_yuan;?>
-				</td>
-				<td>
-					<?php echo $rows->rate_derham; ?>
+					<?php echo $rows->explain;?>
 				</td>
 			</tr>
 			<?php

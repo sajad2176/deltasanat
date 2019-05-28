@@ -62,6 +62,90 @@ function get_data_join($from , $join , $select ,$join_where ,$ret = 'result' , $
         return $query->result();
     }
 }
+function get_deal($offset , $between = NULL , $fullname = NULL , $type = NULL , $money_id = NULL){
+    $this->db->select("deal.* , customer.fullname , customer.id as cust_id , unit.name");
+    $this->db->from('deal');
+    $this->db->join('customer' , 'deal.customer_id = customer.id' , 'left');
+    $this->db->join('unit' , 'deal.money_id = unit.id' , 'left');
+    $this->db->limit(10 , $offset);
+    $this->db->order_by('deal.id' , 'DESC');
+    if($between != NULL){
+        $this->db->where($between);
+    }
+    if($fullname != NULL){
+        $this->db->where($fullname);
+    }
+    if($type != NULL){
+        $this->db->where($type);
+    }
+    if($money_id != NULL){
+        $this->db->where($money_id);
+    }
+    $query = $this->db->get();
+    return $query->result();
+
+}
+function total_deal($between = NULL , $fullname = NULL , $type = NULL , $money_id = NULL){
+    $this->db->select("deal.* , customer.fullname , customer.id as cust_id , unit.name");
+    $this->db->from('deal');
+    $this->db->join('customer' , 'deal.customer_id = customer.id' , 'left');
+    $this->db->join('unit' , 'deal.money_id = unit.id' , 'left');
+    if($between != NULL){
+        $this->db->where($between);
+    }
+    if($fullname != NULL){
+        $this->db->where($fullname);
+    }
+    if($type != NULL){
+        $this->db->where($type);
+    }
+    if($money_id != NULL){
+        $this->db->where($money_id);
+    }
+    $query = $this->db->get();
+    return sizeof($query->result());
+
+}
+
+function get_turnover($offset , $check = 0 , $owner = NULL , $provider = NULL , $between = NULL){
+    $this->db->select('turnover.* , customer.fullname , bank.shaba , bank.name , bank.explain');
+    $this->db->from('turnover');
+    $this->db->join('customer' , 'turnover.cust_id = customer.id' , 'left');
+    $this->db->join('bank' , 'turnover.bank_id = bank.id' , 'left');
+    $this->db->order_by('turnover.id' , 'DESC');
+    if($owner != NULL){
+        $this->db->where($owner);
+    }
+    if($provider != NULL){
+        $this->db->where($provider);
+    }
+    if($between != NULL){
+        $this->db->where($between);
+    }
+    if($check == 0){
+        $this->db->limit(10 , $offset);
+    }
+    $query = $this->db->get();
+    return $query->result();
+}
+function total_turnover($owner = NULL , $provider = NULL , $between = NULL){
+    $this->db->select('turnover.* , customer.fullname , bank.shaba , bank.name , bank.explain');
+    $this->db->from('turnover');
+    $this->db->join('customer' , 'turnover.cust_id = customer.id' , 'left');
+    $this->db->join('bank' , 'turnover.bank_id = bank.id' , 'left');
+    $this->db->order_by('turnover.id' , 'DESC');
+    if($owner != NULL){
+        $this->db->where($owner);
+    }
+    if($provider != NULL){
+        $this->db->where($provider);
+    }
+    if($between != NULL){
+        $this->db->where($between);
+    }
+    $query = $this->db->get();
+    return sizeof($query->result());
+}
 function get_data_left($from , $join , $select ,$join_where, $side ,$ret = 'result' , $where = NULL, $limit = NULL , $offset = NULL , $order_by = NULL , $group = NULL , $join2 = NULL){
     $this->db->select($select);
     $this->db->from($from);
@@ -97,8 +181,10 @@ function insert_data($table , $data){
     }
 }
 
-function update_data($table , $data , $where){
-    $this->db->where($where);
+function update_data($table , $data , $where = NULL){
+    if($where != NULL){
+        $this->db->where($where);
+    }
     if($this->db->update($table , $data)){
         return TRUE;
     }else{
@@ -143,7 +229,7 @@ function search_data($from , $join , $select ,$join_where , $side  , $like , $wh
     $this->db->from($from);
     $this->db->join($join , $join_where , $side);
     if($join2 != NULL){
-		$this->db->join($join2[0] , $join2[1]);
+		$this->db->join($join2[0] , $join2[1] , $side);
 	}
 	if($where != NULL){
 		$this->db->where($array);

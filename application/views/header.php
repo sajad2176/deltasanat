@@ -155,6 +155,7 @@
 <?php if($this->session->has_userdata('set_primitive')){?><li class="<?php if($active_sub == 'primitive_unit'){echo 'active';} ?>"><a href="<?php echo base_url('settings/primitive_unit')?>">ارز اولیه</a></li><?php } ?>
 <?php if($this->session->has_userdata('rest_unit')){?><li class="<?php if($active_sub == 'rest_unit'){echo 'active';} ?>"><a href="<?php echo base_url('settings/rest_unit')?>"> مانده حساب ریالی </a></li><?php } ?>
 <?php if($this->session->has_userdata('turnover')){?><li class="<?php if($active_sub == 'turnover'){echo 'active';} ?>"><a href="<?php echo base_url('settings/turnover')?>"> گردش حساب </a></li><?php } ?>
+<li class="<?php if($active_sub == 'add_unit'){echo 'active';} ?>"><a href="<?php echo base_url('settings/add_unit')?>"> افزودن ارز </a></li>
 										
 									</ul>
 								</li>
