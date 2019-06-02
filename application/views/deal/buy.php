@@ -101,17 +101,11 @@ $msg = $this->session->userdata('msg');?>
 									<label>توضیحات معامله :</label>
 									<textarea rows="5" cols="5" name="explain" class="form-control" placeholder="توصیحات خود را وارد کنید"></textarea>
 								</div>
-
-
 							</fieldset>
-
 							<div class="text-right">
 								<button type="submit" name="sub" class="btn btn-primary">ثبت معامله <i class="icon-arrow-left13 position-right"></i></button>
 							</div>
 						</div>
-
-
-
 					</div>
 				</div>
 			</div>
@@ -135,58 +129,20 @@ $msg = $this->session->userdata('msg');?>
 							</tr>
 						</thead>
 						<tbody>
+						<?php foreach($unit as $rows){ ?>
 							<tr>
 								<td>
 									<div class="media-body">
 										<div class="media-heading">
-											<h5 class="letter-icon-title">دلار</h5>
+											<h5 class="letter-icon-title"><?php echo $rows->name;?></h5>
 										</div>
 									</div>
 								</td>
 								<td>
-									<h6 class="text-semibold no-margin lright" id="dollar">-</h6>
+									<h6 class="text-semibold no-margin lright setDefault" id="<?php echo $rows->id;?>">0</h6>
 								</td>
 							</tr>
-							<tr>
-							</tr>
-							<tr>
-								<td>
-									<div class="media-body">
-										<div class="media-heading">
-											<h5 class="letter-icon-title">یورو</h5>
-										</div>	
-									</div>
-								</td>
-								<td>
-									<h6 class=" text-semibold no-margin lright" id="euro">-</h6>
-								</td>
-							</tr>
-							<tr>
-								<td>
-								
-									<div class="media-body">
-										<div class="media-heading">
-											<h5  class="letter-icon-title">یوان</h5>
-										</div>
-									</div>
-								</td>
-								<td>
-									<h6 class=" text-semibold no-margin lright" id="yuan">-</h6>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<div class="media-body">
-										<div class="media-heading">
-											<h5 class="letter-icon-title">درهم</h5>
-										</div>
-									</div>
-								</td>
-								<td>
-									<h6 class="text-semibold no-margin lright" id="derham">-</h6>
-								</td>
-							</tr>
-							
+            <?php } ?>
 						</tbody>
 					</table>
 				</div>
@@ -195,7 +151,7 @@ $msg = $this->session->userdata('msg');?>
 			<div class="panel panel-flat">
 			<div class="panel-body">
 				<div style="padding-right: 0px" class="panel-heading">
-					<h6 class="panel-title rightbox display-inline-block mt-10"> مانده کلی :  <span id="name_customer"></span></h6>
+					<h6 class="panel-title rightbox display-inline-block mt-10"> مانده ریالی : </h6>
 					
 				</div>
 
@@ -217,7 +173,7 @@ $msg = $this->session->userdata('msg');?>
 								</div>
 							</td>
 							<td>
-								<h6 class="text-semibold no-margin lright" id="rial">-</h6>
+								<h6 class="text-semibold no-margin lright setDefault" id="rial">0</h6>
 							</td>
 						</tr>	
 						</tbody>

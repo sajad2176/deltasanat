@@ -386,6 +386,9 @@ if($res){
     }
 
  public function add_unit(){
+     if(!$this->session->has_userdata('add_unit') or $this->session->userdata('add_unit') != TRUE){
+         show_404();
+     }
      if(isset($_POST['sub'])){
          $name = trim( $this->input->post('unit') , ' ');
          $check = $this->base_model->get_data('unit' , 'id' , 'row' , array('name' => $name));

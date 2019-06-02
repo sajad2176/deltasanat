@@ -34,7 +34,7 @@ wage.onkeyup = function () {
     }
     wage.value = numeral( wage.value ).format( '0,0' ) ;
 }
-convert.onkeyup = function (e) {
+convert.onkeyup = function () {
     var x = numeral( count.value ).value();
     var y = numeral( wage.value ).value();
     var z = numeral( convert.value ).value();

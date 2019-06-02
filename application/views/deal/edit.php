@@ -21,7 +21,7 @@ $msg = $this->session->userdata('msg');?>
 <!-- 2 columns form -->
 <div class="row">
 	<div class="col-md-8">
-		<form action="<?php echo base_url('deal/edit/').$deal->id;?>" method="post" enctype="multipart/form-data">
+		<form action="<?php echo base_url('deal/edit/').$deal->id;?>" method="post">
 			<div class="panel panel-flat">
 				<div class="panel-body">
 					<div class="row">
@@ -42,9 +42,9 @@ $msg = $this->session->userdata('msg');?>
 											<select class="form-control" name="money_id" required>
 											<?php if($money != 5){
 												foreach($unit as $units){ ?>
-												<option value="<?php echo $units->id; ?>"<?php if($units->id == $money){echo 'selected';} ?>><?php echo $units->name; ;?></option>
-												 <?php }?>
-											<?php  } else {?>
+												<option value="<?php echo $units->id; ?>"<?php if($units->id == $money){echo 'selected';} ?>><?php echo $units->name; ?></option>
+												 <?php } ?>
+											<?php  } else { ?>
 												<option value="5" selected>ریال</option>
 											<?php } ?>
 											</select>

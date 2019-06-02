@@ -35,7 +35,7 @@ $msg = $this->session->userdata('msg');?>
 			<tr><td colspan="6" class="text-center p-20">موردی یافت نشد</td></tr>
 			<?php }else{
 				$row = $this->uri->segment(3) + 1;
-				foreach($user as $rows){?>	
+				foreach($user as $rows){ ?>	
 				
 				<tr>
 					<td><?php echo $row;?></td>
@@ -53,7 +53,7 @@ $msg = $this->session->userdata('msg');?>
 					</td>
 				</tr>
 				<tr>
-			<?php $row++; }?>
+			<?php $row++; } ?>
 			<tr>
 					<td colspan="3" class="pt-20 pb-20">
 						نمایش

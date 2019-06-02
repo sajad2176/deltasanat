@@ -166,7 +166,7 @@ $msg = $this->session->userdata('msg');?>
 					<?php if(isset($page)){echo $page;} ?>
 				</td>
 			</tr>
-			<?php }?>
+			<?php } ?>
 		</tbody>
 
 	</table>

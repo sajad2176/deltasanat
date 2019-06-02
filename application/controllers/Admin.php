@@ -314,9 +314,8 @@ redirect("admin/edit/$id");
             $offset = NULL;
         }
         else{
-            $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
+            $offset = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
             $limit = 10;
-            $offset = $page;
             $between = NULL;
             $where = array('log.user_id' => $id);
             $total_rows = $this->base_model->get_count("log" , array('user_id'=> $id));

@@ -118,6 +118,8 @@ class Login extends CI_Controller{
 					$sess['rest_unit'] = TRUE;
 				}else if($rows->perm_id == 30){
 					$sess['turnover'] = TRUE;
+				}else if($rows->perm_id == 31){
+					$sess['add_unit'] = TRUE;
 				}
 			}
 		}

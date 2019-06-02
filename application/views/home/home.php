@@ -15,13 +15,10 @@
 						<div class="panel <?php echo $array[$i]; if($i%3 == 0){$i = 0;}?>">
 
 							<div class="panel-body">
-								<!-- <div class="heading-elements">
-									<span class="heading-text badge bg-success-800">+53,6%</span>
-								</div> -->
-								<h3 class="no-margin lright">
+								<h3 class="no-margin lright unitAmount">
 									<?php echo number_format($remains->amount);?>
 								</h3>
-								<h5 class="text-white text-size-larg">
+								<h5 class="text-white text-size-larg unitName">
 									<?php echo $remains->name;?>
 								</h5>
 							</div>
@@ -62,17 +59,17 @@
 								<td>
 									<div class="media-body">
 										<div class="media-heading">
-											<h5 class="letter-icon-title"><?php echo $deals->name?></h5>
+											<h5 class="letter-icon-title dealName"><?php echo $deals->name?></h5>
 										</div>
 									</div>
 								</td>
 								<td>
-									<h6 class="text-semibold text-success-800 pr-34 no-margin ">
+									<h6 class="text-semibold text-success-800 pr-34 no-margin dealBuy">
 										<?php echo number_format($deals->buy);?>
 									</h6>
 								</td>
 								<td>
-									<h6 class="text-semibold text-primary pr-8 no-margin">
+									<h6 class="text-semibold text-primary pr-8 no-margin dealSell">
 										<?php echo number_format($deals->sell); ?>
 									</h6>
 								</td>
@@ -147,7 +144,6 @@
 						<h3 class="no-margin lright" id="aveBuy"><?php echo number_format($ave_buy); ?></h3> 
 						
 					</div>
-					<div class="chart" id="today-revenue"></div>
 				</div>
 				<!-- /today's revenue -->
 			</div>
@@ -161,7 +157,6 @@
 						<h3 class="no-margin lright" id="aveSell"><?php echo number_format($ave_sell); ?></h3> 
 						
 					</div>
-					<div class="chart" id="today-revenue"></div>
 				</div>
 				<!-- /today's revenue -->
 			</div>

@@ -49,7 +49,7 @@
 			a.setAttribute( "id", this.id + "autocomplete-list" );
 			a.setAttribute( "class", "autocomplete-items" );
 			this.parentNode.appendChild( a );
-			matchHistory = 0;
+			// matchHistory = 0;
 			for ( i = 0; i < arr.length; i++ ) {
 				let match;
 				let search = val;
@@ -66,18 +66,19 @@
 					b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";
 					b.addEventListener( "click", function ( e ) {
 						inp.value = this.getElementsByTagName( "input" )[ 0 ].value;
-						// showHistory(inp.value);
+						showDefault();
+						showHistory(inp.value);
 						closeAllLists();
 					} );
-					matchHistory++;
+					// matchHistory++;
 					a.appendChild( b );
 				}
 			}
-			if(matchHistory == 1){
-				// showHistory(val);
-			}else{
-				showDefault();
-			}
+			// if(matchHistory == 1){
+			// 	showHistory(val);
+			// }else{
+			// 	showDefault();
+			// }
 			if(a.childElementCount == 0){
 				inp.nextElementSibling.style.display = 'block';
 				inp.nextElementSibling.innerHTML = 'بعد از اتمام معامله مشتری ' + val + ' به لیست مشتریان افزوده خواهد شد ';
@@ -134,58 +135,49 @@
 
 
 var	nameCustomer = document.getElementById('name_customer');
-var dollar = document.getElementById('dollar');
-var euro = document.getElementById('euro');
-var yuan = document.getElementById('yuan');
-var derham = document.getElementById('derham');
-var rial = document.getElementById('rial');	
+var setDefault = document.getElementsByClassName('setDefault');
+var unitRial = document.getElementById('rial');
 	function showDefault(){
+		var countDefault = setDefault.length;
+		for(var i = 0 ; i < countDefault ; i++){
+		   setDefault[i].innerHTML = '0';
+		   setDefault[i].style.color = 'black';
+		}
 		nameCustomer.innerHTML = '';
-		dollar.innerHTML = '-';
-		euro.innerHTML = '-';
-		yuan.innerHTML = '-';
-		derham.innerHTML = '-';
-		rial.innerHTML = '-'
-		dollar.style.color = '#333333';
-		euro.style.color = '#333333';
-		yuan.style.color = '#333333';
-		derham.style.color = '#333333';
-		rial.style.color = '#333333';
 	}
 	function showCustResult(res , txt){
 		if(res == false){
 			showDefault();
 		}else{
+			var countOther = res.other.length;
+			for(var i = 0 ; i < countOther ; i++){
+				var change = document.getElementById(res.other[i].id);
+				if(res.other[i].type == 1){
+					change.innerHTML = numeral(numeral(change.innerHTML).value() + (res.other[i].rest/res.other[i].convert)).format('0,0');
+				}else{
+					change.innerHTML = numeral(numeral(change.innerHTML).value() - (res.other[i].rest/res.other[i].convert)).format('0,0');
+				}
+				if(numeral(change.innerHTML).value() >= 0){
+					change.style.color = '#4caf50';
+				}else{
+					change.style.color = '#f44336';
+				}
+             
+			}
+			var countRial = res.rial.length;
+			for(var j = 0 ; j < countRial ; j++){
+				if(res.rial[j].type == 1){
+					unitRial.innerHTML = numeral(numeral(unitRial.innerHTML).value() - (res.rial[j].rest)).format('0,0');
+				}else{
+					unitRial.innerHTML = numeral(numeral(unitRial.innerHTML).value() + (res.rial[j].rest)).format('0,0');
+				}
+				if(numeral(unitRial.innerHTML).value() >= 0){
+					unitRial.style.color = '#4caf50';
+				}else{
+					unitRial.style.color = '#f44336';
+				}
+			} 
 			nameCustomer.innerHTML = txt;
-			dollar.innerHTML = numeral(res.dollar).format('0,0');
-			euro.innerHTML = numeral(res.euro).format('0,0');
-			yuan.innerHTML = numeral(res.yuan).format('0,0');
-			derham.innerHTML = numeral(res.derham).format('0,0');
-			rial.innerHTML = numeral(res.rial).format('0,0');
-			if(res.dollar < 0){
-				dollar.style.color = '#f44336';
-			}else{
-				dollar.style.color = '#4caf50';
-			}
-			if(res.euro < 0){
-				euro.style.color = '#f44336';
-			}else{
-				euro.style.color = '#4caf50';
-			}
-			if(res.yuan < 0){
-				yuan.style.color = '#f44336';
-			}else{
-				yuan.style.color = '#4caf50';
-			}
-			if(res.derham < 0){
-				derham.style.color = '#f44336';
-			}else{
-				derham.style.color = '#4caf50';
-			}
-			if(res.rial < 0){
-				rial.style.color = '#f44336';
-			}else{
-				rial.style.color = '#4caf50';
-			}
+
 		}
 	}

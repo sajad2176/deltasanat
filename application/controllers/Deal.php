@@ -330,70 +330,13 @@ $this->base_model->insert_data('backup' , $back);
 
 
     public function customer_history(){
-        $fullname = trim($this->input->post('text_search') , ' ');
-        $cust_id = $this->base_model->get_data('customer' , 'id' , 'row' , array('fullname' => $fullname));
-        if(empty($cust_id)){
-            echo json_encode(false);
+        $fullname = trim($this->input->post('text_search') , ' ');  
+        $data['other'] = $this->base_model->run_query("SELECT u.id , d.convert , d.rest , d.type , d.customer_id FROM unit u LEFT JOIN deal d ON d.money_id = u.id LEFT JOIN customer c ON d.customer_id = c.id where c.fullname = '$fullname' AND u.id <> 5 order by u.id");
+        if(empty($data['other'])){
+            echo false;
         }else{
-            $date = $this->convertdate->convert(time());
-            $today = $date['year']."-".$date['month_num']."-".$date['day'];
-            $id = $cust_id->id;
-            $buy = $this->base_model->get_data('deal' , 'money_id , rest , convert' , 'result' , array('type'=> 1 , 'customer_id'=> $id , 'date_deal'=>$today));
-            $sell = $this->base_model->get_data('deal' , 'money_id , rest , convert' , 'result' , array('type'=> 2 , 'customer_id'=> $id, 'date_deal'=> $today));
-            $give = $this->base_model->get_data('deal' , 'sum(rest) as give' , 'row' , array('type'=> 1 , 'customer_id'=> $id));
-            $want = $this->base_model->get_data('deal' , 'sum(rest) as want' , 'row' , array('type'=> 2 , 'customer_id'=> $id));
-            if(empty($buy)){
-                $buy_dollar = 0;
-                $buy_euro = 0;
-                $buy_yuan = 0;
-                $buy_derham = 0;
-            }else{
-                $b_dollar = 0; $b_euro = 0 ; $b_yuan = 0 ; $b_derham = 0;
-                foreach($buy as $buys){
-                    if($buys->money_id == 1){
-                        $b_dollar += ($buys->rest)/($buys->convert);
-                    }else if($buys->money_id == 2){
-                        $b_euro += ($buys->rest)/($buys->convert);
-                    }else if($buys->money_id == 3){
-                        $b_yuan += ($buys->rest)/($buys->convert);
-                    }else if($buys->money_id == 4){
-                        $b_derham += ($buys->rest)/($buys->convert);
-                    }
-            }
-            $buy_dollar = $b_dollar;
-            $buy_euro = $b_euro;
-            $buy_yuan = $b_yuan;
-            $buy_derham = $b_derham;
-        }
-            if(empty($sell)){
-                $sell_dollar = 0;
-                $sell_euro = 0;
-                $sell_yuan = 0;
-                $sell_derham = 0;
-            }else{
-                $s_dollar = 0; $s_euro = 0 ; $s_yuan = 0 ; $s_derham = 0;
-                foreach($sell as $sells){
-                    if($sells->money_id == 1){
-                        $s_dollar += ($sells->rest)/($sells->convert);
-                    }else if($sells->money_id == 2){
-                        $s_euro += ($sells->rest)/($sells->convert);
-                    }else if($sells->money_id == 3){
-                        $s_yuan += ($sells->rest)/($sells->convert);
-                    }else if($sells->money_id == 4){
-                        $s_derham += ($sells->rest)/($sells->convert);
-                    }
-                }
-                $sell_dollar = $s_dollar;
-                $sell_euro = $s_euro;
-                $sell_yuan = $s_yuan;
-                $sell_derham = $s_derham;
-            }
-            $data['dollar'] = $buy_dollar - $sell_dollar;
-            $data['euro'] = $buy_euro - $sell_euro;
-            $data['yuan'] = $buy_yuan - $sell_yuan;
-            $data['derham'] = $buy_derham - $sell_derham;
-            $data['rial'] = $want->want - $give->give;
-            // echo "<pre>";var_dump($data); echo $give->give." ".$want->want;echo "</pre>";
+            $cust_id = $data['other'][0]->customer_id;
+            $data['rial'] = $this->base_model->run_query("SELECT rest , type FROM deal WHERE customer_id = $cust_id ");
             echo json_encode($data);
         }
     }
@@ -555,7 +498,6 @@ $this->base_model->insert_data('backup' , $back);
           }
           $id = $this->uri->segment(3);
     if(isset($id) and is_numeric($id)){
-        $date = $this->convertdate->convert(time());
         if(isset($_POST['sub'])){
     //photo
         $img = array();
@@ -630,7 +572,6 @@ if(!empty($img)){
           }else{
               show_404();
           }
-
      }
      public function delete_photo(){
          $red_id = $this->uri->segment(3);
@@ -1615,7 +1556,7 @@ $this->base_model->insert_data('handle' , $data);
             $data['buy_cust'] = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 1 GROUP BY d.customer_id ORDER BY d.id DESC");
             $data['sell_cust'] = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 2 GROUP BY d.customer_id ORDER BY d.id DESC");           
             $data['rows_buy'] = sizeof($rows_buy);
-                        $data['rows_sell'] = sizeof($rows_sell);
+            $data['rows_sell'] = sizeof($rows_sell);
                         $header['title'] = 'کاربرگ معاملات';
                         $header['active'] = 'deal';
                         $header['active_sub'] = 'deal_sheet';
@@ -1644,12 +1585,12 @@ $this->base_model->insert_data('handle' , $data);
     }
     public function get_customer(){
         $name = $this->input->post('name');
-        $name = trim($name);
+        $name = trim($name , ' ');
         $type = $this->input->post('type');
         if($type == 'buy'){
            $data['cust'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 1 AND c.fullname = '$name' GROUP BY d.customer_id");
            $cust_id = $data['cust'][0]->customer_id;
-           $data['bank'] = $this->base_model->get_data('bank' , 'id , rest_handle , rest , explain' , 'result' , array('customer_id'=>$cust_id)); 
+           $data['bank'] = $this->base_model->get_data('bank' , 'id , rest_handle , rest , explain' , 'result' , array('customer_id'=>$cust_id , 'active'=>1)); 
         }else{
            $data['cust'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 2 AND c.fullname = '$name' GROUP BY d.customer_id");
         }
