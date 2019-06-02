@@ -46,7 +46,7 @@ $msg = $this->session->userdata('msg');?>
 <div class="panel panel-flat">
 	<div class="panel-body">
 		<legend class="text-semibold"><i class=" icon-stats-dots position-left"></i> آرشیو ارز ها</legend>
-		<table class="table datatable-selection-single table-hover table-responsive-lg ">
+		<table class="table datatable-basic table-responsive-xs ">
 		<thead>
 			<tr>
 				<th>ردیف</th>

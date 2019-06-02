@@ -146,7 +146,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 		<div class="panel-body">
 		<?php if($this->session->has_userdata('add_bank')){ ?><a class="btn btn-success float-btn-left" href="#add_bank_modal" data-toggle="modal">افزودن بانک</a><?php }?>
 			<legend class="text-semibold"><i class="icon-credit-card position-left"></i> اطلاعات بانکی </legend>
-			<table class="table datatable-basic">
+			<table class="table datatable-basic table-responsive-lg">
 				<thead>
 					<tr>
 						<th width="5%" >شناسه بانک</th>
@@ -213,7 +213,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 		<div class="panel-body">
 		
 			<legend class="text-semibold"><i class="icon-notebook position-left"></i> اطلاعات هماهنگی معاملات خرید</legend>
-			<table class="table datatable-basic">
+			<table class="table datatable-basic table-responsive-lg">
 				<thead>
 					<tr>
 						<th width="5%">ردیف </th>
@@ -260,7 +260,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 			<br>
 			<br>
 			<legend class="text-semibold"><i class="icon-notebook position-left"></i> اطلاعات هماهنگی معاملات فروش</legend>
-			<table class="table datatable-basic">
+			<table class="table datatable-basic table-responsive-lg">
 				<thead>
 					<tr>
 						<th width="5%">ردیف </th>

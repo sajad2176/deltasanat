@@ -19,7 +19,7 @@ $msg = $this->session->userdata('msg');?>
 <div class="panel panel-flat">
 	<div class="panel-body">
 		<legend class="text-semibold"><i class="icon-users4 position-left"></i> آرشیو کاربران</legend>
-		<table class="table datatable-basic">
+		<table class="table datatable-basic table-responsive-lg">
 			<thead>
 				<tr>
 					<th width="5%">ردیف</th>
