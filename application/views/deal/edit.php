@@ -95,12 +95,24 @@ $msg = $this->session->userdata('msg');?>
 							<fieldset>
 
 								<div class="row">
-								<div class="col-md-12">
+								<div class="col-md-8">
 								<div class="form-group">
 									<label for="j_created_date"> تاریخ ثبت :</label>
 									<input type="text" class="form-control" name="date_deal" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date_deal." ".$deal->time_deal;?>" placeholder="Jalali Created Date">
 								</div>
 								</div>
+								<?php if($money == 5){ ?>
+									<div class="col-md-2">
+                        <label class="display-block text-semibold">نوع مانده حساب :</label>
+						<div class="form-group mt-20">
+										
+										<label class="radio-inline">
+											<input type="checkbox" name="temp" value='1' class="styled" <?php if($deal->temp == 1){echo 'checked';}?>>
+											موقت
+										</label>
+									</div>
+						</div>
+								<?php } ?>
 								</div>
 								<div class="form-group">
 									<label>توضیحات معامله :</label>

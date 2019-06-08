@@ -41,13 +41,13 @@ $msg = $this->session->userdata('msg');?>
 								<input name="count" type="hidden" class="form-control">
 							</div>
 						</div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
 								<div class="form-group">
 									<label for="j_created_date"> تاریخ ثبت :</label>
 									<input type="text" class="form-control" name="date_deal" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date;?>" placeholder="Jalali Created Date" required>
 								</div>
 								</div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                         <label class="display-block text-semibold">نوع حساب :</label>
 						<div class="form-group mt-20">
 										
@@ -59,6 +59,16 @@ $msg = $this->session->userdata('msg');?>
 										<label class="radio-inline">
 											<input type="radio" name="type" value="1" class="styled" >
 											طلب کار
+										</label>
+									</div>
+						</div>
+						<div class="col-md-2">
+                        <label class="display-block text-semibold">نوع مانده حساب :</label>
+						<div class="form-group mt-20">
+										
+										<label class="radio-inline">
+											<input type="checkbox" name="temp" value='1' class="styled">
+											موقت
 										</label>
 									</div>
 						</div>
@@ -100,7 +110,7 @@ $msg = $this->session->userdata('msg');?>
 			<?php }else{
 			$num = $this->uri->segment(3) + 1;
 			foreach($deal as $rows){ ?>
-			<tr>
+			<tr class='<?php if($rows->temp == 1){echo 'tr_temp';}?>'>
 				<td>
 					<?php echo $rows->id + 100;?>
 				</td>

@@ -188,6 +188,9 @@ class Settings extends CI_Controller {
        $deal['customer_id'] = $id;
        $deal['money_id'] = 5;
        $deal['state'] = 1;
+       if(isset($_POST['temp'])){
+           $deal['temp'] = 1;
+       }
        $rial = $this->base_model->get_data('unit' , 'amount' , 'row' , array('id'=> 5));
        if($deal['type'] == 1){
            $unit_rial['amount'] = $rial->amount + $deal['count_money'];

@@ -47,10 +47,8 @@ function autocomplete( inp, arr , arr_rest , type ) {
         this.parentNode.appendChild( a );
         matchHistory = 0;
         if(type == 'buy'){
-            textd = ' ه.ن خرید : ';
             textdd = ' خرید ';
         }else{
-            textd = ' ه.ن فروش : ';
             textdd = ' فروش '
         }
         for ( i = 0; i < arr.length; i++ ) {
@@ -63,7 +61,7 @@ function autocomplete( inp, arr , arr_rest , type ) {
                 match = arr[ i ].slice( arr[ i ].indexOf( search ), -lastIndx );
             }
             if ( match.length == search.length ) {
-                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) )+'<strong style="color:#46a64c;">'+match+'</strong>'+arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + " | "+ textd + numeral(arr_rest[i]).format('0,0');
+                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) )+'<strong style="color:#46a64c;">'+match+'</strong>'+arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + " | مانده : " + numeral(arr_rest[i]).format('0,0');
 
                 b = document.createElement( "DIV" );
                 b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";

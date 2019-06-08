@@ -192,17 +192,13 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ if($i == 0){$active = 'active';}e
 
 <?php
 		$b_str = ''; $b_str2 = '';
-		foreach($buy_cust as $row){ $am = $row->volume - $row->handle; $b_str .= "\"$row->fullname\","; $b_str2 .= "\"$am\",";} $b_str = trim($b_str , ','); $b_str2 = trim($b_str2 , ',');
-		$s_str = ''; $s_str2 = '';
-		foreach($sell_cust as $row){ $am = $row->volume - $row->handle; $s_str .= "\"$row->fullname\","; $s_str2 .= "\"$am\",";} $s_str = trim($s_str , ','); $s_str2 = trim($s_str2 , ',');
+		foreach($rest_cust as $row){ $am = $row->rest_sell - $row->rest_buy; $b_str .= "\"$row->fullname\","; $b_str2 .= "\"$am\",";} $b_str = trim($b_str , ','); $b_str2 = trim($b_str2 , ',');
 ?>
 
 <script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/sheet.js"></script>
 <script>
 var b_array = [ <?php echo $b_str; ?> ];
 var b_array2 = [<?php echo $b_str2; ?>];
-var s_array = [ <?php echo $s_str; ?> ];
-var s_array2 = [<?php echo $s_str2; ?>];
 	
 	function search_buy( input) {
 		input.style.boxShadow = '0px 0px 5px #59d9cc';
@@ -212,7 +208,7 @@ var s_array2 = [<?php echo $s_str2; ?>];
 
 	function search_sell( input) {
 		input.style.boxShadow = '0px 0px 5px #d9595f';
-		autocomplete( input, s_array , s_array2 , 'sell');
+		autocomplete( input, b_array , b_array2 ,  'sell');
 	}
 
 

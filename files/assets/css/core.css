@@ -7006,6 +7006,9 @@ border-top: 1px solid #ddd;
 .tr_rest{
   background-color: #d5e8c9 !important;
 }
+.tr_temp{
+  background-color:#ffd9b3 !important; 
+}
 .state_bg{
   background-color: #dad3f8;
 }
