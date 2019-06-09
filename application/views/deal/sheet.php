@@ -47,8 +47,13 @@ $msg = $this->session->userdata('msg');?>
 											</select>
 						</div>
 					</div>
-					
-					<div class="col-md-3">
+					<div class="col-md-1">
+								<div class="form-group">
+									<label for="j_created_date"> تاریخ  :</label>
+									<input type="text" class="form-control" name="date_handle" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date; ?>" placeholder="Jalali Created Date">
+								</div>
+							</div>
+					<div class="col-md-2">
 						<div class="form-group">
 							<label>مبلغ هماهنگی :</label>
 							<input type="text" placeholder="111,000,000"  onkeyup="amhandle(this)" autocomplete="off" class="form-control" required>

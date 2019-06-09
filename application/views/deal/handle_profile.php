@@ -124,8 +124,13 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 											</select>
 						</div>
 					</div>
-					
-					<div class="col-md-3">
+					<div class="col-md-1">
+								<div class="form-group">
+									<label for="j_created_date"> تاریخ  :</label>
+									<input type="text" class="form-control" name="date_handle" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date; ?>" placeholder="Jalali Created Date">
+								</div>
+							</div>
+					<div class="col-md-2">
 						<div class="form-group">
 							<label>مبلغ هماهنگی :</label>
 							<input type="text" placeholder="111,000,000"  onkeyup="amhandle(this)" autocomplete="off" class="form-control" required>
@@ -585,6 +590,10 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<!-- /add bank modal -->
 	<!-- edit bank modal -->
 		<?php
+		// $b_str = ''; $b_str2 = '';
+		// foreach($buy as $row){ $am = $row->volume - $row->handle; $b_str .= "\"$row->fullname\","; $b_str2 .= "\"$am\",";} $b_str = trim($b_str , ','); $b_str2 = trim($b_str2 , ',');
+		// $s_str = ''; $s_str2 = '';
+		// foreach($sell as $row){ $am = $row->volume - $row->handle; $s_str .= "\"$row->fullname\","; $s_str2 .= "\"$am\",";} $s_str = trim($s_str , ','); $s_str2 = trim($s_str2 , ',');
 		$b_str = ''; $b_str2 = '';
 		foreach($rest_cust as $row){ $am = $row->rest_sell - $row->rest_buy; $b_str .= "\"$row->fullname\","; $b_str2 .= "\"$am\",";} $b_str = trim($b_str , ','); $b_str2 = trim($b_str2 , ',');
 		?>

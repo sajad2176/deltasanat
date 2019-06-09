@@ -123,7 +123,7 @@ $msg = $this->session->userdata('msg');?>
 					<?php if($rows->type == 1){echo 'خرید';}else{echo 'فروش';}?>
 				</td>
 				<td>
-					<?php echo number_format($rows->count_money)." ".$rows->name;?>
+					<?php echo number_format($rows->count_money)."</br>".$rows->name;?>
 				</td>
 				<td>
 					<?php echo number_format($rows->convert); ?>
