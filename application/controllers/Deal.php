@@ -112,6 +112,12 @@ $data['unit'] = $this->base_model->get_data('unit' , 'id , name' , 'result');
          $deal = $this->base_model->get_data_join('deal' , 'customer' ,'deal.* , customer.fullname , unit.name','deal.customer_id = customer.id', 'row' , array('deal.id' => $id) , NULL , NULL , NULL , array('unit' , 'deal.money_id = unit.id'));
          if($deal->pay != 0 or empty($deal)){
              show_404();
+         }else if($deal->state == 0){
+           $message['msg'][0] = 'معامله مازاد نمی تواند حذف شود';
+           $message['msg'][1] = 'danger';
+           $this->session->set_flashdata($message);
+           redirect('deal/archive');
+           
          }else{
             $money = $deal->name;
             $a = $id +100;
@@ -477,6 +483,12 @@ $this->base_model->insert_data('backup' , $back);
                 if(empty($data['deal'])){
                     show_404();
                 }else{
+                    if($data['deal']->state == 0){
+                        $message['msg'][0] = 'معامله مازاد نمی تواند ویرایش شود';
+                        $message['msg'][1] = 'danger';
+                        $this->session->set_flashdata($message);
+                        redirect('deal/archive');
+                    }
                     $slash = '/';
                     $dash = '-';
                     $str = $data['deal']->date_deal;
@@ -773,22 +785,12 @@ public function pay_all(){
         $date_all = substr($start , 0 , 10);        
 $date = $this->convertdate->convert(time());        
 $handle_info = $this->base_model->get_data('handle' , '*' , 'row' , array('id'=>$id));
-$check_buy = $this->base_model->get_count('deal' , array('customer_id'=> $handle_info->buy_id , 'type'=> 1 , 'rest !=' => 0));
-$check_sell = $this->base_model->get_count('deal' , array('customer_id'=> $handle_info->sell_id , 'type'=> 2 , 'rest !=' => 0));
-if($check_buy == 0){
-$message['msg'][0] = ' تمام معاملات خرید مشتری خرید پرداخت شده است ';
-$message['msg'][1] = 'danger';
-$this->session->set_flashdata($message);
-redirect("deal/handle_profile/$cust_id");
-}else if($check_sell == 0){
-    $message['msg'][0] = ' تمام معاملات فروش مشتری فروش پرداخت شده است ';
-    $message['msg'][1] = 'danger';
-    $this->session->set_flashdata($message);
-    redirect("deal/handle_profile/$cust_id");
-}
 $buy = $this->base_model->get_data('deal' , 'id  , pay , rest' , 'result' ,array('customer_id'=> $handle_info->buy_id , 'type'=> 1 , 'rest !=' => 0) , NULL , NULL , array('id' , 'ASC'));
+$his_buy = 0;
+$his_sell = 0;
 $push = $handle_info->handle_rest;
 $deal = array();
+if(!empty($buy)){
     $str = ' پرداختی های مربوط به مشتری خرید : ' ."</br>";
     foreach($buy as $buys){
         if($push >= $buys->rest){
@@ -812,6 +814,10 @@ $deal = array();
             break;
         }
     }
+}
+if($push == $handle_info->handle_rest){
+    $his_buy = 1;
+}
 $this->db->trans_begin();
 if($push > 0){
     $unit_rial = $this->base_model->get_data('unit' , 'amount' , 'row' , array('id'=> 5));
@@ -847,11 +853,10 @@ if($push > 0){
     }
    $status =  $this->base_model->update_data('unit' , $rial , array('id'=>5));    
     }
-
-
-    $sell = $this->base_model->get_data('deal' , 'id  , pay , rest' , 'result' ,array('customer_id'=> $handle_info->sell_id , 'type'=> 2 ,'rest !='=> 0) , NULL , NULL , array('id' , 'ASC'));
+$sell = $this->base_model->get_data('deal' , 'id  , pay , rest' , 'result' ,array('customer_id'=> $handle_info->sell_id , 'type'=> 2 ,'rest !='=> 0) , NULL , NULL , array('id' , 'ASC'));
+$push = $handle_info->handle_rest;
+    if(!empty($sell)){
     $str .= ' پرداختی های مربوط به مشتری فروش : ' ."</br>";
-    $push = $handle_info->handle_rest;
     foreach($sell as $sells){
             if($push >= $sells->rest){
                 $pay = $sells->pay + $sells->rest;
@@ -874,7 +879,10 @@ if($push > 0){
                 break;
             }
     }
-
+}
+if($push == $handle_info->handle_rest){
+    $his_sell = 1;
+}
     if($push > 0){
         $unit_rial = $this->base_model->get_data('unit' , 'amount' , 'row' , array('id'=> 5));
         $state_buy = $this->base_model->get_data('deal' , 'id , count_money , volume , rest' , 'row' , array('customer_id'=>$handle_info->sell_id , 'type'=> 1 , 'state'=>0));
@@ -919,6 +927,8 @@ $history['date_pay'] = $date_all." ".$date['hour'].":".$date['minute'].":".$date
 $history['volume'] = $handle_info->handle_rest;
 $history['active'] = 1;
 $history['handle_id'] = $handle_info->id;
+$history['his_buy'] = $his_buy;
+$history['his_sell'] = $his_sell;
 $turn['owner'] = $bank_info->owner;
 $turn['cust_id'] = $handle_info->sell_id;
 $turn['bank_id'] = $handle_info->bank_id;
@@ -976,22 +986,11 @@ public function pay_slice(){
         $date_slice = substr($start , 0 , 10);        
 $date = $this->convertdate->convert(time());
 $handle_info = $this->base_model->get_data('handle' , '*' , 'row' , array('id'=>$id));
-$check_buy = $this->base_model->get_count('deal' , array('customer_id'=> $handle_info->buy_id , 'type'=> 1 , 'rest !=' => 0));
-$check_sell = $this->base_model->get_count('deal' , array('customer_id'=> $handle_info->sell_id , 'type'=> 2 , 'rest !=' => 0));
-if($check_buy == 0){
-$message['msg'][0] = ' تمام معاملات خرید مشتری خرید پرداخت شده است ';
-$message['msg'][1] = 'danger';
-$this->session->set_flashdata($message);
-redirect("deal/handle_profile/$cust_id");
-}else if($check_sell == 0){
-    $message['msg'][0] = ' تمام معاملات فروش مشتری فروش پرداخت شده است ';
-    $message['msg'][1] = 'danger';
-    $this->session->set_flashdata($message);
-    redirect("deal/handle_profile/$cust_id");
-}
         $buy = $this->base_model->get_data('deal' , 'id  , pay , rest' , 'result' ,array('customer_id'=> $handle_info->buy_id , 'type'=> 1 , 'rest !=' => 0) , NULL , NULL , array('id' , 'ASC'));
         $push = $this->input->post('slice');
         $deal = array();
+        $his_buy = 0; $his_sell = 0;
+        if(!empty($buy)){
             $str = ' پرداختی های مربوط به مشتری خرید : ' ."</br>";
             foreach($buy as $buys){
                 if($push >= $buys->rest){
@@ -1015,6 +1014,10 @@ redirect("deal/handle_profile/$cust_id");
                     break;
                 }
             }
+        }
+        if($push == $this->input->post('slice')){
+            $his_buy = 1;
+        }
 $this->db->trans_begin();            
 if($push > 0){
     $unit_rial = $this->base_model->get_data('unit' , 'amount' , 'row' , array('id'=>5));
@@ -1053,6 +1056,7 @@ if($push > 0){
 
     $sell = $this->base_model->get_data('deal' , 'id  , pay , rest' , 'result' ,array('customer_id'=> $handle_info->sell_id , 'type'=> 2 ,'rest !='=> 0) , NULL , NULL , array('id' , 'ASC'));
     $push = $this->input->post('slice');
+    if(!empty($sell)){
         $str .= ' پرداختی های مربوط به مشتری فروش : ' ."</br>";
         foreach($sell as $sells){
                 if($push >= $sells->rest){
@@ -1076,6 +1080,10 @@ if($push > 0){
                     break;
                 }
         }
+    }
+    if($push == $this->input->post('slice')){
+        $his_sell = 1;
+    }
         if($push > 0){
             $unit_rial = $this->base_model->get_data('unit' , 'amount' , 'row' , array('id'=>5));
             $state_buy = $this->base_model->get_data('deal' , 'id , count_money , volume , rest' , 'row' , array('customer_id'=>$handle_info->sell_id , 'type'=> 1 , 'state'=>0));
@@ -1120,6 +1128,8 @@ if($push > 0){
         $history['volume'] = $this->input->post('slice');
         $history['active'] = 1;
         $history['handle_id'] = $handle_info->id;
+        $history['his_buy'] = $his_buy;
+        $history['his_sell'] = $his_sell;
         $turn['owner'] = $bank_info->owner;
         $turn['cust_id'] = $handle_info->sell_id;
         $turn['bank_id'] = $handle_info->bank_id;
@@ -1180,7 +1190,7 @@ public function restore(){
     $cust_id = $this->uri->segment(3);
     $id = $this->uri->segment(4);
     if(isset($cust_id) and isset($id) and is_numeric($cust_id) and is_numeric($id)){
-     $history = $this->base_model->get_data('history' , 'volume , handle_id' , 'row' , array('id'=> $id , 'active'=> 1));
+     $history = $this->base_model->get_data('history' , '*' , 'row' , array('id'=> $id , 'active'=> 1));
      if(empty($history)){
          show_404();
      }
@@ -1210,6 +1220,23 @@ public function restore(){
         }
     }
     $date = $this->convertdate->convert(time());
+    $this->db->trans_begin();
+    if($history->his_buy == 1){
+        $push = $history->volume;
+        $unit_rial = $this->base_model->get_data('unit' , 'amount' , 'row' , array('id'=> 5));
+        $state_sell = $this->base_model->get_data('deal' , 'id , count_money , volume , rest' , 'row' , array('customer_id'=>$handle_info->buy_id , 'type'=> 2 , 'state'=>0));
+        if(!empty($state_sell)){
+            $upsell['count_money'] = $state_sell->count_money - $push;
+            $upsell['volume'] = $state_sell->volume - $push;
+            $upsell['rest'] = $state_sell->rest - $push;
+            $status = $this->base_model->update_data('deal' , $upsell , array('id' => $state_sell->id));
+            $a = $state_sell->id + 100;
+            $str .= " مقدار ریالی معامله  ".$a."  به دلیل مازاد بودن حجم بازگشتی به اندازه ". number_format($push)." کاهش یافت "."</br>";
+            $rial['amount'] = $unit_rial->amount + $push;
+            $str .= ' مقدار ریال به اندازه  '.number_format($push)." افزایش یافت "."</br>";
+            $status = $this->base_model->update_data('unit' , $rial , array('id'=>5));
+        }
+    }else{
     $buy = $this->base_model->get_data('deal' , 'id  , pay , rest' , 'result' ,array('customer_id'=> $handle_info->buy_id , 'type'=> 1 , 'pay !=' => 0) , NULL , NULL , array('id' , 'DESC'));
     $push = $history->volume;
     $deal = array();
@@ -1238,7 +1265,7 @@ public function restore(){
             }
         }
     }
-    $this->db->trans_begin();
+    
     if($push > 0){
         $unit_rial = $this->base_model->get_data('unit' , 'amount' , 'row' , array('id'=> 5));
         $state_sell = $this->base_model->get_data('deal' , 'id , count_money , volume , rest' , 'row' , array('customer_id'=>$handle_info->buy_id , 'type'=> 2 , 'state'=>0));
@@ -1254,7 +1281,23 @@ public function restore(){
             $status = $this->base_model->update_data('unit' , $rial , array('id'=>5));
         }
     }
-
+    }
+if($history->his_sell == 1){
+    $push = $history->volume;
+    $unit_rial = $this->base_model->get_data('unit' , 'amount' , 'row' , array('id'=> 5));
+    $state_buy = $this->base_model->get_data('deal' , 'id , count_money , volume , rest' , 'row' , array('customer_id'=>$handle_info->sell_id , 'type'=> 1 , 'state'=>0));
+    if(!empty($state_buy)){
+        $upbuy['count_money'] = $state_buy->count_money - $push;
+        $upbuy['volume'] = $state_buy->volume - $push;
+        $upbuy['rest'] = $state_buy->rest - $push;
+        $status = $this->base_model->update_data('deal' , $upbuy , array('id' => $state_buy->id));
+        $a = $state_buy->id + 100;
+        $str .= " مقدار ریالی معامله  ".$a."  به دلیل مازاد بودن حجم بازگشتی به اندازه ". number_format($push)." کاهش یافت "."</br>";
+        $rial['amount'] = $unit_rial->amount - $push;
+        $str .= ' مقدار ریال به اندازه  '.number_format($push)." کاهش یافت "."</br>";
+        $status = $this->base_model->update_data('unit' , $rial , array('id'=>5));
+    } 
+}else{
     $sell = $this->base_model->get_data('deal' , 'id  , pay , rest' , 'result' ,array('customer_id'=> $handle_info->sell_id , 'type'=> 2 ,'pay !='=> 0) , NULL , NULL , array('id' , 'DESC'));
     $push = $history->volume;
     if(!empty($sell)){
@@ -1297,6 +1340,7 @@ public function restore(){
             $status = $this->base_model->update_data('unit' , $rial , array('id'=>5));
         } 
     }
+}
     $bank_info = $this->base_model->get_data_join('bank' , 'customer' , 'bank.pay , bank.rest , customer.fullname as owner' ,'bank.customer_id = customer.id','row' , array('bank.id'=>$handle_info->bank_id));
     $handle['handle_pay'] = $handle_info->handle_pay - $history->volume;
     $handle['handle_rest'] = $handle_info->handle_rest + $history->volume;
