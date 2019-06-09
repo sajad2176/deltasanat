@@ -60,9 +60,9 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<td class="text-center"><?php echo $deals->date_modified; ?></td>
 				<td class="text-center">
 					<ul class="icons-list">
-<?php if($this->session->has_userdata('edit_deal')){?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$deals->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('edit_deal') && $deals->state == 1){?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$deals->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>
 <?php if($this->session->has_userdata('see_photo')){?><li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$deals->id;?>"><i class="icon-stack-picture"></i></a></li><?php }?>
-<?php if($this->session->has_userdata('delete_deal')){?><li class="text-danger" data-toggle="tooltip" title="حذف معامله"><a data-toggle="modal" href="#modal_theme_danger1"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $deals->id;?> , <?php echo $deals->pay; ?>)" ></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('delete_deal') && $deals->state == 1){?><li class="text-danger" data-toggle="tooltip" title="حذف معامله"><a data-toggle="modal" href="#modal_theme_danger1"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $deals->id;?> , <?php echo $deals->pay; ?>)" ></i></a></li><?php } ?>
 					</ul>
 				</td>
 			
