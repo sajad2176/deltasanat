@@ -114,13 +114,11 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 						<div class="form-group">
 							<label>انتخاب حساب :</label>
                             <select class="form-control" name="bank_id" required>
-                         <?php if(empty($select)){ ?>
-							<option value="0">شماره حسابی برای مشتری خرید ثبت نشده است</option>
-						 <?php } else { foreach($select as $selects){
+						 <?php $check = 0; foreach($bank as $selects){ if($selects->active == 0){continue;} $check++;
 							 $aa = $selects->id + 1000;
 							 ?>
 							<option value="<?php echo $selects->id;?>"><?php echo $selects->explain." |  هماهنگ نشده :".number_format($selects->rest_handle)." | باقیمانده :  ".number_format($selects->rest)." | شناسه : ".$aa; ?></option>
-						 <?php } }?>
+						 <?php } if($check == 0){ ?> <option value="0" selected>شماره حسابی برای مشتری خرید ثبت نشده است</option> <?php }?>
 											</select>
 						</div>
 					</div>
@@ -590,12 +588,17 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<!-- /add bank modal -->
 	<!-- edit bank modal -->
 		<?php
-		// $b_str = ''; $b_str2 = '';
-		// foreach($buy as $row){ $am = $row->volume - $row->handle; $b_str .= "\"$row->fullname\","; $b_str2 .= "\"$am\",";} $b_str = trim($b_str , ','); $b_str2 = trim($b_str2 , ',');
-		// $s_str = ''; $s_str2 = '';
-		// foreach($sell as $row){ $am = $row->volume - $row->handle; $s_str .= "\"$row->fullname\","; $s_str2 .= "\"$am\",";} $s_str = trim($s_str , ','); $s_str2 = trim($s_str2 , ',');
-		$b_str = ''; $b_str2 = '';
-		foreach($rest_cust as $row){ $am = $row->rest_sell - $row->rest_buy; $b_str .= "\"$row->fullname\","; $b_str2 .= "\"$am\",";} $b_str = trim($b_str , ','); $b_str2 = trim($b_str2 , ',');
+		$str = ''; $str2 = ''; $str3 = '';
+		$count = sizeof($search);
+		for($i = 1 ; $i <= $count ; $i++){
+			$name = $search[$i]['fullname'];
+			$buy  = $search[$i]['buy'];
+			$sell = $search[$i]['sell'];
+			$str .= "\"$name\",";
+		   $str2 .= "\"$buy\"," ;
+		   $str3 .= "\"$sell\",";
+		}
+		$str = trim($str , ','); $str2 = trim($str2 , ','); $str3 = trim($str3 , ','); 
 		?>
 		<script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/handle_group.js"></script>
 		<script>
@@ -607,10 +610,11 @@ ihandle.nextElementSibling.value = volume;
 formEdit.action = "<?php echo base_url('deal/edit_handle/').$this->uri->segment(3)."/";?>" + id;
 }
 
-var b_array = [ <?php echo $b_str; ?> ];
-var b_array2 = [<?php echo $b_str2; ?>];
+var array  = [ <?php echo $str;?> ];
+var array2 = [<?php echo $str2;?> ];
+var array3 = [<?php echo $str3;?> ];
 function search_cust( input ) {
-				autocomplete( input, b_array , b_array2);
+				autocomplete( input, array , array2 , array3);
 }		
 //delete deal -----------------
 	var titleDelete = document.getElementById('titleDelete');

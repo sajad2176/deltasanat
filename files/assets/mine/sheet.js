@@ -29,7 +29,7 @@ function sellTable(res , url){
 var tbody_buy = document.getElementById('tbody_buy');
 var tbody_sell = document.getElementById('tbody_sell');
 var select = document.getElementById('money_id');
-function autocomplete( inp, arr , arr_rest , type ) {
+function autocomplete( inp, arr , buy , sell , type ) {
     var currentFocus;
     inp.addEventListener( "input", function ( e ) {
         var a, b, i, val = this.value;
@@ -46,11 +46,6 @@ function autocomplete( inp, arr , arr_rest , type ) {
         a.setAttribute( "class", "autocomplete-items" );
         this.parentNode.appendChild( a );
         matchHistory = 0;
-        if(type == 'buy'){
-            textdd = ' خرید ';
-        }else{
-            textdd = ' فروش '
-        }
         for ( i = 0; i < arr.length; i++ ) {
             let match;
             let search = val;
@@ -61,7 +56,7 @@ function autocomplete( inp, arr , arr_rest , type ) {
                 match = arr[ i ].slice( arr[ i ].indexOf( search ), -lastIndx );
             }
             if ( match.length == search.length ) {
-                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) )+'<strong style="color:#46a64c;">'+match+'</strong>'+arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + " | مانده : " + numeral(arr_rest[i]).format('0,0');
+                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + '</br>'+" ه.خ : " + numeral(buy[i]).format('0,0') + " | ه.ف :" + numeral(sell[i]).format('0,0') ;
 
                 b = document.createElement( "DIV" );
                 b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";
@@ -81,7 +76,7 @@ function autocomplete( inp, arr , arr_rest , type ) {
         }
         if(a.childElementCount == 0){
             inp.nextElementSibling.style.display = 'block';
-            inp.nextElementSibling.innerHTML = '<span class="icon-alert"></span>' + ' با مشتری  ' + val + ' معامله  ' + textdd + ' ثبت نشده است ';
+            inp.nextElementSibling.innerHTML = '<span class="icon-alert"></span>' + ' با مشتری  ' + val + ' ثبت نشده است ';
             Default(type);
         }else{
             inp.nextElementSibling.style.display = 'none';
@@ -169,6 +164,7 @@ function showTable(res , type , url){
             var td_fullname = tr.appendChild( document.createElement( 'td' ) );
             var a_customer = td_fullname.appendChild(document.createElement('a'));
             a_customer.setAttribute('href' , url + "deal/handle_profile/" + res.cust[i].customer_id);
+            a_customer.setAttribute('target' ,  '_blank');
             a_customer.innerHTML = res.cust[i].fullname;
             
             var td_volume = tr.appendChild(document.createElement('td'));

@@ -1532,19 +1532,39 @@ $this->base_model->insert_data('handle' , $data);
                 if(!$this->session->has_userdata('see_handle') or $this->session->userdata('see_handle') != TRUE){
                     show_404();
                 }
-                $header['title'] = 'هماهنگی';
                 $header['active'] = 'deal';
                 $header['active_sub'] = 'deal_archive';      
                 $data['deal'] = $this->base_model->get_data_join('deal' ,'customer', 'deal.* , customer.fullname ,unit.name' , 'deal.customer_id = customer.id' ,'result'  , array('deal.customer_id'=> $id), NULL , NULL , array('deal.id' , 'DESC') , array('unit','deal.money_id = unit.id'));
+                $header['title'] = $data['deal'][0]->fullname;
                 $data['bank'] = $this->base_model->get_data('bank' ,'*' ,'result' ,array('customer_id' => $id));
-                $data['select'] = $this->base_model->get_data('bank' , 'id , explain , rest , rest_handle' , 'result' , array('customer_id' => $id , 'active'=> 1));
                 $data['handle'] = $this->base_model->get_data_join('handle' , 'bank' , 'handle.* , customer.fullname ,customer.id as cust_id, bank.explain' , 'handle.bank_id = bank.id' , 'result' , array('handle.buy_id'=>$id) , NULL , NULL , array('handle.id' , 'DESC'),array('customer' , 'handle.sell_id = customer.id'));
                 $data['handle2'] = $this->base_model->get_data_join('handle' , 'bank' , 'handle.* , customer.fullname ,customer.id as cust_id, bank.explain' , 'handle.bank_id = bank.id' , 'result' , array('handle.sell_id'=>$id) , NULL , NULL , array('handle.id' , 'DESC'),array('customer' , 'handle.buy_id = customer.id'));
-                $data['rest_cust'] = $this->base_model->run_query("SELECT c.fullname , MAX(d.rb) as rest_buy , MAX(dd.rs) as rest_sell from customer c  left join (select sum(rest) as rb , customer_id from deal where type = 1 group by customer_id) d ON d.customer_id = c.id LEFT JOIN (select sum(rest) as rs , customer_id FROM deal where type = 2 group by customer_id) dd ON dd.customer_id = c.id group by c.id");
-                // $data['buy'] = $this->Base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 1 GROUP BY d.customer_id ORDER BY d.id DESC");
-                // $data['sell'] = $this->Base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 2 GROUP BY d.customer_id ORDER BY d.id DESC");
+                $customer = $this->base_model->run_query("SELECT id , fullname FROM customer order by id ASC");
+                $buy = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id  where d.type = 1 GROUP BY d.customer_id ORDER BY d.customer_id ASC");
+                $sell = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id  where d.type = 2 GROUP BY d.customer_id ORDER BY d.customer_id ASC");
                 $date = $this->convertdate->convert(time());
                 $data['date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
+                $search = array();
+                foreach($customer as $rows){
+                    $search[$rows->id]['fullname'] = $rows->fullname;
+                    $search[$rows->id]['buy'] = 0;
+                    foreach($buy as $row){
+                      if($rows->id == $row->customer_id){
+                          $search[$rows->id]['buy'] = $row->volume - $row->handle;
+                          break; 
+                      }
+                    }
+                }
+                foreach($customer as $rows){
+                    $search[$rows->id]['sell'] = 0;
+                    foreach($sell as $row){
+                      if($rows->id == $row->customer_id){
+                          $search[$rows->id]['sell'] = $row->volume - $row->handle;
+                          break; 
+                      }
+                    }
+                }
+                $data['search'] = $search;
             $this->load->view('header' , $header);
             $this->load->view('deal/handle_profile' , $data);
             $this->load->view('footer');
@@ -1621,11 +1641,34 @@ $this->base_model->insert_data('handle' , $data);
             $rows_sell = $this->base_model->get_data('deal' , 'count(id) as cust_id' , 'result' , array('type'=>2) , NULL , NULL , NULL , 'customer_id');
             $data['buy'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 1 GROUP BY d.customer_id ORDER BY d.id DESC LIMIT 0 , 10");
             $data['sell'] = $this->base_model->run_query("SELECT d.customer_id, SUM(d.rest) AS rest, SUM(d.volume) AS volume, max(h.volume_handle) AS handle , c.fullname  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id inner join customer c on c.id = d.customer_id where d.type = 2 GROUP BY d.customer_id ORDER BY d.id DESC LIMIT 0 , 10");
-            $data['rest_cust'] = $this->base_model->run_query("SELECT c.fullname , MAX(d.rb) as rest_buy , MAX(dd.rs) as rest_sell from customer c  left join (select sum(rest) as rb , customer_id from deal where type = 1 group by customer_id) d ON d.customer_id = c.id LEFT JOIN (select sum(rest) as rs , customer_id FROM deal where type = 2 group by customer_id) dd ON dd.customer_id = c.id group by c.id");          
             $data['rows_buy'] = sizeof($rows_buy);
             $data['rows_sell'] = sizeof($rows_sell);
+            $customer = $this->base_model->run_query("SELECT id , fullname FROM customer order by id ASC");
+            $buy = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id  where d.type = 1 GROUP BY d.customer_id ORDER BY d.customer_id ASC");
+            $sell = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id  where d.type = 2 GROUP BY d.customer_id ORDER BY d.customer_id ASC");
             $date = $this->convertdate->convert(time());
             $data['date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
+            $search = array();
+            foreach($customer as $rows){
+                $search[$rows->id]['fullname'] = $rows->fullname;
+                $search[$rows->id]['buy'] = 0;
+                foreach($buy as $row){
+                  if($rows->id == $row->customer_id){
+                      $search[$rows->id]['buy'] = $row->volume - $row->handle;
+                      break; 
+                  }
+                }
+            }
+            foreach($customer as $rows){
+                $search[$rows->id]['sell'] = 0;
+                foreach($sell as $row){
+                  if($rows->id == $row->customer_id){
+                      $search[$rows->id]['sell'] = $row->volume - $row->handle;
+                      break; 
+                  }
+                }
+            }
+            $data['search'] = $search;
                         $header['title'] = 'کاربرگ معاملات';
                         $header['active'] = 'deal';
                         $header['active_sub'] = 'deal_sheet';
