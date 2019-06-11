@@ -465,5 +465,15 @@ if($res){
          show_404();
      }
  }
+ function alert(){
+    $header['title'] = 'اعلان مشتری';
+    $header['active'] = 'settings';
+    $header['active_sub'] = 'alert';
+    $this->load->view('header' , $header);
+    $this->load->view('currency/alert');
+    $this->load->view('footer');
+ }
 }
+
+
 ?>
