@@ -29,7 +29,7 @@ function sellTable(res , url){
 var tbody_buy = document.getElementById('tbody_buy');
 var tbody_sell = document.getElementById('tbody_sell');
 var select = document.getElementById('money_id');
-function autocomplete( inp, arr , buy , sell , type ) {
+function autocomplete( inp, arr , notHandle , type ) {
     var currentFocus;
     inp.addEventListener( "input", function ( e ) {
         var a, b, i, val = this.value;
@@ -56,7 +56,7 @@ function autocomplete( inp, arr , buy , sell , type ) {
                 match = arr[ i ].slice( arr[ i ].indexOf( search ), -lastIndx );
             }
             if ( match.length == search.length ) {
-                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + '</br>'+" ه.خ : " + numeral(buy[i]).format('0,0') + " | ه.ف :" + numeral(sell[i]).format('0,0') ;
+                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + '</br>'+" ه.ن : " + numeral(notHandle[i]).format('0,0');
 
                 b = document.createElement( "DIV" );
                 b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";
@@ -76,7 +76,7 @@ function autocomplete( inp, arr , buy , sell , type ) {
         }
         if(a.childElementCount == 0){
             inp.nextElementSibling.style.display = 'block';
-            inp.nextElementSibling.innerHTML = '<span class="icon-alert"></span>' + ' با مشتری  ' + val + ' ثبت نشده است ';
+            inp.nextElementSibling.innerHTML = '<span class="icon-alert"></span>' + ' با مشتری  ' + val + '   معامله ای ثبت نشده است ';
             Default(type);
         }else{
             inp.nextElementSibling.style.display = 'none';

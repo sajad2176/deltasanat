@@ -71,7 +71,7 @@ function show_bank( input ) {
 }
 
 //search customer
-function autocomplete( inp, arr , buy , sell ) {
+function autocomplete( inp, arr , notHandle ) {
     var currentFocus;
     inp.addEventListener( "input", function ( e ) {
         var a, b, i, val = this.value;
@@ -96,7 +96,7 @@ function autocomplete( inp, arr , buy , sell ) {
                 match = arr[ i ].slice( arr[ i ].indexOf( search ), -lastIndx );
             }
             if ( match.length == search.length ) {
-                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + '</br>'+" ه.خ : " + numeral(buy[i]).format('0,0') + " | ه.ف :" + numeral(sell[i]).format('0,0') ;
+                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + '</br>'+" ه.ن : " + numeral(notHandle[i]).format('0,0');
 
                 b = document.createElement( "DIV" );
                 b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";

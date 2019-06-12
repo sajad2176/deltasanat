@@ -1550,7 +1550,11 @@ $this->base_model->insert_data('handle' , $data);
                     $search[$rows->id]['buy'] = 0;
                     foreach($buy as $row){
                       if($rows->id == $row->customer_id){
-                          $search[$rows->id]['buy'] = $row->volume - $row->handle;
+                          if($row->volume < $row->handle){
+                              $search[$rows->id]['buy'] = 0;
+                          }else{
+                              $search[$rows->id]['buy'] = $row->volume - $row->handle;
+                          }
                           break; 
                       }
                     }
@@ -1559,7 +1563,11 @@ $this->base_model->insert_data('handle' , $data);
                     $search[$rows->id]['sell'] = 0;
                     foreach($sell as $row){
                       if($rows->id == $row->customer_id){
-                          $search[$rows->id]['sell'] = $row->volume - $row->handle;
+                          if($row->volume < $row->handle){
+                              $search[$rows->id]['sell'] = 0;
+                          }else{
+                              $search[$rows->id]['sell'] = $row->volume - $row->handle;
+                          }
                           break; 
                       }
                     }
@@ -1654,7 +1662,11 @@ $this->base_model->insert_data('handle' , $data);
                 $search[$rows->id]['buy'] = 0;
                 foreach($buy as $row){
                   if($rows->id == $row->customer_id){
-                      $search[$rows->id]['buy'] = $row->volume - $row->handle;
+                          if($row->volume < $row->handle){
+                              $search[$rows->id]['buy'] = 0;
+                          }else{
+                              $search[$rows->id]['buy'] = $row->volume - $row->handle;
+                          }
                       break; 
                   }
                 }
@@ -1663,7 +1675,11 @@ $this->base_model->insert_data('handle' , $data);
                 $search[$rows->id]['sell'] = 0;
                 foreach($sell as $row){
                   if($rows->id == $row->customer_id){
-                      $search[$rows->id]['sell'] = $row->volume - $row->handle;
+                        if($row->volume < $row->handle){
+                              $search[$rows->id]['sell'] = 0;
+                          }else{
+                              $search[$rows->id]['sell'] = $row->volume - $row->handle;
+                          }
                       break; 
                   }
                 }
