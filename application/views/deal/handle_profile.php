@@ -46,11 +46,11 @@ if ( $this->session->has_userdata( 'msg' ) ) {
             <tr><td colspan="11" class="text-center p-20">موردی یافت نشد</td></tr>
 		<?php }else{
 			$sum_volume = 0; $sum_pay = 0; $sum_rest = 0; $forbank = 0;
-			foreach($deal as  $deals){?>
+			foreach($deal as  $deals){  if($deals->rest != 0){ if($deals->type == 1){$forbank += $deals->volume;}else{$forbank -= $deals->volume;}  }?>
 			<tr class="<?php if($deals->state == 0){echo 'state_bg';}?>">
                 <td class="text-center"><?php echo $deals->id + 100; ?></td>
                 <td class="text-center"><?php echo $deals->fullname; ?></td>
-				<td class="text-center"><?php if($deals->type == 1 ){echo 'خرید'; $sum_pay -= $deals->pay; $sum_volume -= $deals->volume; $sum_rest -= $deals->rest; $forbank += $deals->volume; }else{echo 'فروش'; $sum_pay += $deals->pay; $sum_volume += $deals->volume; $sum_rest += $deals->rest; $forbank -= $deals->volume;} ?></td>
+				<td class="text-center"><?php if($deals->type == 1 ){echo 'خرید'; $sum_pay -= $deals->pay; $sum_volume -= $deals->volume; $sum_rest -= $deals->rest;  }else{echo 'فروش'; $sum_pay += $deals->pay; $sum_volume += $deals->volume; $sum_rest += $deals->rest; }?></td>
 				<td class="text-center"><?php echo number_format($deals->count_money) . " " . $deals->name;?></td>
 				<td class="text-center"><?php echo number_format($deals->convert); ?></td>
 				<td class="text-center <?php if($deals->volume < $deals->pay){echo 'text-danger';}?>"><?php echo number_format($deals->volume); ?> </td>
@@ -170,8 +170,8 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				if(empty($bank)){ ?>
                   <tr><td colspan="10" class="text-center p-20">موردی یافت نشد</td></tr>
 				<?php }else{
-				$amount = 0; $pay = 0; $rest = 0;	
-				foreach($bank as $key => $banks){ $amount += $banks->amount; $pay += $banks->pay; $rest += $banks->rest; 
+				$amount = 0; $pay = 0; $rest = 0; $abank = 0;	
+				foreach($bank as $key => $banks){ if($banks->rest != 0){ $abank += $banks->amount; }  $amount += $banks->amount; $pay += $banks->pay; $rest += $banks->rest; 
 					?>
 					<tr>
 						<td><?php echo $banks->id + 1000 ;?></td>
@@ -200,7 +200,7 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<td class="lright" style="text-align:center !important; "><b><?php echo number_format($amount);?></b></td>
 				<td class="lright" style="text-align:center !important; "><b><?php echo number_format($pay);?></b></td>
 				<td class="lright" style="text-align:center !important; "><b><?php echo number_format($rest);?></b></td>
-				<td class="lright" style="text-align:center !important; " ><b><?php echo number_format($forbank - $amount);?></b></td>
+				<td class="lright" style="text-align:center !important; " ><b><?php echo ' مانده تعیین نشده :  '.number_format($forbank - $abank);?></b></td>
 				<td></td>
 				<td></td>
 				<td></td>
@@ -588,17 +588,17 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 				<!-- /add bank modal -->
 	<!-- edit bank modal -->
 		<?php
-		$str = ''; $str2 = ''; $str3 = '';
+		$str = ''; $str2 = '';
 		$count = sizeof($search);
 		for($i = 1 ; $i <= $count ; $i++){
 			$name = $search[$i]['fullname'];
 			$buy  = $search[$i]['buy'];
 			$sell = $search[$i]['sell'];
+			$amount = $sell - $buy;
 			$str .= "\"$name\",";
-		   $str2 .= "\"$buy\"," ;
-		   $str3 .= "\"$sell\",";
+		   $str2 .= "\"$amount\"," ;
 		}
-		$str = trim($str , ','); $str2 = trim($str2 , ','); $str3 = trim($str3 , ','); 
+		$str = trim($str , ','); $str2 = trim($str2 , ','); 
 		?>
 		<script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/handle_group.js"></script>
 		<script>
@@ -612,9 +612,8 @@ formEdit.action = "<?php echo base_url('deal/edit_handle/').$this->uri->segment(
 
 var array  = [ <?php echo $str;?> ];
 var array2 = [<?php echo $str2;?> ];
-var array3 = [<?php echo $str3;?> ];
 function search_cust( input ) {
-				autocomplete( input, array , array2 , array3);
+				autocomplete( input, array , array2);
 }		
 //delete deal -----------------
 	var titleDelete = document.getElementById('titleDelete');

@@ -389,70 +389,83 @@ $this->base_model->insert_data('backup' , $back);
              $deal['time_deal'] = $time_deal;
              $deal['date_modified'] = $date['year']."-".$date['month_num']."-".$date['day']."</br>".$date['hour'].":".$date['minute'].":".$date['second'];
              $deal['money_id'] = $this->input->post('money_id');
+            if(isset($_POST['temp'])){
+                $deal['temp'] = 1;
+            }else{
+                $deal['temp'] = 0;
+            }
             //deal
-
             //currency 
 
              $base = $this->base_model->get_data('deal' , 'count_money , wage , money_id , type , volume , convert' , 'row' , array('id' => $id));
              
              $base_count = $base->count_money;
              $send_count = $deal['count_money'];
-
              $change_rial = $deal['volume'] - $base->volume ;
+             $base_volume = $base->volume;
 
              $this->db->trans_begin();
-             $c_rial = TRUE ;
-             $c_base = TRUE;
-             $c_send = TRUE;
-             if($base->money_id == 5){
+             $status = TRUE;
+             if($base->money_id == 5 and $base->money_id == $deal['money_id']){
                  //rial
                  if($base->type == 1){
-                    $c_rial = $this->base_model->set('amount' , 'amount+'.$change_rial , array('id'=>5) , 'unit');
+                    $status = $this->base_model->set('amount' , 'amount+'.$change_rial , array('id'=>5) , 'unit');
                     $text3 = ' افزایش یافت';
                  }else{
-                    $c_rial = $this->base_model->set('amount' , 'amount-'.$change_rial , array('id'=>5) , 'unit');
+                    $status = $this->base_model->set('amount' , 'amount-'.$change_rial , array('id'=>5) , 'unit');
                     $text3 = 'کاهش یافت';
                  }
                  $change_unit = ' مقدار ریال به اندازه  '.number_format($change_rial).$text3."</br>";
-                 if(isset($_POST['temp'])){
-                     $deal['temp'] = 1;
-                 }else{
-                     $deal['temp'] = 0;
-                 }
                  //rial
              }else{
                  //other
                 if($base->money_id != $deal['money_id']){
-                     if($base->type == 1){
-                        $c_rial = $this->base_model->set('amount' , 'amount-'.$change_rial , array('id'=>5) , 'unit');
-                        $c_base = $this->base_model->set('amount' , 'amount-'.$base_count , array('id'=>$base->money_id) , 'unit');
-                        $c_send = $this->base_model->set('amount' , 'amount+'.$send_count , array('id'=>$deal['money_id']) , 'unit');
-                        $text3 = 'کاهش یافت';
-                     }else{
-                        $c_rial = $this->base_model->set('amount' , 'amount+'.$change_rial , array('id'=>5) , 'unit');
-                        $c_base = $this->base_model->set('amount' , 'amount+'.$base_count , array('id'=>$base->money_id) , 'unit');
-                        $c_send = $this->base_model->set('amount' , 'amount-'.$send_count , array('id'=>$deal['money_id']) , 'unit');
-                        $text3 = 'افزایش یافت';
-                     }
-                     $change_unit = "  ارز معامله تغییر یافت "."</br>"." مقدار ریال به اندازه   ".number_format($change_rial). $text3."</br>";
+                    if($base->money_id != 5 and $deal['money_id'] != 5){
+                        if($base->type == 1){
+                            $status = $this->base_model->set('amount' , 'amount-'.$change_rial , array('id'=>5) , 'unit');
+                            $status = $this->base_model->set('amount' , 'amount-'.$base_count , array('id'=>$base->money_id) , 'unit');
+                            $status = $this->base_model->set('amount' , 'amount+'.$send_count , array('id'=>$deal['money_id']) , 'unit');
+                         }else{
+                            $status = $this->base_model->set('amount' , 'amount+'.$change_rial , array('id'=>5) , 'unit');
+                            $status = $this->base_model->set('amount' , 'amount+'.$base_count , array('id'=>$base->money_id) , 'unit');
+                            $status = $this->base_model->set('amount' , 'amount-'.$send_count , array('id'=>$deal['money_id']) , 'unit');
+                         }
+                    }else if($base->money_id == 5 and $deal['money_id'] != 5){
+                        if($base->type == 1){
+                            $status = $this->base_model->set('amount' , 'amount-'.$base_volume , array('id'=>5) , 'unit');
+                            $status = $this->base_model->set('amount' , 'amount+'.$send_count , array('id'=>$deal['money_id']) , 'unit');
+                        }else{
+                            $status = $this->base_model->set('amount' , 'amount+'.$base_volume , array('id'=>5) , 'unit');
+                            $status = $this->base_model->set('amount' , 'amount-'.$send_count , array('id'=>$deal['money_id']) , 'unit');
+                        }
+                    }else if($base->money_id != 5 and $deal['money_id'] == 5){
+
+                        if($base->type == 1){
+                            $status = $this->base_model->set('amount' , 'amount+'.$base_volume , array('id'=>5) , 'unit');
+                            $status = $this->base_model->set('amount' , 'amount-'.$send_count , array('id'=>$deal['money_id']) , 'unit');
+                        }else{
+                            $status = $this->base_model->set('amount' , 'amount-'.$base_volume , array('id'=>5) , 'unit');
+                            $status = $this->base_model->set('amount' , 'amount+'.$send_count , array('id'=>$deal['money_id']) , 'unit');
+                        }
+                    }
+                    $change_unit = "  ارز معامله تغییر یافت "."</br>";
                  }else{
                      $c_am = $send_count - $base_count;
                      if($base->type == 1){
-                       $c_base = $this->base_model->set('amount' , 'amount+'.$c_am , array('id'=>$base->money_id) , 'unit');
-                       $c_rial = $this->base_model->set('amount' , 'amount-'.$change_rial , array('id'=>5) , 'unit');
+                       $status = $this->base_model->set('amount' , 'amount+'.$c_am , array('id'=>$base->money_id) , 'unit');
+                       $status = $this->base_model->set('amount' , 'amount-'.$change_rial , array('id'=>5) , 'unit');
                        $text3 = 'کاهش یافت';
                       }else{
-                        $c_base = $this->base_model->set('amount' , 'amount-'.$c_am , array('id'=>$base->money_id) , 'unit');
-                        $c_rial = $this->base_model->set('amount' , 'amount+'.$change_rial , array('id'=>5) , 'unit');
+                        $status = $this->base_model->set('amount' , 'amount-'.$c_am , array('id'=>$base->money_id) , 'unit');
+                        $status = $this->base_model->set('amount' , 'amount+'.$change_rial , array('id'=>5) , 'unit');
                         $text3 = 'افزایش یافت';
                      }
                      $change_unit = ' ارز معامله به اندازه  '.number_format($c_am).' تغییر یافت '."</br>"." مقدار ریال به اندازه ".number_format($change_rial).$text3."</br>";
                  }
-
                 //other
              }
-             $res = $this->base_model->update_data('deal' , $deal , array('id'=> $id));
-             if($this->db->trans_status() === FALSE or $res == FALSE or $c_rial == FALSE or $c_base == FALSE or $c_send == FALSE){
+             $status = $this->base_model->update_data('deal' , $deal , array('id'=> $id));
+             if($this->db->trans_status() === FALSE or $status == FALSE){
                 $this->db->trans_rollback();
                  $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است. لطفا دوباره سعی کنید';
                  $message['msg'][1] = 'danger';
@@ -493,7 +506,7 @@ $this->base_model->insert_data('backup' , $back);
                     $dash = '-';
                     $str = $data['deal']->date_deal;
                     $data['date_deal'] = str_replace($dash, $slash , $str);
-                    $data['unit'] = $this->base_model->get_data('unit' , 'id , name' , 'result' , array('id != ' => 5));
+                    $data['unit'] = $this->base_model->get_data('unit' , 'id , name');
                     $header['title'] = ' ویرایش معامله ';
                     $header['active'] = 'deal';
                     $header['active_sub'] = 'deal_archive';

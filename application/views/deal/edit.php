@@ -40,13 +40,9 @@ $msg = $this->session->userdata('msg');?>
 										<div class="form-group">
 											<label>نام ارز : </label>
 											<select class="form-control" name="money_id" required>
-											<?php if($money != 5){
-												foreach($unit as $units){ ?>
+											<?php foreach($unit as $units){ ?>
 												<option value="<?php echo $units->id; ?>"<?php if($units->id == $money){echo 'selected';} ?>><?php echo $units->name; ?></option>
 												 <?php } ?>
-											<?php  } else { ?>
-												<option value="5" selected>ریال</option>
-											<?php } ?>
 											</select>
 										</div>
 									</div>
@@ -101,7 +97,6 @@ $msg = $this->session->userdata('msg');?>
 									<input type="text" class="form-control" name="date_deal" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date_deal." ".$deal->time_deal;?>" placeholder="Jalali Created Date">
 								</div>
 								</div>
-								<?php if($money == 5){ ?>
 									<div class="col-md-2">
                         <label class="display-block text-semibold">نوع مانده حساب :</label>
 						<div class="form-group mt-20">
@@ -112,7 +107,6 @@ $msg = $this->session->userdata('msg');?>
 										</label>
 									</div>
 						</div>
-								<?php } ?>
 								</div>
 								<div class="form-group">
 									<label>توضیحات معامله :</label>
