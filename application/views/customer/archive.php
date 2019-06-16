@@ -47,7 +47,7 @@
 							foreach($customer as $rows){ ?>
 				<tr class="base_cust">
 					<td>
-						<?php echo $num;?>
+						<?php echo $rows->id;?>
 					</td>
 					<td>
 						<a href="<?php echo base_url('deal/handle_profile/').$rows->id;?>" target="_blank"><?php echo $rows->fullname; ?></a>

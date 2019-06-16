@@ -89,16 +89,16 @@
         if (inputNumber1 == undefined) return '';
         var str1 = $.trim(inputNumber1.toString());
         if (str1 == '') return '';
-        str1 = str1.replace(/0/g, '۰');
-        str1 = str1.replace(/1/g, '۱');
-        str1 = str1.replace(/2/g, '۲');
-        str1 = str1.replace(/3/g, '۳');
-        str1 = str1.replace(/4/g, '۴');
-        str1 = str1.replace(/5/g, '۵');
-        str1 = str1.replace(/6/g, '۶');
-        str1 = str1.replace(/7/g, '۷');
-        str1 = str1.replace(/8/g, '۸');
-        str1 = str1.replace(/9/g, '۹');
+        // str1 = str1.replace(/0/g, '۰');
+        // str1 = str1.replace(/1/g, '۱');
+        // str1 = str1.replace(/2/g, '۲');
+        // str1 = str1.replace(/3/g, '۳');
+        // str1 = str1.replace(/4/g, '۴');
+        // str1 = str1.replace(/5/g, '۵');
+        // str1 = str1.replace(/6/g, '۶');
+        // str1 = str1.replace(/7/g, '۷');
+        // str1 = str1.replace(/8/g, '۸');
+        // str1 = str1.replace(/9/g, '۹');
         return str1;
     }
     function toEnglishNumber(inputNumber2) {
@@ -203,7 +203,7 @@
             hourString = isEnglishNumber ? zeroPad(dateTimeInJsonFormat.Hour) : toPersianNumber(zeroPad(dateTimeInJsonFormat.Hour)),
             minuteString = isEnglishNumber ? zeroPad(dateTimeInJsonFormat.Minute) : toPersianNumber(zeroPad(dateTimeInJsonFormat.Minute)),
             secondString = isEnglishNumber ? zeroPad(dateTimeInJsonFormat.Second) : toPersianNumber(zeroPad(dateTimeInJsonFormat.Second)),
-            selectedDateTimeString = yearString + '/' + monthString + '/' + dayString;
+            selectedDateTimeString = yearString + '-' + monthString + '-' + dayString;
         if (enableTimePicker)
             selectedDateTimeString = selectedDateTimeString + ' ' + hourString + ':' + minuteString + ':' + secondString;
         return selectedDateTimeString;

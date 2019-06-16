@@ -195,11 +195,13 @@ class Convertdate{
     if($weekDayNumber == 6)
         $newDate['weekday_num'] = 0;
     else
-        $newDate['weekday_num'] = $weekDayNumber + 1;
+    $newDate['weekday_num'] = $weekDayNumber + 1;
     $newDate['weekday_name'] = $weekdays[$newDate['weekday_num']];
     $newDate['hour'] = $hour;
     $newDate['minute'] = $minute;
-    $newDate['second'] = $second;
+	$newDate['second'] = $second;
+	$newDate['d'] = $newDate['year']."-".$newDate['month_num']."-".$newDate['day'];
+	$newDate['t'] = $newDate['hour'].":".$newDate['minute'].":".$newDate['second'];
     return $newDate;
 		}
 }
