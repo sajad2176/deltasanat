@@ -117,7 +117,7 @@ $msg = $this->session->userdata('msg');?>
 			<div class="panel-body">
 				<div style="padding-right: 0px" class="panel-heading">
 					<h6 class="panel-title rightbox display-inline-block mt-10"> آمار مشتری :  <span id="name_customer"></span></h6>
-					<h6 class="lefttbox " ><?php echo substr($date , 0 , 10);?></h6>
+					<h6 class="lefttbox " ><?php echo $date;?></h6>
 				</div>
 
 				<div class="table-responsive">

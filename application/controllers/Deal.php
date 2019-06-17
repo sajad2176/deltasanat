@@ -192,15 +192,18 @@ $this->base_model->insert_data('backup' , $back);
         if(isset($_POST['sub'])){
             if($this->input->post('type') == 1){
                 $page = 'buy';
+                $act = 9;
                 if(!$this->session->has_userdata('add_buy') or $this->session->userdata('add_buy') != TRUE){
                     show_404();
                 }
             }else{
                 $page = 'sell';
+                $act = 10;
                 if(!$this->session->has_userdata('add_sell') or $this->session->userdata('add_sell') != TRUE){
                     show_404();
                 }
             }
+            //validation
             $this->form_validation->set_rules('customer' , 'customer' , 'required');
             $this->form_validation->set_rules('count_money','count_money' , 'required|numeric');
             $this->form_validation->set_rules('wage','wage' , 'required|numeric');
@@ -211,24 +214,16 @@ $this->base_model->insert_data('backup' , $back);
 				$this->session->set_flashdata($message);
 				redirect("deal/$page");
             }
-
-            //deal
+           //validation
+           //deal
             $customer['fullname'] = trim($this->input->post('customer') , ' ');
             $check = $this->base_model->get_data('customer' , 'id' , 'row' , array('fullname'=>$customer['fullname']));
             if(empty($check)){
-                $customer['address'] = '';
-                $customer['email'] = '';
-                $customer['customer_tel'] = '';
                 $id = $this->base_model->insert_data('customer' , $customer);
             }else{
                 $id = $check->id;
             }
-            $persian_num = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
-            $latin_num = range(0, 9);
-            $slash = '/';
-            $dash = '-';
-            $string = str_replace($persian_num, $latin_num, $_POST['date_deal']);
-            $string = str_replace($slash, $dash, $string); 
+            $string = str_replace('/', '-', $this->input->post('date_deal')); 
             $date_deal = substr($string , 0 , 10);
             $time_deal = substr($string , 10 , 20);
            $date = $this->convertdate->convert(time());
@@ -241,67 +236,44 @@ $this->base_model->insert_data('backup' , $back);
            $deal['explain'] = $this->input->post('explain');
            $deal['date_deal'] = $date_deal;
            $deal['time_deal'] = $time_deal;
-           $deal['date_modified'] = 'ثبت نشده است';
            $deal['type'] = $this->input->post('type');
            $deal['customer_id'] = $id;
            $deal['money_id'] = $this->input->post('money_id');
            $deal['state'] = 1;
-           // deal
-
-           //currency
-           $change_other = $deal['count_money'];
-           $this->db->trans_begin();
-           if($deal['type'] == 1){
-              $rial = $this->base_model->set('amount' , 'amount-'.$deal['volume'] , array('id'=>5) , 'unit');
-              $other = $this->base_model->set('amount' , 'amount+'.$change_other , array('id'=>$deal['money_id']) , 'unit');
-              $act = 9;
-              $text2 = ' کاهش یافت ';
-              $text = " افزایش یافت ";
-           }else{
-            $rial = $this->base_model->set('amount' , 'amount+'.$deal['volume'] , array('id'=>5) , 'unit');
-            $other = $this->base_model->set('amount' , 'amount-'.$change_other , array('id'=>$deal['money_id']) , 'unit'); 
-               $act = 10;
-               $text2 = 'افزایش یافت ';
-               $text = " کاهش یافت ";
-           }
-           //currency
            $deal_id = $this->base_model->insert_data('deal' , $deal);
-           if($deal_id == FALSE or $rial == FALSE or $other == FALSE){
-            $this->db->trans_rollback();
+
+           if($deal_id == FALSE){
             $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است. لطفا دوباره سعی کنید';
             $message['msg'][1] = 'danger';
             $this->session->set_flashdata($message);
             redirect("deal/$page");
-        }else{
-            $this->db->trans_commit();
-        }
-
+            }
+        //deal
         //log
         $get = $this->base_model->get_data('unit' , 'name' , 'row' , array('id'=>$deal['money_id']));
         $money = $get->name;
-        $aa = $deal_id + 100;
         $log['user_id'] = $this->session->userdata('id');
-        $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
-        $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+        $log['date_log'] = $date['dd'];
+        $log['time_log'] = $date['t'];
         $log['activity_id'] = $act;
-        $log['explain'] = " نام مشتری :  ".$customer['fullname']." | شناسه معامله : ".$aa . " | ارز معامله : ". $money . " | تعداد ارز : ".number_format($deal['count_money']) ." | کارمزد : ".number_format($deal['wage']) . " | نرخ تبدیل : ".number_format($deal['convert'])." ریال "." | حجم معامله  :  ".number_format($deal['volume'])." ریال "." | مقدار ارز  ".$money. " به اندازه ".number_format($change_other)." ".$text."| مقدار ریال به اندازه ".number_format($deal['volume'])." ".$text2;
+        $log['explain'] = " نام مشتری :  ".$customer['fullname']." | شناسه معامله : ".$deal_id . " | ارز معامله : ". $money . " </br> تعداد ارز : ".number_format($deal['count_money']) ." | کارمزد : ".number_format($deal['wage']) . " | نرخ تبدیل : ".number_format($deal['convert'])." </br> حجم معامله  :  ".number_format($deal['volume'])."</br>  ثبت شد .";
+        $log['customer_id'] = $id;
         $this->base_model->insert_data('log' , $log);
         //log
          $message['msg'][0] = 'اطلاعات معامله با موفقیت ثبت شد';
          $message['msg'][1] = 'success';
          $this->session->set_flashdata($message);
          redirect("deal/$page");
-
 }else{
     if(!$this->session->has_userdata('add_buy') or $this->session->userdata('add_buy') != TRUE){
          show_404();
      } 
             $date = $this->convertdate->convert(time());
-            $data['date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
+            $data['date'] = $date['d']." ".$date['t'];
             $header['title'] = 'افزودن خرید';
             $header['active'] = 'deal';
             $header['active_sub'] = 'deal_buy';
-            $data['customer'] = $this->base_model->get_data('customer' ,'fullname' , 'result');
+            $data['customer'] = $this->base_model->get_data('customer' ,'fullname');
             $data['unit'] = $this->base_model->get_data('unit' , 'id , name ', 'result' , array('id != ' => 5));
             $this->load->view('header' , $header);
             $this->load->view('deal/buy' , $data);
@@ -317,9 +289,9 @@ $this->base_model->insert_data('backup' , $back);
             $header['title'] = 'افزودن فروش';
             $header['active'] = 'deal';
             $header['active_sub'] = 'deal_sell';
-            $data['customer'] = $this->base_model->get_data('customer' ,'fullname' , 'result');
+            $data['customer'] = $this->base_model->get_data('customer' ,'fullname');
             $date = $this->convertdate->convert(time());
-            $data['date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
+            $data['date'] = $date['d']." ".$date['t'];
             $data['unit'] = $this->base_model->get_data('unit' , 'id , name ', 'result' , array('id !=' => 5));
             $this->load->view('header' , $header);
             $this->load->view('deal/sell', $data);
