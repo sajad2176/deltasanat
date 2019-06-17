@@ -3,7 +3,7 @@ function showCustResult( result, url ) {
     search.style.display = 'contents';
     base.style.display = 'none';
     if ( result.length == 0 ) {
-        search.innerHTML = "<tr><td colspan = '11' class='text-center p-20'>موردی یافت نشد</td></tr>";
+        search.innerHTML = "<tr><td colspan = '10' class='text-center p-20'>موردی یافت نشد</td></tr>";
         return;
     } else {
         var div = document.createElement( 'tbody' );
@@ -18,8 +18,9 @@ function showCustResult( result, url ) {
             
             var td_fullname = tr.appendChild( document.createElement( 'td' ) );
             var a_customer = td_fullname.appendChild(document.createElement('a'));
-            a_customer.setAttribute('href' , url + 'deal/handle_profile/' + result[i].cust_id);
+            a_customer.setAttribute('href' , url + 'deal/profile/' + result[i].customer_id);
             a_customer.setAttribute('target' , '_blank');
+            a_customer.setAttribute('class' , 'enterCustomer');
             a_customer.innerHTML = result[i].fullname;
             
             var td_type = tr.appendChild( document.createElement('td'));
@@ -27,7 +28,7 @@ function showCustResult( result, url ) {
             td_type.innerHTML = type;
             
             var td_count = tr.appendChild( document.createElement( 'td' ) );
-            td_count.innerHTML = numeral(result[i].count_money).format('0,0') + ' ' + result[i].name;
+            td_count.innerHTML = numeral(result[i].count_money).format('0,0') + '</br>' + result[i].name;
             
             var td_convert = tr.appendChild(document.createElement('td'));
             td_convert.innerHTML = numeral(result[i].convert).format('0,0');
@@ -42,9 +43,6 @@ function showCustResult( result, url ) {
             td_rest.innerHTML = numeral(result[i].rest).format('0,0');
             var td_date = tr.appendChild(document.createElement('td'));
             td_date.innerHTML = result[i].date_deal + '</br>' + result[i].time_deal;
-
-            var td_modify = tr.appendChild(document.createElement('td'));
-                td_modify.innerHTML = result[i].date_modified;
             
             var td_tool = tr.appendChild( document.createElement( 'td' ) );
             td_tool.setAttribute( 'class', 'text-center' );
@@ -80,5 +78,17 @@ function showCustResult( result, url ) {
             i_delete.setAttribute('onclick' , 'deleteDeal('+ result[i].id + ','+result[i].pay+')');
         }
        search.replaceChild( div, search.firstChild );
+    }
+}
+function settings(elem){
+    if(elem.nextElementSibling == null){
+        elem.previousElementSibling.removeAttribute("style");
+    }else{
+        elem.nextElementSibling.removeAttribute("style");
+    }
+    if(elem.style.backgroundColor == 'rgb(153, 255, 153)'){
+        elem.removeAttribute("style");
+    }else{
+        elem.style.backgroundColor = '#99ff99';
     }
 }

@@ -63,7 +63,7 @@ function get_data_join($from , $join , $select ,$join_where ,$ret = 'result' , $
     }
 }
 function get_deal($offset , $between = NULL , $fullname = NULL , $type = NULL , $money_id = NULL){
-    $this->db->select("deal.* , customer.fullname , customer.id as cust_id , unit.name");
+    $this->db->select("deal.* , customer.fullname , unit.name");
     $this->db->from('deal');
     $this->db->join('customer' , 'deal.customer_id = customer.id' , 'left');
     $this->db->join('unit' , 'deal.money_id = unit.id' , 'left');
@@ -86,7 +86,7 @@ function get_deal($offset , $between = NULL , $fullname = NULL , $type = NULL , 
 
 }
 function total_deal($between = NULL , $fullname = NULL , $type = NULL , $money_id = NULL){
-    $this->db->select("deal.* , customer.fullname , customer.id as cust_id , unit.name");
+    $this->db->select("deal.* , customer.fullname , unit.name");
     $this->db->from('deal');
     $this->db->join('customer' , 'deal.customer_id = customer.id' , 'left');
     $this->db->join('unit' , 'deal.money_id = unit.id' , 'left');

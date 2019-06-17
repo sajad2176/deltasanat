@@ -200,8 +200,9 @@ class Convertdate{
     $newDate['hour'] = $hour;
     $newDate['minute'] = $minute;
 	$newDate['second'] = $second;
-	$newDate['d'] = $newDate['year']."-".$newDate['month_num']."-".$newDate['day'];
+	$newDate['dd'] = $newDate['year']."-".$newDate['month_num']."-".$newDate['day'];
 	$newDate['t'] = $newDate['hour'].":".$newDate['minute'].":".$newDate['second'];
+	$newDate['d'] = $newDate['year']."/".$newDate['month_num']."/".$newDate['day'];
     return $newDate;
 		}
 }

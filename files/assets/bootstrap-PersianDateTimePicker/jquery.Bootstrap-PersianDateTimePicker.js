@@ -203,7 +203,7 @@
             hourString = isEnglishNumber ? zeroPad(dateTimeInJsonFormat.Hour) : toPersianNumber(zeroPad(dateTimeInJsonFormat.Hour)),
             minuteString = isEnglishNumber ? zeroPad(dateTimeInJsonFormat.Minute) : toPersianNumber(zeroPad(dateTimeInJsonFormat.Minute)),
             secondString = isEnglishNumber ? zeroPad(dateTimeInJsonFormat.Second) : toPersianNumber(zeroPad(dateTimeInJsonFormat.Second)),
-            selectedDateTimeString = yearString + '-' + monthString + '-' + dayString;
+            selectedDateTimeString = yearString + '/' + monthString + '/' + dayString;
         if (enableTimePicker)
             selectedDateTimeString = selectedDateTimeString + ' ' + hourString + ':' + minuteString + ':' + secondString;
         return selectedDateTimeString;

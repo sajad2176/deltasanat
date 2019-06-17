@@ -6,7 +6,7 @@ $msg = $this->session->userdata('msg');?>
 										<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
 										<?php echo $msg[0];?>
 								    </div>
-<?php }?>
+<?php } ?>
 
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 	<ul class="breadcrumb">
@@ -41,13 +41,13 @@ $msg = $this->session->userdata('msg');?>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">از تاریخ :</label>
-									<input type="text" class="form-control" name="start_date" id="j_created_date" readonly data-mddatetimepicker="true" data-placement="bottom" value="<?php //if($this->input->get('start_date')){echo $this->input->get('start_date');}else{echo $date;} ?>" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" name="start_date" id="j_created_date" readonly data-mddatetimepicker="true" data-placement="bottom" value="<?php  if($this->input->get('start_date')){echo $this->input->get('start_date');}else{echo $date;} ?>" placeholder="Jalali Created Date">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">تا تاریخ :</label>
-									<input type="text" class="form-control" name="end_date" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php if($this->input->get('end_date')){echo $this->input->get('end_date');}else{echo $date;} ?>" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" name="end_date" id="j_created_date" readonly data-mddatetimepicker="true" data-placement="bottom" value="<?php if($this->input->get('end_date')){echo $this->input->get('end_date');}else{echo $date;} ?>" placeholder="Jalali Created Date">
 								</div>
 							</div>
 						</div>
@@ -86,36 +86,33 @@ $msg = $this->session->userdata('msg');?>
 	<table class="table datatable-selection-single table-responsive-lg ">
 		<thead>
 			<tr>
-				<th width="5%">شناسه معامله</th>
-				<th>نام مشتری</th>
-				<th>نوع معامله</th>
-				<th>تعداد ارز</th>
-				<th>نرخ تبدیل</th>
-				<th>حجم معامله</th>
-				<th>حجم پرداخت شده</th>
-				<th>حجم باقی مانده</th>
-				<th>تاریخ ثبت</th>
-				<th>آخرین ویرایش</th>
-				<th class="text-center">ابزار</th>
+				<th width="5%">شناسه</th>
+				<th width="10%">نام مشتری</th>
+				<th width="5%">نوع</th>
+				<th width="10%">تعداد ارز</th>
+				<th width="8%">نرخ تبدیل</th>
+				<th width="15%">حجم معامله</th>
+				<th width="15%">حجم پرداخت شده</th>
+				<th width="15%">حجم باقی مانده</th>
+				<th width="7%"> تاریخ ثبت</th>
+				<th width="10%" class="text-center">ابزار</th>
 			</tr>
 		</thead>
 		<tbody id="search" tyle="display: none;">
 			<tr></tr>
 		</tbody>
 		<tbody id="base">
-
 			<?php 
 			if(empty($deal)){ ?>
-			<tr><td colspan = '11' class='text-center p-20'>موردی یافت نشد</td></tr>
+			<tr><td colspan = '10' class='text-center p-20'>موردی یافت نشد</td></tr>
 			<?php }else{
-			$num = $this->uri->segment(3) + 1;
 			foreach($deal as $key => $rows){ ?>
-			<tr class="<?php if($rows->state == 0){echo 'state_bg';}else{echo '';} ?>" >
+			<tr class="<?php if($rows->state == 0){echo 'state_bg';}?>" >
 				<td>
-					<?php echo $rows->id + 100;?>
+					<?php echo $rows->id;?>
 				</td>
 				<td>
-					<a href="<?php echo base_url('deal/handle_profile/').$rows->cust_id ?>" target="_blank">
+					<a href="<?php echo base_url('deal/profile/').$rows->customer_id ?>" target="_blank" class="enterCustomer">
 						<?php echo $rows->fullname; ?>
 					</a>
 				</td>
@@ -129,32 +126,41 @@ $msg = $this->session->userdata('msg');?>
 					<?php echo number_format($rows->convert); ?>
 				</td>
 				<td class="lright <?php if($rows->volume < $rows->pay){echo 'text-danger';}?>">
-					<?php echo number_format($rows->volume);?>
+				<span title="<?php echo " ( ".number_format($rows->count_money).' + '.$rows->wage." ) × ".number_format($rows->convert) ;?>" data-toggle="tooltip">
+				<?php echo number_format($rows->volume);?>
+				</span>
 				</td>
 				<td class="lright <?php if($rows->volume < $rows->pay){echo 'text-danger';}?>">
 					<?php echo number_format($rows->pay);?>
 				</td>
 				<td class="lright <?php if($rows->rest < 0){echo 'text-danger';}?>">
-					<?php echo number_format($rows->rest);?>
+				<span title="<?php echo number_format($rows->volume)." - ".number_format($rows->pay)?>" data-toggle="tooltip">
+				<?php echo number_format($rows->rest);?>
+				</span>
 				</td>
 				<td>
 					<?php echo $rows->date_deal."</br>".$rows->time_deal; ?>
 				</td>
-				<td>
-					<?php echo $rows->date_modified;?>
-				</td>
 				<td class="text-center">
 					<ul class="icons-list">
-<?php if($this->session->has_userdata('edit_deal') && $rows->state == 1){?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>
+					<li class="dropdown" title="تنظیمات" data-toggle="tooltip">
+													<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+														<i class="icon-cog7"></i>
+														<!-- <span class="caret"></span> -->
+													</a>
+
+													<ul class="dropdown-menu dropdown-menu-right">
+														<li onclick="settings(this)"><a>نمایش در داشبورد</a></li>
+														<li onclick="settings(this)"><a>عدم نمایش در داشبورد</a></li>
+													</ul>
+												</li>
+<?php if($this->session->has_userdata('edit_deal') && $rows->state == 1){ ?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>
 <?php if($this->session->has_userdata('see_photo')){?><li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$rows->id;?>"><i class="icon-stack-picture"></i></a></li><?php } ?>
-<?php if($this->session->has_userdata('delete_deal') && $rows->state == 1){?><li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->pay; ?>)" ></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('delete_deal') && $rows->state == 1){ ?><li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->pay; ?>)" ></i></a></li><?php } ?>
 					</ul>
 				</td>
 			</tr>
-			<?php
-			$num++;
-			}
-			?>
+			<?php } ?>
 			<tr>
 				<td colspan="6" class="pt-20 pb-20">
 					نمایش
@@ -168,7 +174,6 @@ $msg = $this->session->userdata('msg');?>
 			</tr>
 			<?php } ?>
 		</tbody>
-
 	</table>
 
 

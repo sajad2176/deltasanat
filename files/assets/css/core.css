@@ -6662,7 +6662,7 @@ h6.panel-title,
 }
 #search tr td , #search_deal tr td , #tbody_buy tr td , #tbody_sell tr td{
 vertical-align: middle;
-padding: 12px 5px;
+padding: 15px 0px;
 line-height: 1.5384616;
 border-top: 1px solid #ddd;
 }
@@ -6910,7 +6910,7 @@ border-top: 1px solid #ddd;
 }
 /* /responsive table */
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
-  padding: 12px 5px;
+  padding: 15px 0px;
 }
 .datepicker-dropdown {
 	left: inherit !important;
@@ -7038,4 +7038,8 @@ cursor: pointer;
 display: inline-block;
 width: 100%;
 padding: 10px;
+}
+.enterCustomer{
+  display: inline-block;
+  width: 100%;
 }

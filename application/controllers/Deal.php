@@ -37,17 +37,9 @@ class Deal extends CI_Controller {
         $money = array('deal.money_id'=>$money_id);
     }
     if($start_date != '' and $end_date != ''){
-        $persian_num = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
-        $latin_num = range(0, 9);
-        $slash = '/';
-        $dash = '-';
-        $start = str_replace($persian_num, $latin_num, $start_date);
-        $start = str_replace($slash, $dash, $start);
-        $end = str_replace($persian_num, $latin_num, $end_date);
-        $end = str_replace($slash, $dash, $end); 
-        $date_start = substr($start , 0 , 10);
-        $date_end = substr($end , 0 , 10);
-        $between = "deal.date_deal BETWEEN '$date_start' AND '$date_end'";
+        $start_date = str_replace('/', '-', $start_date);
+        $end_date = str_replace('/', '-', $end_date);
+        $between = "deal.date_deal BETWEEN '$start_date' AND '$end_date'";
     }
     $config['base_url'] = base_url('deal/archive?fullname='.$fullname.'&start_date='.$start_date.'&end_date='.$end_date.'&type='.$type.'&money_id='.$money_id);
     $config['total_rows'] = $this->base_model->total_deal($between , $name , $type_deal , $money);
@@ -55,9 +47,9 @@ class Deal extends CI_Controller {
     $config["uri_segment"] = '3';
     $config['page_query_string'] = TRUE;
     $config['num_links'] = '5';
-    $config['next_link'] = '<i class="icon-arrow-left5"></i>';
+    $config['next_link'] = 'صفحه بعد';
     $config['last_link'] = 'صفحه آخر';
-    $config['prev_link'] = '<i class="icon-arrow-right5"></i>';
+    $config['prev_link'] = 'صفحه قبل';
     $config['first_link'] = 'صفحه اول';
     $config['full_tag_open'] = '<nav><ul class="pagination pagination-sm">';
     $config['full_tag_close'] = '</ul></nav>';
@@ -79,8 +71,8 @@ $data['deal'] = $this->base_model->get_deal($offset , $between , $name , $type_d
 $data['page'] = $this->pagination->create_links();
 $data['count'] = $config['total_rows'];
 $date = $this->convertdate->convert(time());
-$data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$date['hour'].":".$date['minute'].":".$date['second'];
-$data['unit'] = $this->base_model->get_data('unit' , 'id , name' , 'result');
+$data['date'] = $date['d'];
+$data['unit'] = $this->base_model->get_data('unit' , 'id , name');
         $header['title'] = 'آرشیو معاملات';
         $header['active'] = 'deal';
         $header['active_sub'] = 'deal_archive';
@@ -94,7 +86,7 @@ $data['unit'] = $this->base_model->get_data('unit' , 'id , name' , 'result');
     public function search(){
         if(isset($_POST['text_search'])){
             $title = trim($this->input->post('text_search') , ' ');
-            $data = $this->base_model->search_data('deal' , 'customer' , 'deal.* , customer.fullname , customer.id as cust_id ,unit.name' ,'deal.customer_id = customer.id' , 'left'  , array('customer.fullname'=>$title) , NULL , array('deal.id' , 'DESC') , NULL , array('unit','deal.money_id = unit.id'));
+            $data = $this->base_model->search_data('deal' , 'customer' , 'deal.* , customer.fullname , unit.name' ,'deal.customer_id = customer.id' , 'left'  , array('customer.fullname'=>$title) , NULL , array('deal.id' , 'DESC') , NULL , array('unit','deal.money_id = unit.id'));
             echo json_encode($data);
         }else{
             show_404();
