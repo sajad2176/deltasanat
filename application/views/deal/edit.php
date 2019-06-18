@@ -21,7 +21,7 @@ $msg = $this->session->userdata('msg');?>
 <!-- 2 columns form -->
 <div class="row">
 	<div class="col-md-8">
-		<form action="<?php echo base_url('deal/edit/').$deal->id;?>" method="post">
+		<form action="<?php echo base_url('deal/edit/').$deal->id;?>" method="post" id="sub">
 			<div class="panel panel-flat">
 				<div class="panel-body">
 					<div class="row">
@@ -32,14 +32,14 @@ $msg = $this->session->userdata('msg');?>
 								<div class="form-group">
 									<label><?php echo $txt;?></label>
 									<input class="form-control" value="<?php echo $deal->fullname;?>" name="customer" type="text" placeholder="نام مشتری خود را وارد کنید" autocomplete="off" required>
-                                    <input type="hidden" name="cust_id" value="<?php echo $deal->cust_id?>">
+                                    <input type="hidden" name="cust_id" value="<?php echo $deal->customer_id;?>">
 								</div>
 
 								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>نام ارز : </label>
-											<select class="form-control" name="money_id" required>
+											<select class="form-control" id="send_money" name="money_id" required>
 											<?php foreach($unit as $units){ ?>
 												<option value="<?php echo $units->id; ?>"<?php if($units->id == $money){echo 'selected';} ?>><?php echo $units->name; ?></option>
 												 <?php } ?>
@@ -81,7 +81,9 @@ $msg = $this->session->userdata('msg');?>
 										<p id="alert" class="text-danger"></p>
 									</div>
 								</div>
-								<input type="hidden" value = "<?php echo $deal->pay?>" name="pay" id="vpay">
+								<p id="vpay" class='d-none'><?php echo $deal->pay;?></p>
+								<p id="base_money" class="d-none"><?php echo $deal->money_id;?></p>
+								<input name="direct" id="direct" value="0" class="d-none">
 
 						</div>
 						</fieldset>
@@ -91,33 +93,21 @@ $msg = $this->session->userdata('msg');?>
 							<fieldset>
 
 								<div class="row">
-								<div class="col-md-8">
+								<div class="col-md-12">
 								<div class="form-group">
 									<label for="j_created_date"> تاریخ ثبت :</label>
 									<input type="text" class="form-control" name="date_deal" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date_deal." ".$deal->time_deal;?>" placeholder="Jalali Created Date">
 								</div>
 								</div>
-									<div class="col-md-2">
-                        <label class="display-block text-semibold">نوع مانده حساب :</label>
-						<div class="form-group mt-20">
-										
-										<label class="radio-inline">
-											<input type="checkbox" name="temp" value='1' class="styled" <?php if($deal->temp == 1){echo 'checked';}?>>
-											موقت
-										</label>
-									</div>
-						</div>
 								</div>
 								<div class="form-group">
 									<label>توضیحات معامله :</label>
 									<textarea rows="5" cols="5" name="explain" class="form-control" placeholder="توصیحات خود را وارد کنید"><?php echo $deal->explain;?></textarea>
 								</div>
-
-
 							</fieldset>
 
 							<div class="text-right">
-								<button type="submit" name="sub" class="btn btn-primary">ویرایش معامله <i class="icon-arrow-left13 position-right"></i></button>
+								<button type="button" onclick="checkSubmit()" class="btn btn-primary">ویرایش معامله <i class="icon-arrow-left13 position-right"></i></button>
 							</div>
 						</div>
 
@@ -129,5 +119,25 @@ $msg = $this->session->userdata('msg');?>
 
 		</form>
 	</div>
+</div>
+<div id="modal_check" class="modal_logout">
+  <div class="modal_content animate_logout">
+    <div class="dang_modal">
+      <span class="dang_body"></span>
+      <span class="dang_dot"></span>
+    </div>
+    <div class="container_logout">
+      <h1>پرداخت خرد</h1>
+      <h6>مبلغی به اندازه <span id="check_span"></span> ریال از این معامله باقی مانده است .</h6>
+	  <h6> آیا مایل به صفر شدن این مبلغ می باشید؟ </h6>
+    </div>
+	<a  class="btn btn-secendery" onclick="document.getElementById('modal_check').style.display = 'none'">انصراف</a>
+	<a  class="btn btn-secendery" onclick="check(0)">خیر </a>
+    <a  class="btn btn-danger" onclick="check(1)">بله</a>
+  </div>
+
+
+
+
 </div>
 <script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/edit_deal.js"></script>

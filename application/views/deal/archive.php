@@ -106,7 +106,7 @@ $msg = $this->session->userdata('msg');?>
 			if(empty($deal)){ ?>
 			<tr><td colspan = '10' class='text-center p-20'>موردی یافت نشد</td></tr>
 			<?php }else{
-			foreach($deal as $key => $rows){ ?>
+			foreach($deal as $key => $rows){ $check = abs($rows->volume - $rows->pay); ?>
 			<tr class="<?php if($rows->state == 0){echo 'state_bg';}?>" >
 				<td>
 					<?php echo $rows->id;?>
@@ -154,7 +154,8 @@ $msg = $this->session->userdata('msg');?>
 														<li onclick="settings(this)"><a>عدم نمایش در داشبورد</a></li>
 													</ul>
 												</li>
-<?php if($this->session->has_userdata('edit_deal') && $rows->state == 1){ ?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>
+<?php if($this->session->has_userdata('pay_little') && $rows->pay != 0 && $rows->rest != 0 && $check != 0 && $check <= 50000){ ?><li title="پرداخت خرد" data-toggle="tooltip" class="text-blue-800"><a onclick="payLittle(<?php echo $rows->id; ?> , <?php echo $check; ?>)"><i class="icon-stack-up"></i></a></li><?php } ?>												
+<?php if($this->session->has_userdata('edit_deal') && $rows->state == 1){ ?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>												
 <?php if($this->session->has_userdata('see_photo')){?><li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$rows->id;?>"><i class="icon-stack-picture"></i></a></li><?php } ?>
 <?php if($this->session->has_userdata('delete_deal') && $rows->state == 1){ ?><li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->pay; ?>)" ></i></a></li><?php } ?>
 					</ul>
@@ -201,6 +202,24 @@ $msg = $this->session->userdata('msg');?>
 					</div>
 				</div>
 			</div>
+
+<div id="modal_check" class="modal_logout">
+  <div class="modal_content animate_logout">
+    <div class="dang_modal">
+      <span class="dang_body"></span>
+      <span class="dang_dot"></span>
+    </div>
+    <div class="container_logout">
+      <h1>پرداخت خرد</h1>
+      <h6>مبلغی به اندازه <span id="check_span"></span> ریال از این معامله باقی مانده است .</h6>
+	  <h6> آیا مایل به صفر شدن این مبلغ می باشید؟ </h6>
+    </div>
+	<a  class="btn btn-secendery" onclick="document.getElementById('modal_check').style.display = 'none'">انصراف</a>
+    <a  class="btn btn-danger" href="" id="confirmLittle">بله</a>
+  </div>
+</div>	
+
+
 </div>
 
 <script>
@@ -221,6 +240,18 @@ $msg = $this->session->userdata('msg');?>
 	  }
 	}
 	//search
+	//pay little
+	var modalLittle =  document.getElementById('modal_check');
+	function payLittle(deal_id , amount){
+	var check_span =  document.getElementById('check_span');
+	var confirmLittle =  document.getElementById('confirmLittle');
+	check_span.innerHTML = numeral(amount).format('0,0');	
+	modalLittle.style.display = 'block';
+	confirmLittle.setAttribute('href' , "<?php echo base_url('deal/pay_little/')?>" + deal_id);
+	
+	}
+	//pay little
+
 	var search = document.getElementById( 'search' );
 	var base = document.getElementById( 'base' );
 	function search_cust( input ) {

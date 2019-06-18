@@ -109,16 +109,18 @@ class Login extends CI_Controller{
 				}else if($rows->perm_id == 25){
 					$sess['delete_handle'] = TRUE;
 				}else if($rows->perm_id == 26){
-					$sess['see_settings'] = TRUE;
+					$sess['pay_little'] = TRUE;
 				}else if($rows->perm_id == 27){
-					$sess['set_unit'] = TRUE;
+					$sess['see_settings'] = TRUE;
 				}else if($rows->perm_id == 28){
-					$sess['set_primitive'] = TRUE;
+					$sess['set_unit'] = TRUE;
 				}else if($rows->perm_id == 29){
-					$sess['rest_unit'] = TRUE;
+					$sess['set_primitive'] = TRUE;
 				}else if($rows->perm_id == 30){
-					$sess['turnover'] = TRUE;
+					$sess['rest_unit'] = TRUE;
 				}else if($rows->perm_id == 31){
+					$sess['turnover'] = TRUE;
+				}else if($rows->perm_id == 32){
 					$sess['add_unit'] = TRUE;
 				}
 			}
