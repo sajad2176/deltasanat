@@ -57,7 +57,7 @@ function checkSubmit(){
     send = sendMoney[sendMoney.selectedIndex].value;
     var diff = numeral(volume.innerHTML).value() - vpay.innerHTML;
     diff = Math.abs(diff);
-    if(baseMoney == 5 && baseMoney != send && diff <= 50000 && diff != 0){
+    if(baseMoney == 5 && baseMoney != send && diff <= 50000 && diff != 0 && vpay.innerHTML != 0){
     modal_check.style.display='block';
     document.getElementById('check_span').innerHTML = numeral(diff).format('0,0')
     }else{

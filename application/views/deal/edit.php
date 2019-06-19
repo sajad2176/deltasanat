@@ -83,7 +83,7 @@ $msg = $this->session->userdata('msg');?>
 								</div>
 								<p id="vpay" class='d-none'><?php echo $deal->pay;?></p>
 								<p id="base_money" class="d-none"><?php echo $deal->money_id;?></p>
-								<input name="direct" id="direct" value="0" class="d-none">
+								<input type="hidden" name="direct" id="direct" value="0">
 
 						</div>
 						</fieldset>
@@ -120,6 +120,7 @@ $msg = $this->session->userdata('msg');?>
 		</form>
 	</div>
 </div>
+<!-- pay little modal -->
 <div id="modal_check" class="modal_logout">
   <div class="modal_content animate_logout">
     <div class="dang_modal">
@@ -135,9 +136,6 @@ $msg = $this->session->userdata('msg');?>
 	<a  class="btn btn-secendery" onclick="check(0)">خیر </a>
     <a  class="btn btn-danger" onclick="check(1)">بله</a>
   </div>
-
-
-
-
 </div>
+<!-- pay little modal -->
 <script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/edit_deal.js"></script>

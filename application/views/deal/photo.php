@@ -132,7 +132,7 @@ $msg = $this->session->userdata('msg');?>
 		 explain.value = result.explain;
         submit.innerHTML = 'ویرایش قبض';
 		title.innerHTML = 'ویرایش قبض';
-		form.action = "<?php echo base_url('deal/edit_photo/').$this->uri->segment(3)."/";?>" + id;
+		editform.action = "<?php echo base_url('deal/edit_photo/').$this->uri->segment(3)."/";?>" + id;
 			} else {
 				alert( 'request was unsuccessful : ' + xhr.status );
 			}

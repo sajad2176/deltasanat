@@ -74,7 +74,7 @@ $msg = $this->session->userdata('msg');?>
 	<div class="panel-body">
 		<div class="row">
 			<div class="col-md-6">
-				<fieldset style="height:560px;">
+				<fieldset style="height:630px;">
 					<legend class="text-semibold"><i class="icon-cart5 position-left"></i> خرید</legend>
 
 					<table class="table datatable-selection-single table-hover table-responsive-lg table-striped  ">
@@ -133,7 +133,7 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ if($i == 0){$active = 'active';}e
 								</div>
 			</div>
 			<div class="col-md-6">
-				<fieldset style="height:560px;">
+				<fieldset style="height:630px;">
 					<legend class="text-semibold"><i class="icon-coins position-left"></i> فروش</legend>
 					<table class="table datatable-selection-single table-hover table-responsive-lg ">
 						<thead>

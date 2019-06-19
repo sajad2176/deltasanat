@@ -19,74 +19,111 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 	</ul>
 
 </div>
-
+<?php 
+if($this->session->has_userdata('edit_deal')){$editPerm = 1;}else{$editPerm = 0;}
+if($this->session->has_userdata('see_photo')){$photoPerm = 1;}else{$photoPerm = 0;}
+if($this->session->has_userdata('delete_deal')){$deletePerm = 1;}else{$deletePerm = 0;}
+if($this->session->has_userdata('pay_little')){$littlePerm = 1;}else{$littlePerm = 0;}
+?>
 <div class="panel panel-flat">
 	<div class="panel-body">
+<fieldset <?php if($dealCount > 7){?> style="height:650px;"<?php }?> >
 		<legend class="text-semibold"><i class="icon-archive position-left"></i>آرشیو معاملات</legend>
 
 	<table class="table datatable-selection-single table-responsive-lg ">
 		<thead>
 			<tr>
-				<th class="text-center">شناسه معامله</th>
-				<th class="text-center">نام مشتری</th>
-				<th class="text-center">نوع معامله</th>
-				<th class="text-center">تعداد ارز</th>
-				<th class="text-center">نرخ تبدیل</th>
-				<th class="text-center">حجم معامله</th>
-				<th class="text-center">حجم پرداخت شده</th>
-				<th class="text-center">حجم باقی مانده</th>
-				<th class="text-center">تاریخ ثبت</th>
-				<th class="text-center">آخرین ویرایش</th>
-				<th class="text-center">ابزار</th>
+			    <th width="5%">شناسه</th>
+				<th width="10%">نام مشتری</th>
+				<th width="5%">نوع</th>
+				<th width="10%">تعداد ارز</th>
+				<th width="8%">نرخ تبدیل</th>
+				<th width="15%">حجم معامله</th>
+				<th width="15%">حجم پرداخت شده</th>
+				<th width="15%">حجم باقی مانده</th>
+				<th width="7%"> تاریخ ثبت</th>
+				<th width="10%" class="text-center">ابزار</th>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody id="dealTable">
 		<?php 
 		if(empty($deal)){ ?>
-            <tr><td colspan="11" class="text-center p-20">موردی یافت نشد</td></tr>
+            <tr><td colspan="10" class="text-center p-20">موردی یافت نشد</td></tr>
 		<?php }else{
-			$sum_volume = 0; $sum_pay = 0; $sum_rest = 0; $forbank = 0;
-			foreach($deal as  $deals){  if($deals->rest != 0){ if($deals->type == 1){$forbank += $deals->volume;}else{$forbank -= $deals->volume;}  }?>
-			<tr class="<?php if($deals->state == 0){echo 'state_bg';}?>">
-                <td class="text-center"><?php echo $deals->id + 100; ?></td>
-                <td class="text-center"><?php echo $deals->fullname; ?></td>
-				<td class="text-center"><?php if($deals->type == 1 ){echo 'خرید'; $sum_pay -= $deals->pay; $sum_volume -= $deals->volume; $sum_rest -= $deals->rest;  }else{echo 'فروش'; $sum_pay += $deals->pay; $sum_volume += $deals->volume; $sum_rest += $deals->rest; }?></td>
-				<td class="text-center"><?php echo number_format($deals->count_money) . " " . $deals->name;?></td>
-				<td class="text-center"><?php echo number_format($deals->convert); ?></td>
-				<td class="text-center <?php if($deals->volume < $deals->pay){echo 'text-danger';}?>"><?php echo number_format($deals->volume); ?> </td>
-				<td class="text-center <?php if($deals->volume < $deals->pay){echo 'text-danger';}?>"><?php echo number_format($deals->pay); ?> </td>
-				<td class="text-center <?php if($deals->rest < 0){echo 'text-danger';}?>" ><?php echo number_format($deals->rest); ?></td>
-				<td class="text-center"><?php echo $deals->date_deal."</br>".$deals->time_deal; ?> </td>
-				<td class="text-center"><?php echo $deals->date_modified; ?></td>
+			foreach($deal as $key => $rows){ $check = abs($rows->volume - $rows->pay); ?>
+			<tr class="<?php if($rows->state == 0){echo 'state_bg';}?>" >
+				<td>
+					<?php echo $rows->id;?>
+				</td>
+				<td>
+						<?php echo $rows->fullname; ?>
+				</td>
+				<td>
+					<?php if($rows->type == 1){echo 'خرید';}else{echo 'فروش';}?>
+				</td>
+				<td>
+					<?php echo number_format($rows->count_money)."</br>".$rows->name;?>
+				</td>
+				<td>
+					<?php echo number_format($rows->convert); ?>
+				</td>
+				<td class="lright <?php if($rows->volume < $rows->pay){echo 'text-danger';}?>">
+				<span title="<?php echo " ( ".number_format($rows->count_money).' + '.$rows->wage." ) × ".number_format($rows->convert) ;?>" data-toggle="tooltip">
+				<?php echo number_format($rows->volume);?>
+				</span>
+				</td>
+				<td class="lright <?php if($rows->volume < $rows->pay){echo 'text-danger';}?>">
+					<?php echo number_format($rows->pay);?>
+				</td>
+				<td class="lright <?php if($rows->rest < 0){echo 'text-danger';}?>">
+				<span title="<?php echo number_format($rows->volume)." - ".number_format($rows->pay)?>" data-toggle="tooltip">
+				<?php echo number_format($rows->rest);?>
+				</span>
+				</td>
+				<td>
+					<?php echo $rows->date_deal."</br>".$rows->time_deal; ?>
+				</td>
 				<td class="text-center">
 					<ul class="icons-list">
-<?php if($this->session->has_userdata('edit_deal') && $deals->state == 1){?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$deals->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>
-<?php if($this->session->has_userdata('see_photo')){?><li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$deals->id;?>"><i class="icon-stack-picture"></i></a></li><?php }?>
-<?php if($this->session->has_userdata('delete_deal') && $deals->state == 1){?><li class="text-danger" data-toggle="tooltip" title="حذف معامله"><a data-toggle="modal" href="#modal_theme_danger1"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $deals->id;?> , <?php echo $deals->pay; ?>)" ></i></a></li><?php } ?>
+					<li class="dropdown" title="تنظیمات" data-toggle="tooltip">
+													<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+														<i class="icon-cog7"></i>
+													</a>
+
+													<ul class="dropdown-menu dropdown-menu-right">
+														<li onclick="settings(this)"><a>نمایش در داشبورد</a></li>
+														<li onclick="settings(this)"><a>عدم نمایش در داشبورد</a></li>
+													</ul>
+												</li>
+<?php if($littlePerm && $rows->pay != 0 && $rows->rest != 0 && $check != 0 && $check <= 50000){ ?><li title="پرداخت خرد" data-toggle="tooltip" class="text-blue-800"><a onclick="payLittle(<?php echo $rows->id; ?> , <?php echo $check; ?>)"><i class="icon-stack-up"></i></a></li><?php } ?>												
+<?php if($editPerm && $rows->state == 1){ ?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>												
+<?php if($photoPerm){?><li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$rows->id;?>"><i class="icon-stack-picture"></i></a></li><?php } ?>
+<?php if($deletePerm && $rows->state == 1){ ?><li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_theme_danger1"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->pay; ?>)" ></i></a></li><?php } ?>
 					</ul>
 				</td>
-			
 			</tr>
-		<?php } ?>
-			<tr>
-				<td class="text-center"><b> مجموع : </b></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td class="lright" style="text-align:center !important; " ><b><?php echo number_format($sum_volume);?></b></td>
-				<td class="lright" style="text-align:center !important; " ><b><?php echo number_format($sum_pay);?></b></td>
-				<td class="lright" style="text-align:center !important; " ><b><?php echo number_format($sum_rest);?></b></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<?php } ?>
+			<?php } } ?>
 		</tbody>
 
 	</table>
-
-
+</fieldset>
+<div class="text-left">
+	 <ul class="pagination">
+<?php
+if($dealCount > 7){
+$base = floor($dealCount / 7);
+if($dealCount % 7 != 0 ){
+	$count = $base + 1;
+}else{
+	$count = $base;
+}
+$offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
+<li class="deal <?php if($i == 0){ echo 'active';}?>"><a onclick = "dealPagin(<?php echo $offset; ?> , <?php echo $editPerm;?> , <?php echo $photoPerm; ?> , <?php echo $deletePerm;?> , <?php echo $littlePerm;?> , this)"><?php echo $i + 1;?></a></li>
+<?php $offset += 7; }
+}
+?>
+  </ul>
+</div>
 </div>
 </div>
 <?php if($this->session->has_userdata('add_handle')){ ?>
@@ -583,8 +620,24 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 						</div>
 					</div>
 				</div>
-
 	</div>
+	<!--pay little modal -->
+<div id="modal_check" class="modal_logout">
+  <div class="modal_content animate_logout">
+    <div class="dang_modal">
+      <span class="dang_body"></span>
+      <span class="dang_dot"></span>
+    </div>
+    <div class="container_logout">
+      <h1>پرداخت خرد</h1>
+      <h6>مبلغی به اندازه <span id="check_span"></span> ریال از این معامله باقی مانده است .</h6>
+	  <h6> آیا مایل به صفر شدن این مبلغ می باشید؟ </h6>
+    </div>
+	<a  class="btn btn-secendery" onclick="document.getElementById('modal_check').style.display = 'none'">انصراف</a>
+    <a  class="btn btn-danger" href="" id="confirmLittle">بله</a>
+  </div>
+</div>
+<!--pay little modal -->
 				<!-- /add bank modal -->
 	<!-- edit bank modal -->
 		<?php
@@ -600,8 +653,65 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 		}
 		$str = trim($str , ','); $str2 = trim($str2 , ','); 
 		?>
-		<script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/handle_group.js"></script>
-		<script>
+<script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/handle_group.js"></script>
+<script>
+//dealPagin ------------------
+function dealPagin(offset , editPerm , photoPerm , deletePerm , littlePerm , li){
+var classDeal = document.getElementsByClassName('deal');
+for(i = 0 ; i < classDeal.length ; i++){
+classDeal[i].classList.remove('active');
+}
+li.parentElement.classList.add('active');
+	var xhr = new XMLHttpRequest();
+		xhr.onload = function () {
+			if ( ( xhr.status >= 200 && xhr.status < 300 ) || xhr.status == 304 ) {
+				var result = JSON.parse( xhr.responseText );
+				var url = "<?php echo base_url();?>";
+				showDeal( result , url , editPerm , photoPerm , deletePerm , littlePerm);
+			} else {
+				alert( 'request was unsuccessful : ' + xhr.status );
+				location.reload(); 
+			}
+		}
+		xhr.open( 'post', "<?php echo base_url('deal/paginDeal/')?>", true );
+		xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
+		xhr.send('offset='+offset+'&id='+<?php echo $this->uri->segment(3);?>);
+}
+//dealPagin -------------------
+//delete deal -----------------
+var titleDelete = document.getElementById('titleDelete');
+	var closeDelete = document.getElementById('closeDelete');
+	var confirmDelete = document.getElementById('confirmDelete');
+	function deleteDeal(id , pay){
+      if(pay != 0){
+		  titleDelete.innerHTML = " حجم پرداختی این معامله صفر نمی باشد . اگر مایل به حذف معامله می باشید جهت جلوگیری از ناسازگاری در سامانه ابتدا مبالغ پرداختی را بازگردانید. ";
+		  closeDelete.style.display = 'none';
+		  confirmDelete.style.display = 'none';
+		  return;
+	  }else{
+		  titleDelete.innerHTML = " آیا می خواهید ادامه دهید؟";
+		  closeDelete.style.display = 'inline-block';
+		  confirmDelete.style.display = 'inline-block';
+		  confirmDelete.setAttribute('href' , "<?php echo base_url('deal/delete_deal/')?>" + id + "/group");
+	  }
+	}
+//delete deal -----------------
+//pay little ------------------
+	var modalLittle =  document.getElementById('modal_check');
+	function payLittle(deal_id , amount){
+	var check_span =  document.getElementById('check_span');
+	var confirmLittle =  document.getElementById('confirmLittle');
+	check_span.innerHTML = numeral(amount).format('0,0');	
+	modalLittle.style.display = 'block';
+	confirmLittle.setAttribute('href' , "<?php echo base_url('deal/pay_little/')?>" + deal_id + '/group');
+	}
+//pay little ------------------
+
+
+
+
+
+
 var formEdit = document.getElementById('form_edit');
 var ihandle = document.getElementById('ihandle');
 function edit_handle(id , volume){
@@ -615,24 +725,6 @@ var array2 = [<?php echo $str2;?> ];
 function search_cust( input ) {
 				autocomplete( input, array , array2);
 }		
-//delete deal -----------------
-	var titleDelete = document.getElementById('titleDelete');
-	var closeDelete = document.getElementById('closeDelete');
-	var confirmDelete = document.getElementById('confirmDelete');
-	function deleteDeal(id , rest){
-      if(rest != 0){
-		  titleDelete.innerHTML = " حجم پرداختی این معامله صفر نمی باشد . اگر مایل به حذف معامله می باشید جهت جلوگیری از ناسازگاری در سامانه ابتدا مبالغ پرداختی را بازگردانید. ";
-		  closeDelete.style.display = 'none';
-		  confirmDelete.style.display = 'none';
-		  return;
-	  }else{
-		  titleDelete.innerHTML = " آیا می خواهید ادامه دهید؟";
-		  closeDelete.style.display = 'inline-block';
-		  confirmDelete.style.display = 'inline-block';
-		  confirmDelete.setAttribute('href' , "<?php echo base_url('deal/delete_deal/')?>" + id + "<?php echo "/".$this->uri->segment(3)."/group";?>");
-	  }
-	}
-//delete deal -----------------
 //delete handle -----------------	
 			var titleHandle = document.getElementById('titleHandle');
 			var closeHandle = document.getElementById('closeHandle');
