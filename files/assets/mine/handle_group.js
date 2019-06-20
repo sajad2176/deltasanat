@@ -1,3 +1,4 @@
+//name bank
 function show_bank( input ) {
     var txt = input.value;
     var name_bank = input.parentElement.parentElement.nextElementSibling.firstElementChild.lastElementChild;
@@ -67,8 +68,8 @@ function show_bank( input ) {
             name_bank.value = '';
         }
     }
-
 }
+//name bank
 //paginDeal
 var dealTable = document.getElementById('dealTable');
 function showDeal(res , url , editPerm , photoPerm , deletePerm , littlePerm){
@@ -205,8 +206,7 @@ function autocomplete( inp, arr , notHandle ) {
     } );
 }
 //search customer
-//
-
+// check amount bank
 function ambank( input ) {
     input.value = numeral( input.value ).format( '0,0' );
     input.nextElementSibling.value = numeral( input.value ).value();
@@ -217,26 +217,27 @@ function ambank( input ) {
             input.nextElementSibling.nextElementSibling.style.display = 'none';
         }
 }
+// check amount bank
 function amhandle(input){
     input.value = numeral( input.value ).format( '0,0' );
     input.nextElementSibling.value = numeral( input.value ).value();
 }
-var num_shaba = document.getElementById( 'num_shaba' );
-var nam_bank = document.getElementById( 'nam_bank' );
-var act_edit = document.getElementById( 'act_edit' );
-var amo_pay = document.getElementById( 'amo_pay' );
-var amo_bank = document.getElementById( 'amo_bank' );
-var exp_bank = document.getElementById( 'exp_bank' );
+//edit bank
+var actionEditBank = document.getElementById( 'actionEditBank' );
+var numberShabaEdit = document.getElementById( 'numberShabaEdit' );
+var nameBankEdit = document.getElementById( 'nameBankEdit' );
+var amountPay = document.getElementById( 'amountPay' );
+var amountBank = document.getElementById( 'amountBank' );
+var explainBank = document.getElementById( 'explainBank' );
 
 function showBank(result , url){
-    act_edit.action = url + "/" + result.id;
-    num_shaba.value = result.shaba;
-    nam_bank.value = result.name;
-    amo_pay.value = result.pay;
-	amo_bank.value = result.amount;
-	exp_bank.value = result.explain;
-    amo_bank.previousElementSibling.value = numeral(result.amount).format('0,0') ;
-
+    actionEditBank.action = url + "/" + result.id;
+    numberShabaEdit.value = result.shaba;
+    nameBankEdit.value = result.name;
+    amountPay.value = result.pay;
+    amountBank.value = result.amount;
+    amountBank.previousElementSibling.value = numeral(result.amount).format('0,0') ;
+	explainBank.value = result.explain;    
 }
 //edit bank
 //scroll 
@@ -261,4 +262,4 @@ window.onload = function(){
         } , 1500 )
     }
 }
-
+//scroll

@@ -608,10 +608,11 @@ if(!empty($img)){
                 $date = $this->convertdate->convert(time());
                 $customer = $this->base_model->get_data('customer' , 'fullname' , 'row' , array('id'=>$id));
                 $log['user_id'] = $this->session->userdata('id');
-                $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
-                $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+                $log['date_log'] = $date['d'];
+                $log['time_log'] = $date['t'];
                 $log['activity_id'] = 17;
                 $log['explain'] = " حساب جدید با مشخصات :  </br> نام مشتری : ".$customer->fullname."</br>  شماره شبا : ".$data['shaba']." </br> نام بانک : ".$data['name']." </br> مقدار تعیین شده :  ".number_format($data['amount'])." </br> توضیحات :".$data['explain']."</br> افزوده شد ";
+                $log['customer_id'] = $id;
                 if($res == FALSE){
                     $message['msg'][0] = 'مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید';
                     $message['msg'][1] = 'danger';
@@ -624,7 +625,6 @@ if(!empty($img)){
                   $message['status'] = 2;
                   $this->session->set_flashdata($message);
                   redirect("deal/profile/$id");
-             
             }else{
                 show_404();
             }
@@ -639,48 +639,57 @@ public function show_bank(){
     if(!$this->session->has_userdata('edit_bank') or $this->session->userdata('edit_bank') != TRUE){
         show_404();
     }
- if(isset($_POST['bank_id'])){ 
+ if(isset($_POST['bank_id']) and is_numeric($_POST['bank_id'])){ 
 $id = $this->input->post('bank_id');
 $bank = $this->base_model->get_data('bank' , '*' , 'row' , array('id'=> $id));
 echo json_encode($bank);
-
- }else{
+}else{
      show_404();
- }   
+    }   
 }
 public function edit_bank(){
     if(!$this->session->has_userdata('edit_bank') or $this->session->userdata('edit_bank') != TRUE){
         show_404();
     }
-    $red_id = $this->uri->segment(3);
-    $id = $this->uri->segment(4);
-    if(isset($red_id) and isset($id) and is_numeric($red_id) and is_numeric($id)){
+    $id = $this->uri->segment(3);
+    if(isset($id) and is_numeric($id)){
         if(isset($_POST['sub'])){
-      $bank = $this->base_model->get_data('bank' , '*' , 'row' , array('id'=> $id));
+      $bank = $this->base_model->run_query("SELECT bank.* , customer.fullname FROM bank LEFT JOIN customer ON bank.customer_id = customer.id WHERE bank.id = $id" , 'row');
       $data['explain'] = $this->input->post('bank_explain');
       $data['name'] = $this->input->post('name');          
       $data['shaba'] = $this->input->post('shaba');
       $data['amount'] = $this->input->post('amount');
       $data['rest'] = $data['amount'] - $bank->pay;
       $data['rest_handle'] = $bank->rest_handle + ($this->input->post('amount') - $bank->amount);
+      $exp = ' شناسه بانک : '.$bank->id." | نام مشتری : ".$bank->fullname."</br>";
+      if($bank->shaba != $data['shaba']){
+          $exp .= ' شماره شبا از '.$bank->shaba . " به ".$data['shaba']." تغییر یافت </br> ";
+      }
+      if($bank->name != $data['name']){
+          $exp .= ' نام بانک از '.$bank->name." به ".$data['name']." تغییر یافت </br>";
+      }
+      if($bank->amount != $data['amount']){
+          $exp .= ' مقدار تعیین شده از '.number_format($bank->amount)." به  ".number_format($data['amount'])." تغییر یافت </br>";
+          $exp .= ' مقدار باقی مانده به اندازه '.number_format($data['rest'] - $bank->rest)." تغییر یافت ";
+      }
+      if($bank->explain != $data['explain']){
+          $exp .= ' توضحیات بانک از  '.$bank->explain." به ".$data['explain']." تغییر یافت ";
+      }
 
-      $bb = $bank->id + 1000;
-      $num_sh = " شماره شبا از ".$bank->shaba." به ".$data['shaba']." تغییر یافت "."</br>";
-      $nam_ba = "  نام بانک از ".$bank->name." به ".$data['name']." تغییر یافت "."</br>";
-      $amo = " مقدار تعیین شده از ".number_format($bank->amount)." به ".number_format($data['amount'])." تغییر یافت "."</br>";
       $res = $this->base_model->update_data('bank' , $data , array('id'=>$id));
       $date = $this->convertdate->convert(time());
       $log['user_id'] = $this->session->userdata('id');
-      $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
-      $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+      $log['date_log'] = $date['dd'];
+      $log['time_log'] = $date['t'];
       $log['activity_id'] = 18;
-      $log['explain'] = "اطلاعات بانکی با مشخصات : </br> شناسه بانک :  ".$bb."</br>".$num_sh.$nam_ba.$amo.' توضیحات :'.$data['explain']."</br>"." ویرایش شد ";
+      $log['explain'] = $exp;
+      $log['customer_id'] = $bank->customer_id;
       $this->base_model->insert_data('log' , $log);
       $message['msg'][0] = 'اطلاعات حساب بانکی با موفقیت ویرایش شد';
       $message['msg'][1] = 'success';
       $message['status'] = 2;
       $this->session->set_flashdata($message);
-      redirect("deal/handle_profile/$red_id");
+      redirect("deal/profile/$bank->customer_id");
         }else{
             show_404();
         }
@@ -701,16 +710,21 @@ public function active(){
     if(isset($red_id) and isset($id) and is_numeric($red_id) and is_numeric($id)){
         $data['active'] = $this->uri->segment(5);
         $this->base_model->update_data('bank' , $data , array('id' => $id));
+        $customer = $this->base_model->get_data('customer' , 'fullname' , 'row' , array('id'=>$red_id));
         if($data['active'] == 1){$txt = " را فعال کرد ";}else{$txt = ' را غیر فعال کرد ';}
         $date = $this->convertdate->convert(time());
         $log['user_id'] = $this->session->userdata('id');
-        $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
-        $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+        $log['date_log'] = $date['dd'];
+        $log['time_log'] = $date['t'];
         $log['activity_id'] = 19;
-        $a = $id + 1000;
-        $log['explain'] = " حساب بانکی با شناسه ".$a ." ".$txt;
+        $log['explain'] = " حساب بانکی با شناسه ".$id ." مربوط به مشتری  ".$customer->fullname.$txt;
+        $log['customer_id'] = $red_id;
         $this->base_model->insert_data('log' , $log);
-        redirect("deal/handle_profile/$red_id");
+        $message['msg'][0] = 'وضعیت اطلاعات حساب تغییر کرد';
+        $message['msg'][1] = 'success';
+        $message['status'] = 2;
+        $this->session->set_flashdata($message);
+        redirect("deal/profile/$red_id");
     }else{
         show_404();
     }
@@ -1470,7 +1484,8 @@ $this->base_model->insert_data('handle' , $data);
                 if(!empty($data['deal'])){
                     $header['title'] = $data['deal'][0]->fullname;
                 }
-                $data['bank'] = $this->base_model->get_data('bank' ,'*' ,'result' ,array('customer_id' => $id));
+                $data['bank'] = $this->base_model->run_query("SELECT * FROM bank WHERE customer_id = $id AND active = 1 ORDER BY id DESC");
+
                 $data['handle'] = $this->base_model->get_data_join('handle' , 'bank' , 'handle.* , customer.fullname ,customer.id as cust_id, bank.explain' , 'handle.bank_id = bank.id' , 'result' , array('handle.buy_id'=>$id) , NULL , NULL , array('handle.id' , 'DESC'),array('customer' , 'handle.sell_id = customer.id'));
                 $data['handle2'] = $this->base_model->get_data_join('handle' , 'bank' , 'handle.* , customer.fullname ,customer.id as cust_id, bank.explain' , 'handle.bank_id = bank.id' , 'result' , array('handle.sell_id'=>$id) , NULL , NULL , array('handle.id' , 'DESC'),array('customer' , 'handle.buy_id = customer.id'));
                 $customer = $this->base_model->run_query("SELECT id , fullname FROM customer order by id ASC");

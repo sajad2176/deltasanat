@@ -8,12 +8,12 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 		<?php echo $msg[0];?>
 	</div>
 	<?php }?>
-<p style="display:none" id="alert_status"><?php if($this->session->has_userdata('status')){echo $this->session->userdata('status');}else{echo 0;}?></p>	
+<p class="d-none" id="alert_status"><?php if($this->session->has_userdata('status')){echo $this->session->userdata('status');}else{echo 0;}?></p>	
 <div class="breadcrumb-line breadcrumb-line-component mb-20">
 	<ul class="breadcrumb">
 		<li><a href="<?php echo base_url('home'); ?>"><i class="icon-home2 position-left"></i> داشبورد</a>
 		</li>
-		<li><a href="<?php echo base_url('deal/handle_profile/').$this->uri->segment(3);?>">معاملات</a>
+		<li><a href="<?php echo base_url('deal/profile/').$this->uri->segment(3);?>">معاملات</a>
 		</li>
 		<li class="active">آرشیو معاملات</li>
 	</ul>
@@ -189,13 +189,12 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 			<table class="table datatable-basic table-responsive-lg">
 				<thead>
 					<tr>
-						<th width="5%" >شناسه بانک</th>
-						<th width="6%">نام بانک</th>
-						<th width="14%">شماره شبا</th>
-						<th class="text-center" width="13%">حجم تعیین شده</th>
-						<th class="text-center" width="13%"> پرداخت شده</th>
-						<th class="text-center" width="13%"> باقی مانده</th>
-						<th class="text-center" width="13%"> هماهنگ نشده</th>
+						<th width="5%" >شناسه</th>
+						<th width="20%"> اطلاعات حساب</th>
+						<th width="13%">حجم تعیین شده</th>
+						<th width="13%"> پرداخت شده</th>
+						<th width="13%"> باقی مانده</th>
+						<th width="13%"> هماهنگ نشده</th>
 						<th width="13%">توضیحات</th>
 						<th width="5%" class="text-center">وضعیت</th>
 						<th width="5%" class="text-center">ابزار</th>
@@ -205,28 +204,27 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 				
 				<?php
 				if(empty($bank)){ ?>
-                  <tr><td colspan="10" class="text-center p-20">موردی یافت نشد</td></tr>
-				<?php }else{
-				$amount = 0; $pay = 0; $rest = 0; $abank = 0;	
-				foreach($bank as $key => $banks){ if($banks->rest != 0){ $abank += $banks->amount; }  $amount += $banks->amount; $pay += $banks->pay; $rest += $banks->rest; 
+                  <tr><td colspan="9" class="text-center p-20">موردی یافت نشد</td></tr>
+				<?php }else{	
+				foreach($bank as $key => $banks){ 
 					?>
 					<tr>
-						<td><?php echo $banks->id + 1000 ;?></td>
-						<td><?php echo $banks->name; ?></td>
-						<td><?php echo $banks->shaba; ?></td>
-						<td  class="text-center"><?php echo number_format($banks->amount); ?></td>
-						<td  class="text-center <?php if($banks->pay > $banks->amount){echo 'text-danger';}?>"><?php echo number_format($banks->pay); ?></td>
-						<td  class="text-center <?php if($banks->rest < 0){echo 'text-danger';}?>"><?php echo number_format($banks->rest); ?></td>
-						<td  class="text-center <?php if($banks->rest_handle < 0){echo 'text-danger';}?>"><?php echo number_format($banks->rest_handle); ?></td>
+						<td><?php echo $banks->id;?></td>
+						<td><?php echo $banks->shaba."</br>".$banks->name; ?></td>
+						<td  class="<?php if($banks->amount < $banks->pay ){echo 'text-danger';}?>"><?php echo number_format($banks->amount); ?></td>
+						<td  class="<?php if($banks->amount < $banks->pay ){echo 'text-danger';}?>"><?php echo number_format($banks->pay); ?></td>
+						<td  class="<?php if($banks->rest < 0){echo 'text-danger';}?>"><?php echo number_format($banks->rest); ?></td>
+						<td  class="<?php if($banks->rest_handle < 0){echo 'text-danger';}?>"><?php echo number_format($banks->rest_handle); ?></td>
 						<td><?php echo $banks->explain; ?></td>
-						<?php if($banks->active == 1){$class="success";$txt = 'فعال'; $act = 0;}else{$class = "danger"; $txt = 'غیرفعال'; $act = 1;} ?>
-				<td class="text-center"><?php if($this->session->has_userdata('active_bank')){ ?><a href="<?php echo base_url('deal/active/').$this->uri->segment(3)."/".$banks->id."/".$act; ?>"><span class="label label-<?php echo $class; ?>"><?php echo $txt;?></span></a><?php } ?></td>
+				        <td class="text-center"><?php if($this->session->has_userdata('active_bank')){ ?>
+						<a href="<?php echo base_url('deal/active/').$this->uri->segment(3)."/".$banks->id."/0"; ?>"><span class="label label-success">فعال</span></a>
+						<?php } ?>
 						</td>
 						<td class="text-center">
-									<ul class="icons-list">
-				<?php if($this->session->has_userdata('edit_bank')){?><li title="ویرایش بانک" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#edit_bank_modal"><i onclick = "edit_bank(<?php echo $banks->id;?>)" class="icon-credit-card"></i></li><?php } ?>
+						 <ul class="icons-list">
+				<?php if($this->session->has_userdata('edit_bank')){?><li title="ویرایش بانک" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#edit_bank_modal"><i onclick = "getBank(<?php echo $banks->id;?>)" class="icon-credit-card"></i></li><?php } ?>
 				<li title="گردش حساب" data-toggle="tooltip" class="text-pink"><a href="<?php echo base_url('settings/bank/').$banks->id;?>" target="_blank"><i class="icon-spinner10"></i></li>
-									</ul>
+						</ul>
 						</td>
 					</tr>
 					<?php } ?>
@@ -234,10 +232,10 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 				<td class="text-center"><b> مجموع : </b></td>
 				<td></td>
 				<td></td>
-				<td class="lright" style="text-align:center !important; "><b><?php echo number_format($amount);?></b></td>
-				<td class="lright" style="text-align:center !important; "><b><?php echo number_format($pay);?></b></td>
-				<td class="lright" style="text-align:center !important; "><b><?php echo number_format($rest);?></b></td>
-				<td class="lright" style="text-align:center !important; " ><b><?php echo ' مانده تعیین نشده :  '.number_format($forbank - $abank);?></b></td>
+				<td><b>20</b></td>
+				<td><b>20</b></td>
+				<td><b>20</b></td>
+				<td><b> مانده تعیین نشده : 20</b></td>
 				<td></td>
 				<td></td>
 				<td></td>
@@ -456,17 +454,16 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 			</div>
 		<!-- /success modal -->
 	</div>
-
+<!-- edit bank modal -->
 		<div id="edit_bank_modal" class="modal fade">
 			<div class="modal-dialog" style="width:750px;">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<h5 class="modal-title text-center">ویرایش بانک</h5>
-
 					</div>
 					<hr>
-					<form action="" method="post" id='act_edit'>
+					<form action="" method="post" id='actionEditBank'>
 						<div class="modal-body">
 							<div class="field_wrapper2">
 								<div>
@@ -474,48 +471,43 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 										<div class="col-md-6">
 											<div class="form-group">
 												<label>شماره شبا : </label>
-												<input onkeyup="show_bank(this)" id="num_shaba" value="" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="shaba" class="form-control">
+												<input onkeyup="show_bank(this)" id="numberShabaEdit" value="" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="shaba" class="form-control">
 											</div>
 										</div>
-
-
-
 										<div class="col-md-6">
 											<div class="form-group">
 												<label>بانک :</label>
 												<span class="text-primary" style="font-size:12px; display:none;">(طبق شماره شبا وارد شده بانکی پیدا نشد. نام بانک را وارد کنید)</span>
-												<input type="text" name="name" id="nam_bank" value="" placeholder="ملت،ملی،.." class="form-control">
+												<input type="text" name="name" id="nameBankEdit" value="" placeholder="ملت،ملی،.." class="form-control">
 											</div>
 										</div>
 									</div>
-
-
 								</div>
 								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>مبلغ معامله : </label>
-											<input type="hidden" id="amo_pay" value =''>
+											<input type="hidden" id="amountPay" value =''>
 											<input type="text" onkeyup="ambank(this)" placeholder="100,000" value="" class="form-control">
-											<input type="hidden" value='' id="amo_bank" name="amount">
+											<input type="hidden" value='' id="amountBank" name="amount">
 											<p class="text-danger" style="display:none;"></p>
 										</div>
 									</div>
-
 									<div class="col-md-6">
 										<div class="form-group input-group">
 											<label>توضیحات حساب :</label>
-											<input type="text" id="exp_bank" name="bank_explain" value='' placeholder="توضیحات خود را وارد کنید" class="form-control">
+											<input type="text" id="explainBank" name="bank_explain" value='' placeholder="توضیحات خود را وارد کنید" class="form-control">
 											<span class="input-group-btn "><button type="submit" name="sub" style="top: 13px;" class="btn btn btn-success">ذخیره</button></span>
 										</div>
 									</div>
 								</div>
 							</div>
-					</form>
+					   </form>
 					</div>
 				</div>
 			</div>
 		</div>
+		<!-- edit bank modal  -->
 				<!-- dminor form modal -->
 		<div id="modal_form_dminor" class="modal fade">
 			<div class="modal-dialog">
@@ -559,8 +551,6 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 		<!-- /dminor form modal -->
 		<!-- /edit bank modal -->
 					<!-- add bank modal -->
-
-
 				<div id="add_bank_modal" class="modal fade">
 				<div class="modal-dialog" style="width:750px;">
 					<div class="modal-content">
@@ -569,11 +559,7 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 							<div class="modal-body">
 								<div class="field_wrapper2">
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
-								
-						
 						<legend class="text-semibold"><i class=" icon-credit-card position-left"></i>افزودن بانک</legend>
-
-					
 									<div>
 										<div class="row">
 											<div class="col-md-6">
@@ -582,9 +568,6 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 													<input onkeyup="show_bank(this)" data-mask="99-999-9999999999999999999" type="text" placeholder="06-017-0000000123014682799" name="shaba" class="form-control">
 												</div>
 											</div>
-
-
-
 											<div class="col-md-6">
 												<div class="form-group">
 													<label>بانک :</label>
@@ -593,15 +576,13 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 												</div>
 											</div>
 										</div>
-
-
 									</div>
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
 												<label> تعیین حجم : </label>
 												<input type="hidden" value ='0'>
-												<input type="text" onKeyUp="ambank(this)" placeholder="100,000" class="form-control">
+												<input type="text"   onKeyUp="ambank(this)" placeholder="100,000" class="form-control">
 												<input type="hidden" name="amount" value="0">
 												<p class="text-danger" style="display:none;"></p>
 											</div>
@@ -621,6 +602,7 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 					</div>
 				</div>
 	</div>
+	<!-- add bank modal -->
 	<!--pay little modal -->
 <div id="modal_check" class="modal_logout">
   <div class="modal_content animate_logout">
@@ -655,6 +637,7 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 		?>
 <script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/handle_group.js"></script>
 <script>
+
 //dealPagin ------------------
 function dealPagin(offset , editPerm , photoPerm , deletePerm , littlePerm , li){
 var classDeal = document.getElementsByClassName('deal');
@@ -678,6 +661,7 @@ li.parentElement.classList.add('active');
 		xhr.send('offset='+offset+'&id='+<?php echo $this->uri->segment(3);?>);
 }
 //dealPagin -------------------
+
 //delete deal -----------------
 var titleDelete = document.getElementById('titleDelete');
 	var closeDelete = document.getElementById('closeDelete');
@@ -696,6 +680,7 @@ var titleDelete = document.getElementById('titleDelete');
 	  }
 	}
 //delete deal -----------------
+
 //pay little ------------------
 	var modalLittle =  document.getElementById('modal_check');
 	function payLittle(deal_id , amount){
@@ -707,6 +692,23 @@ var titleDelete = document.getElementById('titleDelete');
 	}
 //pay little ------------------
 
+//get bank---------------------
+function getBank(id){
+	var xhr = new XMLHttpRequest();
+		xhr.onload = function(){
+			if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
+				    var url = "<?php echo base_url('deal/edit_bank') ?>";
+					var result = JSON.parse(xhr.responseText);
+				    showBank(result , url);
+				}else{
+					alert('request was unsuccessful : ' + xhr.status);
+				}
+		}
+		xhr.open('post' , "<?php echo base_url('deal/show_bank/')?>" , true);
+		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		xhr.send('bank_id=' + id);
+}
+//get bank---------------------
 
 
 
@@ -769,24 +771,6 @@ function search_cust( input ) {
 	
 
 //show deal----------------------
-//show bank---------------------
-function edit_bank(id){
-				var xhr = new XMLHttpRequest();
-		xhr.onload = function(){
-			if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
-				    var url = "<?php echo base_url('deal/edit_bank/').$this->uri->segment(3);?>";
-					var result = JSON.parse(xhr.responseText);
-				    showBank(result , url);
-				}else{
-					alert('request was unsuccessful : ' + xhr.status);
-				}
-		}
-		xhr.open('post' , "<?php echo base_url('deal/show_bank/')?>" , true);
-		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-		xhr.send('bank_id=' + id);
-}
-
-//show bank---------------------
 function history(id){
 		var xhr = new XMLHttpRequest();
 		xhr.onload = function(){
