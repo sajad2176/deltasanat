@@ -153,9 +153,9 @@ var unitRial = document.getElementById('rial');
 			for(var i = 0 ; i < countOther ; i++){
 				var change = document.getElementById(res.other[i].id);
 				if(res.other[i].type == 1){
-					change.innerHTML = numeral(numeral(change.innerHTML).value() + (res.other[i].rest/res.other[i].convert)).format('0,0');
+					change.innerHTML = numeral(numeral(change.innerHTML).value() + Number((res.other[i].rest/res.other[i].convert))).format('0,0');
 				}else{
-					change.innerHTML = numeral(numeral(change.innerHTML).value() - (res.other[i].rest/res.other[i].convert)).format('0,0');
+					change.innerHTML = numeral(numeral(change.innerHTML).value() - Number((res.other[i].rest/res.other[i].convert))).format('0,0');
 				}
 				if(numeral(change.innerHTML).value() >= 0){
 					change.style.color = '#4caf50';
@@ -167,9 +167,9 @@ var unitRial = document.getElementById('rial');
 			var countRial = res.rial.length;
 			for(var j = 0 ; j < countRial ; j++){
 				if(res.rial[j].type == 1){
-					unitRial.innerHTML = numeral(numeral(unitRial.innerHTML).value() - (res.rial[j].rest)).format('0,0');
+					unitRial.innerHTML = numeral(numeral(unitRial.innerHTML).value() - Number((res.rial[j].rest))).format('0,0');
 				}else{
-					unitRial.innerHTML = numeral(numeral(unitRial.innerHTML).value() + (res.rial[j].rest)).format('0,0');
+					unitRial.innerHTML = numeral(numeral(unitRial.innerHTML).value() + Number((res.rial[j].rest))).format('0,0');
 				}
 				if(numeral(unitRial.innerHTML).value() >= 0){
 					unitRial.style.color = '#4caf50';

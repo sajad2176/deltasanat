@@ -18,6 +18,14 @@ $msg = $this->session->userdata('msg');?>
 	</ul>
 
 </div>
+<?php 
+//perm
+if($this->session->has_userdata('pay_little')){$littlePerm = 1;}else{$littlePerm = 0;}
+if($this->session->has_userdata('edit_deal')){$editPerm = 1;}else{$editPerm = 0;}
+if($this->session->has_userdata('see_photo')){$photoPerm = 1;}else{$photoPerm = 0;}
+if($this->session->has_userdata('delete_deal')){$deletePerm = 1;}else{$deletePerm = 0;} 
+//perm
+?>
 <div class="panel panel-flat">
 	<div class="panel-body">
 		<div class="panel-heading">
@@ -33,7 +41,7 @@ $msg = $this->session->userdata('msg');?>
 						<div class="col-md-3">
 							<div class="form-group">
 								<label>جستجو : </label>
-								<input class="form-control" name="fullname" value="<?php echo $this->input->get('fullname');?>" type="search" onkeyup="search_cust(this)" placeholder="نام مشتری خود را جستجو کنید">
+								<input class="form-control" name="fullname" value="<?php echo $this->input->get('fullname');?>" type="search" onkeyup="search_cust(<?php echo $deletePerm; ?> , <?php echo $photoPerm;?> , <?php echo $editPerm; ?> , this)" placeholder="نام مشتری خود را جستجو کنید">
 
 							</div>
 						</div>
@@ -144,9 +152,8 @@ $msg = $this->session->userdata('msg');?>
 				<td class="text-center">
 					<ul class="icons-list">
 					<li class="dropdown" title="تنظیمات" data-toggle="tooltip">
-													<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+													<a class="dropdown-toggle" data-toggle="dropdown">
 														<i class="icon-cog7"></i>
-														<!-- <span class="caret"></span> -->
 													</a>
 
 													<ul class="dropdown-menu dropdown-menu-right">
@@ -154,10 +161,10 @@ $msg = $this->session->userdata('msg');?>
 														<li onclick="settings(this)"><a>عدم نمایش در داشبورد</a></li>
 													</ul>
 												</li>
-<?php if($this->session->has_userdata('pay_little') && $rows->pay != 0 && $rows->rest != 0 && $check != 0 && $check <= 50000){ ?><li title="پرداخت خرد" data-toggle="tooltip" class="text-blue-800"><a onclick="payLittle(<?php echo $rows->id; ?> , <?php echo $check; ?>)"><i class="icon-stack-up"></i></a></li><?php } ?>												
-<?php if($this->session->has_userdata('edit_deal') && $rows->state == 1){ ?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>												
-<?php if($this->session->has_userdata('see_photo')){?><li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$rows->id;?>"><i class="icon-stack-picture"></i></a></li><?php } ?>
-<?php if($this->session->has_userdata('delete_deal') && $rows->state == 1){ ?><li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->pay; ?>)" ></i></a></li><?php } ?>
+<?php if($littlePerm && $rows->pay != 0 && $rows->rest != 0 && $check != 0 && $check <= 50000){ ?><li title="پرداخت خرد" data-toggle="tooltip" class="text-blue-800"><a onclick="payLittle(<?php echo $rows->id; ?> , <?php echo $check; ?>)"><i class="icon-stack-up"></i></a></li><?php } ?>												
+<?php if($editPerm && $rows->state == 1){ ?><li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="<?php echo base_url('deal/edit/').$rows->id;?>"><i class=" icon-pencil6"></i></a></li><?php } ?>												
+<?php if($photoPerm){?><li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="<?php echo base_url('deal/photo/').$rows->id;?>"><i class="icon-stack-picture"></i></a></li><?php } ?>
+<?php if($deletePerm && $rows->state == 1){ ?><li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_theme_danger"><i  class="icon-trash" onclick = "deleteDeal(<?php echo $rows->id;?> , <?php echo $rows->pay; ?>)" ></i></a></li><?php } ?>
 					</ul>
 				</td>
 			</tr>
@@ -180,6 +187,7 @@ $msg = $this->session->userdata('msg');?>
 
 </div>
 </div>
+<!-- delete modal -->
 <div id="modal_theme_danger" class="modal fade">
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -202,7 +210,8 @@ $msg = $this->session->userdata('msg');?>
 					</div>
 				</div>
 			</div>
-
+<!-- delete modal -->
+<!-- pay little modal -->
 <div id="modal_check" class="modal_logout">
   <div class="modal_content animate_logout">
     <div class="dang_modal">
@@ -218,7 +227,7 @@ $msg = $this->session->userdata('msg');?>
     <a  class="btn btn-danger" href="" id="confirmLittle">بله</a>
   </div>
 </div>	
-
+<!-- pay little modal -->
 
 </div>
 
@@ -226,8 +235,8 @@ $msg = $this->session->userdata('msg');?>
 	var titleDelete = document.getElementById('titleDelete');
 	var closeDelete = document.getElementById('closeDelete');
 	var confirmDelete = document.getElementById('confirmDelete');
-	function deleteDeal(id , rest){
-      if(rest != 0){
+	function deleteDeal(id , pay){
+      if(pay != 0){
 		  titleDelete.innerHTML = " حجم پرداختی این معامله صفر نمی باشد . اگر مایل به حذف معامله می باشید جهت جلوگیری از ناسازگاری در سامانه ابتدا مبالغ پرداختی را بازگردانید. ";
 		  closeDelete.style.display = 'none';
 		  confirmDelete.style.display = 'none';
@@ -239,7 +248,6 @@ $msg = $this->session->userdata('msg');?>
 		  confirmDelete.setAttribute('href' , "<?php echo base_url('deal/delete_deal/')?>" + id);
 	  }
 	}
-	//search
 	//pay little
 	var modalLittle =  document.getElementById('modal_check');
 	function payLittle(deal_id , amount){
@@ -247,14 +255,14 @@ $msg = $this->session->userdata('msg');?>
 	var confirmLittle =  document.getElementById('confirmLittle');
 	check_span.innerHTML = numeral(amount).format('0,0');	
 	modalLittle.style.display = 'block';
-	confirmLittle.setAttribute('href' , "<?php echo base_url('deal/pay_little/')?>" + deal_id);
-	
+	confirmLittle.setAttribute('href' , "<?php echo base_url('deal/pay_little/')?>" + deal_id );
 	}
 	//pay little
 
+    //search
 	var search = document.getElementById( 'search' );
 	var base = document.getElementById( 'base' );
-	function search_cust( input ) {
+	function search_cust( deletePerm , photoPerm , editPerm  , input ) {
 		var text = input.value;
 		text = text.trim();
 		if ( text == '' ) {
@@ -262,12 +270,13 @@ $msg = $this->session->userdata('msg');?>
 			base.style.display = 'contents';
 			return;
 		}
+		var littlePerm = <?php echo $littlePerm;?>;
 		var xhr = new XMLHttpRequest();
 		xhr.onload = function () {
 			if ( ( xhr.status >= 200 && xhr.status < 300 ) || xhr.status == 304 ) {
         var url = "<?php echo base_url();?>";
 				var result = JSON.parse( xhr.responseText );
-				showCustResult( result, url );
+				showCustResult( result, url , deletePerm , photoPerm , editPerm , littlePerm );
 			} else {
 				alert( 'request was unsuccessful : ' + xhr.status );
 			}
@@ -276,5 +285,6 @@ $msg = $this->session->userdata('msg');?>
 		xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
 		xhr.send( 'text_search=' + text );
 	}
+	//search
 </script>
 <script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/deal_archive.js"></script>

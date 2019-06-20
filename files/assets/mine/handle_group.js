@@ -1,3 +1,4 @@
+//name bank
 function show_bank( input ) {
     var txt = input.value;
     var name_bank = input.parentElement.parentElement.nextElementSibling.firstElementChild.lastElementChild;
@@ -67,8 +68,54 @@ function show_bank( input ) {
             name_bank.value = '';
         }
     }
-
 }
+//name bank
+//paginDeal
+var dealTable = document.getElementById('dealTable');
+function showDeal(res , url , editPerm , photoPerm , deletePerm , littlePerm){
+    count = res.length;
+    var str = '';
+    var name , type , t1 , t2 ,title1 ,title2 , edit , photo , deleteli , littleli;
+    for(i = 0 ; i < count ; i++){
+        var check = Math.abs(res[i].volume - res[i].pay);
+        if(res[i].state == 0){name = 'tr_state';}else{name = '';}
+        if(res[i].type == 1){type = 'خرید';}else{type = 'فروش';}
+        if(Number(res[i].volume) < Number(res[i].pay)){ t1 = 'text-danger'; }else{t1 = '';}
+        if(Number(res[i].rest) < Number(0)){t2 = 'text-danger';}else{t2 = '';}
+        title1 = ' ( '+ numeral(res[i].count_money).format('0,0') + ' + ' + numeral(res[i].wage).format('0,0') + ' ) × ' + numeral(res[i].convert).format('0,0');
+        title2 = numeral(res[i].volume).format('0,0') + ' - ' + numeral(res[i].pay).format('0,0');
+        if(editPerm && res[i].state == 1){edit = '<li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="'+url+'deal/edit/'+res[i].id+'"><i class=" icon-pencil6"></i></a></li>';}else{edit = '';}
+        if(photoPerm){photo = '<li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="'+url+'deal/photo/'+res[i].id+'"><i class="icon-stack-picture"></i></a></li>';}else{photo = '';}
+        if(deletePerm && res[i].state == 1){deleteli = '<li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_theme_danger1"><i  class="icon-trash" onclick = "deleteDeal('+res[i].id+' ,'+res[i].pay+')" ></i></a></li>';}else{deleteli = '';}
+        if(littlePerm && res[i].pay != 0 && res[i].rest != 0 && check != 0 && Number(check) <= Number(50000)){littleli = '<li title="پرداخت خرد" data-toggle="tooltip" class="text-blue-800"><a onclick="payLittle('+res[i].id+' ,'+check+')"><i class="icon-stack-up"></i></a></li>';}else{littleli = '';}
+        str += '<tr class='+name+'><td>'+res[i].id+'</td><td>'+res[i].fullname+'</td><td>'+type+'</td><td>'+numeral(res[i].count_money).format('0,0')+'</br>'+res[i].name+'</td><td>'+numeral(res[i].convert).format('0,0')+'</td><td class="lright '+t1+'"><span title="'+title1+'" data-toggle="tooltip">'+numeral(res[i].volume).format('0,0')+'</span></td><td class="lright '+t1+'">'+numeral(res[i].pay).format('0,0')+'</td><td class="lright '+t2+'"><span title="'+title2+'"data-toggle="tooltip">'+numeral(res[i].rest).format('0,0')+'</span></td><td>'+res[i].date_deal+'</br>'+res[i].time_deal+'</td><td class="text-center"><ul class="icons-list"><li class="dropdown" title="تنظیمات" data-toggle="tooltip"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog7"></i></a><ul class="dropdown-menu dropdown-menu-right"><li onclick="settings(this)"><a>نمایش در داشبورد</a></li><li onclick="settings(this)"><a>عدم نمایش در داشبورد</a></li></ul></li>'+littleli+edit+photo+deleteli+'</ul></td></tr>';
+    }
+    dealTable.innerHTML = str;
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    })
+}
+
+//paginDeal
+//show and dont show
+function settings(elem){
+    var color = elem.parentElement.parentElement;
+    if(elem.nextElementSibling == null){
+        elem.previousElementSibling.removeAttribute("style");
+    }else{
+        elem.nextElementSibling.removeAttribute("style");
+    }
+    if(elem.style.backgroundColor == 'rgb(153, 255, 153)'){
+        elem.removeAttribute("style");
+        color.removeAttribute("style");
+
+    }else{
+        color.style.color=" #e65c00";
+        elem.style.backgroundColor = '#99ff99';
+    }
+}
+//show and dont show
+
 
 //search customer
 function autocomplete( inp, arr , notHandle ) {
@@ -159,8 +206,7 @@ function autocomplete( inp, arr , notHandle ) {
     } );
 }
 //search customer
-//
-
+// check amount bank
 function ambank( input ) {
     input.value = numeral( input.value ).format( '0,0' );
     input.nextElementSibling.value = numeral( input.value ).value();
@@ -171,26 +217,27 @@ function ambank( input ) {
             input.nextElementSibling.nextElementSibling.style.display = 'none';
         }
 }
+// check amount bank
 function amhandle(input){
     input.value = numeral( input.value ).format( '0,0' );
     input.nextElementSibling.value = numeral( input.value ).value();
 }
-var num_shaba = document.getElementById( 'num_shaba' );
-var nam_bank = document.getElementById( 'nam_bank' );
-var act_edit = document.getElementById( 'act_edit' );
-var amo_pay = document.getElementById( 'amo_pay' );
-var amo_bank = document.getElementById( 'amo_bank' );
-var exp_bank = document.getElementById( 'exp_bank' );
+//edit bank
+var actionEditBank = document.getElementById( 'actionEditBank' );
+var numberShabaEdit = document.getElementById( 'numberShabaEdit' );
+var nameBankEdit = document.getElementById( 'nameBankEdit' );
+var amountPay = document.getElementById( 'amountPay' );
+var amountBank = document.getElementById( 'amountBank' );
+var explainBank = document.getElementById( 'explainBank' );
 
 function showBank(result , url){
-    act_edit.action = url + "/" + result.id;
-    num_shaba.value = result.shaba;
-    nam_bank.value = result.name;
-    amo_pay.value = result.pay;
-	amo_bank.value = result.amount;
-	exp_bank.value = result.explain;
-    amo_bank.previousElementSibling.value = numeral(result.amount).format('0,0') ;
-
+    actionEditBank.action = url + "/" + result.id;
+    numberShabaEdit.value = result.shaba;
+    nameBankEdit.value = result.name;
+    amountPay.value = result.pay;
+    amountBank.value = result.amount;
+    amountBank.previousElementSibling.value = numeral(result.amount).format('0,0') ;
+	explainBank.value = result.explain;    
 }
 //edit bank
 //scroll 
@@ -215,4 +262,4 @@ window.onload = function(){
         } , 1500 )
     }
 }
-
+//scroll
