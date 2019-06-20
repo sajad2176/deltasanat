@@ -147,7 +147,8 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 <div>
 	<div class="panel panel-flat" id="div_bank">
 		<div class="panel-body">
-		<?php if($this->session->has_userdata('add_bank')){ ?><a class="btn btn-success float-btn-left" href="#add_bank_modal" data-toggle="modal">افزودن بانک</a><?php }?>
+		<?php if($this->session->has_userdata('add_bank')){ ?><a class="btn btn-success float-btn-left ml-10" href="#add_bank_modal" data-toggle="modal">افزودن بانک</a>
+		<a class="btn btn-success float-btn-left" href="#disable_bank" data-toggle="collapse" >نمایش غیر فعال ها</a><?php }?>
 			<legend class="text-semibold"><i class="icon-credit-card position-left"></i> اطلاعات بانکی </legend>
 			<table class="table datatable-basic table-responsive-lg">
 				<thead>
@@ -194,6 +195,18 @@ if ( $this->session->has_userdata( 'msg' ) ) {
 					</tr>
 					<?php } ?>
 					<tr>
+					<tr class="collapse" id="disable_bank">
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+					</tr>
 				<td class="text-center"><b> مجموع : </b></td>
 				<td></td>
 				<td></td>
