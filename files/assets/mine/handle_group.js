@@ -118,7 +118,7 @@ function settings(elem){
 
 
 //search customer
-function autocomplete( inp, arr , notHandle ) {
+function autocomplete( inp, arr , notBuy , notSell ) {
     var currentFocus;
     inp.addEventListener( "input", function ( e ) {
         var a, b, i, val = this.value;
@@ -143,7 +143,7 @@ function autocomplete( inp, arr , notHandle ) {
                 match = arr[ i ].slice( arr[ i ].indexOf( search ), -lastIndx );
             }
             if ( match.length == search.length ) {
-                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + '</br>'+" ه.ن : " + numeral(notHandle[i]).format('0,0');
+                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + '</br>'+" ه.ن خرید : " + numeral(notBuy[i]).format('0,0') + ' </br> ه.ن فروش :  ' + numeral(notSell[i]).format('0,0');
 
                 b = document.createElement( "DIV" );
                 b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";

@@ -27,7 +27,7 @@ if($this->session->has_userdata('pay_little')){$littlePerm = 1;}else{$littlePerm
 ?>
 <div class="panel panel-flat">
 	<div class="panel-body">
-<fieldset <?php if($dealCount > 7){?> style="height:650px;"<?php }?> >
+<fieldset <?php if($dealCount > 7){?> style="height:620px;"<?php }?> >
 		<legend class="text-semibold"><i class="icon-archive position-left"></i>آرشیو معاملات</legend>
 
 	<table class="table datatable-selection-single table-responsive-lg ">
@@ -102,11 +102,17 @@ if($this->session->has_userdata('pay_little')){$littlePerm = 1;}else{$littlePerm
 					</ul>
 				</td>
 			</tr>
-			<?php } } ?>
+			<?php }  }?>
 		</tbody>
-
 	</table>
 </fieldset>
+<?php if(!empty($deal)){?>
+<div class="col-md-12 pr-0">
+<div class="d-inline-block sumDeal"><b>مجموع : </b></div>
+<div class="d-inline-block sumDeal lright"><b title=" حجم خرید - حجم فروش &#xA;<?php echo number_format($sumDeal[1]->volume).' - '.number_format($sumDeal[0]->volume);?>" data-toggle="tooltip"><?php echo number_format($sumDeal[1]->volume - $sumDeal[0]->volume);?></b></div>
+<div class="d-inline-block sumDeal lright"><b title=" پرداخت خرید - پرداخت فروش &#xA;<?php echo number_format($sumDeal[1]->pay).' - '.number_format($sumDeal[0]->pay);?>" data-toggle="tooltip"><?php echo number_format($sumDeal[1]->pay - $sumDeal[0]->pay);?></b></div>
+<div class="d-inline-block sumDeal lright"><b title=" باقیمانده خرید - باقیمانده فروش &#xA;<?php echo number_format($sumDeal[1]->rest).' - '.number_format($sumDeal[0]->rest);?>" data-toggle="tooltip"><?php echo number_format($sumDeal[1]->rest - $sumDeal[0]->rest);?></b></div>
+</div>
 <div class="text-left">
 	 <ul class="pagination">
 <?php
@@ -124,6 +130,7 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 ?>
   </ul>
 </div>
+<?php } ?>
 </div>
 </div>
 <?php if($this->session->has_userdata('add_handle')){ ?>
@@ -151,10 +158,9 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 						<div class="form-group">
 							<label>انتخاب حساب :</label>
                             <select class="form-control" name="bank_id" required>
-						 <?php $check = 0; foreach($bank as $selects){ if($selects->active == 0){continue;} $check++;
-							 $aa = $selects->id + 1000;
+						 <?php $check = 0; foreach($bank as $selects){ $check++;
 							 ?>
-							<option value="<?php echo $selects->id;?>"><?php echo $selects->explain." |  هماهنگ نشده :".number_format($selects->rest_handle)." | باقیمانده :  ".number_format($selects->rest)." | شناسه : ".$aa; ?></option>
+							<option value="<?php echo $selects->id;?>"><?php echo $selects->explain." |  هماهنگ نشده :".number_format($selects->rest_handle)." | باقیمانده :  ".number_format($selects->rest)." | شناسه : ".$selects->id; ?></option>
 						 <?php } if($check == 0){ ?> <option value="0" selected>شماره حسابی برای مشتری خرید ثبت نشده است</option> <?php }?>
 											</select>
 						</div>
@@ -184,9 +190,9 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 <div>
 	<div class="panel panel-flat" id="div_bank">
 		<div class="panel-body">
-		<?php if($this->session->has_userdata('add_bank')){ ?><a class="btn btn-success float-btn-left ml-10" href="#add_bank_modal" data-toggle="modal">افزودن بانک</a>
-		<a class="btn btn-success float-btn-left" href="#disable_bank" data-toggle="collapse" >نمایش غیر فعال ها</a><?php }?>
-			<legend class="text-semibold"><i class="icon-credit-card position-left"></i> اطلاعات بانکی </legend>
+<?php if($this->session->has_userdata('add_bank')){ ?><a class="btn btn-success float-btn-left ml-10" href="#add_bank_modal" data-toggle="modal">افزودن بانک</a><?php }?>
+<?php if($this->session->has_userdata('active_bank')){ ?><a class="btn btn-success float-btn-left" href="<?php echo base_url('deal/disable_bank/').$this->uri->segment(3)?>" target="_blank" >بانک های غیرفعال</a><?php } ?>
+		<legend class="text-semibold"><i class="icon-credit-card position-left"></i> اطلاعات بانکی </legend>
 			<table class="table datatable-basic table-responsive-lg">
 				<thead>
 					<tr>
@@ -206,8 +212,10 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 				<?php
 				if(empty($bank)){ ?>
                   <tr><td colspan="9" class="text-center p-20">موردی یافت نشد</td></tr>
-				<?php }else{	
-				foreach($bank as $key => $banks){ 
+				<?php }else{
+				$forbank = abs($sumDeal[0]->forbank - $sumDeal[1]->forbank);
+				$sumAmount = 0; $sumPay = 0 ; $sumRest = 0; $sumRestHandle = 0;		
+				foreach($bank as $key => $banks){ $sumAmount += $banks->amount; $sumPay += $banks->pay; $sumRest += $banks->rest; $sumRestHandle += $banks->rest_handle;
 					?>
 					<tr>
 						<td><?php echo $banks->id;?></td>
@@ -228,37 +236,24 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 						</ul>
 						</td>
 					</tr>
-					<?php } ?>
-					<tr>
-					<tr class="collapse" id="disable_bank">
-						<td>1</td>
-						<td>1</td>
-						<td>1</td>
-						<td>1</td>
-						<td>1</td>
-						<td>1</td>
-						<td>1</td>
-						<td>1</td>
-						<td>1</td>
-						<td>1</td>
-					</tr>
-				<td class="text-center"><b> مجموع : </b></td>
-				<td></td>
-				<td></td>
-				<td><b>20</b></td>
-				<td><b>20</b></td>
-				<td><b>20</b></td>
-				<td><b> مانده تعیین نشده : 20</b></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-				<?php  }  ?>
+						<?php } }?>
+						</tbody>
 			</table>
+			<?php if(!empty($bank)){?>
+<div class="col-md-12 pr-0">
+<div class="d-inline-block sumBank"><b>مجموع : </b></div>
+<div class="d-inline-block sumBank lright"><b title="مجموع تعیین شده : <?php echo number_format($sumAmount);?>" data-toggle="tooltip"><?php echo number_format($sumAmount);?></b></div>
+<div class="d-inline-block sumBank lright"><b title="مجموع پرداخت شده : <?php echo number_format($sumPay);?>" data-toggle="tooltip"><?php echo number_format($sumPay);?></b></div>
+<div class="d-inline-block sumBank lright"><b title="مجموع باقی  مانده : <?php echo number_format($sumRest);?>" data-toggle="tooltip"><?php echo number_format($sumRest);?></b></div>
+<div class="d-inline-block sumBank lright"><b title="مجموع هماهنگ نشده : <?php echo number_format($sumRestHandle);?>" data-toggle="tooltip"><?php echo number_format($sumRestHandle);?></b></div>
+<div class="d-inline-block sumBank lright"><b title=" حجم تعیین نشده : &#xA;<?php echo number_format($forbank)." - ".number_format($notBank->amount);?>" data-toggle="tooltip"><?php echo number_format($forbank - $notBank->amount);?></b></div>
+</div>
+
+			<?php  }  ?>
 			</div>
 		</div>
 
-		</div>
+</div>
 <div>
 	<div class="panel panel-flat" id='archive_handle'>
 		<div class="panel-body">
@@ -636,17 +631,17 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 				<!-- /add bank modal -->
 	<!-- edit bank modal -->
 		<?php
-		$str = ''; $str2 = '';
+		$str = ''; $str2 = ''; $str3 = '';
 		$count = sizeof($search);
 		for($i = 1 ; $i <= $count ; $i++){
 			$name = $search[$i]['fullname'];
 			$buy  = $search[$i]['buy'];
 			$sell = $search[$i]['sell'];
-			$amount = $sell - $buy;
 			$str .= "\"$name\",";
-		   $str2 .= "\"$amount\"," ;
+		   $str2 .= "\"$buy\"," ;
+		   $str3 .= "\"$sell\",";
 		}
-		$str = trim($str , ','); $str2 = trim($str2 , ','); 
+		$str = trim($str , ','); $str2 = trim($str2 , ','); $str3 = trim($str3 , ',');
 		?>
 <script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/handle_group.js"></script>
 <script>
@@ -737,8 +732,9 @@ formEdit.action = "<?php echo base_url('deal/edit_handle/').$this->uri->segment(
 
 var array  = [ <?php echo $str;?> ];
 var array2 = [<?php echo $str2;?> ];
+var array3 = [<?php echo $str3;?> ];
 function search_cust( input ) {
-				autocomplete( input, array , array2);
+				autocomplete( input, array , array2 , array3);
 }		
 //delete handle -----------------	
 			var titleHandle = document.getElementById('titleHandle');

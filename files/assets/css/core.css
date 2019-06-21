@@ -7039,7 +7039,31 @@ display: inline-block;
 width: 100%;
 padding: 10px;
 }
+/* sajad */
 .enterCustomer{
   display: inline-block;
   width: 100%;
 }
+.d-inline-block{
+display: inline-block !important;
+}
+.sumDeal:nth-child(1){
+  width: 38% !important;
+}
+.sumDeal:nth-child(2) , .sumDeal:nth-child(3) , .sumDeal:nth-child(4){
+  width: 15% !important;
+}
+.sumBank:nth-child(1){
+  width: 25% !important;
+}
+.sumBank:nth-child(2) , .sumBank:nth-child(3) , .sumBank:nth-child(4) , .sumBank:nth-child(5) , .sumBank:nth-child(6){
+  width: 13% !important;
+}
+
+.pr-0{
+  padding-right: 0 !important;
+}
+.tooltip-inner {
+  white-space: pre-wrap;
+}
+/* sajad */

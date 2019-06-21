@@ -685,11 +685,16 @@ public function edit_bank(){
       $log['explain'] = $exp;
       $log['customer_id'] = $bank->customer_id;
       $this->base_model->insert_data('log' , $log);
+      if($this->uri->segment(4) == 'disable'){
+          $red2 = 'disable_bank';
+      }else{
+          $red2 = 'profile';
+      }
       $message['msg'][0] = 'اطلاعات حساب بانکی با موفقیت ویرایش شد';
       $message['msg'][1] = 'success';
       $message['status'] = 2;
       $this->session->set_flashdata($message);
-      redirect("deal/profile/$bank->customer_id");
+      redirect("deal/$red2/$bank->customer_id");
         }else{
             show_404();
         }
@@ -720,16 +725,70 @@ public function active(){
         $log['explain'] = " حساب بانکی با شناسه ".$id ." مربوط به مشتری  ".$customer->fullname.$txt;
         $log['customer_id'] = $red_id;
         $this->base_model->insert_data('log' , $log);
+        if($this->uri->segment(6) == 'disable'){
+            $red2 = 'disable_bank';
+        }else{
+            $red2 = 'profile';
+        }
         $message['msg'][0] = 'وضعیت اطلاعات حساب تغییر کرد';
         $message['msg'][1] = 'success';
         $message['status'] = 2;
         $this->session->set_flashdata($message);
-        redirect("deal/profile/$red_id");
+        redirect("deal/$red2/$red_id");
     }else{
         show_404();
     }
 }
 //-----active ------//
+// disable archive ----
+public function disable_bank(){
+    if(!$this->session->has_userdata('active_bank') or $this->session->userdata('active_bank') != TRUE){
+        show_404();
+    }
+    $id = $this->uri->segment(3);
+    if(isset($id) and is_numeric($id)){
+        $total_rows = $this->base_model->get_count("bank" , array('customer_id'=>$id , 'active'=> 0));
+        $config['base_url'] = base_url('deal/disable_bank/'.$id);
+        $config['total_rows'] = $total_rows;
+        $config['per_page'] = '10';
+        $config["uri_segment"] = '4';
+        $config['num_links'] = '5';
+        $config['next_link'] = '<i class="icon-arrow-left5"></i>';
+        $config['last_link'] = '<i class="icon-backward2"></i>';
+        $config['prev_link'] = '<i class="icon-arrow-right5"></i>';
+        $config['first_link'] = '<i class="icon-forward3"></i>';
+        $config['full_tag_open'] = '<nav><ul class="pagination pagination-sm">';
+        $config['full_tag_close'] = '</ul></nav>';
+        $config['cur_tag_open'] = '<li class="active"><a href="javascript:void(0)">';
+        $config['cur_tag_close'] = '</a></li>';
+        $config['num_tag_open'] = '<li>';
+        $config['num_tag_close'] = '</li>';
+        $config['next_tag_open'] = '<li>';
+        $config['next_tag_close'] = '</li>';
+        $config['last_tag_open'] = '<li>';
+        $config['last_tag_close'] = '</li>';
+        $config['first_tag_open'] = '<li>';
+        $config['first_tag_close'] = '</li>';
+        $config['prev_tag_open'] = '<li>';
+        $config['prev_tag_close'] = '</li>';
+        $config['suffix'] = "";
+    $this->pagination->initialize($config);
+    $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;      
+    $data['bank'] = $this->base_model->get_data('bank', '*' , 'result'  , array('customer_id'=> $id , 'active'=>0) , $config['per_page'] , $page , array('id' , 'DESC'));
+    $data['page'] = $this->pagination->create_links();
+    $data['count'] = $config['total_rows'];
+        $header['title'] = ' بانک های غیر فعال ';
+        $header['active'] = 'deal';
+        $header['active_sub'] = 'deal_archive';
+        $this->load->view('header', $header);
+        $this->load->view('deal/disable' , $data);
+        $this->load->view('footer');
+    }else{
+        show_404();
+    }
+}
+//disable archive -------
+
 
 // -----pay all-----//
 public function pay_all(){
@@ -1485,26 +1544,27 @@ $this->base_model->insert_data('handle' , $data);
                     $header['title'] = $data['deal'][0]->fullname;
                 }
                 $data['bank'] = $this->base_model->run_query("SELECT * FROM bank WHERE customer_id = $id AND active = 1 ORDER BY id DESC");
-
+                $data['sumDeal'] = $this->base_model->run_query("SELECT t.type_name , MAX(d.volume) as volume , MAX(d.pay) as pay , MAX(d.rest) as rest , MAX(dd.volume) as forbank FROM type_deal t LEFT JOIN (SELECT SUM(volume) as volume , SUM(pay) as pay , SUM(rest) as rest , type FROM deal WHERE customer_id = $id GROUP BY type) d ON d.type = t.id left join(SELECT SUM(volume) as volume , type FROM deal WHERE customer_id = $id AND rest > 0 group by type) dd ON dd.type = t.id GROUP BY t.id");
+                $data['notBank'] = $this->base_model->run_query("SELECT SUM(amount) as amount FROM bank WHERE customer_id = $id AND rest > 0 GROUP BY customer_id" , 'row');
+                if(empty($data['notBank'])){
+                    $data['notBank'] = 0;
+                }
+                
                 $data['handle'] = $this->base_model->get_data_join('handle' , 'bank' , 'handle.* , customer.fullname ,customer.id as cust_id, bank.explain' , 'handle.bank_id = bank.id' , 'result' , array('handle.buy_id'=>$id) , NULL , NULL , array('handle.id' , 'DESC'),array('customer' , 'handle.sell_id = customer.id'));
                 $data['handle2'] = $this->base_model->get_data_join('handle' , 'bank' , 'handle.* , customer.fullname ,customer.id as cust_id, bank.explain' , 'handle.bank_id = bank.id' , 'result' , array('handle.sell_id'=>$id) , NULL , NULL , array('handle.id' , 'DESC'),array('customer' , 'handle.buy_id = customer.id'));
                 $customer = $this->base_model->run_query("SELECT id , fullname FROM customer order by id ASC");
                 $buy = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id  where d.type = 1 GROUP BY d.customer_id ORDER BY d.customer_id ASC");
                 $sell = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id  where d.type = 2 GROUP BY d.customer_id ORDER BY d.customer_id ASC");
                 $date = $this->convertdate->convert(time());
-                $data['date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
+                $data['date'] = $date['d']." ".$date['t'];
                 $search = array();
                 foreach($customer as $rows){
                     $search[$rows->id]['fullname'] = $rows->fullname;
                     $search[$rows->id]['buy'] = 0;
                     foreach($buy as $row){
                       if($rows->id == $row->customer_id){
-                          if($row->volume < $row->handle){
-                              $search[$rows->id]['buy'] = 0;
-                          }else{
                               $search[$rows->id]['buy'] = $row->volume - $row->handle;
-                          }
-                          break; 
+                              break; 
                       }
                     }
                 }
@@ -1512,12 +1572,8 @@ $this->base_model->insert_data('handle' , $data);
                     $search[$rows->id]['sell'] = 0;
                     foreach($sell as $row){
                       if($rows->id == $row->customer_id){
-                          if($row->volume < $row->handle){
-                              $search[$rows->id]['sell'] = 0;
-                          }else{
                               $search[$rows->id]['sell'] = $row->volume - $row->handle;
-                          }
-                          break; 
+                              break; 
                       }
                     }
                 }
