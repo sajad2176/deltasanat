@@ -108,8 +108,8 @@ if($this->session->has_userdata('pay_little')){$littlePerm = 1;}else{$littlePerm
 <br>
 <div class="col-md-12 pr-0">
 <div class="d-inline-block sumDeal"><b>مجموع : </b></div>
-<div class="d-inline-block sumDeal lright"><b title=" حجم خرید - حجم فروش &#xA;<?php echo number_format($sumDeal[1]->volume).' - '.number_format($sumDeal[0]->volume);?>" data-toggle="tooltip"><?php echo number_format($sumDeal[1]->volume - $sumDeal[0]->volume);?></b></div>
-<div class="d-inline-block sumDeal lright"><b title=" پرداخت خرید - پرداخت فروش &#xA;<?php echo number_format($sumDeal[1]->pay).' - '.number_format($sumDeal[0]->pay);?>" data-toggle="tooltip"><?php echo number_format($sumDeal[1]->pay - $sumDeal[0]->pay);?></b></div>
+<div class="d-inline-block sumDeal lright"><b title=" حجم خرید - حجم فروش &#xA;<?php echo number_format($sumDeal[1]->volume).' - '.number_format($sumDeal[0]->volume);if($deal[0]->plus != 0){echo '&#xA;+ ( '.number_format($deal[0]->plus)." ) ";}?>" data-toggle="tooltip"><?php echo number_format($sumDeal[1]->volume - $sumDeal[0]->volume + $deal[0]->plus);?></b></div>
+<div class="d-inline-block sumDeal lright"><b title=" پرداخت خرید - پرداخت فروش &#xA;<?php echo number_format($sumDeal[1]->pay).' - '.number_format($sumDeal[0]->pay);if($deal[0]->plus != 0){echo '&#xA;+ ( '.number_format($deal[0]->plus)." ) ";}?>" data-toggle="tooltip"><?php echo number_format($sumDeal[1]->pay - $sumDeal[0]->pay + $deal[0]->plus);?></b></div>
 <div class="d-inline-block sumDeal lright"><b title=" باقیمانده خرید - باقیمانده فروش &#xA;<?php echo number_format($sumDeal[1]->rest).' - '.number_format($sumDeal[0]->rest);?>" data-toggle="tooltip"><?php echo number_format($sumDeal[1]->rest - $sumDeal[0]->rest);?></b></div>
 </div>
 <br>
@@ -136,6 +136,10 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 
 <!---------------------------------->
 <!-----------deal table------------->
+<!---------------------------------->
+
+<!---------------------------------->
+<!-----------add handle------------->
 <!---------------------------------->
 
 <?php if($this->session->has_userdata('add_handle')){ ?>
@@ -173,7 +177,7 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 					<div class="col-md-1">
 								<div class="form-group">
 									<label for="j_created_date"> تاریخ  :</label>
-									<input type="text" class="form-control" name="date_handle" id="j_created_date" readonly data-mddatetimepicker="true"  data-placement="bottom" value="<?php echo $date; ?>" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" name="date_handle" id="j_created_date" readonly data-mddatetimepicker="true"  data-placement="bottom" value="<?php echo $date; ?>">
 								</div>
 							</div>
 					<div class="col-md-2">
@@ -192,6 +196,10 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 		</div>
 	</div>
 <?php } ?>
+
+<!---------------------------------->
+<!-----------add handle------------->
+<!---------------------------------->
 
 <!---------------------------------->
 <!-----------bank table------------->
@@ -269,6 +277,10 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 <!-----------bank table------------->
 <!---------------------------------->
 
+<!---------------------------------->
+<!----------handle table------------>
+<!---------------------------------->
+
 <?php 
 // handle perm
 if($this->session->has_userdata('pay_all')){$payAllPerm = 1;}else{$payAllPerm = 0;}
@@ -315,13 +327,13 @@ if($this->session->has_userdata('delete_handle')){$deleteHandlePerm = 1;}else{$d
 						<td class="text-center">
 											<ul class="icons-list">
 												<?php if($handles->handle_rest > 0){ ?>
-<?php if($payAllPerm){?><li title="پرداخت کامل" data-toggle="tooltip" class="text-success"><a data-toggle="modal" href="#modal_theme_success"><i onclick="pay_all(<?php echo $handles->id;?> , <?php echo $handles->handle_rest;?>)" class="icon-checkmark4"></i></a></li><?php } ?>
-<?php if($paySlicePerm){?><li title="پرداخت جزئی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i onclick="pay_slice(<?php echo $handles->id;?> , <?php echo $handles->handle_rest;?>)" class="icon-stack-empty"></i></li><?php } ?>
+<?php if($payAllPerm){?><li title="پرداخت کامل" data-toggle="tooltip" class="text-success"><a data-toggle="modal" href="#modal_pay_all"><i onclick="pay_all(<?php echo $handles->id;?> , <?php echo $handles->handle_rest;?>)" class="icon-checkmark4"></i></a></li><?php } ?>
+<?php if($paySlicePerm){?><li title="پرداخت جزئی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_pay_slice"><i onclick="pay_slice(<?php echo $handles->id;?> , <?php echo $handles->handle_rest;?>)" class="icon-stack-empty"></i></li><?php } ?>
 													<?php } ?>
 													
-<?php if($restorePerm){?><li title="بازگشت پرداخت " data-toggle="tooltip" class="text-warning-800"><a data-toggle="modal" href="#modal_form_dminor"><i onclick="history(<?php echo $handles->id;?>)" class="icon-file-minus"></i></li><?php } ?>
-<?php if($editHandlePerm){?><li title="ویرایش هماهنگی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_form_sminor"><i class="icon-pencil6" onclick="edit_handle(<?php echo $handles->id;?> , <?php echo $handles->volume_handle;?>)" ></i></a></li><?php } ?>									
-<?php if($deleteHandlePerm){?><li title="حذف هماهنگی" data-toggle="tooltip" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i onClick="deleteHandle(<?php echo $handles->id; ?>, <?php echo $handles->handle_pay; ?>)" class="icon-cross2"></i></a></li><?php } ?>
+<?php if($restorePerm){?><li title="بازگشت پرداخت " data-toggle="tooltip" class="text-warning-800"><a data-toggle="modal" href="#modal_restore"><i onclick="history(<?php echo $handles->id;?>)" class="icon-file-minus"></i></li><?php } ?>
+<?php if($editHandlePerm){?><li title="ویرایش هماهنگی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_edit_handle"><i class="icon-pencil6" onclick="edit_handle(<?php echo $handles->id;?> , <?php echo $handles->volume_handle;?>)" ></i></a></li><?php } ?>									
+<?php if($deleteHandlePerm){?><li title="حذف هماهنگی" data-toggle="tooltip" class="text-danger"><a data-toggle="modal" href="#modal_delete_handle"><i onClick="deleteHandle(<?php echo $handles->id; ?>, <?php echo $handles->handle_pay; ?>)" class="icon-cross2"></i></a></li><?php } ?>
 											</ul>
 						</td>
 					</tr>
@@ -348,8 +360,17 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
   </ul>
 </div>
 <?php } ?>
+
+<!---------------------------------->
+<!----------handle table------------>
+<!---------------------------------->
+
 <br>
 <br>
+<!---------------------------------->
+<!----------handle2 table----------->
+<!---------------------------------->
+
 <fieldset <?php if($handleCount2 > 7){?> style="height:620px;"<?php }?> >
 			<legend class="text-semibold"><i class="icon-notebook position-left"></i> اطلاعات هماهنگی معاملات فروش</legend>
 			<table class="table datatable-basic table-responsive-lg">
@@ -382,13 +403,13 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 						<td class="text-center">
 											<ul class="icons-list">
 												<?php if($handles->handle_rest > 0){ ?>
-<?php if($payAllPerm){?><li title="پرداخت کامل" data-toggle="tooltip" class="text-success"><a data-toggle="modal" href="#modal_theme_success"><i onclick="pay_all(<?php echo $handles->id;?> , <?php echo $handles->handle_rest;?>)" class="icon-checkmark4"></i></a></li><?php } ?>
-<?php if($paySlicePerm){?><li title="پرداخت جزئی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i onclick="pay_slice(<?php echo $handles->id;?> , <?php echo $handles->handle_rest;?>)" class="icon-stack-empty"></i></li><?php } ?>
+<?php if($payAllPerm){?><li title="پرداخت کامل" data-toggle="tooltip" class="text-success"><a data-toggle="modal" href="#modal_pay_all"><i onclick="pay_all(<?php echo $handles->id;?> , <?php echo $handles->handle_rest;?>)" class="icon-checkmark4"></i></a></li><?php } ?>
+<?php if($paySlicePerm){?><li title="پرداخت جزئی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_pay_slice"><i onclick="pay_slice(<?php echo $handles->id;?> , <?php echo $handles->handle_rest;?>)" class="icon-stack-empty"></i></li><?php } ?>
 													<?php } ?>
 													
-<?php if($restorePerm){?><li title="بازگشت پرداخت " data-toggle="tooltip" class="text-warning-800"><a data-toggle="modal" href="#modal_form_dminor"><i onclick="history(<?php echo $handles->id;?>)" class="icon-file-minus"></i></li><?php } ?>
-<?php if($editHandlePerm){?><li title="ویرایش هماهنگی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_form_sminor"><i class="icon-pencil6" onclick="edit_handle(<?php echo $handles->id;?> , <?php echo $handles->volume_handle;?>)" ></i></a></li><?php } ?>									
-<?php if($deleteHandlePerm){?><li title="حذف هماهنگی" data-toggle="tooltip" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i onClick="deleteHandle(<?php echo $handles->id; ?>, <?php echo $handles->handle_pay; ?>)" class="icon-cross2"></i></a></li><?php } ?>
+<?php if($restorePerm){?><li title="بازگشت پرداخت " data-toggle="tooltip" class="text-warning-800"><a data-toggle="modal" href="#modal_restore"><i onclick="history(<?php echo $handles->id;?>)" class="icon-file-minus"></i></li><?php } ?>
+<?php if($editHandlePerm){?><li title="ویرایش هماهنگی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_edit_handle"><i class="icon-pencil6" onclick="edit_handle(<?php echo $handles->id;?> , <?php echo $handles->volume_handle;?>)" ></i></a></li><?php } ?>									
+<?php if($deleteHandlePerm){?><li title="حذف هماهنگی" data-toggle="tooltip" class="text-danger"><a data-toggle="modal" href="#modal_delete_handle"><i onClick="deleteHandle(<?php echo $handles->id; ?>, <?php echo $handles->handle_pay; ?>)" class="icon-cross2"></i></a></li><?php } ?>
 											</ul>
 						</td>
 					</tr>
@@ -415,8 +436,13 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
   </ul>
 </div>
 <?php } ?>
+
+<!---------------------------------->
+<!----------handle2 table----------->
+<!---------------------------------->
+
 			<!-- minor form modal -->
-				<div id="modal_form_minor" class="modal fade">
+				<div id="modal_pay_slice" class="modal fade">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">
@@ -449,7 +475,7 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 				<!-- /minor form modal -->
 
 			</div>
-			<div id="modal_form_sminor" class="modal fade">
+			<div id="modal_edit_handle" class="modal fade">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">
@@ -477,7 +503,7 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 
 			</div>
 			<!-- pay all modal -->
-				<div id="modal_theme_success" class="modal fade">
+				<div id="modal_pay_all" class="modal fade">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header bg-success">
@@ -486,7 +512,7 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 							</div>
                           <form method="post" id="formPayAll">
 							<div class="modal-body">
-								<h5 class="text-center"> آیا می خواهید تمام مبلغ <span id="paySpan"></span> در تاریخ <input type="text" style="width: 27%;display: inline-block;" class="form-control" name="date_pay" id="j_created_date" readonly data-mddatetimepicker="true"  data-placement="bottom" value="<?php echo $date; ?>"> پرداخت شود؟</h5>
+								<h5 class="text-center"> آیا می خواهید تمام مبلغ <span id="paySpan"></span> در تاریخ <input type="text" style="width: 18%;display: inline-block;" class="form-control" name="date_pay" id="j_created_date" readonly data-mddatetimepicker="true"  data-placement="bottom" value="<?php echo $date; ?>"> پرداخت شود؟</h5>
                                 <input type="hidden" name="pay" value="0" readonly id="payInput">
 							</div>
 
@@ -501,7 +527,7 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 			<!-- /pay all modal -->
 		</div>
 		<!-- Success modal -->
-			<div id="modal_theme_danger" class="modal fade">
+			<div id="modal_delete_handle" class="modal fade">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header bg-danger">
@@ -526,7 +552,7 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 		<!-- /success modal -->
 	</div>
 				<!-- dminor form modal -->
-		<div id="modal_form_dminor" class="modal fade">
+		<div id="modal_restore" class="modal fade">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
