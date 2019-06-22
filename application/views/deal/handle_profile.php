@@ -332,7 +332,7 @@ if($this->session->has_userdata('delete_handle')){$deleteHandlePerm = 1;}else{$d
 													<?php } ?>
 													
 <?php if($restorePerm){?><li title="بازگشت پرداخت " data-toggle="tooltip" class="text-warning-800"><a data-toggle="modal" href="#modal_restore"><i onclick="history(<?php echo $handles->id;?>)" class="icon-file-minus"></i></li><?php } ?>
-<?php if($editHandlePerm){?><li title="ویرایش هماهنگی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_edit_handle"><i class="icon-pencil6" onclick="edit_handle(<?php echo $handles->id;?> , <?php echo $handles->volume_handle;?>)" ></i></a></li><?php } ?>									
+<?php if($editHandlePerm){?><li title="ویرایش هماهنگی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_edit_handle"><i class="icon-pencil6" onclick="edit_handle(<?php echo $handles->id;?> , <?php echo $handles->volume_handle;?> , '<?php echo $handles->date_handle;?>')" ></i></a></li><?php } ?>									
 <?php if($deleteHandlePerm){?><li title="حذف هماهنگی" data-toggle="tooltip" class="text-danger"><a data-toggle="modal" href="#modal_delete_handle"><i onClick="deleteHandle(<?php echo $handles->id; ?>, <?php echo $handles->handle_pay; ?>)" class="icon-cross2"></i></a></li><?php } ?>
 											</ul>
 						</td>
@@ -408,7 +408,7 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 													<?php } ?>
 													
 <?php if($restorePerm){?><li title="بازگشت پرداخت " data-toggle="tooltip" class="text-warning-800"><a data-toggle="modal" href="#modal_restore"><i onclick="history(<?php echo $handles->id;?>)" class="icon-file-minus"></i></li><?php } ?>
-<?php if($editHandlePerm){?><li title="ویرایش هماهنگی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_edit_handle"><i class="icon-pencil6" onclick="edit_handle(<?php echo $handles->id;?> , <?php echo $handles->volume_handle;?>)" ></i></a></li><?php } ?>									
+<?php if($editHandlePerm){?><li title="ویرایش هماهنگی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_edit_handle"><i class="icon-pencil6" onclick="edit_handle(<?php echo $handles->id;?> , <?php echo $handles->volume_handle;?> , '<?php echo $handles->date_handle;?>')" ></i></a></li><?php } ?>									
 <?php if($deleteHandlePerm){?><li title="حذف هماهنگی" data-toggle="tooltip" class="text-danger"><a data-toggle="modal" href="#modal_delete_handle"><i onClick="deleteHandle(<?php echo $handles->id; ?>, <?php echo $handles->handle_pay; ?>)" class="icon-cross2"></i></a></li><?php } ?>
 											</ul>
 						</td>
@@ -441,7 +441,7 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 <!----------handle2 table----------->
 <!---------------------------------->
 
-			<!-- minor form modal -->
+                <!-- modal pay slice -->
 				<div id="modal_pay_slice" class="modal fade">
 					<div class="modal-dialog">
 						<div class="modal-content">
@@ -472,24 +472,31 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 							</div>
 						</div>
 					</div>
-				<!-- /minor form modal -->
-
 			</div>
+			<!-- modal pay slice -->
+
+			<!-- modal edit handle -->
 			<div id="modal_edit_handle" class="modal fade">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
-								<h5 class="modal-title text-center">مبلغ هماهنگی را ویرایش کنید </h5>
+								<h5 class="modal-title text-center"> هماهنگی را ویرایش کنید </h5>
 
 							</div>
 							<hr>
-							<form method="post" id="form_edit">
+							<form method="post" id="formEditHandle">
 								<div class="modal-body">
+								<div class="form-group">
+									<label>تاریخ هماهنگی :</label>
+										<input type="text"  class="form-control" name="date_handle" id="j_created_date2" readonly data-mddatetimepicker="true" data-placement="bottom">
+									</div>
+                                     <br>
+
 									<div class="form-group input-group">
 										<label>مبلغ هماهنگی :</label>
-										<input type="text" id="ihandle" placeholder="111,000,000" onkeyup='amhandle(this)' class="form-control" required>
-										<input type="hidden" name="edit">
+										<input type="text" id="inputEditHandle" placeholder="100,000,000" onkeyup='insertAmount(this)' class="form-control" required>
+										<input type="hidden" name="volume_handle">
 										<p class="text-danger d-none" style="position:absolute;top:65px;"></p>
 										<span class="input-group-btn">
 							<button type="submit" name="sub" class="btn btn-success mt-25">ذخیره</button>
@@ -499,9 +506,9 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 							</div>
 						</div>
 					</div>
-				<!-- /minor form modal -->
-
 			</div>
+           <!-- modal edit handle -->
+
 			<!-- pay all modal -->
 				<div id="modal_pay_all" class="modal fade">
 					<div class="modal-dialog">
@@ -526,7 +533,7 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 				</div>
 			<!-- /pay all modal -->
 		</div>
-		<!-- Success modal -->
+		<!-- modal delete handle -->
 			<div id="modal_delete_handle" class="modal fade">
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -537,21 +544,22 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 
 						<div class="modal-body">
 
-							<h5 class="text-center" id="titleHandle"></h5>
+							<h5 class="text-center" id="titleDeleteHandle"></h5>
 
 
 						</div>
 
 						<div class="modal-footer text-center">
-							<button type="button" class="btn btn-danger" data-dismiss="modal" id="closeHandle">خیر</button>
-							<a id="confirmHandle" class="btn btn-success">بله </a>
+							<button type="button" class="btn btn-danger" data-dismiss="modal" id="closeDeleteHandle">خیر</button>
+							<a id="confirmDeleteHandle" class="btn btn-success">بله </a>
 						</div>
 					</div>
 				</div>
 			</div>
-		<!-- /success modal -->
+		<!-- modal delete handle -->
 	</div>
-				<!-- dminor form modal -->
+
+<!-- modal restore-->
 		<div id="modal_restore" class="modal fade">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -569,6 +577,7 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 				</div>
 			</div>
 		</div>
+<!-- modal restore -->
 
 <!-- modal_delete_deal -->
 	<div id="modal_delete_deal" class="modal fade">
@@ -866,33 +875,6 @@ function pay_all( link, rest) {
 			}
 //pay all-----------------------
 
-var formEdit = document.getElementById('form_edit');
-var ihandle = document.getElementById('ihandle');
-function edit_handle(id , volume){
-ihandle.value = numeral(volume).format('0,0');
-ihandle.nextElementSibling.value = volume;
-formEdit.action = "<?php echo base_url('deal/edit_handle/').$this->uri->segment(3)."/";?>" + id;
-}
-
-		
-//delete handle -----------------	
-			var titleHandle = document.getElementById('titleHandle');
-			var closeHandle = document.getElementById('closeHandle');
-			var confirmHandle = document.getElementById('confirmHandle');
-			function deleteHandle(id , pay){
-               if(pay != 0){
-				   titleHandle.innerHTML = 'حجم پرداختی این هماهنگی صفر نمی باشد . اگر مایل به حذف هماهنگی  می باشید جهت جلوگیری از ناسازگاری در سامانه ابتدا مبالغ پرداختی را بازگردانید. ';
-				   closeHandle.style.display = 'none';
-				   confirmHandle.style.display = 'none';
-				   return;
-			   }else{
-				   titleHandle.innerHTML = 'آیا مایل به حذف هماهنگی می باشید ؟';
-				   closeHandle.style.display = 'inline-block';
-				   confirmHandle.style.display = 'inline-block';
-				   confirmHandle.setAttribute('href' , "<?php echo base_url('deal/delete_handle/').$this->uri->segment(3)."/";?>" + id);
-			   }
-			}			
-//delete handle -----------------	
 
 //pay slice----------------------				
 			function pay_slice( id , rest ) {
@@ -913,14 +895,15 @@ formEdit.action = "<?php echo base_url('deal/edit_handle/').$this->uri->segment(
 //pay slice----------------------
 	
 
-//show deal----------------------
+//get history----------------------
 function history(id){
 		var xhr = new XMLHttpRequest();
 		xhr.onload = function(){
 			if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
-				
+					var url = "<?php echo base_url(); ?>" ;
+					var red_id = "<?php echo $this->uri->segment(3);?>";
 					var result = JSON.parse(xhr.responseText);
-				    showHistory(result);
+				    showHistory(result , url , red_id);
 				}else{
 					alert('request was unsuccessful : ' + xhr.status);
 				}
@@ -928,54 +911,40 @@ function history(id){
 		xhr.open('post' , "<?php echo base_url('deal/get_history/')?>" , true);
 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		xhr.send('handle_id=' + id);
-			}
-			function showHistory(res){
-				var modal = document.getElementById('showhistory');
-				var len = res.length ;
-				if(len == 0){
-					modal.innerHTML = '<div class="text-center pb-20">پرداختی صورت نگرفته است</div>';
-				}else{
-					var div = document.createElement('div');
-					for(var i = 0 ; i < len ; i++ ){
-						var row = div.appendChild(document.createElement('div'));
-						row.setAttribute('class' , 'row');
-						
-						var col4 = row.appendChild(document.createElement('div'));
-						col4.setAttribute('class' , 'col-md-4');
-						
-						var group = col4.appendChild(document.createElement('div'));
-						group.setAttribute('class' , 'form-group');
-						
-						var label = group.appendChild(document.createElement('label'));
-						label.innerHTML = 'تاریخ پرداخت';
-						
-						var p_date = group.appendChild(document.createElement('p'));
-						p_date.setAttribute('class' , 'form-control');
-						p_date.innerHTML = res[i].date_pay;
-						
-						var col8 = row.appendChild(document.createElement('div'));
-						col8.setAttribute('class' , 'col-md-8');
-						
-						var group1 = col8.appendChild(document.createElement('div'));
-						group1.setAttribute('class' , 'form-group input-group');
-						
-						var lable1 = group1.appendChild(document.createElement('label'));
-						lable1.innerHTML = 'مبلغ پرداخت';
-						
-						var p1 = group1.appendChild(document.createElement('p'));
-						p1.innerHTML = numeral(res[i].volume).format('0,0') + ' ریـال ';
-						p1.setAttribute('class' , 'form-control');
-						
-						var span = group1.appendChild(document.createElement('span'));
-						span.setAttribute('class' , 'input-group-btn');
-						 
-						var a = span.appendChild(document.createElement('a'));
-						a.setAttribute('class' , 'btn btn-danger mt-25');
-			            a.setAttribute('href' , "<?php echo base_url('deal/restore/').$this->uri->segment(3)."/";?>"+res[i].id  );
-						a.innerHTML = 'بازگشت';
-					}
-					modal.replaceChild(div , modal.firstChild);
-				}
-			}
+}
 
+// get history-------------
+
+//edit handle--------------
+var formEditHandle = document.getElementById('formEditHandle');
+var inputEditHandle = document.getElementById('inputEditHandle');
+var dateEditHandle = document.getElementById('j_created_date2');
+function edit_handle(id , volume , date_handle){
+inputEditHandle.value = numeral(volume).format('0,0');
+inputEditHandle.nextElementSibling.value = volume;
+date = date_handle.replace(/-/g , '/');
+dateEditHandle.value = date;
+formEditHandle.action = "<?php echo base_url('deal/edit_handle/').$this->uri->segment(3)."/";?>" + id;
+}
+//edit handle------------
+
+		
+//delete handle -----------------	
+			var titleDeleteHandle = document.getElementById('titleDeleteHandle');
+			var closeDeleteHandle = document.getElementById('closeDeleteHandle');
+			var confirmDeleteHandle = document.getElementById('confirmDeleteHandle');
+			function deleteHandle(id , pay){
+               if(pay != 0){
+				titleDeleteHandle.innerHTML = 'حجم پرداختی این هماهنگی صفر نمی باشد . اگر مایل به حذف هماهنگی  می باشید جهت جلوگیری از ناسازگاری در سامانه ابتدا مبالغ پرداختی را بازگردانید. ';
+				closeDeleteHandle.style.display = 'none';
+				confirmDeleteHandle.style.display = 'none';
+				   return;
+			   }else{
+				titleDeleteHandle.innerHTML = 'آیا مایل به حذف هماهنگی می باشید ؟';
+				   confirmDeleteHandle.style.display = 'inline-block';
+				   closeDeleteHandle.style.display = 'inline-block';
+				   confirmDeleteHandle.setAttribute('href' , "<?php echo base_url('deal/delete_handle/').$this->uri->segment(3)."/";?>" + id);
+			   }
+			}			
+//delete handle -----------------	
 		</script>

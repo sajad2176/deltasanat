@@ -1229,6 +1229,7 @@ public function get_history(){
         show_404();
     }
 }
+
 public function restore(){
     if(!$this->session->has_userdata('restore') or $this->session->userdata('restore') != TRUE){
         show_404();
@@ -1240,9 +1241,8 @@ public function restore(){
      if(empty($history)){
         $message['msg'][0] = 'خطا در سیستم';
         $message['msg'][1] = 'danger';
-        $message['status'] = 3;
         $this->session->set_flashdata($message);
-        redirect("deal/handle_profile/$cust_id"); 
+        redirect("deal/profile/$cust_id"); 
      }
     $handle_info = $this->base_model->get_data('handle' , '*' , 'row' , array('id'=>$history->handle_id));
     $return = $this->base_model->run_query("SELECT * FROM ret_his WHERE his_id = $history->id ORDER BY deal_id ASC");
@@ -1255,9 +1255,8 @@ public function restore(){
     if(empty($base)){
       $message['msg'][0] = 'خطا در سیستم';
       $message['msg'][1] = 'danger';
-      $message['status'] = 3;
       $this->session->set_flashdata($message);
-      redirect("deal/handle_profile/$cust_id"); 
+      redirect("deal/profile/$cust_id"); 
     }
     $change = array();
     foreach($base as $rows){
@@ -1272,8 +1271,7 @@ $deal = array();
 $exp = '';
 foreach($return as $key => $ret){
     if($ret->state == 1){
-        $a = $ret->deal_id + 100;
-       $exp .= ' مبلغ بازگشتی معامله  '.$a . " به اندازه : ". number_format($ret->amount)."</br>";
+       $exp .= ' مبلغ بازگشتی معامله  '.$ret->deal_id . " به اندازه : ". number_format($ret->amount)."</br>";
        $deal[] = array(
             'id'=>$ret->deal_id,
            'pay'=>$change[$ret->deal_id]['pay']  - $ret->amount,
@@ -1283,15 +1281,12 @@ foreach($return as $key => $ret){
        );
     }else{
         if($change[$ret->deal_id]['pay'] != 0){
-            $a = $ret->deal_id + 100;
-            $message['msg'][0] = ' جهت جلوگیری از ناسازگاری در سیستم ابتدا معامله  '.$a ." را بازگشت بزنید ";
+            $message['msg'][0] = ' جهت جلوگیری از ناسازگاری در سیستم ابتدا معامله  '.$ret->deal_id ." را بازگشت بزنید ";
             $message['msg'][1] = 'danger';
-            $message['status'] = 3;
             $this->session->set_flashdata($message);
-            redirect("deal/handle_profile/$cust_id"); 
+            redirect("deal/profile/$cust_id"); 
         }else{
-            $a = $ret->deal_id + 100;
-            $exp .= ' مازاد بازگشتی معامله  '.$a . " به اندازه : ". number_format($ret->amount)."</br>";
+            $exp .= ' مازاد بازگشتی معامله  '.$ret->deal_id . " به اندازه : ". number_format($ret->amount)."</br>";
             $deal[] = array(
                 'id'=>$ret->deal_id,
                'pay'=>$change[$ret->deal_id]['pay'],
@@ -1310,22 +1305,21 @@ foreach($return as $key => $ret){
 if(empty($deal)){
     $message['msg'][0] = 'خطا در سیستم';
     $message['msg'][1] = 'danger';
-    $message['status'] = 3;
     $this->session->set_flashdata($message);
-    redirect("deal/handle_profile/$cust_id"); 
+    redirect("deal/profile/$cust_id"); 
 }
     $date = $this->convertdate->convert(time());
     $this->db->trans_begin();
     $bank_info = $this->base_model->get_data_join('bank' , 'customer' , 'bank.pay , bank.rest , customer.fullname as owner' ,'bank.customer_id = customer.id','row' , array('bank.id'=>$handle_info->bank_id));
     $handle['handle_pay'] = $handle_info->handle_pay - $history->volume;
     $handle['handle_rest'] = $handle_info->handle_rest + $history->volume;
-    $handle['date_modified'] = $date['d']."</br>".$date['t'];
+    $handle['date_modified'] = $date['dd']."</br>".$date['t'];
     $bank['pay'] = $bank_info->pay - $history->volume;
     $bank['rest'] = $bank_info->rest + $history->volume;
     $turn['owner'] = $bank_info->owner;
     $turn['cust_id'] = $handle_info->sell_id;
     $turn['bank_id'] = $handle_info->bank_id;
-    $turn['date'] = $date['d'];
+    $turn['date'] = $date['dd'];
     $turn['time'] = $date['t'];
     $turn['amount'] = 0 - $history->volume;
     $turn['rest'] = $bank['rest'];
@@ -1334,18 +1328,22 @@ if(empty($deal)){
     $log['time_log'] = $date['t'];
     $log['activity_id'] = 15;
     $log['explain'] = $exp;
+    $log['customer_id'] = $handle_info->buy_id;
     $his['active'] = 0;
     $status = $this->base_model->insert_data('turnover' , $turn);
     $status = $this->base_model->update_data('bank' , $bank , array('id'=>$handle_info->bank_id));
     $status = $this->base_model->update_data('handle' , $handle , array('id'=> $history->handle_id));
     $this->base_model->update_batch('deal' , $deal , 'id');
-    $status = $this->base_model->update_data('history' , $his , array('id'=> $id)); 
+    $status = $this->base_model->update_data('history' , $his , array('id'=> $id));
+    if($handle_info->buy_id == $handle_info->sell_id){
+        $status = $this->base_model->set('plus' , 'plus-'.$history->volume , array('id'=>$handle_info->buy_id) , 'customer');
+    } 
     if($this->db->trans_status() === FALSE or $status == FALSE){
         $this->db->trans_rollback();
         $message['msg'][0] = 'متاسفانه مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید';
         $message['msg'][1] = 'danger';
         $this->session->set_flashdata($message);
-        redirect("deal/handle_profile/$cust_id");
+        redirect("deal/profile/$cust_id");
     }else{
         $this->db->trans_commit();
     }
@@ -1354,13 +1352,14 @@ if(empty($deal)){
       $message['msg'][1] = 'success';
       $message['status'] = 3;
       $this->session->set_flashdata($message);
-      redirect("deal/handle_profile/$cust_id"); 
+      redirect("deal/profile/$cust_id"); 
     }else{
         show_404();
     }
 }
 // -----history------//
-// edit handle
+
+//------edit handle-----//
 public function edit_handle(){
     if(!$this->session->has_userdata('edit_handle') or $this->session->userdata('edit_handle') != TRUE){
         show_404();
@@ -1370,17 +1369,19 @@ public function edit_handle(){
     if(isset($_POST['sub']) and isset($id) and isset($red_id) and is_numeric($id) and is_numeric($red_id)){
       
       $handle_info = $this->base_model->get_data_join('handle' , 'bank' ,'handle.volume_handle , handle.handle_rest, handle.bank_id ,bank.rest_handle , customer.fullname' , 'bank.id = handle.bank_id' ,'row' , array('handle.id'=>$id) , NULL , NULL , NULL , array('customer' , 'handle.buy_id = customer.id'));
-      $handle['volume_handle'] = $this->input->post('edit');
-      $change = $this->input->post('edit') - $handle_info->volume_handle;
+      $change = $this->input->post('volume_handle') - $handle_info->volume_handle;
+      $handle['volume_handle'] = $this->input->post('volume_handle');
       $handle['handle_rest'] = $handle_info->handle_rest + $change;
+      $handle['date_handle'] = $this->input->post('date_handle');
       $bank['rest_handle'] = $handle_info->rest_handle - $change;
       $str = ' حجم هماهنگی مشتری خرید  '.$handle_info->fullname . " از مقدار ".number_format($handle_info->volume_handle) . " به مقدار ". number_format($handle['volume_handle']) . " تغییر یافت ";
       $date = $this->convertdate->convert(time());
       $log['user_id'] = $this->session->userdata('id');
-      $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
-      $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+      $log['date_log'] = $date['dd'];
+      $log['time_log'] = $date['t'];
       $log['activity_id'] = 21;
       $log['explain'] = $str;
+      $log['customer_id'] = $red_id;
       $this->base_model->update_data('handle' , $handle , array('id'=> $id));
       $this->base_model->update_data('bank' , $bank , array('id'=> $handle_info->bank_id));
       $this->base_model->insert_data('log' , $log);
@@ -1388,48 +1389,50 @@ public function edit_handle(){
       $message['msg'][1] = 'success';
       $message['status'] = 3;
       $this->session->set_flashdata($message);
-      redirect("deal/handle_profile/$red_id");       
+      redirect("deal/profile/$red_id");       
     }else{
         show_404();
     }
 }
-//edit handle
-    // ----delete handle---//
+//---------edit handle--------//
+
+// ----delete handle---------//
     public function delete_handle(){
         $red_id = $this->uri->segment(3);
         $id = $this->uri->segment(4);
         if(isset($id) and is_numeric($id) and isset($red_id) and is_numeric($red_id)){
            $handle = $this->base_model->get_data_join('handle' , 'customer' ,'handle.* , customer.fullname ' , 'handle.buy_id = customer.id' ,'row' , array('handle.id' => $id));
-           if($handle->handle_pay != 0 or empty($handle)){
+           if(empty($handle)){
                show_404();
            }else{
-            $bank_info = $this->base_model->get_data('bank' , 'rest_handle' , 'row' , array('id' => $handle->bank_id));
-            $explain = 'هماهنگی با حجم : '.number_format($handle->volume_handle)." مربوط به مشتری خرید  ".$handle->fullname . " حذف شد ";
+               if($handle->handle_pay != 0 ){
+                   $message['msg'][0] = 'خطا در سیستم';
+                   $message['msg'][1] = 'info';
+                   $this->session->set_flashdata($message);
+                   redirect("deal/profile/$red_id");
+               }
+            $exp = " هماهنگی مربوط به مشتری  ".$handle->fullname." با مشخصات : </br> "." حجم هماهنگی : ".number_format($handle->volume_handle)." </br> حجم پرداخت شده : ".number_format($handle->handle_pay)." </br> حجم باقی مانده : ".number_format($handle->handle_rest)."</br> شناسه بانک : ".$handle->bank_id."</br> حذف شد";
             $date = $this->convertdate->convert(time());
-            $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
-            $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+            $log['date_log'] = $date['dd'];
+            $log['time_log'] = $date['t'];
             $log['user_id'] = $this->session->userdata('id');
             $log['activity_id'] = 16;
-            $log['explain'] = $explain;
-            $back['explain'] =  $explain;
-            $back['time_backup'] = $log['time_log'];
-            $back['date_backup'] = $log['date_log'];
-            $bank['rest_handle'] = $bank_info->rest_handle + $handle->volume_handle;
+            $log['explain'] = $exp;
+            $log['customer_id'] = $red_id;
+            $res = $this->base_model->set('rest_handle' , 'rest_handle+'.$handle->volume_handle , array('id'=>$handle->bank_id) , 'bank');
             $res = $this->base_model->delete_data('handle' , array('id'=>$id));
-            $this->base_model->update_data('bank' , $bank , array('id'=> $handle->bank_id));
             $this->base_model->insert_data('log' , $log);
-            $this->base_model->insert_data('backup' , $back);
             if($res == FALSE){
                 $message['msg'][0] = 'متاسفانه مشکلی در روند عملیات رخ داده است . لطفا دوباره سعی کنید';
                 $message['msg'][1] = 'danger';
                 $this->session->set_flashdata($message);
-                redirect("deal/handle_profile/$red_id");
+                redirect("deal/profile/$red_id");
             }else{
                 $message['msg'][0] = 'هماهنگی با موفقیت حذف شد';
                 $message['msg'][1] = 'success';
                 $message['status'] = 3;
                 $this->session->set_flashdata($message);
-                redirect("deal/handle_profile/$red_id");
+                redirect("deal/profile/$red_id");
             }
            }
         }else{

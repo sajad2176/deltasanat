@@ -274,7 +274,7 @@ for(i = 0 ; i < count ; i++){
     if(payAllPerm && Number(res[i].handle_rest) > Number(0)){all = '<li title="پرداخت کامل" data-toggle="tooltip" class="text-success"><a data-toggle="modal" href="#modal_pay_all"><i onclick="pay_all('+res[i].id+' ,'+res[i].handle_rest+')" class="icon-checkmark4"></i></a></li>';}else{all = '';}
     if(paySlicePerm && Number(res[i].handle_rest) > Number(0)){slice = '<li title="پرداخت جزئی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_pay_slice"><i onclick="pay_slice('+res[i].id+' ,'+res[i].handle_rest+')" class="icon-stack-empty"></i></li>';}else{slice = '';}
     if(restorePerm){restore = '<li title="بازگشت پرداخت " data-toggle="tooltip" class="text-warning-800"><a data-toggle="modal" href="#modal_restore"><i onclick="history('+res[i].id+')" class="icon-file-minus"></i></li>';}else{restore = '';}
-    if(editHandlePerm){edit = '<li title="ویرایش هماهنگی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_edit_handle"><i class="icon-pencil6" onclick="edit_handle('+res[i].id+' ,'+res[i].volume_handle+')" ></i></a></li>';}else{edit = '';}
+    if(editHandlePerm){edit = '<li title="ویرایش هماهنگی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_edit_handle"><i class="icon-pencil6" onclick="edit_handle('+res[i].id+' ,'+res[i].volume_handle+','+res[i].date_handle+')" ></i></a></li>';}else{edit = '';}
     if(deleteHandlePerm){deleteHandle = '<li title="حذف هماهنگی" data-toggle="tooltip" class="text-danger"><a data-toggle="modal" href="#modal_delete_handle"><i onClick="deleteHandle('+res[i].id+' ,'+res[i].handle_pay+')" class="icon-cross2"></i></a></li>';}else{deleteHandle = '';}
     title1 = ' پرداخت شده - هماهنگی &#xA;' + numeral(res[i].handle_pay).format('0,0') + ' - ' + numeral(res[i].volume_handle).format('0,0');  
     str += '<tr><td>'+i+'</td><td><a href="'+url+'deal/profile/'+res[i].cust_id+'" target="_blank" class="enterCustomer">'+res[i].fullname+'</a></td><td class="'+t1+'">'+numeral(res[i].volume_handle).format('0,0')+'</td><td class="'+t1+'">'+numeral(res[i].handle_pay).format('0,0')+'</td><td class="'+t2+'"><span title="'+title1+'" data-toggle="tooltip">'+numeral(res[i].handle_rest).format('0,0')+'</span></td><td>'+res[i].bank_id+'</td><td>'+res[i].explain+'</td><td>'+res[i].date_handle+'</br>'+res[i].time_handle+'</td><td class="text-center"><ul class="icons-list">'+all+slice+restore+edit+deleteHandle+'</ul></td></tr>';
@@ -314,3 +314,56 @@ window.onload = function(){
     }
 }
 //scroll
+
+// show history
+
+function showHistory(res , url , red_id){
+    var modal = document.getElementById('showhistory');
+    var len = res.length ;
+    if(len == 0){
+        modal.innerHTML = '<div class="text-center pb-20">پرداختی صورت نگرفته است</div>';
+    }else{
+        var div = document.createElement('div');
+        for(var i = 0 ; i < len ; i++ ){
+            var row = div.appendChild(document.createElement('div'));
+            row.setAttribute('class' , 'row');
+            
+            var col4 = row.appendChild(document.createElement('div'));
+            col4.setAttribute('class' , 'col-md-4');
+            
+            var group = col4.appendChild(document.createElement('div'));
+            group.setAttribute('class' , 'form-group');
+            
+            var label = group.appendChild(document.createElement('label'));
+            label.innerHTML = 'تاریخ پرداخت';
+            
+            var p_date = group.appendChild(document.createElement('p'));
+            p_date.setAttribute('class' , 'form-control');
+            p_date.innerHTML = res[i].date_pay;
+            
+            var col8 = row.appendChild(document.createElement('div'));
+            col8.setAttribute('class' , 'col-md-8');
+            
+            var group1 = col8.appendChild(document.createElement('div'));
+            group1.setAttribute('class' , 'form-group input-group');
+            
+            var lable1 = group1.appendChild(document.createElement('label'));
+            lable1.innerHTML = 'مبلغ پرداخت';
+            
+            var p1 = group1.appendChild(document.createElement('p'));
+            p1.innerHTML = numeral(res[i].volume).format('0,0') + ' ریـال ';
+            p1.setAttribute('class' , 'form-control');
+            
+            var span = group1.appendChild(document.createElement('span'));
+            span.setAttribute('class' , 'input-group-btn');
+             
+            var a = span.appendChild(document.createElement('a'));
+            a.setAttribute('class' , 'btn btn-danger mt-25');
+            a.setAttribute('href' , url + "deal/restore/" + red_id +"/"+res[i].id  );
+            a.innerHTML = 'بازگشت';
+        }
+        modal.replaceChild(div , modal.firstChild);
+    }
+}
+
+// show history
