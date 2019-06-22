@@ -70,26 +70,39 @@ function show_bank( input ) {
     }
 }
 //name bank
+
 //paginDeal
 var dealTable = document.getElementById('dealTable');
 function showDeal(res , url , editPerm , photoPerm , deletePerm , littlePerm){
     count = res.length;
     var str = '';
     var name , type , t1 , t2 ,title1 ,title2 , edit , photo , deleteli , littleli;
+
     for(i = 0 ; i < count ; i++){
-        var check = Math.abs(res[i].volume - res[i].pay);
         if(res[i].state == 0){name = 'tr_state';}else{name = '';}
+
         if(res[i].type == 1){type = 'خرید';}else{type = 'فروش';}
+
         if(Number(res[i].volume) < Number(res[i].pay)){ t1 = 'text-danger'; }else{t1 = '';}
+
         if(Number(res[i].rest) < Number(0)){t2 = 'text-danger';}else{t2 = '';}
+
         title1 = ' ( '+ numeral(res[i].count_money).format('0,0') + ' + ' + numeral(res[i].wage).format('0,0') + ' ) × ' + numeral(res[i].convert).format('0,0');
+
         title2 = numeral(res[i].volume).format('0,0') + ' - ' + numeral(res[i].pay).format('0,0');
-        if(editPerm && res[i].state == 1){edit = '<li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="'+url+'deal/edit/'+res[i].id+'"><i class=" icon-pencil6"></i></a></li>';}else{edit = '';}
-        if(photoPerm){photo = '<li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="'+url+'deal/photo/'+res[i].id+'"><i class="icon-stack-picture"></i></a></li>';}else{photo = '';}
-        if(deletePerm && res[i].state == 1){deleteli = '<li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_theme_danger1"><i  class="icon-trash" onclick = "deleteDeal('+res[i].id+' ,'+res[i].pay+')" ></i></a></li>';}else{deleteli = '';}
+
+        var check = Math.abs(res[i].volume - res[i].pay);
         if(littlePerm && res[i].pay != 0 && res[i].rest != 0 && check != 0 && Number(check) <= Number(50000)){littleli = '<li title="پرداخت خرد" data-toggle="tooltip" class="text-blue-800"><a onclick="payLittle('+res[i].id+' ,'+check+')"><i class="icon-stack-up"></i></a></li>';}else{littleli = '';}
+        
+        if(editPerm && res[i].state == 1){edit = '<li title="ویرایش معامله" data-toggle="tooltip" class="text-primary"><a href="'+url+'deal/edit/'+res[i].id+'"><i class=" icon-pencil6"></i></a></li>';}else{edit = '';}
+
+        if(photoPerm){photo = '<li title="مشاهده قبض" data-toggle="tooltip" class="text-indigo-600"><a href="'+url+'deal/photo/'+res[i].id+'"><i class="icon-stack-picture"></i></a></li>';}else{photo = '';}
+
+        if(deletePerm && res[i].state == 1){deleteli = '<li title="حذف معامله"  data-toggle="tooltip" class="text-danger" ><a data-toggle="modal" href="#modal_delete_deal"><i  class="icon-trash" onclick = "deleteDeal('+res[i].id+' ,'+res[i].pay+')" ></i></a></li>';}else{deleteli = '';}
+        
         str += '<tr class='+name+'><td>'+res[i].id+'</td><td>'+res[i].fullname+'</td><td>'+type+'</td><td>'+numeral(res[i].count_money).format('0,0')+'</br>'+res[i].name+'</td><td>'+numeral(res[i].convert).format('0,0')+'</td><td class="lright '+t1+'"><span title="'+title1+'" data-toggle="tooltip">'+numeral(res[i].volume).format('0,0')+'</span></td><td class="lright '+t1+'">'+numeral(res[i].pay).format('0,0')+'</td><td class="lright '+t2+'"><span title="'+title2+'"data-toggle="tooltip">'+numeral(res[i].rest).format('0,0')+'</span></td><td>'+res[i].date_deal+'</br>'+res[i].time_deal+'</td><td class="text-center"><ul class="icons-list"><li class="dropdown" title="تنظیمات" data-toggle="tooltip"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog7"></i></a><ul class="dropdown-menu dropdown-menu-right"><li onclick="settings(this)"><a>نمایش در داشبورد</a></li><li onclick="settings(this)"><a>عدم نمایش در داشبورد</a></li></ul></li>'+littleli+edit+photo+deleteli+'</ul></td></tr>';
     }
+
     dealTable.innerHTML = str;
     $(function () {
         $('[data-toggle="tooltip"]').tooltip();
@@ -97,6 +110,7 @@ function showDeal(res , url , editPerm , photoPerm , deletePerm , littlePerm){
 }
 
 //paginDeal
+
 //show and dont show
 function settings(elem){
     var color = elem.parentElement.parentElement;
