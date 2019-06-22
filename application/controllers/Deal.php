@@ -630,7 +630,7 @@ if(!empty($img)){
      }
      //-----edit photo -----//
 
-   // ----profile--------//
+    // ----profile--------//
    public function profile(){
     $id = $this->uri->segment(3);
         if(isset($_POST['sub'])){
@@ -755,9 +755,9 @@ $this->base_model->insert_data('handle' , $data);
         $this->load->view('footer');
     }
 }
-//profile  
+    //--------profile----------//  
 
-//pagindeal
+    //-------pagindeal--------//
 public function paginDeal(){
 if(!$this->session->has_userdata('see_handle') or $this->session->userdata('see_handle') != TRUE){
     show_404();
@@ -771,9 +771,9 @@ if(isset($offset) and is_numeric($offset) and isset($id) and is_numeric($id)){
     show_404();
 }
 }
-//pagindeal
+    //-------pagindeal--------//
 
-//paginHandle
+    //------paginHandle-------//
 
 public function paginHandle(){
 if(!$this->session->has_userdata('see_handle') or $this->session->userdata('see_handle') != TRUE){
@@ -794,7 +794,7 @@ if(is_numeric($id) and is_numeric($offset) and is_numeric($which)){
 }
 }
 
-//paginHandle
+    //------paginHandle----//
 
 
     //----- add_bank -----//
@@ -849,8 +849,8 @@ public function show_bank(){
     if(!$this->session->has_userdata('edit_bank') or $this->session->userdata('edit_bank') != TRUE){
         show_404();
     }
- if(isset($_POST['bank_id']) and is_numeric($_POST['bank_id'])){ 
-$id = $this->input->post('bank_id');
+    $id = $this->input->post('bank_id');
+ if(isset($id) and is_numeric($id)){ 
 $bank = $this->base_model->get_data('bank' , '*' , 'row' , array('id'=> $id));
 echo json_encode($bank);
 }else{
@@ -950,6 +950,7 @@ public function active(){
     }
 }
 //-----active ------//
+
 // disable archive ----
 public function disable_bank(){
     if(!$this->session->has_userdata('active_bank') or $this->session->userdata('active_bank') != TRUE){
@@ -986,7 +987,6 @@ public function disable_bank(){
     $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;      
     $data['bank'] = $this->base_model->get_data('bank', '*' , 'result'  , array('customer_id'=> $id , 'active'=>0) , $config['per_page'] , $page , array('id' , 'DESC'));
     $data['page'] = $this->pagination->create_links();
-    $data['count'] = $config['total_rows'];
         $header['title'] = ' بانک های غیر فعال ';
         $header['active'] = 'deal';
         $header['active_sub'] = 'deal_archive';

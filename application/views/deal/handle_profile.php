@@ -192,6 +192,11 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 		</div>
 	</div>
 <?php } ?>
+
+<!---------------------------------->
+<!-----------bank table------------->
+<!---------------------------------->
+
 <div>
 	<div class="panel panel-flat" id="div_bank">
 		<div class="panel-body">
@@ -247,10 +252,10 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 			<?php if(!empty($bank)){?>
 <div class="col-md-12 pr-0">
 <div class="d-inline-block sumBank"><b>مجموع : </b></div>
-<div class="d-inline-block sumBank lright"><b title="مجموع تعیین شده : <?php echo number_format($sumAmount);?>" data-toggle="tooltip"><?php echo number_format($sumAmount);?></b></div>
-<div class="d-inline-block sumBank lright"><b title="مجموع پرداخت شده : <?php echo number_format($sumPay);?>" data-toggle="tooltip"><?php echo number_format($sumPay);?></b></div>
-<div class="d-inline-block sumBank lright"><b title="مجموع باقی  مانده : <?php echo number_format($sumRest);?>" data-toggle="tooltip"><?php echo number_format($sumRest);?></b></div>
-<div class="d-inline-block sumBank lright"><b title="مجموع هماهنگ نشده : <?php echo number_format($sumRestHandle);?>" data-toggle="tooltip"><?php echo number_format($sumRestHandle);?></b></div>
+<div class="d-inline-block sumBank lright"><b title="مجموع تعیین شده" data-toggle="tooltip"><?php echo number_format($sumAmount);?></b></div>
+<div class="d-inline-block sumBank lright"><b title="مجموع پرداخت شده" data-toggle="tooltip"><?php echo number_format($sumPay);?></b></div>
+<div class="d-inline-block sumBank lright"><b title="مجموع باقی  مانده" data-toggle="tooltip"><?php echo number_format($sumRest);?></b></div>
+<div class="d-inline-block sumBank lright"><b title="مجموع هماهنگ نشده" data-toggle="tooltip"><?php echo number_format($sumRestHandle);?></b></div>
 <div class="d-inline-block sumBank lright"><b title=" حجم تعیین نشده : &#xA;<?php echo number_format($forbank)." - ".number_format($notBank);?>" data-toggle="tooltip"><?php echo number_format($forbank - $notBank);?></b></div>
 </div>
 
@@ -259,6 +264,11 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
 		</div>
 
 </div>
+
+<!---------------------------------->
+<!-----------bank table------------->
+<!---------------------------------->
+
 <?php 
 // handle perm
 if($this->session->has_userdata('pay_all')){$payAllPerm = 1;}else{$payAllPerm = 0;}
