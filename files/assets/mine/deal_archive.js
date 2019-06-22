@@ -107,7 +107,7 @@ function showCustResult( result, url , deletePerm , photoPerm , editPerm , littl
             li_edit.setAttribute('title' , 'ویرایش معامله ');
             li_edit.setAttribute('data-toggle' , 'tooltip');
             var a_edit = li_edit.appendChild( document.createElement( 'a' ) )
-            a_edit.setAttribute( 'href', url + "deal/edit/"+ result[ i ].id );
+            a_edit.setAttribute( 'href', url + "deal/edit/"+ result[i].id );
             var i_edit = a_edit.appendChild( document.createElement( 'i' ) );
             i_edit.setAttribute( 'class', 'icon-pencil6' );
             }
@@ -142,6 +142,7 @@ function showCustResult( result, url , deletePerm , photoPerm , editPerm , littl
         $('[data-toggle="tooltip"]').tooltip();
     })
 }
+
 //show and dont show
 function settings(elem){
     var color = elem.parentElement.parentElement;

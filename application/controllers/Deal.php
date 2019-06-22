@@ -15,6 +15,7 @@ class Deal extends CI_Controller {
     if(!$this->session->has_userdata('see_deal') or $this->session->userdata('see_deal') != TRUE){
         show_404();
     }
+    // filter
     if($this->input->get('per_page')){
         $offset = $this->input->get('per_page');
     }else{
@@ -41,6 +42,7 @@ class Deal extends CI_Controller {
         $end_date = str_replace('/', '-', $end_date);
         $between = "deal.date_deal BETWEEN '$start_date' AND '$end_date'";
     }
+    // filter
     $config['base_url'] = base_url('deal/archive?fullname='.$fullname.'&start_date='.$start_date.'&end_date='.$end_date.'&type='.$type.'&money_id='.$money_id);
     $config['total_rows'] = $this->base_model->total_deal($between , $name , $type_deal , $money);
     $config['per_page'] = '10';
@@ -158,7 +160,7 @@ $data['unit'] = $this->base_model->get_data('unit' , 'id , name');
         if(isset($id) and is_numeric($id)){
             //check
          $deal = $this->base_model->get_data_join('deal' , 'customer' ,'deal.* , customer.fullname , unit.name','deal.customer_id = customer.id', 'row' , array('deal.id' => $id) , NULL , NULL , NULL , array('unit' , 'deal.money_id = unit.id'));
-         if($deal->pay != 0 or empty($deal)){
+         if(empty($deal)){
              show_404();
          }
          if($red == 'group'){
@@ -174,12 +176,19 @@ $data['unit'] = $this->base_model->get_data('unit' , 'id , name');
             $red2 = 'archive';
             $red3 = '';
          }
+         if($deal->pay != 0){
+             $message['msg'][0] = ' برای این معامله پرداخت صورت گرفته است و نمی توان آن را پاک کرد ';
+             $message['msg'][1] = 'info';
+             $this->session->set_flashdata($message);
+             redirect($red1."/".$red2."/".$red3);
+         }
          if($deal->state == 0){
            $message['msg'][0] = 'معامله مازاد نمی تواند حذف شود';
-           $message['msg'][1] = 'danger';
+           $message['msg'][1] = 'info';
            $this->session->set_flashdata($message);
            redirect($red1."/".$red2."/".$red3);
          }
+
 $type = 'خرید';
 if($deal->type == 2){
     $type = 'فروش';
@@ -308,12 +317,12 @@ $this->base_model->insert_data('log' , $log);
     if(!$this->session->has_userdata('add_sell') or $this->session->userdata('add_sell') != TRUE){
         show_404();
     } 
+            $date = $this->convertdate->convert(time());
+            $data['date'] = $date['d']." ".$date['t'];
             $header['title'] = 'افزودن فروش';
             $header['active'] = 'deal';
             $header['active_sub'] = 'deal_sell';
             $data['customer'] = $this->base_model->get_data('customer' ,'fullname');
-            $date = $this->convertdate->convert(time());
-            $data['date'] = $date['d']." ".$date['t'];
             $data['unit'] = $this->base_model->get_data('unit' , 'id , name ', 'result' , array('id !=' => 5));
             $this->load->view('header' , $header);
             $this->load->view('deal/sell', $data);
@@ -420,19 +429,18 @@ $this->base_model->insert_data('log' , $log);
             $log['customer_id'] = $cust_id;
             $log['explain'] = $exp;
             $this->base_model->insert_data('log' , $log);
-           $message['msg'][0] = 'اطلاعات معامله با موفقیت ثبت شد';
+           $message['msg'][0] = 'اطلاعات معامله با موفقیت ویرایش شد';
            $message['msg'][1] = 'success';
            $this->session->set_flashdata($message);
            redirect("deal/edit/$id");
             }else{
                 $data['deal'] = $this->base_model->get_data_join('deal' , 'customer' , 'deal.* , customer.fullname' , 'deal.customer_id = customer.id'  ,'row' , array('deal.id' => $id));
-                
                 if(empty($data['deal'])){
                     show_404();
                 }else{
                     if($data['deal']->state == 0){
                         $message['msg'][0] = 'معامله مازاد نمی تواند ویرایش شود';
-                        $message['msg'][1] = 'danger';
+                        $message['msg'][1] = 'info';
                         $this->session->set_flashdata($message);
                         redirect('deal/archive');
                     }
@@ -453,7 +461,7 @@ $this->base_model->insert_data('log' , $log);
     }
       //----- edit -----//
 
-      //----- photo -----//
+      //----- send photo -----//
       public function photo(){
           if(!$this->session->has_userdata('see_photo') or $this->session->userdata('see_photo') != TRUE){
               show_404();
@@ -464,6 +472,7 @@ $this->base_model->insert_data('log' , $log);
         if(isset($_POST['sub'])){
     //photo
         $img = array();
+        $exp = '';
         if($_FILES['deal_pic']['name'][0] != ''){
          $count = count($_FILES['deal_pic']['name']);
          $files['name'] = $_FILES['deal_pic']['name'];
@@ -473,16 +482,17 @@ $this->base_model->insert_data('log' , $log);
          $files['size'] = $_FILES['deal_pic']['size'];
 
          for($j = 0 ; $j < $count ; $j++){
-         
+             $counter = $j + 1;
+             $exp .= " نام عکس شماره  ".$counter." : ".$files['name'][$j]."</br>";
              $_FILES['deal_pic']['name'] = $files['name'][$j];
              $_FILES['deal_pic']['type'] = $files['type'][$j];
              $_FILES['deal_pic']['tmp_name'] = $files['tmp_name'][$j];
              $_FILES['deal_pic']['error'] = $files['error'][$j];
              $_FILES['deal_pic']['size'] = $files['size'][$j];
  
-             $config['upload_path'] = './uploads/deal';
-             $config['allowed_types']        = 'gif|jpg|png|jpeg';
-             $config['max_size']             = 1000000000;
+             $config['upload_path']   = './uploads/deal';
+             $config['allowed_types'] = 'gif|jpg|png|jpeg';
+             $config['max_size']      = 1000000000;
  
              $this->load->library('upload', $config);  
              $this->upload->initialize($config);
@@ -509,7 +519,7 @@ if(!empty($img)){
     $log['date_log'] = $date['dd'];
     $log['time_log'] = $date['t'];
     $log['activity_id'] = 24;
-    $log['explain'] = ' ارسال قبض';
+    $log['explain'] = ' ارسال قبض</br>'.$exp;
     $log['customer_id'] = $cust->customer_id;
     $this->base_model->insert_data('log' , $log);
     $message['msg'][0] = 'اطلاعات با موفقیت ثبت شد';
@@ -524,10 +534,38 @@ if(!empty($img)){
 }
     //photo
               }else{
+                $total_rows = $this->base_model->get_count("deal_pic" , array('deal_id' => $id));
+                $config['base_url'] = base_url("deal/photo/$id");
+                $config['total_rows'] = $total_rows;
+                $config['per_page'] = '8';
+                $config["uri_segment"] = '4';
+                $config['num_links'] = '5';
+                $config['next_link'] = 'صفحه بعد';
+                $config['last_link'] = 'صفحه آخر';
+                $config['prev_link'] = 'صفحه قبل';
+                $config['first_link'] = 'صفحه اول';
+                $config['full_tag_open'] = '<nav><ul class="pagination pagination-sm">';
+                $config['full_tag_close'] = '</ul></nav>';
+                $config['cur_tag_open'] = '<li class="active"><a href="javascript:void(0)">';
+                $config['cur_tag_close'] = '</a></li>';
+                $config['num_tag_open'] = '<li>';
+                $config['num_tag_close'] = '</li>';
+                $config['next_tag_open'] = '<li>';
+                $config['next_tag_close'] = '</li>';
+                $config['last_tag_open'] = '<li>';
+                $config['last_tag_close'] = '</li>';
+                $config['first_tag_open'] = '<li>';
+                $config['first_tag_close'] = '</li>';
+                $config['prev_tag_open'] = '<li>';
+                $config['prev_tag_close'] = '</li>';
+                $config['suffix'] = "";
+            $this->pagination->initialize($config);
+            $offset = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;      
+            $data['photo'] = $this->base_model->run_query("SELECT * FROM deal_pic WHERE deal_id = $id ORDER BY id DESC LIMIT $offset , 8");
+            $data['page'] = $this->pagination->create_links();
                 $header['title'] = 'عکس ها';
                 $header['active'] = 'deal';
                 $header['active_sub'] = 'deal_archive';
-                $data['photo'] = $this->base_model->get_data('deal_pic' , '*' , 'result' , array('deal_id' => $id));
                 $data['date'] = $date['d']. " ".$date['t'];
                 $this->load->view('header' , $header);
                 $this->load->view('deal/photo' , $data);
@@ -537,6 +575,9 @@ if(!empty($img)){
               show_404();
           }
      }
+     //----- send photo -----//
+
+     //-----delete photo -----//
      public function delete_photo(){
          $red_id = $this->uri->segment(3);
          $id = $this->uri->segment(4);
@@ -560,6 +601,9 @@ if(!empty($img)){
              show_404();
          }
      }
+     //-----delete photo -----//
+     
+     //-----edit photo -----//
      public function get_photo(){
          $id = $this->input->post('id');
          if(is_numeric($id)){
@@ -584,7 +628,173 @@ if(!empty($img)){
              show_404();
          }
      }
-     //----- photo -----//
+     //-----edit photo -----//
+
+   // ----profile--------//
+   public function profile(){
+    $id = $this->uri->segment(3);
+        if(isset($_POST['sub'])){
+            if(!$this->session->has_userdata('add_handle') or $this->session->userdata('add_handle') != TRUE){
+                show_404();
+            }
+            $red = $this->uri->segment(4);
+            if($red == 'profile'){
+                $red2 = 'profile';
+                $red3 = $id;
+            }else{
+                $red2 = 'worksheet';
+                $red3 = '';
+            }
+            if($_POST['bank_id'] == 0){
+                $message['msg'][0] = 'لطفا شماره حساب را از لیست مربوطه انتخاب کنید . در صورت موجود نبودن شماره حساب لطفا اقدام به افزودن شماره حساب کنید' ;
+                $message['msg'][1] = 'danger';
+                $this->session->set_flashdata($message);
+                redirect("deal/$red2/$red3");
+             }
+$buy_name = trim($this->input->post('customer_buy') , ' ');
+$sell_name = trim($this->input->post('customer_sell') , ' ');                 
+$buy_info = $this->base_model->get_data_join('deal' , 'customer' , 'customer.id' , 'customer.id = deal.customer_id' , 'row' , array('customer.fullname'=>$buy_name , 'deal.type' => 1));
+$sell_info = $this->base_model->get_data_join('deal' , 'customer' , 'customer.id' , 'customer.id = deal.customer_id' , 'row' , array('customer.fullname'=>$sell_name , 'deal.type'=> 2));
+if(empty($buy_info)){
+$message['msg'][0] = 'توجه داشته باشید که مشتری خرید باید در سامانه ثبت شده باشد و تعداد خرید های انجام شده با شخص حداقل یک باشد' ;
+$message['msg'][1] = 'danger';
+$this->session->set_flashdata($message);
+redirect("deal/$red2/$red3");
+}else if(empty($sell_info)){
+$message['msg'][0] = 'توجه داشته باشید که مشتری فروش باید در سامانه ثبت شده باشد و تعداد فروش های انجام شده با شخص حداقل یک باشد' ;
+$message['msg'][1] = 'danger';
+$this->session->set_flashdata($message);
+redirect("deal/$red2/$red3");
+}
+if($red == 'profile' and $id != $buy_info->id){
+$message['msg'][0] = ' لطفا هماهنگی هر شخص را در پروفایل خود شخص وارد کنید ';
+$message['msg'][1] = 'info';
+$this->session->set_flashdata($message);
+redirect("deal/$red2/$red3");
+}
+$start = str_replace('/', '-' , $_POST['date_handle']);
+$date_handle = substr($start , 0 , 10);
+$date = $this->convertdate->convert(time());
+$data['volume_handle'] = $this->input->post('volume_handle');
+$data['handle_pay'] = 0;
+$data['handle_rest'] = $this->input->post('volume_handle');
+$data['date_handle'] = $date_handle;
+$data['time_handle'] = $date['t'];
+$data['date_modified'] = 'ثبت نشده است';
+$data['buy_id'] = $buy_info->id;
+$data['sell_id'] = $sell_info->id;
+$data['bank_id'] = $this->input->post('bank_id');
+$this->base_model->set('rest_handle' , 'rest_handle-'.$data['volume_handle'] , array('id'=>$data['bank_id']) , 'bank');
+$str = ' هماهنگی با مشخصات : </br> نام مشتری خرید :'.$buy_name."</br> نام مشتری فروش : ".$sell_name."</br> مبلغ هماهنگی : ".number_format($data['volume_handle'])."</br> تاریخ ثبت : ".$date_handle." ".$time_handle." </br> شناسه بانک : ".$data['bank_id']."</br> ثبت شد";
+            $log['user_id'] = $this->session->userdata('id');
+            $log['date_log'] = $date['dd'];
+            $log['time_log'] = $date['t'];
+            $log['activity_id'] = 12;
+            $log['explain'] = $str;
+            $log['customer_id'] = $buy_info->id;
+$this->base_model->insert_data('log' , $log);
+$this->base_model->insert_data('handle' , $data);
+                $message['msg'][0] = 'اطلاعات هماهنگی با موفقیت ثبت شد';
+                $message['msg'][1] = 'success';
+                $message['status'] = 1;
+                $this->session->set_flashdata($message);
+                redirect("deal/$red2/$red3");
+        }else{
+            if(!$this->session->has_userdata('see_handle') or $this->session->userdata('see_handle') != TRUE or !isset($id) or !is_numeric($id)){
+                show_404();
+            }
+            $header['active'] = 'deal';
+            $header['active_sub'] = 'deal_archive';
+            $data['dealCount'] = $this->base_model->get_count('deal' , array('customer_id'=> $id));
+            $data['handleCount'] = $this->base_model->get_count('handle' , array('buy_id'=>$id));
+            $data['handleCount2'] = $this->base_model->get_count('handle' , array('sell_id'=>$id));
+            $data['deal'] = $this->base_model->run_query("SELECT d.* , c.fullname , u.name FROM deal d LEFT JOIN customer c ON d.customer_id = c.id LEFT JOIN unit u ON d.money_id = u.id WHERE d.customer_id = $id ORDER BY d.id DESC LIMIT 0 , 7");
+            $header['title'] = 'هماهنگی';
+            if(!empty($data['deal'])){
+                $header['title'] = $data['deal'][0]->fullname;
+            }
+            $data['bank'] = $this->base_model->run_query("SELECT * FROM bank WHERE customer_id = $id AND active = 1 ORDER BY id DESC");
+            $data['sumDeal'] = $this->base_model->run_query("SELECT t.type_name , MAX(d.volume) as volume , MAX(d.pay) as pay , MAX(d.rest) as rest , MAX(dd.volume) as forbank FROM type_deal t LEFT JOIN (SELECT SUM(volume) as volume , SUM(pay) as pay , SUM(rest) as rest , type FROM deal WHERE customer_id = $id GROUP BY type) d ON d.type = t.id left join(SELECT SUM(volume) as volume , type FROM deal WHERE customer_id = $id AND rest > 0 group by type) dd ON dd.type = t.id GROUP BY t.id");
+            $notBank = $this->base_model->run_query("SELECT SUM(amount) as amount FROM bank WHERE customer_id = $id AND rest > 0 GROUP BY customer_id" , 'row');
+            if(empty($notBank)){
+                $data['notBank'] = 0;
+            }else{
+                $data['notBank'] = $notBank->amount;
+            }
+            $data['handle'] = $this->base_model->get_data_join('handle' , 'bank' , 'handle.* , customer.fullname ,customer.id as cust_id, bank.explain' , 'handle.bank_id = bank.id' , 'result' , array('handle.buy_id'=>$id) , 7 , 0 , array('handle.id' , 'DESC'),array('customer' , 'handle.sell_id = customer.id'));
+            $data['handle2'] = $this->base_model->get_data_join('handle' , 'bank' , 'handle.* , customer.fullname ,customer.id as cust_id, bank.explain' , 'handle.bank_id = bank.id' , 'result' , array('handle.sell_id'=>$id) , 7 , 0 , array('handle.id' , 'DESC'),array('customer' , 'handle.buy_id = customer.id'));
+            
+            $customer = $this->base_model->run_query("SELECT id , fullname FROM customer order by id ASC");
+            $buy = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id  where d.type = 1 GROUP BY d.customer_id ORDER BY d.customer_id ASC");
+            $sell = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id  where d.type = 2 GROUP BY d.customer_id ORDER BY d.customer_id ASC");
+            $date = $this->convertdate->convert(time());
+            $data['date'] = $date['d'];
+            $search = array();
+            foreach($customer as $rows){
+                $search[$rows->id]['fullname'] = $rows->fullname;
+                $search[$rows->id]['buy'] = 0;
+                foreach($buy as $row){
+                  if($rows->id == $row->customer_id){
+                          $search[$rows->id]['buy'] = $row->volume - $row->handle;
+                          break; 
+                  }
+                }
+            }
+            foreach($customer as $rows){
+                $search[$rows->id]['sell'] = 0;
+                foreach($sell as $row){
+                  if($rows->id == $row->customer_id){
+                          $search[$rows->id]['sell'] = $row->volume - $row->handle;
+                          break; 
+                  }
+                }
+            }
+        $data['search'] = $search;
+        $this->load->view('header' , $header);
+        $this->load->view('deal/handle_profile' , $data);
+        $this->load->view('footer');
+    }
+}
+//profile  
+
+//pagindeal
+public function paginDeal(){
+if(!$this->session->has_userdata('see_handle') or $this->session->userdata('see_handle') != TRUE){
+    show_404();
+}
+$offset = $this->input->post('offset');
+$id = $this->input->post('id');
+if(isset($offset) and is_numeric($offset) and isset($id) and is_numeric($id)){
+    $deal = $this->base_model->run_query("SELECT d.* , c.fullname , u.name FROM deal d LEFT JOIN customer c ON d.customer_id = c.id LEFT JOIN unit u ON d.money_id = u.id WHERE d.customer_id = $id ORDER BY d.id DESC LIMIT $offset , 7");
+    echo json_encode($deal);
+}else{
+    show_404();
+}
+}
+//pagindeal
+
+//paginHandle
+
+public function paginHandle(){
+if(!$this->session->has_userdata('see_handle') or $this->session->userdata('see_handle') != TRUE){
+    show_404();
+}
+$offset = $this->input->post('offset');
+$which = $this->input->post('which');
+$id = $this->input->post('id');
+if(is_numeric($id) and is_numeric($offset) and is_numeric($which)){
+    if($which == 1){
+        $data = $this->base_model->get_data_join('handle' , 'bank' , 'handle.* , customer.fullname ,customer.id as cust_id, bank.explain' , 'handle.bank_id = bank.id' , 'result' , array('handle.buy_id'=>$id) , 7 , $offset , array('handle.id' , 'DESC'),array('customer' , 'handle.sell_id = customer.id'));
+    }else{
+        $data = $this->base_model->get_data_join('handle' , 'bank' , 'handle.* , customer.fullname ,customer.id as cust_id, bank.explain' , 'handle.bank_id = bank.id' , 'result' , array('handle.sell_id'=>$id) , 7 , $offset , array('handle.id' , 'DESC'),array('customer' , 'handle.buy_id = customer.id'));
+    }
+ echo json_encode($data);
+}else{
+    show_404();
+}
+}
+
+//paginHandle
 
 
     //----- add_bank -----//
@@ -608,7 +818,7 @@ if(!empty($img)){
                 $date = $this->convertdate->convert(time());
                 $customer = $this->base_model->get_data('customer' , 'fullname' , 'row' , array('id'=>$id));
                 $log['user_id'] = $this->session->userdata('id');
-                $log['date_log'] = $date['d'];
+                $log['date_log'] = $date['dd'];
                 $log['time_log'] = $date['t'];
                 $log['activity_id'] = 17;
                 $log['explain'] = " حساب جدید با مشخصات :  </br> نام مشتری : ".$customer->fullname."</br>  شماره شبا : ".$data['shaba']." </br> نام بانک : ".$data['name']." </br> مقدار تعیین شده :  ".number_format($data['amount'])." </br> توضیحات :".$data['explain']."</br> افزوده شد ";
@@ -993,7 +1203,7 @@ if(!empty($deal)){
      $this->base_model->update_batch('deal' , $deal , 'id');
 }
         $log['user_id'] = $this->session->userdata('id');
-        $log['date_log'] = $date['d'];
+        $log['date_log'] = $date['dd'];
         $log['time_log'] = $date['t'];
         $log['activity_id'] = 13;
         $log['explain'] = $str;
@@ -1018,25 +1228,28 @@ if(!empty($deal)){
 }
 //----pay all -----//
 //----pay slice ----//
-public function pay_slice(){
-    if(!$this->session->has_userdata('pay_slice') or $this->session->userdata('pay_slice') != TRUE){
-        show_404();
+public function pay(){
+    if($this->uri->segment(5) == 'all'){
+        $act = 13;
+        $text = 'کامل';
+        if(!$this->session->has_userdata('pay_all') or $this->session->userdata('pay_all') != TRUE){
+            show_404();
+        }
+    }else{
+        $act = 14;
+        $text = 'جزئی';
+        if(!$this->session->has_userdata('pay_slice') or $this->session->userdata('pay_slice') != TRUE){
+            show_404();
+        }
     }
     $cust_id = $this->uri->segment(3);
     $id = $this->uri->segment(4);
     if(isset($cust_id) and is_numeric($cust_id) and isset($id) and is_numeric($id) and isset($_POST['sub']) ){
-        $start_date = $_POST['date_slice'];
-        $persian_num = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
-        $latin_num = range(0, 9);
-        $slash = '/';
-        $dash = '-';
-        $start = str_replace($persian_num, $latin_num, $start_date);
-        $start = str_replace($slash, $dash, $start);
-        $date_slice = substr($start , 0 , 10);        
+$date_pay = str_replace('/', '-', $this->input->post('date_pay'));        
 $date = $this->convertdate->convert(time());
 $handle_info = $this->base_model->get_data('handle' , '*' , 'row' , array('id'=>$id));
-$buy = $this->base_model->run_query("SELECT deal.id , deal.pay , deal.rest  ,customer.fullname FROM deal LEFT JOIN customer ON deal.customer_id = customer.id WHERE deal.customer_id = $handle_info->buy_id AND deal.type = 1 AND deal.rest <> 0 ORDER BY deal.date_deal ASC");
-        $push = $this->input->post('slice');
+$buy = $this->base_model->run_query("SELECT deal.id , deal.pay , deal.rest  ,customer.fullname FROM deal LEFT JOIN customer ON deal.customer_id = customer.id WHERE deal.customer_id = $handle_info->buy_id AND deal.type = 1 AND deal.rest > 0 AND deal.volume > 0 ORDER BY deal.date_deal ASC , deal.id ASC");
+        $push = $this->input->post('pay');
         $deal = array();
         $return = array();
         if(!empty($buy)){
@@ -1051,8 +1264,7 @@ $buy = $this->base_model->run_query("SELECT deal.id , deal.pay , deal.rest  ,cus
                     $rest = $buys->rest - $push;
                     $ampay = $push; 
                 }
-                $a = $buys->id + 100;
-                $str .= ' شناسه معامله '. $a ." | مقدار پرداختی : ".number_format($ampay)."</br>";
+                $str .= ' شناسه معامله '. $buys->id ." | مقدار پرداختی : ".number_format($ampay)."</br>";
                 $return[] = array(
                     'deal_id'=> $buys->id , 
                     'amount' => $ampay,
@@ -1071,22 +1283,18 @@ $buy = $this->base_model->run_query("SELECT deal.id , deal.pay , deal.rest  ,cus
         }
 $this->db->trans_begin();            
 if($push > 0){
-    $unit_rial = $this->base_model->get_data('unit' , 'amount' , 'row' , array('id'=>5));
-    $state_sell = $this->base_model->get_data('deal' , 'id , count_money , volume , rest' , 'row' , array('customer_id'=>$handle_info->buy_id , 'type'=> 2 , 'state'=>0 , 'date_deal'=> $date_slice));
+    $state_sell = $this->base_model->get_data('deal' , 'id , count_money , volume , rest' , 'row' , array('customer_id'=>$handle_info->buy_id , 'type'=> 2 , 'state'=>0 , 'date_deal'=> $date_pay));
     if(!empty($state_sell)){
         $upsell['count_money'] = $state_sell->count_money + $push;
         $upsell['volume'] = $state_sell->volume + $push;
         $upsell['rest'] = $state_sell->rest + $push;
         $status = $this->base_model->update_data('deal' , $upsell , array('id' => $state_sell->id));
-        $rial['amount'] = $unit_rial->amount - $push;
         $return[] = array(
             'deal_id'=>$state_sell->id,
             'amount'=>$push,
             'state'=>0
         );
-        $a = $state_sell->id + 100;
-        $str .= " مقدار ریالی معامله  ".$a."  به دلیل مازاد بودن حجم پرداختی به اندازه ". number_format($push)." افزایش یافت "."</br>";
-        $str .= " مقدار ریالی به اندازه ".number_format($push)." کاهش یافت "."</br>";
+        $str .= " مقدار ریالی معامله  ".$state_sell->id."  به دلیل مازاد بودن حجم پرداختی به اندازه ". number_format($push)." افزایش یافت "."</br>";
     }else{
         $inssell['count_money'] = $push;
         $inssell['wage'] = 0;
@@ -1095,28 +1303,24 @@ if($push > 0){
         $inssell['pay'] = 0;
         $inssell['rest'] = $push;
         $inssell['explain'] = 'این معامله به صورت مازاد است';
-        $inssell['date_deal'] = $date_slice;
+        $inssell['date_deal'] = $date_pay;
         $inssell['time_deal'] = $date['t'];
-        $inssell['date_modified'] = ' ثبت نشده است ';
         $inssell['type'] = 2;
         $inssell['customer_id'] = $handle_info->buy_id;
         $inssell['money_id'] = 5;
         $inssell['state'] = 0;
         $status = $this->base_model->insert_data('deal' , $inssell);
-        $rial['amount'] = $unit_rial->amount - $push;
         $return[] = array(
             'deal_id'=>$status,
             'amount'=>$push,
             'state'=>0
         );
         $str .= " معامله ای از نوع فروش به دلیل مازاد بودن حجم هماهنگی به اندازه  ".number_format($push)." افزوده شد "."</br>";
-        $str .= " مقدار ریالی به اندازه ".number_format($push)." کاهش یافت "."</br>";
-    }
-    $status = $this->base_model->update_data('unit' , $rial , array('id'=>5));     
-    }
+    }     
+}
 
-    $sell = $this->base_model->run_query("SELECT deal.id , deal.pay , deal.rest  , customer.fullname FROM deal LEFT JOIN customer ON deal.customer_id = customer.id WHERE deal.customer_id = $handle_info->sell_id AND deal.type = 2 AND deal.rest <> 0 ORDER BY deal.date_deal ASC");
-    $push = $this->input->post('slice');
+    $sell = $this->base_model->run_query("SELECT deal.id , deal.pay , deal.rest  , customer.fullname FROM deal LEFT JOIN customer ON deal.customer_id = customer.id WHERE deal.customer_id = $handle_info->sell_id AND deal.type = 2 AND deal.rest > 0 AND deal.volume > 0 ORDER BY deal.date_deal ASC , deal.id ASC");
+    $push = $this->input->post('pay');
     if(!empty($sell)){
         $str .= ' پرداختی های مربوط به مشتری فروش  '.$sell[0]->fullname ."</br>";
         foreach($sell as $sells){
@@ -1129,8 +1333,7 @@ if($push > 0){
                     $rest = $sells->rest - $push;
                     $ampay = $push;
                 }
-                $a = $sells->id + 100;
-                $str .= ' شناسه معامله '. $a ." | مقدار پرداختی : ".number_format($ampay)."</br>";
+                $str .= ' شناسه معامله '. $sells->id ." | مقدار پرداختی : ".number_format($ampay)."</br>";
                 $return[] = array(
                     'deal_id'=> $sells->id , 
                     'amount' => $ampay,
@@ -1148,22 +1351,18 @@ if($push > 0){
         }
     }
         if($push > 0){
-            $unit_rial = $this->base_model->get_data('unit' , 'amount' , 'row' , array('id'=>5));
-            $state_buy = $this->base_model->get_data('deal' , 'id , count_money , volume , rest' , 'row' , array('customer_id'=>$handle_info->sell_id , 'type'=> 1 , 'state'=>0 , 'date_deal'=> $date_slice));
+            $state_buy = $this->base_model->get_data('deal' , 'id , count_money , volume , rest' , 'row' , array('customer_id'=>$handle_info->sell_id , 'type'=> 1 , 'state'=>0 , 'date_deal'=> $date_pay));
             if(!empty($state_buy)){
                 $upbuy['count_money'] = $state_buy->count_money + $push;
                 $upbuy['volume'] = $state_buy->volume + $push;
                 $upbuy['rest'] = $state_buy->rest + $push;
                 $status = $this->base_model->update_data('deal' , $upbuy , array('id' => $state_buy->id));
-                $rial['amount'] = $unit_rial->amount + $push;
                 $return[] = array(
                     'deal_id'=> $state_buy->id , 
                     'amount' => $push,
                     'state'=>0
                   );
-                $a = $state_buy->id + 100;
-                $str .= " مقدار ریالی معامله  ".$a."  به دلیل مازاد بودن حجم پرداختی به اندازه ". number_format($push)." افزایش یافت "."</br>";
-                $str .= " مقدار ریالی به اندازه ".number_format($push)." افزایش یافت "."</br>";
+                $str .= " مقدار ریالی معامله  ".$state_buy->id."  به دلیل مازاد بودن حجم پرداختی به اندازه ". number_format($push)." افزایش یافت "."</br>";
             }else{
                 $insbuy['count_money'] = $push;
                 $insbuy['wage'] = 0;
@@ -1172,41 +1371,37 @@ if($push > 0){
                 $insbuy['pay'] = 0;
                 $insbuy['rest'] = $push;
                 $insbuy['explain'] = 'این معامله به صورت مازاد  است';
-                $insbuy['date_deal'] = $date_slice;
+                $insbuy['date_deal'] = $date_pay;
                 $insbuy['time_deal'] = $date['t'];
-                $insbuy['date_modified'] = ' ثبت نشده است ';
                 $insbuy['type'] = 1;
                 $insbuy['customer_id'] = $handle_info->sell_id;
                 $insbuy['money_id'] = 5;
                 $insbuy['state'] = 0;
                 $status = $this->base_model->insert_data('deal' , $insbuy);
-                $rial['amount'] = $unit_rial->amount + $push;
                 $return[] = array(
                     'deal_id'=> $status , 
                     'amount' => $push,
                     'state'=>0
                   );
                 $str .= " معامله ای از نوع خرید به دلیل مازاد بودن حجم هماهنگی به اندازه  ".number_format($push)." افزوده شد "."</br>";
-                $str .= " مقدار ریالی به اندازه ".number_format($push)." افزایش یافت "."</br>";
-            } 
-            $status = $this->base_model->update_data('unit' , $rial , array('id'=>5));    
+            }    
             }
         $bank_info = $this->base_model->get_data_join('bank' , 'customer' , 'bank.pay , bank.rest , customer.fullname as owner', 'bank.customer_id = customer.id' , 'row' , array('bank.id'=>$handle_info->bank_id));        
-        $handle['handle_pay'] = $handle_info->handle_pay + $this->input->post('slice');
-        $handle['handle_rest'] = $handle_info->handle_rest - $this->input->post('slice');
-        $handle['date_modified'] = $date['d']."</br> ".$date['t'];
-        $bank['pay'] = $bank_info->pay + $this->input->post('slice');
-        $bank['rest'] = $bank_info->rest - $this->input->post('slice');
-        $history['date_pay'] = $date_slice." ".$date['t'];
-        $history['volume'] = $this->input->post('slice');
+        $handle['handle_pay'] = $handle_info->handle_pay + $this->input->post('pay');
+        $handle['handle_rest'] = $handle_info->handle_rest - $this->input->post('pay');
+        $handle['date_modified'] = $date['dd']."</br> ".$date['t'];
+        $bank['pay'] = $bank_info->pay + $this->input->post('pay');
+        $bank['rest'] = $bank_info->rest - $this->input->post('pay');
+        $history['date_pay'] = $date_pay." ".$date['t'];
+        $history['volume'] = $this->input->post('pay');
         $history['active'] = 1;
         $history['handle_id'] = $handle_info->id;
         $turn['owner'] = $bank_info->owner;
         $turn['cust_id'] = $handle_info->sell_id;
         $turn['bank_id'] = $handle_info->bank_id;
-        $turn['date'] = $date_slice;
-        $turn['time'] = $date['hour'].":".$date['minute'].":".$date['second'];
-        $turn['amount'] = $this->input->post('slice');
+        $turn['date'] = $date_pay;
+        $turn['time'] = $date['t'];
+        $turn['amount'] = $this->input->post('pay');
         $turn['rest'] = $bank['rest'];
         $status = $this->base_model->update_data('bank' , $bank , array('id'=>$handle_info->bank_id));
         $status =  $this->base_model->update_data('handle' , $handle , array('id'=> $id));
@@ -1221,25 +1416,26 @@ if($push > 0){
              $this->base_model->update_batch('deal' , $deal , 'id');
         }
         $log['user_id'] = $this->session->userdata('id');
-        $log['date_log'] = $date['d'];
+        $log['date_log'] = $date['dd'];
         $log['time_log'] = $date['t'];
-        $log['activity_id'] = 14;
+        $log['activity_id'] = $act;
         $log['explain'] = $str;
+        $log['customer_id'] = $cust_id;
         if($this->db->trans_status() === FALSE or $status == FALSE or $res_his == FALSE){
             $this->db->trans_rollback();
             $message['msg'][0] = 'متاسفانه مشکلی در ثبت اطلاعات رخ داده است . لطفا دوباره سعی کنید';
             $message['msg'][1] = 'danger';
             $this->session->set_flashdata($message);
-            redirect("deal/handle_profile/$cust_id");
+            redirect("deal/profile/$cust_id");
         }else{
             $this->db->trans_commit();
         }
         $this->base_model->insert_data('log' , $log);
-          $message['msg'][0] = 'پرداخت به صورت جزیی انجام شد';
+          $message['msg'][0] =  ' پرداخت به صورت  '.$text." پرداخت شد ";
           $message['msg'][1] = 'success';
           $message['status'] = 3;
           $this->session->set_flashdata($message);
-          redirect("deal/handle_profile/$cust_id");
+          redirect("deal/profile/$cust_id");
     }else{
         show_404();
     }  
@@ -1360,7 +1556,7 @@ if(empty($deal)){
     $turn['amount'] = 0 - $history->volume;
     $turn['rest'] = $bank['rest'];
     $log['user_id'] = $this->session->userdata('id');
-    $log['date_log'] = $date['d'];
+    $log['date_log'] = $date['dd'];
     $log['time_log'] = $date['t'];
     $log['activity_id'] = 15;
     $log['explain'] = $exp;
@@ -1467,142 +1663,7 @@ public function edit_handle(){
         }
     }
     // ----delete handle---//
- 
-    public function profile(){
-        $id = $this->uri->segment(3);
-        if(isset($id) and is_numeric($id)){
-            if(isset($_POST['sub'])){
-                if(!$this->session->has_userdata('add_handle') or $this->session->userdata('add_handle') != TRUE){
-                    show_404();
-                }
-                if($_POST['bank_id'] == 0){
-                    $message['msg'][0] = 'لطفا شماره حساب را از لیست مربوطه انتخاب کنید . در صورت موجود نبودن شماره حساب لطفا اقدام به افزودن شماره حساب کنید' ;
-                    $message['msg'][1] = 'danger';
-                    $this->session->set_flashdata($message);
-                    redirect("deal/handle_profile/$id");
-                 }
-$buy_name = trim($this->input->post('customer_buy') , ' ');
-$sell_name = trim($this->input->post('customer_sell') , ' ');                 
-$buy_info = $this->base_model->get_data_join('deal' , 'customer' , 'deal.id as deal_id , customer.id' , 'customer.id = deal.customer_id' , 'row' , array('customer.fullname'=>$buy_name ,'customer.id'=>$id , 'deal.type' => 1));
-$sell_info = $this->base_model->get_data_join('deal' , 'customer' , 'deal.id as deal_id , customer.id' , 'customer.id = deal.customer_id' , 'row' , array('customer.fullname'=>$sell_name , 'deal.type'=> 2));
-if(empty($buy_info)){
-    $message['msg'][0] = 'توجه داشته باشید که مشتری خرید باید در سامانه ثبت شده باشد و تعداد خرید های انجام شده با شخص حداقل یک باشد' ;
-    $message['msg'][1] = 'danger';
-    $this->session->set_flashdata($message);
-    redirect("deal/handle_profile/$id");
-}else if(empty($sell_info)){
-    $message['msg'][0] = 'توجه داشته باشید که مشتری فروش باید در سامانه ثبت شده باشد و تعداد فروش های انجام شده با شخص حداقل یک باشد' ;
-    $message['msg'][1] = 'danger';
-    $this->session->set_flashdata($message);
-    redirect("deal/handle_profile/$id");
-}
-$start_date = $_POST['date_handle'];
-$persian_num = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
-$latin_num = range(0, 9);
-$slash = '/';
-$dash = '-';
-$start = str_replace($persian_num, $latin_num, $start_date);
-$start = str_replace($slash, $dash, $start);
-$date_handle = substr($start , 0 , 10);
-$time_handle = substr($start , 10 , 20);
 
-$date = $this->convertdate->convert(time());
-$data['volume_handle'] = $this->input->post('volume_handle');
-$data['handle_pay'] = 0;
-$data['handle_rest'] = $this->input->post('volume_handle');
-$data['date_handle'] = $date_handle;
-$data['time_handle'] = $time_handle;
-$data['date_modified'] = ' ثبت نشده است ';
-$data['buy_id'] = $buy_info->id;
-$data['sell_id'] = $sell_info->id;
-$data['bank_id'] = $this->input->post('bank_id');
-$this->base_model->set('rest_handle' , 'rest_handle-'.$data['volume_handle'] , array('id'=>$data['bank_id']) , 'bank');
-$str = ' هماهنگی با مشخصات : </br> نام مشتری خرید :'.$buy_name."</br> نام مشتری فروش : ".$sell_name."</br> مبلغ هماهنگی : ".number_format($data['volume_handle'])."</br> ثبت شد";
-                $log['user_id'] = $this->session->userdata('id');
-                $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
-                $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
-                $log['activity_id'] = 12;
-                $log['explain'] = $str;
-$this->base_model->insert_data('log' , $log);
-$this->base_model->insert_data('handle' , $data);
-                    
-                    $message['msg'][0] = 'اطلاعات هماهنگی با موفقیت ثبت شد';
-                    $message['msg'][1] = 'success';
-                    $message['status'] = 1;
-                    $this->session->set_flashdata($message);
-                    redirect("deal/handle_profile/$id");
-            }else{
-                if(!$this->session->has_userdata('see_handle') or $this->session->userdata('see_handle') != TRUE){
-                    show_404();
-                }
-                $header['active'] = 'deal';
-                $header['active_sub'] = 'deal_archive';
-                $data['dealCount'] = $this->base_model->get_count('deal' , array('customer_id'=> $id));
-                $data['deal'] = $this->base_model->run_query("SELECT d.* , c.fullname , u.name FROM deal d LEFT JOIN customer c ON d.customer_id = c.id LEFT JOIN unit u ON d.money_id = u.id WHERE d.customer_id = $id ORDER BY d.id DESC LIMIT 0 , 7");
-                $header['title'] = 'هماهنگی';
-                if(!empty($data['deal'])){
-                    $header['title'] = $data['deal'][0]->fullname;
-                }
-                $data['bank'] = $this->base_model->run_query("SELECT * FROM bank WHERE customer_id = $id AND active = 1 ORDER BY id DESC");
-                $data['sumDeal'] = $this->base_model->run_query("SELECT t.type_name , MAX(d.volume) as volume , MAX(d.pay) as pay , MAX(d.rest) as rest , MAX(dd.volume) as forbank FROM type_deal t LEFT JOIN (SELECT SUM(volume) as volume , SUM(pay) as pay , SUM(rest) as rest , type FROM deal WHERE customer_id = $id GROUP BY type) d ON d.type = t.id left join(SELECT SUM(volume) as volume , type FROM deal WHERE customer_id = $id AND rest > 0 group by type) dd ON dd.type = t.id GROUP BY t.id");
-                $data['notBank'] = $this->base_model->run_query("SELECT SUM(amount) as amount FROM bank WHERE customer_id = $id AND rest > 0 GROUP BY customer_id" , 'row');
-                if(empty($data['notBank'])){
-                    $data['notBank'] = 0;
-                }
-                
-                $data['handle'] = $this->base_model->get_data_join('handle' , 'bank' , 'handle.* , customer.fullname ,customer.id as cust_id, bank.explain' , 'handle.bank_id = bank.id' , 'result' , array('handle.buy_id'=>$id) , NULL , NULL , array('handle.id' , 'DESC'),array('customer' , 'handle.sell_id = customer.id'));
-                $data['handle2'] = $this->base_model->get_data_join('handle' , 'bank' , 'handle.* , customer.fullname ,customer.id as cust_id, bank.explain' , 'handle.bank_id = bank.id' , 'result' , array('handle.sell_id'=>$id) , NULL , NULL , array('handle.id' , 'DESC'),array('customer' , 'handle.buy_id = customer.id'));
-                $customer = $this->base_model->run_query("SELECT id , fullname FROM customer order by id ASC");
-                $buy = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY buy_id) h ON h.buy_id = d.customer_id  where d.type = 1 GROUP BY d.customer_id ORDER BY d.customer_id ASC");
-                $sell = $this->base_model->run_query("SELECT d.customer_id, SUM(d.volume) AS volume, max(h.volume_handle) AS handle FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle GROUP BY sell_id) h ON h.sell_id = d.customer_id  where d.type = 2 GROUP BY d.customer_id ORDER BY d.customer_id ASC");
-                $date = $this->convertdate->convert(time());
-                $data['date'] = $date['d']." ".$date['t'];
-                $search = array();
-                foreach($customer as $rows){
-                    $search[$rows->id]['fullname'] = $rows->fullname;
-                    $search[$rows->id]['buy'] = 0;
-                    foreach($buy as $row){
-                      if($rows->id == $row->customer_id){
-                              $search[$rows->id]['buy'] = $row->volume - $row->handle;
-                              break; 
-                      }
-                    }
-                }
-                foreach($customer as $rows){
-                    $search[$rows->id]['sell'] = 0;
-                    foreach($sell as $row){
-                      if($rows->id == $row->customer_id){
-                              $search[$rows->id]['sell'] = $row->volume - $row->handle;
-                              break; 
-                      }
-                    }
-                }
-                $data['search'] = $search;
-            $this->load->view('header' , $header);
-            $this->load->view('deal/handle_profile' , $data);
-            $this->load->view('footer');
-         
-        }
-        }else{
-            show_404();
-        }
-
-    }
-//pagindeal
-public function paginDeal(){
-    if(!$this->session->has_userdata('see_handle') or $this->session->userdata('see_handle') != TRUE){
-        show_404();
-    }
-    $offset = $this->input->post('offset');
-    $id = $this->input->post('id');
-    if(isset($offset) and is_numeric($offset) and isset($id) and is_numeric($id)){
-        $deal = $this->base_model->run_query("SELECT d.* , c.fullname , u.name FROM deal d LEFT JOIN customer c ON d.customer_id = c.id LEFT JOIN unit u ON d.money_id = u.id WHERE d.customer_id = $id ORDER BY d.id DESC LIMIT $offset , 7");
-        echo json_encode($deal);
-    }else{
-        show_404();
-    }
-}
-//pagindeal
     public function worksheet(){
         if(!$this->session->has_userdata('see_deal') or $this->session->userdata('see_deal') != TRUE){
             show_404();

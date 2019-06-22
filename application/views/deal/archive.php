@@ -49,13 +49,13 @@ if($this->session->has_userdata('delete_deal')){$deletePerm = 1;}else{$deletePer
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">از تاریخ :</label>
-									<input type="text" class="form-control" name="start_date" id="j_created_date" readonly data-mddatetimepicker="true" data-placement="bottom" value="<?php  if($this->input->get('start_date')){echo $this->input->get('start_date');}else{echo $date;} ?>" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" name="start_date" id="j_created_date" readonly data-mddatetimepicker="true" data-placement="bottom" value="<?php  if($this->input->get('start_date')){echo $this->input->get('start_date');}else{echo $date;} ?>">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">تا تاریخ :</label>
-									<input type="text" class="form-control" name="end_date" id="j_created_date" readonly data-mddatetimepicker="true" data-placement="bottom" value="<?php if($this->input->get('end_date')){echo $this->input->get('end_date');}else{echo $date;} ?>" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" name="end_date" id="j_created_date" readonly data-mddatetimepicker="true" data-placement="bottom" value="<?php if($this->input->get('end_date')){echo $this->input->get('end_date');}else{echo $date;} ?>">
 								</div>
 							</div>
 						</div>
@@ -187,6 +187,7 @@ if($this->session->has_userdata('delete_deal')){$deletePerm = 1;}else{$deletePer
 
 </div>
 </div>
+
 <!-- delete modal -->
 <div id="modal_theme_danger" class="modal fade">
 				<div class="modal-dialog">
@@ -211,6 +212,7 @@ if($this->session->has_userdata('delete_deal')){$deletePerm = 1;}else{$deletePer
 				</div>
 			</div>
 <!-- delete modal -->
+
 <!-- pay little modal -->
 <div id="modal_check" class="modal_logout">
   <div class="modal_content animate_logout">
@@ -232,6 +234,8 @@ if($this->session->has_userdata('delete_deal')){$deletePerm = 1;}else{$deletePer
 </div>
 
 <script>
+
+   // delete deal script
 	var titleDelete = document.getElementById('titleDelete');
 	var closeDelete = document.getElementById('closeDelete');
 	var confirmDelete = document.getElementById('confirmDelete');
@@ -248,6 +252,8 @@ if($this->session->has_userdata('delete_deal')){$deletePerm = 1;}else{$deletePer
 		  confirmDelete.setAttribute('href' , "<?php echo base_url('deal/delete_deal/')?>" + id);
 	  }
 	}
+	// delete deal script
+
 	//pay little
 	var modalLittle =  document.getElementById('modal_check');
 	function payLittle(deal_id , amount){
@@ -286,5 +292,6 @@ if($this->session->has_userdata('delete_deal')){$deletePerm = 1;}else{$deletePer
 		xhr.send( 'text_search=' + text );
 	}
 	//search
+	
 </script>
 <script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/deal_archive.js"></script>

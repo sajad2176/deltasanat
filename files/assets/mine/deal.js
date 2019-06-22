@@ -29,10 +29,8 @@
 		convert.nextElementSibling.value = z;
 	}
 	// count wage convert volume
+
 	//search customer
-
-
-
 	function autocomplete( inp, arr ) {
 		var currentFocus;
 		inp.addEventListener( "input", function ( e ) {
@@ -70,15 +68,9 @@
 						showHistory(inp.value);
 						closeAllLists();
 					} );
-					// matchHistory++;
 					a.appendChild( b );
 				}
 			}
-			// if(matchHistory == 1){
-			// 	showHistory(val);
-			// }else{
-			// 	showDefault();
-			// }
 			if(a.childElementCount == 0){
 				inp.nextElementSibling.style.display = 'block';
 				inp.nextElementSibling.innerHTML = 'بعد از اتمام معامله مشتری ' + val + ' به لیست مشتریان افزوده خواهد شد ';
@@ -131,7 +123,7 @@
 			closeAllLists( e.target );
 		} );
 	}
-
+//search customer
 
 
 var	nameCustomer = document.getElementById('name_customer');

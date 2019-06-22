@@ -69,7 +69,7 @@ $msg = $this->session->userdata('msg');?>
 <?php } else { foreach($photo as $rows){ ?>
 	<div class="col-lg-3 col-sm-6">
 
-		<div class="panel" style="height:270px;">
+		<div class="panel">
 			<div class="panel-body">
 				<div class="thumb thumb-fixed" style="height:200px;">
 					<a href="<?php echo base_url('uploads/deal/').$rows->pic_name;?>" data-popup="lightbox">
@@ -87,9 +87,14 @@ $msg = $this->session->userdata('msg');?>
 			</div>
 		</div>
 	</div>
-<?php } }?>
+	
+<?php } ?>
 </div>
+<div class="text-left row bg-white" style = "padding:20px;"><div class="col-md-12"><?php echo $page; ?></div></div>
+<?php }?>
+
 </div>
+<!-- delete photo modal -->
 <div id="modal_theme_danger" class="modal fade">
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -112,18 +117,27 @@ $msg = $this->session->userdata('msg');?>
 					</div>
 				</div>
 			</div>
-			<script>
+<!-- delete photo modal -->
+</div>
+<script>
+
+			// delete photo script
 			var confirm = document.getElementById('confirm');
+			function deletePhoto(id , picname){
+				confirm.removeAttribute('href');
+				confirm.setAttribute('href' , "<?php echo base_url('deal/delete_photo/'.$this->uri->segment(3)."/")?>"+id+'/'+picname);
+			}
+			// delete photo script 
+ 
+			// edit photo script
 			var date = document.getElementById('j_created_date');
 			var explain = document.getElementById('explain');
 			var submit = document.getElementById('submit');
 			var title = document.getElementById('title');
 			var editform = document.getElementById('form');
-			function deletePhoto(id , picname){
-				confirm.removeAttribute('href');
-				confirm.setAttribute('href' , "<?php echo base_url('deal/delete_photo/'.$this->uri->segment(3)."/")?>"+id+'/'+picname);
-			}
-			function editPhoto(id){
+
+	       function editPhoto(id){
+
 		var xhr = new XMLHttpRequest();
 		xhr.onload = function () {
 			if ( ( xhr.status >= 200 && xhr.status < 300 ) || xhr.status == 304 ) {
@@ -140,6 +154,8 @@ $msg = $this->session->userdata('msg');?>
 		xhr.open( 'post', "<?php echo base_url('deal/get_photo/')?>", true );
 		xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
 		xhr.send('id='+id);
-			}
-			</script>
-</div>
+
+		}
+			// edit photo script
+
+</script>

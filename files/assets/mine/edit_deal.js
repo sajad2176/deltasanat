@@ -1,4 +1,4 @@
-// count convert volume
+// count convert wage volume
 var vpay = document.getElementById('vpay');
 var alert_msg = document.getElementById('alert');
 var count = document.getElementById( 'count' );
@@ -48,6 +48,9 @@ convert.onkeyup = function () {
         alert_msg.style.display = 'none';
     }
 }
+// count convert wage volume
+
+//little pay script
 baseMoney = document.getElementById('base_money').innerHTML;
 sendMoney = document.getElementById('send_money');
 direct = document.getElementById('direct');
@@ -57,7 +60,7 @@ function checkSubmit(){
     send = sendMoney[sendMoney.selectedIndex].value;
     var diff = numeral(volume.innerHTML).value() - vpay.innerHTML;
     diff = Math.abs(diff);
-    if(baseMoney == 5 && baseMoney != send && diff <= 50000 && diff != 0 && vpay.innerHTML != 0){
+    if(baseMoney == 5 && baseMoney != send && Number(diff) <= Number(50000) && diff != 0 && vpay.innerHTML != 0){
     modal_check.style.display='block';
     document.getElementById('check_span').innerHTML = numeral(diff).format('0,0')
     }else{
@@ -73,4 +76,4 @@ function check(status){
         sub.submit();
     }
 }
-// count convert volume
+//little pay script

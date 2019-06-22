@@ -62,6 +62,8 @@ function get_data_join($from , $join , $select ,$join_where ,$ret = 'result' , $
         return $query->result();
     }
 }
+
+//query for deal archive
 function get_deal($offset , $between = NULL , $fullname = NULL , $type = NULL , $money_id = NULL){
     $this->db->select("deal.* , customer.fullname , unit.name");
     $this->db->from('deal');
@@ -106,6 +108,7 @@ function total_deal($between = NULL , $fullname = NULL , $type = NULL , $money_i
     return sizeof($query->result());
 
 }
+//query for deal archive
 
 function get_turnover($offset , $check = 0 , $owner = NULL , $provider = NULL , $between = NULL){
     $this->db->select('turnover.* , customer.fullname , bank.shaba , bank.name , bank.explain');

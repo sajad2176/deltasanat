@@ -96,7 +96,7 @@ $msg = $this->session->userdata('msg');?>
 								<div class="col-md-12">
 								<div class="form-group">
 									<label for="j_created_date"> تاریخ ثبت :</label>
-									<input type="text" class="form-control" name="date_deal" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date_deal." ".$deal->time_deal;?>" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" name="date_deal" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date_deal." ".$deal->time_deal;?>">
 								</div>
 								</div>
 								</div>

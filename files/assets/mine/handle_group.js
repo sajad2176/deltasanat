@@ -206,6 +206,7 @@ function autocomplete( inp, arr , notBuy , notSell ) {
     } );
 }
 //search customer
+
 // check amount bank
 function ambank( input ) {
     input.value = numeral( input.value ).format( '0,0' );
@@ -218,10 +219,14 @@ function ambank( input ) {
         }
 }
 // check amount bank
-function amhandle(input){
+
+//insert amount
+function insertAmount(input){
     input.value = numeral( input.value ).format( '0,0' );
     input.nextElementSibling.value = numeral( input.value ).value();
 }
+//insert amount
+
 //edit bank
 var actionEditBank = document.getElementById( 'actionEditBank' );
 var numberShabaEdit = document.getElementById( 'numberShabaEdit' );
@@ -240,6 +245,38 @@ function showBank(result , url){
 	explainBank.value = result.explain;    
 }
 //edit bank
+
+//show handle
+var handleTable = document.getElementById('handleTable');
+var handleTable2 = document.getElementById('handleTable2');
+
+function showHandle( res , url , payAllPerm , paySlicePerm , restorePerm , editHandlePerm , deleteHandlePerm , which){
+var count = res.length;
+var str = '';
+var t1 , t2 , title1 , all , slice , restore , edit , deleteHandle;
+for(i = 0 ; i < count ; i++){
+    if(Number(res[i].volume_handle) < Number(res[i].handle_pay)){t1 = 'text-danger'; }else{t1 = '';}
+    if(Number(res[i].handle_rest) < Number(0)){t2 = 'text-danger';}else{t2 = '';}
+    if(payAllPerm && Number(res[i].handle_rest) > Number(0)){all = '<li title="پرداخت کامل" data-toggle="tooltip" class="text-success"><a data-toggle="modal" href="#modal_theme_success"><i onclick="pay_all('+res[i].id+' ,'+res[i].handle_rest+')" class="icon-checkmark4"></i></a></li>';}else{all = '';}
+    if(paySlicePerm && Number(res[i].handle_rest) > Number(0)){slice = '<li title="پرداخت جزئی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_form_minor"><i onclick="pay_slice('+res[i].id+' ,'+res[i].handle_rest+')" class="icon-stack-empty"></i></li>';}else{slice = '';}
+    if(restorePerm){restore = '<li title="بازگشت پرداخت " data-toggle="tooltip" class="text-warning-800"><a data-toggle="modal" href="#modal_form_dminor"><i onclick="history('+res[i].id+')" class="icon-file-minus"></i></li>';}else{restore = '';}
+    if(editHandlePerm){edit = '<li title="ویرایش هماهنگی" data-toggle="tooltip" class="text-primary"><a data-toggle="modal" href="#modal_form_sminor"><i class="icon-pencil6" onclick="edit_handle('+res[i].id+' ,'+res[i].volume_handle+')" ></i></a></li>';}else{edit = '';}
+    if(deleteHandlePerm){deleteHandle = '<li title="حذف هماهنگی" data-toggle="tooltip" class="text-danger"><a data-toggle="modal" href="#modal_theme_danger"><i onClick="deleteHandle('+res[i].id+' ,'+res[i].handle_pay+')" class="icon-cross2"></i></a></li>';}else{deleteHandle = '';}
+    title1 = ' پرداخت شده - هماهنگی &#xA;' + numeral(res[i].handle_pay).format('0,0') + ' - ' + numeral(res[i].volume_handle).format('0,0');  
+    str += '<tr><td>'+i+'</td><td><a href="'+url+'deal/profile/'+res[i].cust_id+'" target="_blank" class="enterCustomer">'+res[i].fullname+'</a></td><td class="'+t1+'">'+numeral(res[i].volume_handle).format('0,0')+'</td><td class="'+t1+'">'+numeral(res[i].handle_pay).format('0,0')+'</td><td class="'+t2+'"><span title="'+title1+'" data-toggle="tooltip">'+numeral(res[i].handle_rest).format('0,0')+'</span></td><td>'+res[i].bank_id+'</td><td>'+res[i].explain+'</td><td>'+res[i].date_handle+'</br>'+res[i].time_handle+'</td><td class="text-center"><ul class="icons-list">'+all+slice+restore+edit+deleteHandle+'</ul></td></tr>';
+}
+if(which == 1){
+    handleTable.innerHTML = str;
+}else{
+    handleTable2.innerHTML = str;
+}
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+})
+}
+
+//show handle
+
 //scroll 
 var a = document.getElementById('div_handle');
 var b = document.getElementById('div_bank');
