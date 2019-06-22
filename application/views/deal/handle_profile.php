@@ -105,12 +105,14 @@ if($this->session->has_userdata('pay_little')){$littlePerm = 1;}else{$littlePerm
 	</table>
 </fieldset>
 <?php if(!empty($deal)){?>
+<br>
 <div class="col-md-12 pr-0">
 <div class="d-inline-block sumDeal"><b>مجموع : </b></div>
 <div class="d-inline-block sumDeal lright"><b title=" حجم خرید - حجم فروش &#xA;<?php echo number_format($sumDeal[1]->volume).' - '.number_format($sumDeal[0]->volume);?>" data-toggle="tooltip"><?php echo number_format($sumDeal[1]->volume - $sumDeal[0]->volume);?></b></div>
 <div class="d-inline-block sumDeal lright"><b title=" پرداخت خرید - پرداخت فروش &#xA;<?php echo number_format($sumDeal[1]->pay).' - '.number_format($sumDeal[0]->pay);?>" data-toggle="tooltip"><?php echo number_format($sumDeal[1]->pay - $sumDeal[0]->pay);?></b></div>
 <div class="d-inline-block sumDeal lright"><b title=" باقیمانده خرید - باقیمانده فروش &#xA;<?php echo number_format($sumDeal[1]->rest).' - '.number_format($sumDeal[0]->rest);?>" data-toggle="tooltip"><?php echo number_format($sumDeal[1]->rest - $sumDeal[0]->rest);?></b></div>
 </div>
+<br>
 <div class="text-left">
 	 <ul class="pagination">
 <?php

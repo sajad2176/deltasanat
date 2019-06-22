@@ -713,8 +713,8 @@ $this->base_model->insert_data('handle' , $data);
             if(!empty($data['deal'])){
                 $header['title'] = $data['deal'][0]->fullname;
             }
-            $data['bank'] = $this->base_model->run_query("SELECT * FROM bank WHERE customer_id = $id AND active = 1 ORDER BY id DESC");
             $data['sumDeal'] = $this->base_model->run_query("SELECT t.type_name , MAX(d.volume) as volume , MAX(d.pay) as pay , MAX(d.rest) as rest , MAX(dd.volume) as forbank FROM type_deal t LEFT JOIN (SELECT SUM(volume) as volume , SUM(pay) as pay , SUM(rest) as rest , type FROM deal WHERE customer_id = $id GROUP BY type) d ON d.type = t.id left join(SELECT SUM(volume) as volume , type FROM deal WHERE customer_id = $id AND rest > 0 group by type) dd ON dd.type = t.id GROUP BY t.id");
+            $data['bank'] = $this->base_model->run_query("SELECT * FROM bank WHERE customer_id = $id AND active = 1 ORDER BY id DESC");
             $notBank = $this->base_model->run_query("SELECT SUM(amount) as amount FROM bank WHERE customer_id = $id AND rest > 0 GROUP BY customer_id" , 'row');
             if(empty($notBank)){
                 $data['notBank'] = 0;
