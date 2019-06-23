@@ -20,7 +20,15 @@
 				<form action="<?php echo base_url("admin/log/").$this->uri->segment(3);?>" method="post">
 
 					<div class="col-md-12">
-						<div class="col-md-6">
+					<div class="form-group col-md-3">
+			<label class="col-sm-3 col-form-label font-lg"> جستجو: </label>
+      <div id="load-selected" class=" form-control col-sm-9 responsive">
+							<select id="pemissions-list" name="place_id" class="selectpicker " title="نام استان و شهر خود را وارد کنید" data-live-search="true" required>
+<option value="">ali</option>
+							</select>
+				</div>
+    </div>
+						<div class="col-md-4">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">از تاریخ :</label>
