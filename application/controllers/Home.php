@@ -16,10 +16,20 @@ class Home extends CI_Controller{
         $header['active'] = 'dashbord';
         $header['active_sub'] = '';
         $date = $this->convertdate->convert(time());
-        $start_date =  $date['year']."-".$date['month_num']."-".$date['day'];
+        $start_date =  $date['dd'];
         $data['today'] = $date['day']." ".$date['month_name']." ".$date['year'];
-        $data['remain'] = $this->base_model->get_data('unit' , '*' , 'result' , array('id != ' => 5));
-        $data['deal'] = $this->base_model->run_query("SELECT u.id , u.name , MAX(d.count_money) as buy , MAX(d.volume) AS buy_v , MAX(dd.count_m) as sell , MAX(dd.volume) as sell_v FROM unit u LEFT JOIN (SELECT SUM(count_money) as count_money , sum(volume) as volume , money_id from deal where type = 1 AND date_deal = '$start_date' AND temp = 0 AND state = 1  group by money_id) d ON u.id = d.money_id left join (select sum(count_money) as count_m , sum(volume) as volume , money_id from deal where type = 2 AND date_deal = '$start_date' AND temp = 0 AND state = 1  group by money_id) dd ON u.id = dd.money_id  group by u.id order by u.id ASC");
+        $remain = $this->base_model->get_data('unit' , '*' , 'result' , array('id != ' => 5));
+        $data['deal'] = $this->base_model->run_query("SELECT u.id , u.name , MAX(d.count_money) as buy , MAX(d.volume) AS buy_v , MAX(dd.count_m) as sell , MAX(dd.volume) as sell_v FROM unit u LEFT JOIN (SELECT SUM(count_money) as count_money , sum(volume) as volume , money_id from deal where type = 1 AND date_deal = '$start_date' AND state = 1  group by money_id) d ON u.id = d.money_id left join (select sum(count_money) as count_m , sum(volume) as volume , money_id from deal where type = 2 AND date_deal = '$start_date' AND state = 1  group by money_id) dd ON u.id = dd.money_id  group by u.id order by u.id ASC");
+        foreach($remain as $key => $remains){
+            foreach($data['deal'] as $deals){
+                if($remains->id == $deals->id){
+                    $remain[$key]->buy_unit = $deals->buy;
+                    $remain[$key]->sell_unit = $deals->sell;
+                    break; 
+                }
+            }
+        }
+        $data['remain'] = $remain;
         $buy_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle WHERE date_handle = '$start_date') h ON h.buy_id = d.customer_id where d.type = 1  and d.state = 1 and d.date_deal = '$start_date' GROUP BY d.type" , 'row');
         if(empty($buy_not)){
             $data['buy_not'] = 0;
@@ -61,6 +71,10 @@ class Home extends CI_Controller{
         }
        }
 
+
+//  echo "<pre>";
+//  var_dump($data);
+//  echo "</pre>";      
         $this->load->view('header' , $header);
         $this->load->view('home/home' , $data);
         $this->load->view('footer');
@@ -74,7 +88,7 @@ class Home extends CI_Controller{
         $start_date =  $date['year']."-".$date['month_num']."-".$date['day'];
         $data['today'] = $date['day']." ".$date['month_name']." ".$date['year'];
         $data['remain'] = $this->base_model->get_data('unit' , '*' , 'result' , array('id != ' => 5));
-        $data['deal'] = $this->base_model->run_query("SELECT u.id , u.name , MAX(d.count_money) as buy , MAX(d.volume) AS buy_v , MAX(dd.count_m) as sell , MAX(dd.volume) as sell_v FROM unit u LEFT JOIN (SELECT SUM(count_money) as count_money , sum(volume) as volume , money_id from deal where type = 1 AND date_deal = '$start_date' AND temp = 0 AND state = 1  group by money_id) d ON u.id = d.money_id left join (select sum(count_money) as count_m , sum(volume) as volume , money_id from deal where type = 2 AND date_deal = '$start_date' AND temp = 0 AND state = 1  group by money_id) dd ON u.id = dd.money_id  group by u.id order by u.id ASC");
+        $data['deal'] = $this->base_model->run_query("SELECT u.id , u.name , MAX(d.count_money) as buy , MAX(d.volume) AS buy_v , MAX(dd.count_m) as sell , MAX(dd.volume) as sell_v FROM unit u LEFT JOIN (SELECT SUM(count_money) as count_money , sum(volume) as volume , money_id from deal where type = 1 AND date_deal = '$start_date' AND state = 1  group by money_id) d ON u.id = d.money_id left join (select sum(count_money) as count_m , sum(volume) as volume , money_id from deal where type = 2 AND date_deal = '$start_date' AND state = 1  group by money_id) dd ON u.id = dd.money_id  group by u.id order by u.id ASC");
         $buy_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle where date_handle = '$start_date') h ON h.buy_id = d.customer_id where d.type = 1  and d.state = 1 and d.date_deal = '$start_date' GROUP BY d.type" , 'row');
         if(empty($buy_not)){
             $data['buy_not'] = 0;

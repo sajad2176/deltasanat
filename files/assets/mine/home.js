@@ -1,6 +1,6 @@
-window.onload = function(){
-    setInterval(update , 20000);
-}
+// window.onload = function(){
+//     setInterval(update , 20000);
+// }
 			
 var unitName = document.getElementsByClassName('unitName');
 var unitAmount = document.getElementsByClassName('unitAmount');

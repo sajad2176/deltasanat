@@ -11,12 +11,11 @@
 					$array = array('bg-blue-1' , 'bg-blue-2' , 'bg-blue-3' , 'bg-blue-4');
 					$i = 0;
 					foreach($remain as $remains){ ?>
-					<div class="col-md-3">
+					<div class="col-md-3" title=" ارز اولیه + ( فروش - خرید ) &#xA;<?php echo $remains->amount." + ( ".number_format($remains->sell_unit)." - ".number_format($remains->buy_unit)." ) ";?>" data-toggle="tooltip" >
 						<div class="panel <?php echo $array[$i]; if($i%3 == 0){$i = 0;}?>">
-
 							<div class="panel-body">
-								<h3 class="no-margin lright unitAmount">
-									<?php echo number_format($remains->amount);?>
+								<h3 class="no-margin lright unitAmount" >
+									<?php echo number_format($remains->buy_unit - $remains->sell_unit + $remains->amount );?>
 								</h3>
 								<h5 class="text-white text-size-larg unitName">
 									<?php echo $remains->name;?>
