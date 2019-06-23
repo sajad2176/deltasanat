@@ -42,7 +42,7 @@ $msg = $this->session->userdata('msg');?>
 					<div class="col-md-3">
 						<div class="form-group">
 							<label>انتخاب حساب :</label>
-                            <select class="form-control" name="bank_id" id ="money_id" required>
+                            <select class="form-control" name="bank_id" id ="bankSelect" required>
 							<option value="0">نام مشتری خرید را وارد کنید</option>
 											</select>
 						</div>
@@ -73,6 +73,9 @@ $msg = $this->session->userdata('msg');?>
 <div class="panel panel-flat">
 	<div class="panel-body">
 		<div class="row">
+		<!---------------------------->
+		<!---buy customer worksheet--->
+		<!---------------------------->
 			<div class="col-md-6">
 				<fieldset style="height:630px;">
 					<legend class="text-semibold"><i class="icon-cart5 position-left"></i> خرید</legend>
@@ -80,58 +83,63 @@ $msg = $this->session->userdata('msg');?>
 					<table class="table datatable-selection-single table-hover table-responsive-lg table-striped  ">
 						<thead>
 							<tr>
-							<th width="25%">نام مشتری</th>
-								<th width="25%"> مبلغ ریالی</th>
-								<th width="25%"> هماهنگ شده</th>
-								<th width="25%">هماهنگ نشده</th>
-								
+							    <th width="22%">نام مشتری</th>
+								<th width="24%"> مبلغ ریالی</th>
+								<th width="24%"> هماهنگ شده</th>
+								<th width="24%">هماهنگ نشده</th>
 							</tr>
 						</thead>
-						<tbody id="tbody_buy">
+						<tbody id="searchBuy">
 						<tr></tr>
 						</tbody>
-						<tbody id ="buy_table">
-<?php 
-if(empty($buy)){ ?>
+						<tbody id ="baseBuy">
+<?php  if(empty($buy)){ ?>
 <tr><td colspan="4" class="text-center p-20">موردی یافت نشد</td></tr>
 <?php }else{
 	foreach($buy as $buys){
-		if($buys->rest == 0){
-			$rest_class = 'tr_rest';
-		}else{
-			$rest_class = '';
-		}
 		?>
-							<tr class="<?php echo $rest_class;?>">
-								<td><a href="<?php echo base_url('deal/handle_profile/').$buys->customer_id;?>" target="_blank"><?php echo $buys->fullname;?></a></td>
-								<td><?php echo number_format($buys->volume);?></td>
-								<td><?php echo number_format($buys->handle);?></td>
-                <td><?php echo number_format($buys->volume - $buys->handle);?></td>                            
-							</tr>
+		<tr class="<?php if($buys->rest == 0){echo 'tr_rest';}?>">
+			<td><a href="<?php echo base_url('deal/profile/').$buys->customer_id;?>" class="enterCustomer" target="_blank"><?php echo $buys->fullname;?></a></td>
+			<td><?php echo number_format($buys->volume);?></td>
+			<td><?php echo number_format($buys->handle);?></td>
+            <td>
+			<span title="<?php echo number_format($buys->handle)." - ".number_format($buys->volume);?>" data-toggle="tooltip">
+			<?php echo number_format($buys->volume - $buys->handle);?>
+			</span>
+			</td>                            
+		</tr>
+
 <?php }} ?>
 						</tbody>
 					</table>
 				</fieldset>
-				<div class="float-left">
-									<ul class="pagination">
+<div class="float-left">
+	<ul class="pagination">
 <?php
-if($rows_buy > 10){
-$base = floor($rows_buy / 10);
-if($rows_buy % 10 != 0 ){
+if($countBuy > 10){
+$base = floor($countBuy / 10);
+if($countBuy % 10 != 0 ){
 	$count = $base + 1;
 }else{
 	$count = $base;
 }
-$offset = 0; for($i = 0 ; $i < $count ; $i++){ if($i == 0){$active = 'active';}else{$active = '';}?>
-<li class="buy <?php echo $active;?>"><a onclick = "buy(<?php echo $offset; ?> , this)"><?php echo $i + 1;?></a></li>
+$offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
+<li class="buy <?php if($i == 0){echo 'active';} ?>"><a onclick = "buyPagin(<?php echo $offset; ?> , this)"><?php echo $i + 1;?></a></li>
 <?php $offset += 10; }
 }
 ?>
 
 
-									</ul>
-								</div>
-			</div>
+	  </ul>
+	</div>
+</div>
+		<!---------------------------->
+		<!---buy customer worksheet--->
+		<!---------------------------->
+
+		<!---------------------------->
+		<!--sell customer worksheet--->
+		<!---------------------------->
 			<div class="col-md-6">
 				<fieldset style="height:630px;">
 					<legend class="text-semibold"><i class="icon-coins position-left"></i> فروش</legend>
@@ -139,33 +147,31 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ if($i == 0){$active = 'active';}e
 						<thead>
 
 							<tr>
-								<th width="25%">نام مشتری</th>
-								<th width="25%"> مبلغ ریالی</th>
-								<th width="25%"> هماهنگ شده</th>
-								<th width="25%">هماهنگ  نشده</th>
+								<th width="22%">نام مشتری</th>
+								<th width="26%"> مبلغ ریالی</th>
+								<th width="26%"> هماهنگ شده</th>
+								<th width="26%">هماهنگ  نشده</th>
 							</tr>
 						</thead>
-						<tbody id="tbody_sell">
+						<tbody id="searchSell">
 						<tr></tr>
 						</tbody>
-						<tbody id="sell_table">
+						<tbody id="baseSell">
 <?php 
 if(empty($sell)){ ?>
 <tr><td colspan="4" class="text-center p-20">موردی یافت نشد</td></tr>
 <?php }else{
-	foreach($sell as $sells){
-		if($sells->rest == 0){
-			$rest_class = 'tr_rest';
-		}else{
-			$rest_class = '';
-		}
-		?>
-							<tr class="<?php echo $rest_class;?>">
-								<td><a href="<?php echo base_url('deal/handle_profile/').$sells->customer_id;?>" target="_blank"><?php echo $sells->fullname;?></a></td>
-								<td><?php echo number_format($sells->volume);?></td>
-								<td><?php echo number_format($sells->handle);?></td>
-                <td><?php echo number_format($sells->volume - $sells->handle);?></td>                            
-							</tr>
+	foreach($sell as $sells){ ?>
+			<tr class="<?php if($sells->rest == 0){echo 'tr_rest';} ?>">
+				<td><a href="<?php echo base_url('deal/profile/').$sells->customer_id;?>" target="_blank"><?php echo $sells->fullname;?></a></td>
+				<td><?php echo number_format($sells->volume);?></td>
+				<td><?php echo number_format($sells->handle);?></td>
+				<td>
+				<span title="<?php echo number_format($sells->handle)." - ".number_format($sells->volume);?>" data-toggle="tooltip">
+			    <?php echo number_format($sells->volume - $sells->handle);?>
+			   </span>       
+				</td>
+			</tr>
 <?php } } ?>
 						</tbody>
 					</table>
@@ -173,28 +179,30 @@ if(empty($sell)){ ?>
 				<div class="float-left">
 									<ul class="pagination">
 <?php
-if($rows_sell > 10){
-$base = floor($rows_sell / 10);
-if($rows_sell % 10 != 0 ){
+if($countSell > 10){
+$base = floor($countSell / 10);
+if($countSell % 10 != 0 ){
 	$count = $base + 1;
 }else{
 	$count = $base;
 }
-$offset = 0; for($i = 0 ; $i < $count ; $i++){ if($i == 0){$active = 'active';}else{$active = '';}?>
-<li class="sell <?php echo $active;?>"><a onclick = "sell(<?php echo $offset; ?> , this)"><?php echo $i + 1;?></a></li>
+$offset = 0; for($i = 0 ; $i < $count ; $i++){ ?>
+<li class="sell <?php if($i == 0){echo 'active';} ?>"><a onclick = "sellPagin(<?php echo $offset; ?> , this)"><?php echo $i + 1;?></a></li>
 <?php $offset += 10; }
 }
 ?>
-
-
-									</ul>
-								</div>
+					</ul>
+				</div>
 			</div>
+		<!---------------------------->
+		<!--sell customer worksheet--->
+		<!---------------------------->
 		</div>
 	</div>
 </div>
 <!-- /sheet -->
 
+<!-- search customer -->
 <?php
 		$str = ''; $str2 = ''; $str3 = '';
 		$count = sizeof($search);
@@ -208,36 +216,27 @@ $offset = 0; for($i = 0 ; $i < $count ; $i++){ if($i == 0){$active = 'active';}e
 		}
 		$str = trim($str , ','); $str2 = trim($str2 , ','); $str3 = trim($str3 , ','); 
 ?>
+<!-- search customer -->
 
 <script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/sheet.js"></script>
+
 <script>
-var array  = [ <?php echo $str;?> ];
-var array2 = [<?php echo $str2;?> ];
-var array3 = [<?php echo $str3;?> ];
-function search_buy( input ) {
-autocomplete( input, array , array2 , array3 , 'buy');
-}
-function search_sell( input ) {
-autocomplete( input, array , array2 , array3 , 'sell');
-}		
 
+//pagin buy table
+function buyPagin(offset , li){
+   var classBuy = document.getElementsByClassName('buy');
+   for(i = 0 ; i < classBuy.length ; i++){
+   classBuy[i].classList.remove('active');
+   }
+   li.parentElement.classList.add('active');
 
-//buy table
-function buy(offset , li){
-var classBuy = document.getElementsByClassName('buy');
-for(i = 0 ; i < classBuy.length ; i++){
-classBuy[i].classList.remove('active');
-}
-li.parentElement.classList.add('active');
-Btable.style.display = 'contents';
-tbody_buy.style.display = 'none';
 	var xhr = new XMLHttpRequest();
 		xhr.onload = function () {
 			if ( ( xhr.status >= 200 && xhr.status < 300 ) || xhr.status == 304 ) {
-// alert(xhr.responseText);
+                // alert(xhr.responseText);
 				var result = JSON.parse( xhr.responseText );
 				var url = "<?php echo base_url();?>";
-				buyTable( result , url);
+				showBuy( result , url);
 			} else {
 				alert( 'request was unsuccessful : ' + xhr.status );
 			}
@@ -246,23 +245,23 @@ tbody_buy.style.display = 'none';
 		xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
 		xhr.send( 'offset=' + offset );
 }
-//buy table
-//sell table
-function sell(offset , li){
+//pagin buy table
+
+//pagin sell table
+function sellPagin(offset , li){
 	var classSell = document.getElementsByClassName('sell');
 for(i = 0 ; i < classSell.length ; i++){
 classSell[i].classList.remove('active');
 }
 li.parentElement.classList.add('active');
-stable.style.display = 'contents';
-tbody_sell.style.display = 'none';
+
 	var xhr = new XMLHttpRequest();
 		xhr.onload = function () {
 			if ( ( xhr.status >= 200 && xhr.status < 300 ) || xhr.status == 304 ) {
-// alert(xhr.responseText);
+               // alert(xhr.responseText);
 				var result = JSON.parse( xhr.responseText );
 				var url = "<?php echo base_url();?>";
-				sellTable( result , url);
+				showSell( result , url);
 			} else {
 				alert( 'request was unsuccessful : ' + xhr.status );
 			}
@@ -271,8 +270,24 @@ tbody_sell.style.display = 'none';
 		xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
 		xhr.send( 'offset=' + offset );
 }
-//sell table
+//pagin sell table
 
+// search customer
+var array  = [ <?php echo $str;?> ];
+var array2 = [<?php echo $str2;?> ];
+var array3 = [<?php echo $str3;?> ];
+function search_buy( input ) {
+autocomplete( input, array , array2 , array3 , 'buy');
+}
+function search_sell( input ) {
+autocomplete( input, array , array2 , array3 , 'sell');
+}
+//search customer		
+
+
+
+
+// show customer
 function show(val , type){
 	var xhr = new XMLHttpRequest();
 		xhr.onload = function () {
@@ -288,6 +303,6 @@ function show(val , type){
 		xhr.open( 'post', "<?php echo base_url('deal/get_customer/')?>", true );
 		xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
 		xhr.send( 'name='+val+'&type='+type );
-
 }
+// show customer
 </script>

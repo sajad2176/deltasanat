@@ -1,35 +1,44 @@
 
 //page buy
-var Btable = document.getElementById('buy_table');
-function buyTable(res , url){
+var baseBuy = document.getElementById('baseBuy');
+function showBuy(res , url){
     count = res.length;
-    var str = '';
+    var str = '' , notHandle , title;
     for(i = 0 ; i < count ; i++){
-        var amm = res[i].volume - res[i].handle;
-        if(res[i].rest == 0){name = 'tr_rest';}else{name = '';}
-        str += '<tr class='+name+'><td><a href='+url+'deal/handle_profile/'+res[i].customer_id+'>'+res[i].fullname+'</a></td><td>'+numeral(res[i].volume).format('0,0')+'</td><td>'+numeral(res[i].handle).format('0,0')+'</td><td>'+numeral(amm).format('0,0')+'</td></tr>';
+        notHandle = res[i].volume - res[i].handle;
+        if(Number(res[i].rest) == 0){name = 'tr_rest';}else{name = '';}
+        title = numeral(res[i].handle).format('0,0') + " - " + numeral(res[i].volume).format('0,0');
+        str += '<tr class='+name+'><td><a href='+url+'deal/profile/'+res[i].customer_id+' class="enterCustomer" target="_blank">'+res[i].fullname+'</a></td><td>'+numeral(res[i].volume).format('0,0')+'</td><td>'+numeral(res[i].handle).format('0,0')+'</td><td><span title="'+title+'" data-toggle="tooltip">'+numeral(notHandle).format('0,0')+'</span></td></tr>';
     }
-    Btable.innerHTML = str;
+    baseBuy.innerHTML = str;
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    })
 }
 
 //page sell
-var stable = document.getElementById('sell_table');
-function sellTable(res , url){
+var baseSell = document.getElementById('baseSell');
+function showSell(res , url){
     count = res.length;
-    var str = '';
+    var str = '' , notHandle , title;
     for(i = 0 ; i < count ; i++){
-        var amm = res[i].volume - res[i].handle;
-        if(res[i].rest == 0){name = 'tr_rest';}else{name = '';}
-        str += '<tr class='+name+'><td><a href='+url+'deal/handle_profile/'+res[i].customer_id+'>'+res[i].fullname+'</a></td><td>'+numeral(res[i].volume).format('0,0')+'</td><td>'+numeral(res[i].handle).format('0,0')+'</td><td>'+numeral(amm).format('0,0')+'</td></tr>';
+        var notHandle = res[i].volume - res[i].handle;
+        if(Number(res[i].rest) == 0){name = 'tr_rest';}else{name = '';}
+        title = numeral(res[i].handle).format('0,0') + " - " + numeral(res[i].volume).format('0,0');
+        str += '<tr class='+name+'><td><a href='+url+'deal/profile/'+res[i].customer_id+' class="enterCustomer" target="_blank" >'+res[i].fullname+'</a></td><td>'+numeral(res[i].volume).format('0,0')+'</td><td>'+numeral(res[i].handle).format('0,0')+'</td><td><span title="'+title+'" data-toggle="tooltip">'+numeral(notHandle).format('0,0')+'</span></td></tr>';
     }
-    stable.innerHTML = str;
+    baseSell.innerHTML = str;
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    })
 }
+//page sell
 
 //search 
-var tbody_buy = document.getElementById('tbody_buy');
-var tbody_sell = document.getElementById('tbody_sell');
-var select = document.getElementById('money_id');
-function autocomplete( inp, arr , notHandle , type ) {
+var searchBuy = document.getElementById('searchBuy');
+var searchSell = document.getElementById('searchSell');
+var select = document.getElementById('bankSelect');
+function autocomplete( inp, arr , notBuy , notSell , type ) {
     var currentFocus;
     inp.addEventListener( "input", function ( e ) {
         var a, b, i, val = this.value;
@@ -56,7 +65,7 @@ function autocomplete( inp, arr , notHandle , type ) {
                 match = arr[ i ].slice( arr[ i ].indexOf( search ), -lastIndx );
             }
             if ( match.length == search.length ) {
-                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + '</br>'+" ه.ن : " + numeral(notHandle[i]).format('0,0');
+                let str = arr[ i ].slice( 0, arr[ i ].indexOf( search ) ) + '<strong style="color:#46a64c;">' + match + '</strong>' + arr[ i ].slice( arr[ i ].length - lastIndx, arr[ i ].length ) + '</br>'+" ه.ن خرید : " + numeral(notBuy[i]).format('0,0') + " </br> ه.ن فروش : " + numeral(notSell[i]).format('0,0');
 
                 b = document.createElement( "DIV" );
                 b.innerHTML = str + "<input type='hidden' value='" + arr[ i ] + "'>";
@@ -126,58 +135,40 @@ function autocomplete( inp, arr , notHandle , type ) {
         closeAllLists( e.target );
     } );
 }
+
+// search customer------
 function Default(type){
 if(type == 'buy'){
-Btable.style.display = 'contents';
-tbody_buy.style.display = 'none';
+    baseBuy.style.display = 'contents';
+    searchBuy.style.display = 'none';
 select.innerHTML = '<option value="0">برای مشتری خرید شماره حسابی ثبت نشده است</option>';
 }else if(type == 'sell'){
-stable.style.display = 'contents';
-tbody_sell.style.display = 'none';
+    baseSell.style.display = 'contents';
+    searchSell.style.display = 'none';
 }
 }
+
 function showTable(res , type , url){
     var baseTable;
     var searchTable;
     if(type == 'buy'){
-        baseTable = Btable;
-        searchTable = tbody_buy;
-        }else if(type == 'sell'){
-        baseTable = stable;
-        searchTable = tbody_sell;
-        }
+        baseTable = baseBuy;
+        searchTable = searchBuy;
+    }else{
+        baseTable = baseSell;
+        searchTable = searchSell;
+    }
         baseTable.style.display = 'none';
         searchTable.style.display = 'contents';   
     if(res.cust.length == 0){
    searchTable.innerHTML  = "<tr class='text-center p-20'><td colspan='4'>موردی یافت نشد</td></tr>";
     }else {
-        var div = document.createElement( 'tbody' );
-        var len = res.cust.length;
-        for ( var i = 0; i < len ; i++ ) {
-            var tr = div.appendChild( document.createElement( 'tr' ) );
-            if(type =='buy'){
-                tr.style.backgroundColor = '#d5f6f2';
-            }else{
-                tr.style.backgroundColor = '#f6d5d7';
-            }
-    
-            var td_fullname = tr.appendChild( document.createElement( 'td' ) );
-            var a_customer = td_fullname.appendChild(document.createElement('a'));
-            a_customer.setAttribute('href' , url + "deal/handle_profile/" + res.cust[i].customer_id);
-            a_customer.setAttribute('target' ,  '_blank');
-            a_customer.innerHTML = res.cust[i].fullname;
-            
-            var td_volume = tr.appendChild(document.createElement('td'));
-            td_volume.innerHTML = numeral(res.cust[i].volume).format('0,0');
-            
-            var td_handle = tr.appendChild(document.createElement('td'));
-            td_handle.innerHTML = numeral(res.cust[i].handle).format('0,0');
-            
-            var amm = res.cust[i].volume - res.cust[i].handle;
-            var td_rest = tr.appendChild(document.createElement('td'));
-            td_rest.innerHTML = numeral(amm).format('0,0');
-        }
-        searchTable.replaceChild( div, searchTable.firstChild );
+    var searchStr = '' , notHandle;
+    classTr = 'buySheet';
+    if(type == 'sell'){classTr = 'sellSheet';}
+    notHandle = Number(res.cust.volume) - Number(res.cust.handle);
+    searchStr += '<tr class='+classTr+'><td><a hre='+url+'deal/profile'+res.cust.customer_id+' target="_blank" class="enterCustomer" >'+res.cust.fullname+'</a></td><td>'+numeral(res.cust.volume).format('0,0')+'</td><td>'+numeral(res.cust.handle).format('0,0')+'</td><td>'+numeral(notHandle).format('0,0')+'</td></tr>';   
+    searchTable.innerHTML = searchStr;    
     }
     if(type == 'buy'){
       if(res.bank.length == 0){
@@ -192,6 +183,8 @@ function showTable(res , type , url){
     }
 
 }
+// search customer-------
+
 function amhandle(input){
     input.value = numeral( input.value ).format( '0,0' );
     input.nextElementSibling.value = numeral( input.value ).value();

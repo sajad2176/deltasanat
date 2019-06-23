@@ -7066,4 +7066,10 @@ display: inline-block !important;
 .tooltip-inner {
   white-space: pre-wrap;
 }
+.buySheet{
+background-color: #d5f6f2 !important;
+}
+.sellSheet{
+background-color: #f6d5d7 !important;
+}
 /* sajad */
