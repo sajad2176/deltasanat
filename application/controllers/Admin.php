@@ -66,8 +66,8 @@ $data['count'] = $config['total_rows'];
         $data['active'] = $active;
         $this->base_model->update_data('member' , $data , array('id'=>$user_id));
         $date = $this->convertdate->convert(time());
-        $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
-        $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+        $log['date_log'] = $date['dd'];
+        $log['time_log'] = $date['t'];
         $log['user_id'] = $this->session->userdata('id');
         $log['activity_id'] = 5;
         if($active == 0){$txt = ' را غیر فعال کرد '; $txt2 = ' غیرفعال شد ';}else{$txt = ' را فعال کرد '; $txt2 = '  فعال شد ';}
@@ -155,8 +155,8 @@ $data['count'] = $config['total_rows'];
         }
         $this->base_model->insert_batch('member_perm' , $perm);
         $date = $this->convertdate->convert(time());
-        $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
-        $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+        $log['date_log'] = $date['dd'];
+        $log['time_log'] = $date['t'];
         $log['user_id'] = $this->session->userdata('id');
         $log['activity_id'] = 3;
         $log['explain'] = ' کاربر ' . $user['username'] . ' را به کاربران سامانه افزود ';
@@ -249,8 +249,8 @@ $count = sizeof($_POST['perm']);
     $this->base_model->insert_batch('member_perm' , $perm);
 $date = $this->convertdate->convert(time());
 $log['user_id'] = $this->session->userdata('id');
-$log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
-$log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+$log['date_log'] = $date['dd'];
+$log['time_log'] = $date['t'];
 $log['activity_id'] = 4;
 $log['explain'] = ' مشخصات کاربر  '. $user['username'] . ' را ویرایش کرد ';
 $res = $this->base_model->update_data('member' , $user , array('id' => $id));
@@ -289,42 +289,46 @@ redirect("admin/edit/$id");
       if(!$this->session->has_userdata('see_log') or $this->session->userdata('see_log') != TRUE){
           show_404();
       }
-      $id = $this->uri->segment(3);
+      $id = $this->input->get('user_id');
+      if(!isset($id)){
+        $id = $this->uri->segment(3);
+      }
       if(isset($id) and is_numeric($id)){
-        if(isset($_POST['sub'])){
-            $date_start = str_replace('/' , '-' , $_POST['start_date']);
-            $date_end = str_replace('/' , '-' , $_POST['end_date']);
-            $between = "log.date_log BETWEEN '$date_start' AND '$date_end'";
-            if($_POST['select_act'] == 'all'){
-                $where = array('log.user_id' => $id);
-                $total_rows = $this->base_model->get_count_between("log" , array('user_id'=> $id) , $between);
-            }else{
-               $where = array('log.user_id'=> $id , 'log.activity_id' => $_POST['select_act']);
-               $total_rows = $this->base_model->get_count_between("log" , array('user_id'=> $id , 'log.activity_id'=> $_POST['select_act']) , $between);
-            }
-
-            $limit = NULL;
-            $offset = NULL;
+        if($this->input->get('per_page')){
+            $offset = $this->input->get('per_page');
+        }else{
+            $offset = 0;
         }
-        else{
-            $offset = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
-            $limit = 10;
-            $between = NULL;
-            $where = array('log.user_id' => $id);
-            $total_rows = $this->base_model->get_count("log" , array('user_id'=> $id));
-        }
+         $between = NULL; $customer_id = NULL; $activity_id = NULL;
+         $cust_id = $this->input->get('cust_id');
+         $act_id = $this->input->get('act_id');
+         $start_date = $this->input->get('start_date');
+         $end_date = $this->input->get('end_date');
+         if($start_date != '' and $end_date != ''){
+            $s_date = str_replace('/', '-', $start_date);
+            $e_date = str_replace('/', '-', $end_date);
+            $between = "log.date_log BETWEEN '$s_date' AND '$e_date'";
+         }
+         if($cust_id != '' and is_numeric($cust_id)){
+             $customer_id = array('log.customer_id'=>$cust_id);
+         }
+        if($act_id != '' and is_numeric($act_id)){
+            $activity_id = array('log.activity_id'=>$act_id);
+        }   
+            $total_rows = $this->base_model->total_logs($id , $customer_id , $between , $activity_id);
             $header['title'] = 'فعالیت کاربران';
             $header['active'] = 'admin';
             $header['active_sub'] = 'admin_archive';
-            $config['base_url'] = base_url("admin/log/$id");
+            $config['base_url'] = base_url('admin/log?user_id='.$id.'&cust_id='.$cust_id.'&start_date='.$start_date.'&end_date='.$end_date.'&act_id='.$act_id);
             $config['total_rows'] = $total_rows;
             $config['per_page'] = '10';
-            $config["uri_segment"] = '4';
+            $config["uri_segment"] = '3';
+            $config['page_query_string'] = TRUE;
             $config['num_links'] = '5';
-            $config['next_link'] = '<i class="icon-arrow-left5"></i>';
-            $config['last_link'] = '<i class="icon-backward2"></i>';
-            $config['prev_link'] = '<i class="icon-arrow-right5"></i>';
-            $config['first_link'] = '<i class="icon-forward3"></i>';
+            $config['next_link'] = 'صفحه بعد';
+            $config['last_link'] = 'صفحه آخر';
+            $config['prev_link'] = 'صفحه قبل';
+            $config['first_link'] = 'صفحه اول';
             $config['full_tag_open'] = '<nav><ul class="pagination pagination-sm">';
             $config['full_tag_close'] = '</ul></nav>';
             $config['cur_tag_open'] = '<li class="active"><a href="javascript:void(0)">';
@@ -341,18 +345,13 @@ redirect("admin/edit/$id");
             $config['prev_tag_close'] = '</li>';
             $config['suffix'] = "";
             $this->pagination->initialize($config);
-                       
-            $data['logs'] = $this->base_model->get_data_join('log','activity' , 'log.* , activity.name' , 'log.activity_id = activity.id','result' , $where , $limit , $offset , array('log.id' , 'DESC') , NULL , NULL , $between);
+            $data['logs'] = $this->base_model->get_logs($offset , $id , $customer_id , $between , $activity_id);
             $date = $this->convertdate->convert(time());
             $data['date'] = $date['d'];
-            if(!isset($_POST['sub'])){
-                $data['page'] = $this->pagination->create_links();
-            }
+            $data['page'] = $this->pagination->create_links();
+            $data['activity'] = $this->base_model->get_data('activity' , '*');
             $data['customer'] = $this->base_model->get_data('customer' , 'id , fullname');
             $data['count'] = $config['total_rows'];
-            // echo "<pre>";
-            // var_dump($_POST);
-            // echo "</pre>";
                 $this->load->view('header' , $header);
                 $this->load->view('admin/log', $data);
                 $this->load->view('footer');

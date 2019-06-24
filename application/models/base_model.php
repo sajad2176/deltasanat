@@ -110,6 +110,46 @@ function total_deal($between = NULL , $fullname = NULL , $type = NULL , $money_i
 }
 //query for deal archive
 
+//query for logs archive
+function get_logs($offset ,$user_id , $cust_arr = NULL , $between = NULL , $act_arr = NULL ){
+    $this->db->select("log.* , activity.name");
+    $this->db->from('log');
+    $this->db->join('activity' , 'log.activity_id = activity.id' , 'left');
+    $this->db->where(array('log.user_id'=>$user_id));
+    $this->db->limit(10 , $offset);
+    $this->db->order_by('log.id' , 'DESC');
+    if($cust_arr != NULL){
+        $this->db->where($cust_arr);
+    }
+    if($between != NULL){
+        $this->db->where($between);
+    }
+    if($act_arr != NULL){
+        $this->db->where($act_arr);
+    }
+    $query = $this->db->get();
+    return $query->result();
+}
+
+function total_logs($user_id , $cust_arr = NULL , $between = NULL , $act_arr = NULL ){
+    $this->db->select("log.* , activity.name");
+    $this->db->from('log');
+    $this->db->join('activity' , 'log.activity_id = activity.id' , 'left');
+    $this->db->where(array('log.user_id'=>$user_id));
+    if($cust_arr != NULL){
+        $this->db->where($cust_arr);
+    }
+    if($between != NULL){
+        $this->db->where($between);
+    }
+    if($act_arr != NULL){
+        $this->db->where($act_arr);
+    }
+    $query = $this->db->get();
+    return sizeof($query->result());
+}
+
+//query for logs archive  
 function get_turnover($offset , $check = 0 , $owner = NULL , $provider = NULL , $between = NULL){
     $this->db->select('turnover.* , customer.fullname , bank.shaba , bank.name , bank.explain');
     $this->db->from('turnover');

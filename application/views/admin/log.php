@@ -12,59 +12,48 @@
 	<div class="panel-body">
 		<div class="panel-heading">
 			<h5 class="panel-title">فعالیت کاربر</h5>
-
 		</div>
 
 		<div class="datatable-header">
 			<div class="row">
-				<form action="<?php echo base_url("admin/log/").$this->uri->segment(3);?>" method="post">
-
-					<div class="col-md-12">
-					<div class="form-group col-md-3">
-			<label class="col-sm-3 col-form-label font-lg"> مشتری: </label>
-      <div id="load-selected" class=" form-control col-sm-9 responsive">
-							<select id="pemissions-list" name="cust_id" class="selectpicker " title="نام مشتری خود را وارد کنید" data-live-search="true">
-                            <?php foreach($customer as $name){ ?>
-							<option value="<?php echo $name->id;?>"><?php echo $name->fullname;?></option>
-                             <?php } ?>
-							</select>
-				</div>
-    </div>
+				<form action="<?php echo base_url("admin/log/").$this->uri->segment(3);?>" method="get">
+				<input type="hidden" name="user_id" value="<?php if($this->input->get('user_id')){echo $this->input->get('user_id');}else{echo $this->uri->segment(3);}?>">
+			<div class="col-md-12">
+				<div class="form-group col-md-3">
+		            <label class="col-form-label font-lg"> نام مشتری : </label>
+                    <div id="load-selected" class=" form-control col-sm-9 responsive">
+					<select id="pemissions-list" name="cust_id" class="selectpicker " title="نام مشتری خود را وارد کنید" data-live-search="true">
+                    <?php foreach($customer as $customers){ ?>
+						<option value="<?php echo $customers->id;?>" <?php if($customers->id == $this->input->get('cust_id')){echo 'selected';}?>><?php echo $customers->fullname;?></option>
+                    <?php } ?>
+					</select>
+			        </div>
+                </div>
 						<div class="col-md-4">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">از تاریخ :</label>
-									<input type="text" class="form-control" id="j_created_date" readonly data-mddatetimepicker="true" data-placement="bottom" value="<?php echo $date; ?>" name="start_date" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" id="j_created_date" readonly data-mddatetimepicker="true" data-placement="bottom" value="<?php if($this->input->get('start_date')){echo $this->input->get('start_date');}else{ echo $date;} ?>" name="start_date">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">تا تاریخ : </label>
-									<input type="text" class="form-control" id="j_created_date" readonly data-mddatetimepicker="true"  data-placement="bottom" value="<?php echo $date;?>" name="end_date" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" id="j_created_date" readonly data-mddatetimepicker="true"  data-placement="bottom" value="<?php if($this->input->get('end_date')){echo $this->input->get('end_date');}else{ echo $date;} ?>" name="end_date">
 								</div>
 							</div>
 						</div>
-						<div class="col-md-2">
-							<div class="form-group">
-								<label> انتخاب دسته : </label>
-								<select class="form-control" id="select_cat">
-									<option value="0">همه</option>
-									<option value="1">کاربران</option>
-									<option value="2">مشتریان</option>
-									<option value="3">معاملات</option>
-									<option value="4">تنظیمات</option>
-									
-								</select>
-							</div>
-						</div>
-						<div class="col-md-2">
-							<div class="form-group">
-								<label> انتخاب فعالیت : </label>
-								<select class="form-control" name="select_act" required id="select_act">
-									<option value="all">همه</option>
-								</select>
-							</div>
-						</div>
+						<div class="form-group col-md-3">
+			<label class="col-form-label font-lg"> نوع فعالیت : </label>
+      <div id="load-selected" class=" form-control col-sm-9 responsive">
+							<select id="pemissions-list" name="act_id" class="selectpicker " title="نام فعالیت خود را وارد کنید" data-live-search="true">
+                            <?php foreach($activity as $rows){ ?>
+							<option value="<?php echo $rows->id;?>" <?php if($rows->id == $this->input->get('act_id')){echo 'selected';}?> ><?php echo $rows->name;?></option>
+                             <?php } ?>
+							</select>
+				</div>
+    </div>
+	
 						<div class="col-md-1">
 							<button class="btn btn-success mt-25" name="sub" type="submit" >اعمال فیلتر</button>
 						</div>
@@ -90,7 +79,7 @@
 	<?php if(empty($logs)){ ?>  <tr><td colspan = '5' class='text-center p-20'>موردی یافت نشد</td></tr> <?php }
 			 
 			 else{
-		$num = $this->uri->segment(4) + 1;
+		$num = $this->input->get('per_page') + 1;
 		foreach($logs as $rows){ ?>
 			<tr>
 				<td>
@@ -122,7 +111,7 @@
 					<?php echo $count;?>
 				</td>
 				<td colspan="3" class="text-left pt-20 pb-20">
-					<?php if(isset($page)){echo $page; } ?>
+					<?php echo $page; ?>
 				</td>
 			</tr>
 			<?php }?>
@@ -134,23 +123,3 @@
 </div>
 </div>
 </div>
-<script>
-var select_cat = document.getElementById('select_cat');
-var select_act = document.getElementById('select_act');
-select_cat.onchange = function(){
-	var value = select_cat.selectedIndex;
-	if(value == 0){
-		select_act.innerHTML = '<option value="all">همه</option>';
-	}
-	else if(value == 1){
-	    select_act.innerHTML = '<option value="1">ورود به سامانه</option><option value="2">خروج از سامانه</option><option value="3">افزودن کاربر</option><option value="4">ویرایش کاربر</option><option value="5">تغییر وضعیت کاربر</option>';
-	}else if(value == 2){
-		select_act.innerHTML = '<option value="6">افزودن مشتری</option><option value="7">ویرایش مشتری</option>';
-	}else if(value == 3){
-		select_act.innerHTML = '<option value="9">افزودن خرید</option><option value="10">افزودن فروش</option><option value="11">ویرایش معامله</option><option value="24">ارسال قبض</option><option value="25">حذف قبض</option><option value="20">حذف معامله </option><option value="28">پرداخت خرد</option><option value="12">افزودن هماهنگی</option><option value="13"> پرداخت کامل</option><option value="14">پرداخت جزیی</option><option value="15">بازگشت پرداخت</option><option value="21"> ویرایش هماهنگی </option><option value="16"> حذف هماهنگی </option><option value="17">افزودن اطلاعات حساب </option><option value="18">ویرایش اطلاعات حساب</option><option value="19"> تغییر وضعیت اطلاعات حساب</option>';
-	}else if(value == 4){
-		select_act.innerHTML = '<option value="22"> تبدیل ارز</option><option value="23"> ارز اولیه</option><option value="26">افزودن ارز</option><option value="27">ویرایش ارز</option>';
-	}
-}
-
-</script>
