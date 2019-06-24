@@ -1,7 +1,6 @@
 <!-- Dashboard content -->
 <div class="panel panel-flat">
   <div class="panel-body"> 
-    <!-- Members online -->
     <div  class="panel-heading">
       <h4 class="panel-title">موجودی</h4>
     </div>
@@ -18,7 +17,6 @@
           </div>
         </div>
       </div>
-      <!-- /members online -->
       <?php  $i++;  } ?>
     </div>
   </div>
@@ -44,7 +42,7 @@
               </tr>
             </thead>
             <tbody>
-              <?php $rest_rial = 0; foreach($deal as $deals){ $rest_rial += $deals->sell_v - $deals->buy_v;?>
+              <?php $sell_v = 0; $buy_v = 0; foreach($deal as $deals){ $sell_v += $deals->sell_v; $buy_v += $deals->buy_v;?>
               <tr>
                 <td><div class="media-body">
                     <div class="media-heading">
@@ -69,162 +67,162 @@
           <h4 class="panel-title">هماهنگ شده ها</h4>
         </div>
         <div class="row">
-          <div class="col-md-4"> 
-            <!-- Members online -->
+        <!-- rest rial -->
+          <div class="col-md-4" title=" تغییر + ( خرید - فروش) &#xA;<?php echo number_format($plus->rest_rial)." + &#xA;( ".number_format($sell_v)." - ".number_format($buy_v)." ) " ?>" data-toggle="tooltip"> 
             <div class="panel bg-teal-400 p-5 pb-10 pr-10">
               <div class="row">
                 <h6 class="col-md-10"> مانده ریالی</h6>
-                <a data-toggle="modal" href="#membersOnline" class="text-white col-md-1 mt-10"><span class=" icon-plus3"></span></a> </div>
-              <h3 class="no-margin lright" id="restRial"><?php echo number_format($rest_rial);?></h3>
+                <a data-toggle="modal" href="#restRialModal" class="text-white col-md-1 mt-10"><span class=" icon-plus3" onclick="notHandle(<?php echo $plus->rest_rial;?> , 'rest')"></span></a>
+                </div>
+              <h3 class="no-margin lright" id="restRial"><?php echo number_format($sell_v - $buy_v + $plus->rest_rial);?></h3>
             </div>
-            <!-- /members online --> 
           </div>
-          <div class="col-md-4"> 
-            <!-- Current server load -->
+          <!-- rest rial -->
+
+          <!-- not handle sell -->
+          <div class="col-md-4" title = 'تغییر + (هماهنگی - فروش)&#xA;<?php if(empty($sell_not)){echo number_format($plus->not_sell).' + (0 - 0)';}else{echo number_format($plus->not_sell)." + ( ".number_format($sell_not->handle)." - ".number_format($sell_not->volume)." ) ";}?>' data-toggle="tooltip"> 
             <div class="panel bg-pink-400 p-5 pb-10 pr-10">
 			<div class="row">
               <h6 class="col-md-10">مانده هماهنگ نشده فروش</h6>
-			  <a data-toggle="modal" href="#currentServerLoad" class="text-white col-md-1 mt-10"><span class=" icon-plus3"></span></a> </div>
-              <h3 class="no-margin lright" id="sellNot"><?php echo number_format($sell_not);?></h3>
+			  <a data-toggle="modal" href="#notHandleSell" class="text-white col-md-1 mt-10"><span class=" icon-plus3" onclick="notHandle(<?php echo $plus->not_sell;?> , 'sell')"></span></a> </div>
+              <h3 class="no-margin lright" id="sellNot"><?php if(empty($sell_not)){echo number_format(0 + $plus->not_sell);}else{echo number_format($sell_not->volume - $sell_not->handle + $plus->not_sell);} ?></h3>
             </div>
-            <!-- /current server load --> 
-            
           </div>
-          <div class="col-md-4"> 
-            <!-- Today's revenue -->
+         <!-- not handle sell -->
+         <!-- not handle buy -->
+          <div class="col-md-4" title = 'تغییر + (هماهنگی - خرید)&#xA;<?php if(empty($buy_not)){echo number_format($plus->not_buy).' + (0 - 0)';}else{echo number_format($plus->not_buy)." + ( ".number_format($buy_not->handle)." - ".number_format($buy_not->volume)." )";}?>' data-toggle="tooltip"> 
             <div class="panel bg-blue-400 p-5 pb-10 pr-10">
 			<div class="row">
               <h6 class="col-md-10"> مانده هماهنگ نشده خرید</h6>
-			  <a data-toggle="modal" href="#TodaysRevenue" class="text-white col-md-1 mt-10"><span class=" icon-plus3"></span></a> </div>
-              <h3 class="no-margin lright" id="buyNot"><?php echo number_format($buy_not); ?></h3>
+			  <a data-toggle="modal" href="#notHandleBuy" class="text-white col-md-1 mt-10"><span class=" icon-plus3" onclick="notHandle(<?php echo $plus->not_buy;?> , 'buy')" ></span></a> </div>
+              <h3 class="no-margin lright" id="buyNot"><?php if(empty($buy_not)){echo number_format(0 + $plus->not_buy);}else{echo number_format($buy_not->volume - $buy_not->handle + $plus->not_buy);} ?></h3>
             </div>
-            <!-- /today's revenue --> 
           </div>
-		  
+		  <!-- not handle buy -->
         </div>
       </div>
     </div>
-    <!-- Marketing campaigns -->
+
     <div class="panel panel-flat">
       <div class="panel-body">
         <div class="panel-heading">
           <h4 class="panel-title">میانگین دلاری</h4>
         </div>
         <div class="col-md-6"> 
-          <!-- Today's revenue -->
+
           <div class="panel bg-dollar p-5">
             <div class="panel-body">
               <div class="heading-elements"> <span class="heading-text badge bg-teal-800">میانگین دلاری خرید </span> </div>
               <h3 class="no-margin lright" id="aveBuy"><?php echo number_format($ave_buy); ?></h3>
             </div>
           </div>
-          <!-- /today's revenue --> 
+   
         </div>
         <div class="col-md-6"> 
-          <!-- Today's revenue -->
+
           <div class="panel bg-dollar2 p-5">
             <div class="panel-body">
               <div class="heading-elements"> <span class="heading-text badge bg-teal-400">میانگین دلاری فروش </span> </div>
               <h3 class="no-margin lright" id="aveSell"><?php echo number_format($ave_sell); ?></h3>
             </div>
           </div>
-          <!-- /today's revenue --> 
+
         </div>
       </div>
-      			<!-- Today's revenue modal-->
-			<div id="TodaysRevenue" class="modal fade">
+       <!-- restRialModal  -->
+			<div id="restRialModal" class="modal fade">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header bg-success">
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
-								<h4 class="modal-title">تغیر در مانده هماهنگ نشده خرید</h4>
+								<h4 class="modal-title">تغییر در مانده ریالی</h4>
 							</div>
-                          <form>
 							<div class="modal-body">
+              <form action="<?php echo base_url('home/change_amount/rest');?>" method="post">
               <div class="row">
               <div class="form-group  col-md-6">
               <label>مقدار فعلی</label>
-              <input type="text" placeholder="" class="form-control" readonly>
+              <p class="form-control"><?php echo number_format($sell_v - $buy_v); ?></p>
               </div>
 							<div class="form-group input-group col-md-6">
 						
             <label>مقدار تغیرات</label>
-                        <input type="text" placeholder="" class="form-control">
+                        <input type="text" id="restInput" placeholder="مقدار مورد نظر را وارد کنید" onkeyup="insertAmount(this)" class="form-control">
+                        <input type="hidden" name="change" value="0">
                         <span class="input-group-btn ">
-                        <button type="submit" class="btn btn-success mt-25">ثبت تغیرات</button>
+                        <button type="submit" name="sub" class="btn btn-success mt-25">ثبت تغیرات</button>
                         </span> </div></div>
-                             
+                    </form>         
 							</div>
-
-
 						</div>
 					</div>
 				</div>
-			<!-- /Today's revenue modal -->
+			<!-- restRialModal -->
     </div>
   </div>
-  			<!-- Current server load modal-->
-        <div id="currentServerLoad" class="modal fade">
+  			<!-- notHandleSell-->
+        <div id="notHandleSell" class="modal fade">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header bg-success">
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
-								<h4 class="modal-title">تغیر در مانده هماهنگ نشده فروش</h4>
+								<h4 class="modal-title">تغییر در مانده هماهنگ نشده فروش</h4>
 							</div>
-                          <form>
+                
 							<div class="modal-body">
+              <form action="<?php echo base_url('home/change_amount/sell');?>" method="post">
               <div class="row">
               <div class="form-group  col-md-6">
               <label>مقدار فعلی</label>
-              <input type="text" placeholder="" class="form-control" readonly>
+              <p class="form-control"><?php if(empty($sell_not)){echo '0';}else{echo number_format($sell_not->volume - $sell_not->handle);}?></p>
               </div>
 							<div class="form-group input-group col-md-6">
 						
             <label>مقدار تغیرات</label>
-                        <input type="text" placeholder="" class="form-control">
+                        <input type="text" id="sellInput" onkeyup="insertAmount(this)" placeholder=" مقدار مورد نظر را وارد کنید " class="form-control" required>
+                        <input type="hidden" name="change" value = '0'>
                         <span class="input-group-btn ">
-                        <button type="submit" class="btn btn-success mt-25">ثبت تغیرات</button>
+                        <button type="submit" name="sub" class="btn btn-success mt-25">ثبت تغیرات</button>
                         </span> </div></div>
-                             
+              </form>       
 							</div>
-
-
 						</div>
 					</div>
 				</div>
-			<!-- /Current server load modal -->
+
+			<!-- /notHandleSell -->
 </div>
-			<!-- Members online modal-->
-			<div id="membersOnline" class="modal fade">
+			<!-- notHandleBuy modal-->
+			<div id="notHandleBuy" class="modal fade">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header bg-success">
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 								<h4 class="modal-title">تغیر در مانده ریالی</h4>
 							</div>
-                          <form>
+          <form action="<?php echo base_url('home/change_amount/buy');?>" method="post" >
 							<div class="modal-body">
               <div class="row">
               <div class="form-group  col-md-6">
               <label>مقدار فعلی</label>
-              <input type="text" placeholder="" class="form-control" readonly>
+              <p  class="form-control"><?php if(empty($buy_not)){echo '0';}else{echo number_format($buy_not->volume - $buy_not->handle);}?></p>
               </div>
 							<div class="form-group input-group col-md-6">
 						
             <label>مقدار تغیرات</label>
-                        <input type="text" placeholder="" class="form-control">
+                        <input type="text" id="buyInput" placeholder="مقدار مورد نظر را وارد کنید" onkeyup="insertAmount(this)" class="form-control">
+                        <input type="hidden" name="change" value="0">
                         <span class="input-group-btn ">
-                        <button type="submit" class="btn btn-success mt-25">ثبت تغیرات</button>
-                        </span> </div></div>
-                             
+                        <button type="submit" name="sub" class="btn btn-success mt-25">ثبت تغیرات</button>
+                        </span> </div></div>        
 							</div>
+          </form>
 
 
 						</div>
 					</div>
 				</div>
-			<!-- /Members online modal -->
-<!-- /dashboard content -->
+			<!-- notHandleBuy modal -->
 
 <script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/home.js"></script>
 <script>
@@ -243,4 +241,6 @@ xhr.open('post' , "<?php echo base_url('home/update_dashbord')?>" , true);
 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 xhr.send("request="+true);
 }
+
+
 </script>

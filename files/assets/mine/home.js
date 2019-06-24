@@ -37,3 +37,28 @@ var aveSell = document.getElementById('aveSell');
         aveBuy.innerHTML = numeral(res.ave_buy).format('0,0');
         aveSell.innerHTML = numeral(res.ave_sell).format('0,0');
     }
+
+    // not handle modal
+        var sellInput = document.getElementById('sellInput');
+        var buyInput = document.getElementById('buyInput');
+        var restInput = document.getElementById('restInput');
+      function notHandle(arg , type){
+          if(type == 'sell'){
+            sellInput.value = numeral(arg).format('0,0');
+            sellInput.nextElementSibling.value = arg;
+          }else if(type == 'buy'){
+            buyInput.value = numeral(arg).format('0,0');
+            buyInput.nextElementSibling.value = arg;
+    }else if(type == 'rest'){
+        restInput.value = numeral(arg).format('0,0');
+        restInput.nextElementSibling.value = arg;
+    }
+    
+    }
+    
+    function insertAmount(input){
+        input.value = numeral( input.value ).format( '0,0' );
+        input.nextElementSibling.value = numeral( input.value ).value();
+    }
+    //insert amount
+    // not handle modal

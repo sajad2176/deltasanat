@@ -33,6 +33,7 @@ window.onclick = function(event) {
 		<!-- /page content -->
 
   </div>
+  
   <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/loaders/pace.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/core/libraries/jquery.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url('files/');?>assets/mine/add_input.js"></script>
@@ -45,7 +46,7 @@ window.onclick = function(event) {
 
 	<!-- Theme JS files -->
 	
-  <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/forms/selects/bootstrap-select.min.js"></script>
+  <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/forms/selects/bootstrap_select.min.js"></script>
   <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/visualization/d3/d3.min.js"></script>
   <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/visualization/d3/d3_tooltip.js"></script>
   <script type="text/javascript" src="<?php echo base_url('files/');?>assets/js/plugins/forms/styling/switchery.min.js"></script>

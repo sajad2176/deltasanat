@@ -11,7 +11,7 @@
 	<!-- Global stylesheets -->
 	<link href="<?php echo base_url('files/');?>assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
 	<link href="<?php echo base_url('files/');?>assets/css/bootstrap.css" rel="stylesheet" type="text/css">
-	<link href="<?php echo base_url('files/');?>assets/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
+	<link href="<?php echo base_url('files/');?>assets/css/bootstrap-select.min.css" rel="stylesheet" type="text/css">
 	<link href="<?php echo base_url('files/');?>assets/css/rtl.css" rel="stylesheet" type="text/css">
 	<link href="<?php echo base_url('files/');?>assets/css/core.css" rel="stylesheet" type="text/css">
 	<link href="<?php echo base_url('files/');?>assets/css/components.css" rel="stylesheet" type="text/css">

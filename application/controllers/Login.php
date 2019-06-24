@@ -44,9 +44,21 @@ class Login extends CI_Controller{
 					redirect('login');
                 }
             $date = $this->convertdate->convert(time());    
-			$data['date_login'] = $date['year']. "-" .$date['month_num']."-".$date['day'];
-			$data['time_login'] = $date['hour']. ":".$date['minute']. ":" .$date['second'];
+			$data['date_login'] = $date['dd'];
+			$data['time_login'] = $date['t'];
+			$start_date = $date['dd'];
 			$this->base_model->update_data('member' , $data , array('id'=> $res->id));
+			$check = $this->base_model->run_query("SELECT id  FROM log WHERE activity_id = 1 and date_log = '$start_date'");
+			if(empty($check)){
+				$dashboard = array(
+					'not_buy'=>0,
+					'not_sell'=>0,
+					'rest_rial'=>0
+				);
+				$unit['amount'] = 0;
+				$this->base_model->update_data('dashboard' , $dashboard , array('id'=>1));
+				$this->base_model->update_data('unit' , $unit);
+			}
 			$log['user_id'] = $res->id;
 			$log['date_log'] = $data['date_login'];
 			$log['time_log'] = $data['time_login'];

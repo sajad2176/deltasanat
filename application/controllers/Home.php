@@ -11,13 +11,14 @@ class Home extends CI_Controller{
            $header['active_sub'] = '';
             $this->load->view('header' , $header);
             $this->load->view('footer');
-        }else{
+        }else{    
         $header['title'] = 'داشبورد';
         $header['active'] = 'dashbord';
         $header['active_sub'] = '';
         $date = $this->convertdate->convert(time());
         $start_date =  $date['dd'];
         $data['today'] = $date['day']." ".$date['month_name']." ".$date['year'];
+        $data['plus'] = $this->base_model->get_data('dashboard' , '*' , 'row' , array('id'=>1));
         $remain = $this->base_model->get_data('unit' , '*' , 'result' , array('id != ' => 5));
         $data['deal'] = $this->base_model->run_query("SELECT u.id , u.name , MAX(d.count_money) as buy , MAX(d.volume) AS buy_v , MAX(dd.count_m) as sell , MAX(dd.volume) as sell_v FROM unit u LEFT JOIN (SELECT SUM(count_money) as count_money , sum(volume) as volume , money_id from deal where type = 1 AND date_deal = '$start_date' AND state = 1  group by money_id) d ON u.id = d.money_id left join (select sum(count_money) as count_m , sum(volume) as volume , money_id from deal where type = 2 AND date_deal = '$start_date' AND state = 1  group by money_id) dd ON u.id = dd.money_id  group by u.id order by u.id ASC");
         foreach($remain as $key => $remains){
@@ -30,19 +31,8 @@ class Home extends CI_Controller{
             }
         }
         $data['remain'] = $remain;
-        $buy_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle WHERE date_handle = '$start_date') h ON h.buy_id = d.customer_id where d.type = 1  and d.state = 1 and d.date_deal = '$start_date' GROUP BY d.type" , 'row');
-        if(empty($buy_not)){
-            $data['buy_not'] = 0;
-        }else{
-            $data['buy_not'] = $buy_not->volume - $buy_not->handle;
-        }
-        $sell_not = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle WHERE date_handle = '$start_date') h ON h.sell_id = d.customer_id where d.type = 2 and d.state = 1 and d.date_deal = '$start_date' GROUP BY d.type" , 'row');
-        if(empty($sell_not)){
-            $data['sell_not'] = 0;
-        }else{
-            $data['sell_not'] = $sell_not->volume - $sell_not->handle;
-        }
-
+        $data['sell_not'] = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT sell_id, SUM(volume_handle) AS volume_handle FROM handle WHERE date_handle = '$start_date') h ON h.sell_id = d.customer_id where d.type = 2 and d.state = 1 and d.date_deal = '$start_date' GROUP BY d.type" , 'row');
+        $data['buy_not'] = $this->base_model->run_query("SELECT SUM(d.volume) AS volume, max(h.volume_handle) AS handle  FROM  deal d LEFT JOIN (SELECT buy_id, SUM(volume_handle) AS volume_handle FROM handle WHERE date_handle = '$start_date') h ON h.buy_id = d.customer_id where d.type = 1  and d.state = 1 and d.date_deal = '$start_date' GROUP BY d.type" , 'row');
        $rate = $this->base_model->run_query("SELECT unit_id , rate FROM rate WHERE rate.pub = 1");
        $volume_buy = 0; $buy = 0; $volume_sell = 0; $sell = 0; $data['ave_buy'] = 0; $data['ave_sell'] = 0;
        if(!empty($rate)){
@@ -69,17 +59,34 @@ class Home extends CI_Controller{
         }if($sell != 0){
           $data['ave_sell'] = $volume_sell / $sell;
         }
-       }
-
-
-//  echo "<pre>";
-//  var_dump($data);
-//  echo "</pre>";      
+       }    
         $this->load->view('header' , $header);
         $this->load->view('home/home' , $data);
         $this->load->view('footer');
     }
     }
+
+
+   function change_amount(){
+    if(!$this->session->has_userdata('see_dashbord') or $this->session->userdata('see_dashbord') != TRUE or !isset($_POST['sub'])){
+         show_404();
+     }
+      if($this->uri->segment(3) == 'sell'){
+          $data['not_sell'] = $this->input->post('change');
+          $this->base_model->update_data('dashboard' , $data , array('id'=> 1));
+           redirect('home');
+      }else if($this->uri->segment(3) == 'buy'){
+        $data['not_buy'] = $this->input->post('change');
+        $this->base_model->update_data('dashboard' , $data , array('id'=> 1));
+         redirect('home');
+      }else if($this->uri->segment(3) == 'rest'){
+          $data['rest_rial'] = $this->input->post('change');
+          $this->base_model->update_data('dashboard' , $data , array('id'=> 1));
+          redirect('home');
+      }
+   }
+
+
     // update
     
     public function update_dashbord(){
