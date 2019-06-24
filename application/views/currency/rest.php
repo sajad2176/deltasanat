@@ -44,10 +44,10 @@ $msg = $this->session->userdata('msg');?>
                         <div class="col-md-2">
 								<div class="form-group">
 									<label for="j_created_date"> تاریخ ثبت :</label>
-									<input type="text" class="form-control" name="date_deal" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date;?>" placeholder="Jalali Created Date" required>
+									<input type="text" class="form-control" name="date_deal" id="j_created_date" readonly data-mddatetimepicker="true" data-placement="bottom" value="<?php echo $date;?>" placeholder="Jalali Created Date" required>
 								</div>
 								</div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                         <label class="display-block text-semibold">نوع حساب :</label>
 						<div class="form-group mt-20">
 										
@@ -59,16 +59,6 @@ $msg = $this->session->userdata('msg');?>
 										<label class="radio-inline">
 											<input type="radio" name="type" value="1" class="styled" >
 											طلب کار
-										</label>
-									</div>
-						</div>
-						<div class="col-md-2">
-                        <label class="display-block text-semibold">نوع مانده حساب :</label>
-						<div class="form-group mt-20">
-										
-										<label class="radio-inline">
-											<input type="checkbox" name="temp" value='1' class="styled">
-											موقت
 										</label>
 									</div>
 						</div>
@@ -89,33 +79,32 @@ $msg = $this->session->userdata('msg');?>
 		<table class="table datatable-selection-single table-hover table-responsive-lg ">
 		<thead>
 			<tr>
-				<th>شناسه معامله</th>
-				<th>نام مشتری</th>
-				<th>نوع معامله</th>
-				<th>تعداد ارز</th>
-				<th>نرخ تبدیل</th>
-				<th>حجم معامله</th>
-				<th>حجم پرداخت شده</th>
-				<th>حجم باقی مانده</th>
-				<th>تاریخ ثبت</th>
-				<th>آخرین ویرایش</th>
-				<th class="text-center">ابزار</th>
+			<th width="5%">شناسه</th>
+				<th width="10%">نام مشتری</th>
+				<th width="5%">نوع</th>
+				<th width="10%">تعداد ارز</th>
+				<th width="8%">نرخ تبدیل</th>
+				<th width="15%">حجم معامله</th>
+				<th width="15%">حجم پرداخت شده</th>
+				<th width="15%">حجم باقی مانده</th>
+				<th width="7%"> تاریخ ثبت</th>
+				<th width="10%" class="text-center">ابزار</th>
 			</tr>
 		</thead>
 		<tbody>
 
 			<?php 
 			if(empty($deal)){ ?>
-			<tr><td colspan = '11' class='text-center p-20'>موردی یافت نشد</td></tr>
+			<tr><td colspan = '10' class='text-center p-20'>موردی یافت نشد</td></tr>
 			<?php }else{
 			$num = $this->uri->segment(3) + 1;
 			foreach($deal as $rows){ ?>
 			<tr class='<?php if($rows->temp == 1){echo 'tr_temp';}?>'>
 				<td>
-					<?php echo $rows->id + 100;?>
+					<?php echo $rows->id;?>
 				</td>
 				<td>
-					<a href="<?php echo base_url('deal/handle_profile/').$rows->cust_id ?>" target="_blank">
+					<a href="<?php echo base_url('deal/profile/').$rows->cust_id ?>" target="_blank" class="enterCustomer">
 						<?php echo $rows->fullname; ?>
 					</a>
 				</td>
@@ -123,25 +112,26 @@ $msg = $this->session->userdata('msg');?>
 					<?php if($rows->type == 1){echo 'خرید';}else{echo 'فروش';}?>
 				</td>
 				<td>
-					<?php echo number_format($rows->count_money)." ".$rows->name;?>
+					<?php echo number_format($rows->count_money)."</br>".$rows->name;?>
 				</td>
 				<td>
 					<?php echo number_format($rows->convert); ?>
 				</td>
-				<td class="<?php if($rows->volume < $rows->pay){echo 'text-danger';}?>">
-					<?php echo number_format($rows->volume);?>
+				<td class="lright <?php if($rows->volume < $rows->pay){echo 'text-danger';}?>">
+				<span title="<?php echo " ( ".number_format($rows->count_money).' + '.$rows->wage." ) × ".number_format($rows->convert) ;?>" data-toggle="tooltip">
+				<?php echo number_format($rows->volume);?>
+				</span>
 				</td>
 				<td class="<?php if($rows->volume < $rows->pay){echo 'text-danger';}?>">
 					<?php echo number_format($rows->pay);?>
 				</td>
-				<td class="<?php if($rows->rest < 0){echo 'text-danger';}?>">
-					<?php echo number_format($rows->rest);?>
+				<td class="lright <?php if($rows->rest < 0){echo 'text-danger';}?>">
+				<span title="<?php echo number_format($rows->volume)." - ".number_format($rows->pay)?>" data-toggle="tooltip">
+				<?php echo number_format($rows->rest);?>
+				</span>
 				</td>
 				<td>
 					<?php echo $rows->date_deal."</br>".$rows->time_deal; ?>
-				</td>
-				<td>
-					<?php echo $rows->date_modified;?>
 				</td>
 				<td class="text-center">
 					<ul class="icons-list">
@@ -210,7 +200,7 @@ $msg = $this->session->userdata('msg');?>
 		  titleDelete.innerHTML = " آیا می خواهید ادامه دهید؟";
 		  closeDelete.style.display = 'inline-block';
 		  confirmDelete.style.display = 'inline-block';
-		  confirmDelete.setAttribute('href' , "<?php echo base_url('deal/delete_deal/')?>" + id);
+		  confirmDelete.setAttribute('href' , "<?php echo base_url('deal/delete_deal/')?>" + id + '/rest');
 	  }
 	}
 

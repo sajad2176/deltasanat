@@ -30,8 +30,8 @@ class Settings extends CI_Controller {
             $this->base_model->update_data('rate' , array('pub'=> 0) , NULL);
             $this->base_model->insert_batch('rate' , $rate);
             $log['user_id'] = $this->session->userdata('id');
-            $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
-            $log['time_log'] =  $date['hour'].":".$date['minute'].":".$date['second'];
+            $log['date_log'] = $date['dd'];
+            $log['time_log'] =  $date['t'];
             $log['activity_id'] = 22;
             $log['explain'] = $exp;
             $this->base_model->insert_data('log' , $log);
@@ -75,7 +75,7 @@ class Settings extends CI_Controller {
             $header['active'] = 'settings';
             $header['active_sub'] = 'set_unit';
             $this->load->view('header', $header);
-            $this->load->view('currency/unit' , $data);
+            $this->load->view('currency/set_unit' , $data);
             $this->load->view('footer');
         }
     }
@@ -98,8 +98,8 @@ class Settings extends CI_Controller {
             }
            $date = $this->convertdate->convert(time());
            $log['user_id'] = $this->session->userdata('id');
-           $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
-           $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+           $log['date_log'] = $date['dd'];
+           $log['time_log'] = $date['t'];
            $log['activity_id'] = 23;
            $log['explain'] = $exp;
            $this->base_model->update_batch('unit' , $unit , 'id');
@@ -158,21 +158,11 @@ class Settings extends CI_Controller {
         $customer['fullname'] = trim($this->input->post('fullname'), ' ');
         $check = $this->base_model->get_data('customer' , 'id' , 'row' , array('fullname'=>$customer['fullname']));
         if(empty($check)){
-            $customer['address'] = '';
-            $customer['email'] = '';
-            $customer['customer_tel'] = '';
             $id = $this->base_model->insert_data('customer' , $customer);
         }else{
             $id = $check->id;
         }
-        $persian_num = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
-        $latin_num = range(0, 9);
-        $slash = '/';
-        $dash = '-';
-        $string = str_replace($persian_num, $latin_num, $_POST['date_deal']);
-        $string = str_replace($slash, $dash, $string); 
-        $date_deal = substr($string , 0 , 10);
-        $time_deal = substr($string , 10 , 20);
+        $date_deal = str_replace('/', '-', $_POST['date_deal']); 
        $date = $this->convertdate->convert(time());
        $deal['count_money'] = $this->input->post('count');
        $deal['wage'] = 0;
@@ -182,24 +172,15 @@ class Settings extends CI_Controller {
        $deal['rest'] = $this->input->post('count');
        $deal['explain'] = '';
        $deal['date_deal'] = $date_deal;
-       $deal['time_deal'] = $time_deal;
-       $deal['date_modified'] = 'ثبت نشده است';
+       $deal['time_deal'] = $date['t'];
        $deal['type'] = $this->input->post('type');
        $deal['customer_id'] = $id;
        $deal['money_id'] = 5;
        $deal['state'] = 1;
-       if(isset($_POST['temp'])){
-           $deal['temp'] = 1;
-       }
-       $rial = $this->base_model->get_data('unit' , 'amount' , 'row' , array('id'=> 5));
        if($deal['type'] == 1){
-           $unit_rial['amount'] = $rial->amount + $deal['count_money'];
            $act = 9;
-           $text = " افزیش یافت ";
        }else{
-           $unit_rial['amount'] = $rial->amount - $deal['count_money']; 
            $act = 10;
-           $text = " کاهش یافت ";
        }
        $deal_id = $this->base_model->insert_data('deal' , $deal);
        if($deal_id == FALSE){
@@ -208,14 +189,12 @@ class Settings extends CI_Controller {
         $this->session->set_flashdata($message);
         redirect("settings/rest_unit");
     }
-    $this->base_model->update_data('unit' , $unit_rial , array('id' => 5)); 
-
-    $aa = $deal_id + 100;
     $log['user_id'] = $this->session->userdata('id');
-    $log['date_log'] = $date['year']."-".$date['month_num']."-".$date['day'];
-    $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
+    $log['date_log'] = $date['dd'];
+    $log['time_log'] = $date['t'];
     $log['activity_id'] = $act;
-    $log['explain'] = " نام مشتری :  ".$customer['fullname']." | شناسه معامله : ".$aa . " | ارز معامله : ریال | تعداد ارز : ".number_format($deal['count_money']) ." | کارمزد : 0 | نرخ تبدیل : 1"." حجم معامله :  ".number_format($deal['volume'])." ریال "." | مقدار ارز ریال به اندازه  ".number_format($deal['count_money'])." ".$text;
+    $log['explain'] = " نام مشتری :  ".$customer['fullname']." | شناسه معامله : ".$deal_id . " | ارز معامله : ریال  </br> تعداد ارز : ".number_format($deal['count_money']) ." | کارمزد : 0 | نرخ تبدیل : 1"."</br> حجم معامله :  ".number_format($deal['volume'])."</br> افزوده شد";
+    $log['customer_id'] = $id;
     $this->base_model->insert_data('log' , $log);
     $message['msg'][0] = 'اطلاعات با موفقیت ثبت شد';
     $message['msg'][1] = 'success';
@@ -254,7 +233,7 @@ class Settings extends CI_Controller {
     $data['page'] = $this->pagination->create_links();
     $data['count'] = $config['total_rows'];
     $date = $this->convertdate->convert(time());
-    $data['date'] = $date['year']."/".$date['month_num']."/".$date['day'] . " ".$date['hour'].":".$date['minute'].":".$date['second'];
+    $data['date'] = $date['d'];
         $header['title'] = 'مانده حساب ریالی';
         $header['active'] = 'settings';
         $header['active_sub'] = 'rest_unit';

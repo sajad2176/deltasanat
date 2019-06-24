@@ -296,10 +296,10 @@ redirect("admin/edit/$id");
             $date_end = str_replace('/' , '-' , $_POST['end_date']);
             $between = "log.date_log BETWEEN '$date_start' AND '$date_end'";
             if($_POST['select_act'] == 'all'){
-                $where = array('log.user_id' => $id , 'log.customer_id'=>$_POST['cust_id']);
+                $where = array('log.user_id' => $id);
                 $total_rows = $this->base_model->get_count_between("log" , array('user_id'=> $id) , $between);
             }else{
-               $where = array('log.user_id'=> $id , 'log.activity_id' => $_POST['select_act'] ,  'log.customer_id'=>$_POST['cust_id']);
+               $where = array('log.user_id'=> $id , 'log.activity_id' => $_POST['select_act']);
                $total_rows = $this->base_model->get_count_between("log" , array('user_id'=> $id , 'log.activity_id'=> $_POST['select_act']) , $between);
             }
 

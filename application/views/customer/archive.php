@@ -50,7 +50,7 @@
 						<?php echo $rows->id;?>
 					</td>
 					<td>
-						<a href="<?php echo base_url('deal/handle_profile/').$rows->id;?>" target="_blank"><?php echo $rows->fullname; ?></a>
+						<a href="<?php echo base_url('deal/profile/').$rows->id;?>" target="_blank"><?php echo $rows->fullname; ?></a>
 					</td>
 					<td><?php echo $rows->deal_count;?></td>
 					<td><?php echo number_format($rows->vd); ?></td>
