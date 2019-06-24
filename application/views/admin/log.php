@@ -21,10 +21,12 @@
 
 					<div class="col-md-12">
 					<div class="form-group col-md-3">
-			<label class="col-sm-3 col-form-label font-lg"> جستجو: </label>
+			<label class="col-sm-3 col-form-label font-lg"> مشتری: </label>
       <div id="load-selected" class=" form-control col-sm-9 responsive">
-							<select id="pemissions-list" name="place_id" class="selectpicker " title="نام استان و شهر خود را وارد کنید" data-live-search="true" required>
-<option value="">ali</option>
+							<select id="pemissions-list" name="cust_id" class="selectpicker " title="نام مشتری خود را وارد کنید" data-live-search="true">
+                            <?php foreach($customer as $name){ ?>
+							<option value="<?php echo $name->id;?>"><?php echo $name->fullname;?></option>
+                             <?php } ?>
 							</select>
 				</div>
     </div>
@@ -32,13 +34,13 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">از تاریخ :</label>
-									<input type="text" class="form-control" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date; ?>" name="start_date" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" id="j_created_date" readonly data-mddatetimepicker="true" data-placement="bottom" value="<?php echo $date; ?>" name="start_date" placeholder="Jalali Created Date">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="j_created_date">تا تاریخ : </label>
-									<input type="text" class="form-control" id="j_created_date" readonly data-mddatetimepicker="true" data-enabletimepicker="true" data-placement="bottom" value="<?php echo $date;?>" name="end_date" placeholder="Jalali Created Date">
+									<input type="text" class="form-control" id="j_created_date" readonly data-mddatetimepicker="true"  data-placement="bottom" value="<?php echo $date;?>" name="end_date" placeholder="Jalali Created Date">
 								</div>
 							</div>
 						</div>
@@ -145,7 +147,7 @@ select_cat.onchange = function(){
 	}else if(value == 2){
 		select_act.innerHTML = '<option value="6">افزودن مشتری</option><option value="7">ویرایش مشتری</option>';
 	}else if(value == 3){
-		select_act.innerHTML = '<option value="9">افزودن خرید</option><option value="10">افزودن فروش</option><option value="11">ویرایش معامله</option><option value="24">ارسال قبض</option><option value="25">حذف قبض</option><option value="20">حذف معامله </option><option value="12">افزودن هماهنگی</option><option value="13"> پرداخت کامل</option><option value="14">پرداخت جزیی</option><option value="15">بازگشت پرداخت</option><option value="21"> ویرایش هماهنگی </option><option value="16"> حذف هماهنگی </option><option value="17">افزودن اطلاعات حساب </option><option value="18">ویرایش اطلاعات حساب</option><option value="19"> تغییر وضعیت اطلاعات حساب</option>';
+		select_act.innerHTML = '<option value="9">افزودن خرید</option><option value="10">افزودن فروش</option><option value="11">ویرایش معامله</option><option value="24">ارسال قبض</option><option value="25">حذف قبض</option><option value="20">حذف معامله </option><option value="28">پرداخت خرد</option><option value="12">افزودن هماهنگی</option><option value="13"> پرداخت کامل</option><option value="14">پرداخت جزیی</option><option value="15">بازگشت پرداخت</option><option value="21"> ویرایش هماهنگی </option><option value="16"> حذف هماهنگی </option><option value="17">افزودن اطلاعات حساب </option><option value="18">ویرایش اطلاعات حساب</option><option value="19"> تغییر وضعیت اطلاعات حساب</option>';
 	}else if(value == 4){
 		select_act.innerHTML = '<option value="22"> تبدیل ارز</option><option value="23"> ارز اولیه</option><option value="26">افزودن ارز</option><option value="27">ویرایش ارز</option>';
 	}

@@ -292,24 +292,17 @@ redirect("admin/edit/$id");
       $id = $this->uri->segment(3);
       if(isset($id) and is_numeric($id)){
         if(isset($_POST['sub'])){
-            $persian_num = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
-            $latin_num = range(0, 9);
-            $slash = '/';
-            $dash = '-';
-            $start = str_replace($persian_num, $latin_num, $_POST['start_date']);
-            $start = str_replace($slash, $dash, $start);
-            $end = str_replace($persian_num, $latin_num, $_POST['end_date']);
-            $end = str_replace($slash, $dash, $end); 
-            $date_start = substr($start , 0 , 10);
-            $date_end = substr($end , 0 , 10);
+            $date_start = str_replace('/' , '-' , $_POST['start_date']);
+            $date_end = str_replace('/' , '-' , $_POST['end_date']);
             $between = "log.date_log BETWEEN '$date_start' AND '$date_end'";
             if($_POST['select_act'] == 'all'){
-                $where = array('log.user_id' => $id);
+                $where = array('log.user_id' => $id , 'log.customer_id'=>$_POST['cust_id']);
                 $total_rows = $this->base_model->get_count_between("log" , array('user_id'=> $id) , $between);
             }else{
-               $where = array('log.user_id'=> $id , 'log.activity_id' => $_POST['select_act']);
+               $where = array('log.user_id'=> $id , 'log.activity_id' => $_POST['select_act'] ,  'log.customer_id'=>$_POST['cust_id']);
                $total_rows = $this->base_model->get_count_between("log" , array('user_id'=> $id , 'log.activity_id'=> $_POST['select_act']) , $between);
             }
+
             $limit = NULL;
             $offset = NULL;
         }
@@ -351,11 +344,15 @@ redirect("admin/edit/$id");
                        
             $data['logs'] = $this->base_model->get_data_join('log','activity' , 'log.* , activity.name' , 'log.activity_id = activity.id','result' , $where , $limit , $offset , array('log.id' , 'DESC') , NULL , NULL , $between);
             $date = $this->convertdate->convert(time());
-            $data['date'] = $date['year']."/".$date['month_num']."/".$date['day']." ".$date['hour'].":".$date['minute'].":".$date['second'];
+            $data['date'] = $date['d'];
             if(!isset($_POST['sub'])){
                 $data['page'] = $this->pagination->create_links();
             }
+            $data['customer'] = $this->base_model->get_data('customer' , 'id , fullname');
             $data['count'] = $config['total_rows'];
+            // echo "<pre>";
+            // var_dump($_POST);
+            // echo "</pre>";
                 $this->load->view('header' , $header);
                 $this->load->view('admin/log', $data);
                 $this->load->view('footer');
