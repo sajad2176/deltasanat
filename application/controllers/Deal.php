@@ -1494,6 +1494,7 @@ $str = ' هماهنگی با مشخصات : </br> نام مشتری خرید :'.
             $log['time_log'] = $date['hour'].":".$date['minute'].":".$date['second'];
             $log['activity_id'] = 12;
             $log['explain'] = $str;
+            $log['customer_id'] = $buy_info->id;
 $this->base_model->insert_data('log' , $log);
 $this->base_model->insert_data('handle' , $data);
 
